@@ -1,15 +1,32 @@
+// ==========================================================================
+// 🚀 IKIZAME WEB PORTAL CORE BACKEND SERVICE ENGINE
+// ==========================================================================
 const express = require('express');
 const mysql = require('mysql2');
-const multer = require('multer');
 const path = require('path');
-const session = require('express-session'); // 🔒 Secure session container tracking package
+const multer = require('multer');
+const session = require('express-session');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+
+// --- 🌐 Global Middleware Configuration Parsers ---
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// --- 🔒 Secure Session State Management Cookies Barrier ---
+app.use(session({
+    secret: 'izo_service_quicky_secure_production_token_9981',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 2 * 60 * 60 * 1000 } // Session expires in 2 hours
+}));
+
+// --- 🗄️ 1. Dynamic MySQL Database Connection Config (Local & Cloud Hybrid) ---
 const dbConnectionConfig = process.env.DATABASE_URL || {
     host: 'localhost',
-    user: 'root',       // Default XAMPP username
-    password: '',       // Default XAMPP password is empty
+    user: 'root',
+    password: '',
     database: 'driving_db'
 };
 
@@ -22,133 +39,103 @@ db.connect((err) => {
     }
     console.log('🚀 Successfully connected to the active MySQL database!');
 });
-// --- 🛠️ 2. Middleware Configurations ---
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
-// 🔒 Configure Session Middleware to encrypt authorization cookies on the user's browser
-app.use(session({
-    secret: 'ikizame_secure_key_123',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 30 } // Active authentication expires automatically in 30 minutes
-}));
-
-// 🔒 SECURITY SERVICE WALL MIDDLEWARE: Blocks random users from viewing admin pages
-const requireAdminLogin = (req, res, next) => {
-    if (req.session && req.session.isAdminLoggedIn) {
-        return next(); // Session valid: Allow admin to read the file
-    }
-    // Session missing: Automatically redirect traffic back to the login gateway
-    res.redirect('/admin-login.html');
-};
-
-// Intercept specific admin page requests and run security evaluations before loading public files
-app.get('/dashboard.html', requireAdminLogin);
-app.get('/add-exam.html', requireAdminLogin);
-app.get('/edit-exam.html', requireAdminLogin);
-
-// Serve standard public client-side files (HTML, CSS, images) from the public folder
-app.use(express.static(path.join(__dirname, 'public')));
-
-// --- 📷 3. Multer Configuration for Traffic Sign Graphic Uploads ---
-const storage = multer.diskStorage({
+// --- 📸 2. Advanced Disk Storage Multer Engine Core Mapping ---
+const storageEngine = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, 'public', 'assets', 'uploads'));
+        cb(null, path.join(__dirname, 'public/assets/uploads'));
     },
     filename: (req, file, cb) => {
-        // Prefix runtime timestamp signature to prevent filename duplicates on disk
-        cb(null, Date.now() + '_' + file.originalname);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage: storage });
+
+const upload = multer({ storage: storageEngine });
+
+// --- Dynamic File Fields Matrix Multi-Upload Concurrency Setup ---
+const examUploadFieldsConfig = upload.fields([
+    { name: 'imageFile', maxCount: 1 },    // Main descriptive question road sign image
+    { name: 'optionA_File', maxCount: 1 }, // Dynamic target uploader option image box A
+    { name: 'optionB_File', maxCount: 1 }, // Dynamic target uploader option image box B
+    { name: 'optionC_File', maxCount: 1 }, // Dynamic target uploader option image box C
+    { name: 'optionD_File', maxCount: 1 }  // Dynamic target uploader option image box D
+]);
+
+// --- 🔒 3. Administrative Middleware Session Wall Safeguards ---
+function requireAdminLogin(req, res, next) {
+    if (req.session && req.session.isAdminAuthenticated) {
+        return next();
+    }
+    res.status(401).send('Unauthorized Entry Attempt: Please log in at /admin-login.html first!');
+}
 
 // ==========================================================================
-// 🔐 ADMINISTRATIVE AUTHENTICATION CONTROL ROUTES
+// 🛣️ ADMINISTRATIVE SERVICE APP ROUTING PATHS ENDPOINTS
 // ==========================================================================
 
-// Process Admin Credentials Evaluation Form Submission
-app.post('/api/admin/login', (req, res) => {
+// ➕ A. PORTAL ADMIN LOGIN AUTHENTICATION VERIFIER ROUTE
+app.post('/api/admin/auth', (req, res) => {
     const { username, password } = req.body;
     
     db.query('SELECT * FROM portal_admins WHERE username = ? AND password = ?', [username, password], (err, results) => {
-        if (err) return res.status(500).send('Database Error Processing Request');
+        if (err) return res.status(500).send('Database Error: ' + err.message);
         
-        if (results.length > 0) {
-            req.session.isAdminLoggedIn = true; // Attach valid login status token to session cookie
-            res.redirect('/dashboard.html'); // Deliver user safely onto secure workstation
+        if (results && results.length > 0) {
+            req.session.isAdminAuthenticated = true;
+            req.session.adminUser = results[0].username;
+            res.redirect('/dashboard.html');
         } else {
-            // Deliver lightweight error page with redirect button back to input gateway
-            res.send('<h3>Inyandiko Siyo! Username cyangwa Password ntabwo bikorana. <a href="/admin-login.html">Subira inyuma ugerageze kandi</a></h3>');
+            res.send('<script>alert("Izina ryamahirwe cyangwa ijambo ryibanga ntabwo ryo ryo!"); window.location.href="/admin-login.html";</script>');
         }
     });
 });
 
-// Process Administrative Sign-Out System Lifecycle
+// ➕ B. LOGOUT SESSION TERMINATION GATEWAY
 app.get('/api/admin/logout', (req, res) => {
     req.session.destroy(() => {
-        res.redirect('/index.html'); // Destroy active browser cookies tokens and loop back to main index page
+        res.redirect('/admin-login.html');
     });
 });
 
-// ==========================================================================
-// 🛠️ ADMINISTRATIVE BACKEND EXAM API MANAGEMENT (Fully Secured via Middlewares)
-// ==========================================================================
-
-// ➕ A. GET ALL QUESTIONS (Shuffled randomly per network session request for students / ordered for dashboard sorting)
+// ➕ C. GET COMPLETE INVENTORY EXAMS DATA ARRAY LIST
 app.get('/api/exams', (req, res) => {
-    // Detects header request parameters to serve random sets to student exams, but standard ordered arrays to the admin table
-    const isStudentExam = req.headers.referer && req.headers.referer.includes('exam.html');
-    
-    const queryStr = isStudentExam 
-        ? 'SELECT * FROM exams ORDER BY RAND() LIMIT 20' 
-        : 'SELECT * FROM exams ORDER BY id ASC';
-
-    db.query(queryStr, (err, results) => {
+    db.query('SELECT * FROM exams ORDER BY id DESC', (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);
     });
 });
-// ==========================================================================
-// 🛠️ MULTI-FIELD MULTER CONFIGURATION FOR MULTI-IMAGE OPTIONS
-// ==========================================================================
-const examUploadFieldsConfig = upload.fields([
-    { name: 'imageFile', maxCount: 1 },    // Main question sign symbol picture
-    { name: 'optionA_File', maxCount: 1 }, // Optional upload choice image A
-    { name: 'optionB_File', maxCount: 1 }, // Optional upload choice image B
-    { name: 'optionC_File', maxCount: 1 }, // Optional upload choice image C
-    { name: 'optionD_File', maxCount: 1 }  // Optional upload choice image D
-]);
-// ➕ B. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
+
+// ➕ D. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
 app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
-    // Extract body strings safely with absolute structural fallback guards
     const question = req.body.question || '';
     const correctOption = req.body.correctOption || '';
     const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
     
-    // Process main question sign preview path safely
-    const mainQuestionImage = req.files && req.files['imageFile'] ? req.files['imageFile'].filename : null;
+    // Process main question sign preview path safely via array offset checks
+    const mainQuestionImage = req.files && req.files['imageFile'] && req.files['imageFile'][0] 
+        ? req.files['imageFile'][0].filename 
+        : null;
 
     let finalOptionA = '';
     let finalOptionB = '';
     let finalOptionC = '';
     let finalOptionD = '';
 
-    // 🎯 INTEGRITY SHIELD: Safely extracts files if image mode is on, or form inputs if text mode is on
+    // 🎯 100% SECURE EXTRACTION: Target files are packed inside an array. We point directly to [0].filename
     if (optionsLayoutMode === 'image') {
-        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'].filename : '';
-        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'].filename : '';
-        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'].filename : '';
-        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'].filename : '';
+        finalOptionA = req.files && req.files['optionA_File'] && req.files['optionA_File'][0] ? req.files['optionA_File'][0].filename : '';
+        finalOptionB = req.files && req.files['optionB_File'] && req.files['optionB_File'][0] ? req.files['optionB_File'][0].filename : '';
+        finalOptionC = req.files && req.files['optionC_File'] && req.files['optionC_File'][0] ? req.files['optionC_File'][0].filename : '';
+        finalOptionD = req.files && req.files['optionD_File'] && req.files['optionD_File'][0] ? req.files['optionD_File'][0].filename : '';
     } else {
-        // Fallback to empty string ('') if form elements arrive unmapped or empty to prevent NULL database errors
         finalOptionA = req.body.optionA || '';
         finalOptionB = req.body.optionB || '';
         finalOptionC = req.body.optionC || '';
         finalOptionD = req.body.optionD || '';
     }
 
-    // 🔒 ULTIMATE FORCE LOCK: Secondary check to guarantee no variables can ever pass as NULL to the SQL compiler
+    // Secondary bulletproof integrity fallback layer locks out crash-inducing null errors
     if (!finalOptionA) finalOptionA = '';
     if (!finalOptionB) finalOptionB = '';
     if (!finalOptionC) finalOptionC = '';
@@ -158,44 +145,40 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
     db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, mainQuestionImage], (err, result) => {
         if (err) {
             console.error('❌ Database insertion error:', err.message);
-            return res.status(500).send('Database Error: ' + err.message);
+            return res.status(500).send('Database Error Inserting Question Record: ' + err.message);
         }
         res.redirect('/dashboard.html');
     });
 });
 
-// ➕ C. GET SINGLE QUESTION BY UNIQUE ID KEY (Explicit Object Return Fix)
+// ➕ E. GET SINGLE EXAM RECORD OBJECT FOR COMPILING MANIFEST DATA VIEWS
 app.get('/api/exams/:id', (req, res) => {
     const targetId = parseInt(req.params.id, 10);
-
-    if (isNaN(targetId)) {
-        return res.status(400).json({ error: 'Invalid ID format' });
-    }
+    if (isNaN(targetId)) return res.status(400).json({ error: 'Invalid ID specification configuration' });
 
     db.query('SELECT * FROM exams WHERE id = ?', [targetId], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
-        
         if (results && results.length > 0) {
             res.json(results[0]); 
         } else {
-            res.status(404).json({ error: 'Question not found' });
+            res.status(404).json({ error: 'Question parameter record object entity not found' });
         }
     });
 });
 
-// ➕ D. SUBMIT UPDATE CHANGES ON EXISTING DATABASE ITEMS RECORD
+// ➕ F. SUBMIT RUNTIME UPDATE EDITS OVER EXISTING EXAM RECORDS
 app.post('/api/exams/edit', requireAdminLogin, upload.single('imageFile'), (req, res) => {
     const { id, question, optionA, optionB, optionC, optionD, correctOption, existingImagePath } = req.body;
     const imagePath = req.file ? req.file.filename : existingImagePath;
 
     const sql = `UPDATE exams SET question=?, option_a=?, option_b=?, option_c=?, option_d=?, correct_option=?, image_path=? WHERE id=?`;
     db.query(sql, [question, optionA, optionB, optionC, optionD, correctOption, imagePath, id], (err, result) => {
-        if (err) return res.status(500).send('Database Error Updating Records: ' + err.message);
+        if (err) return res.status(500).send('Database Error Updating Records Matrix: ' + err.message);
         res.redirect('/dashboard.html');
     });
 });
 
-// ➕ E. ASYNCHRONOUS EXAM RECORD REMOVAL API TARGET POINT
+// ➕ G. ASYNCHRONOUS DELETION DEPLOYMENT INTERCEPT HANDLER PATHWAY
 app.delete('/api/exams/delete/:id', requireAdminLogin, (req, res) => {
     db.query('DELETE FROM exams WHERE id = ?', [req.params.id], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -204,7 +187,7 @@ app.delete('/api/exams/delete/:id', requireAdminLogin, (req, res) => {
 });
 
 // ==========================================================================
-// 📝 OPEN PUBLIC STUDENT EXAM EVALUATION API TESTING ENGINE
+// 📝 STUDENT EXAMINATION GRADING EVALUATION CONTROLLER INTERCEPT ENGINES
 // ==========================================================================
 app.post('/api/exams/submit', (req, res) => {
     const studentAnswers = req.body; 
@@ -227,6 +210,7 @@ app.post('/api/exams/submit', (req, res) => {
 });
 
 // --- 🚀 4. Spin up the Secure Server Environment Run ---
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`\n==================================================================`);
     console.log(`✨ IKIZAME App is live and running on: http://localhost:${PORT}`);
