@@ -92,7 +92,7 @@
 
         /* 📸 IMAGE OPTIONS CELL RENDERING ENGINE BOX STYLING */
         .cell-image-wrapper {
-            width: 50px; height: 50px; border: 1px solid var(--border-color); border-radius: 6px;
+            width: 55px; height: 55px; border: 1px solid var(--border-color); border-radius: 6px;
             background-color: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 2px;
         }
         .cell-image-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
@@ -164,7 +164,7 @@
                         </tr>
                     </thead>
                     <tbody id="inventoryTableTargetBody">
-                        <!-- Async content loaded here -->
+                        <!-- Async content loads dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -176,23 +176,20 @@
     </footer>
 
     <script>
-        // 🔒 SESSION SECURITY GATEWAY: Block page loading if admin authentication does not exist
-        // This validates their presence on the front-end before issuing background transactions
-        if (!sessionStorage.getItem('studentName') && !document.cookie.includes('connect.sid')) {
-            // Checks if a standard login session is active, if not, expels them back to login page
-                        console.warn("Unauthorized access detected. Redirecting to auth gateway.");
+        // 🔒 FRONTEND SESSION ACCESS SHIELD CHECK
+        if (!document.cookie.includes('connect.sid') && !sessionStorage.getItem('latestScore')) {
+            console.warn("Unauthorized access detected. Redirecting to auth gateway.");
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const tableBody = document.getElementById('inventoryTableTargetBody');
-            const searchInput = document.getElementById('autoSearchFilterInput');
+                        const searchInput = document.getElementById('autoSearchFilterInput');
             let masterQuestionsCacheArray = [];
 
-            // ⚡ 1. RUN DATA ACQUISITION FROM EXAMS API
+            // ⚡ 1. FETCH LIVE RECORDS FROM BACKEND EXAMS API
             fetch('/api/exams')
                 .then(res => {
                     if (res.status === 401) {
-                        // 🔒 Backend session expired hook fallback
                         alert("Session expired! Please log in again.");
                         window.location.replace('admin-login.html');
                         return;
@@ -209,15 +206,14 @@
                     console.error('API Pull Failure:', err);
                     tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#ef4444; font-weight:600; padding:30px;">Error loading rows out of cloud cluster connection.</td></tr>`;
                 });
-                            // ⚡ 2. HIGH-FIDELITY MEDIA ENGINE: Automatically renders raw string filenames as real graphic images
+
+            // ⚡ 2. HIGH-FIDELITY MEDIA ENGINE: Automatically renders option filenames as real graphic images
             function resolveChoiceCellLayout(optionValueString) {
-                // Return an empty placeholder style badge if the string data is completely blank
                 if (!optionValueString) return `<span style="color:#cbd5e1; font-style:italic;">Empty</span>`;
                 
-                // Trim tracking whitespace logs out of the database string variables mapping
                 const trimmedValue = optionValueString.trim();
 
-                // 📸 DYNAMIC DETECTOR: Forces an exact structural lookup if it contains file extensions or your field signatures
+                // 📸 Checks if the row option contains unique Multer prefix stamps or standard extensions
                 const isRealImageFile = /\.(png|jpg|jpeg|gif|webp|bmp|svg)$/i.test(trimmedValue) || 
                                         trimmedValue.includes('optionA_File') || 
                                         trimmedValue.includes('optionB_File') || 
@@ -225,26 +221,24 @@
                                         trimmedValue.includes('optionD_File');
                 
                 if (isRealImageFile) {
-                    // 🎯 Renders the real graphic thumbnail pointing directly into your physical public upload repository folder
+                    // 🎯 FIX: Points directly to public assets/uploads sub-repository folder cleanly
                     return `
-                        <div class="cell-image-wrapper" style="box-shadow: 0 2px 4px rgba(0,0,0,0.04);" title="Live Asset File: ${trimmedValue}">
-                            <img src="assets/uploads/${trimmedValue}" alt="Choice Visual Asset" loading="lazy" style="display:block; max-width:100%; max-height:100%; object-fit:contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:11px; word-break:break-all; color:#64748b;\'>${trimmedValue}</span>'">
+                        <div class="cell-image-wrapper" style="box-shadow: 0 2px 4px rgba(0,0,0,0.04);" title="Asset Link: ${trimmedValue}">
+                            <img src="assets/uploads/${trimmedValue}" alt="Visual Option" loading="lazy" style="display:block; max-width:100%; max-height:100%; object-fit:contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:11px; word-break:break-all; color:#64748b;\'>${trimmedValue}</span>'">
                         </div>`;
                 }
                 
-                // Regular textual sentences fallback render output route path
                 return `<span>${trimmedValue}</span>`;
             }
 
-
-            // ⚡ 3. GRID RECORDS GENERATION LOOP PROCESSOR MODULE
+            // ⚡ 3. DYNAMIC RECORDS RENDERING ENG GENERATOR MATRIX
             function renderQuestionsTableRows(dataSetArray) {
                 if (dataSetArray.length === 0) {
                     tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:30px; font-style:italic;">No records matched your current query criteria.</td></tr>`;
                     return;
                 }
 
-                // 🎯 FIXED NUMBERING: Uses loop array item index offsets to count perfectly from 1 upwards
+                // 🎯 CONTINUOUS NUMBERING FIX: Relies on array runtime row item offsets to count sequentially from 1 upwards
                 tableBody.innerHTML = dataSetArray.map((exam, index) => {
                     const rowSequentialNumber = index + 1;
                     return `
@@ -275,7 +269,7 @@
                 }).join('');
             }
 
-            // ⚡ 4. INTELLIGENT AUTO-SEARCH INPUT FILTER ENGINE
+            // ⚡ 4. INTELLIGENT SEARCH FIELD COMPILER ENGINE
             searchInput.addEventListener('input', function() {
                 const searchStringQuery = this.value.toLowerCase().trim();
 
@@ -301,7 +295,7 @@
                 renderQuestionsTableRows(filteredResultsSubset);
             });
 
-            // ⚡ 5. DELETION PIPELINE ASYNC INTERCEPT HANDLER
+            // ⚡ 5. SECURE TRANSACTIONAL REMOVAL API ROUTINE
             window.executeSecureRecordDeletion = function(questionRecordId) {
                 if (confirm('Are you absolutely certain you want to remove this question permanently from your system database records configuration pool? This operation cannot be undone!')) {
                     fetch(`/api/exams/delete/${questionRecordId}`, { method: 'DELETE' })
@@ -315,7 +309,7 @@
                                     targetRowElement.style.transition = 'all 0.3s ease';
                                     targetRowElement.style.opacity = '0';
                                     setTimeout(() => { 
-                                        // Re-render table completely to recalculate sequence row index counts
+                                        // Refresh metrics sequencing numbers mapping order instantly
                                         renderQuestionsTableRows(masterQuestionsCacheArray); 
                                     }, 300);
                                 }
