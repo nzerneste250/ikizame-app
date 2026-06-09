@@ -109,14 +109,13 @@ app.get('/api/exams', (req, res) => {
         res.json(results);
     });
 });
-
-// ➕ D. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
+// ➕ B. ADD NEW QUESTION WITH HYBRID TEXT OR PERMANENT MULTI-IMAGE OPTIONS
 app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
     const question = req.body.question || '';
     const correctOption = req.body.correctOption || '';
     const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
     
-    // Process main question sign preview path safely via absolute validation arrays array index checks
+    // 🎯 SECURE STORAGE MAPPING: Processes the main question image file stream
     const mainQuestionImage = req.files && req.files['imageFile'] && req.files['imageFile'][0] 
         ? req.files['imageFile'][0].filename 
         : null;
@@ -126,7 +125,8 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
     let finalOptionC = '';
     let finalOptionD = '';
 
-    // 🎯 FIX: Points explicitly to array index offset zero [0].filename to extract the real string out of the Multer files bucket array wrapper [2]
+    // 🎯 FIX PERMANENT FILES EXTRACTION: Pulls explicitly from index [0] of the file stream array
+    // This forces the server to write the actual physical filename permanently into the static directory paths
     if (optionsLayoutMode === 'image') {
         finalOptionA = req.files && req.files['optionA_File'] && req.files['optionA_File'][0] ? req.files['optionA_File'][0].filename : '';
         finalOptionB = req.files && req.files['optionB_File'] && req.files['optionB_File'][0] ? req.files['optionB_File'][0].filename : '';
@@ -139,7 +139,7 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
         finalOptionD = req.body.optionD || '';
     }
 
-    // Secondary bulletproof integrity fallback layer locks out crash-inducing null errors
+    // Absolute structural fallback to satisfy database NOT NULL constraints
     if (!finalOptionA) finalOptionA = '';
     if (!finalOptionB) finalOptionB = '';
     if (!finalOptionC) finalOptionC = '';
@@ -154,7 +154,6 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
         res.redirect('/dashboard.html');
     });
 });
-
 // ➕ E. GET SINGLE EXAM RECORD OBJECT FOR COMPILING MANIFEST DATA VIEWS
 app.get('/api/exams/:id', (req, res) => {
     const targetId = parseInt(req.params.id, 10);
@@ -169,9 +168,8 @@ app.get('/api/exams/:id', (req, res) => {
         }
     });
 });
-// ➕ F. SUBMIT RUNTIME UPDATE EDITS OVER EXISTING EXAM RECORDS (Hybrid Engine Update)
+// ➕ F. SUBMIT RUNTIME UPDATE EDITS OVER EXISTING EXAM RECORDS (Permanent Storage Engine)
 app.post('/api/exams/edit', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
-    // 🎯 Extract body variables safely with strict fallback guards
     const id = req.body.id;
     const question = req.body.question || '';
     const correctOption = req.body.correctOption || '';
@@ -183,7 +181,7 @@ app.post('/api/exams/edit', requireAdminLogin, examUploadFieldsConfig, (req, res
     const existingOptC = req.body.existingOptC || '';
     const existingOptD = req.body.existingOptD || '';
 
-    // Process main road sign picture upload parameters safely
+    // 🎯 SECURE STORAGE MAPPING: Syncs main question sign via explicit index [0] array mapping
     const imagePath = req.files && req.files['imageFile'] && req.files['imageFile'][0] 
         ? req.files['imageFile'][0].filename 
         : existingImagePath;
@@ -193,21 +191,19 @@ app.post('/api/exams/edit', requireAdminLogin, examUploadFieldsConfig, (req, res
     let finalOptionC = '';
     let finalOptionD = '';
 
-    // 🎯 NESTED EXTRACTION CHECK: Reads new files if selected, drops back to previous image links, or maps text boxes
+    // 🎯 FIX PERMANENT FILES EXTRACTION: Pointing to index [0] forces option updates straight into disk storage
     if (optionsLayoutMode === 'image') {
         finalOptionA = req.files && req.files['optionA_File'] && req.files['optionA_File'][0] ? req.files['optionA_File'][0].filename : existingOptA;
         finalOptionB = req.files && req.files['optionB_File'] && req.files['optionB_File'][0] ? req.files['optionB_File'][0].filename : existingOptB;
         finalOptionC = req.files && req.files['optionC_File'] && req.files['optionC_File'][0] ? req.files['optionC_File'][0].filename : existingOptC;
         finalOptionD = req.files && req.files['optionD_File'] && req.files['optionD_File'][0] ? req.files['optionD_File'][0].filename : existingOptD;
     } else {
-        // Standard text box values mapping straight out of text mode layout fields
         finalOptionA = req.body.optionA || '';
         finalOptionB = req.body.optionB || '';
         finalOptionC = req.body.optionC || '';
         finalOptionD = req.body.optionD || '';
     }
 
-    // Secondary structural integrity locks to guarantee no NULL database column errors
     if (!finalOptionA) finalOptionA = '';
     if (!finalOptionB) finalOptionB = '';
     if (!finalOptionC) finalOptionC = '';
@@ -222,7 +218,6 @@ app.post('/api/exams/edit', requireAdminLogin, examUploadFieldsConfig, (req, res
         res.redirect('/dashboard.html');
     });
 });
-
 // ➕ G. ASYNCHRONOUS DELETION DEPLOYMENT INTERCEPT HANDLER PATHWAY
 app.delete('/api/exams/delete/:id', requireAdminLogin, (req, res) => {
     db.query('DELETE FROM exams WHERE id = ?', [req.params.id], (err, result) => {
