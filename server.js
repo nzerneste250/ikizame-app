@@ -73,24 +73,23 @@ function requireAdminLogin(req, res, next) {
 // ==========================================================================
 // 🛣️ ADMINISTRATIVE SERVICE APP ROUTING PATHS ENDPOINTS
 // ==========================================================================
-
-// ➕ A. PORTAL ADMIN LOGIN AUTHENTICATION VERIFIER ROUTE
+// ➕ A. PORTAL ADMIN LOGIN AUTHENTICATION VERIFIER ROUTE (English Response Update)
 app.post('/api/admin/auth', (req, res) => {
     const { username, password } = req.body;
     
     db.query('SELECT * FROM portal_admins WHERE username = ? AND password = ?', [username, password], (err, results) => {
-        if (err) return res.status(500).send('Database Error: ' + err.message);
+        if (err) return res.status(500).send('Database Connection Error: ' + err.message);
         
         if (results && results.length > 0) {
             req.session.isAdminAuthenticated = true;
-            req.session.adminUser = results[0].username;
+            req.session.adminUser = results[0].username; // Corrected dictionary key tracking references
             res.redirect('/dashboard.html');
         } else {
-            res.send('<script>alert("Izina ryamahirwe cyangwa ijambo ryibanga ntabwo ryo ryo!"); window.location.href="/admin-login.html";</script>');
+            // 🎯 TRANSLATION ACCENT: Displays a professional clean English warning modal pop-up alert
+            res.send('<script>alert("Invalid administrator username or password! Please check your credentials and try again."); window.location.href="/admin-login.html";</script>');
         }
     });
 });
-
 // ➕ B. LOGOUT SESSION TERMINATION GATEWAY
 app.get('/api/admin/logout', (req, res) => {
     req.session.destroy(() => {

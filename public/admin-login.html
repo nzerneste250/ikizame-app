@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="rw">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Injira - IKIZAME Admin Portal</title>
+    <title>Sign In - IKIZAME Admin Portal</title>
     <!-- Google Fonts Hierarchy Inter -->
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
@@ -37,7 +37,7 @@
             overflow-x: hidden;
         }
 
-        /* ✨ INTERACTIVE PARALLAX FLOATING CARD CARD CONTAINER */
+        /* ✨ INTERACTIVE PARALLAX FLOATING CARD CONTAINER */
         .interactive-auth-card {
             width: 100%;
             max-width: 440px;
@@ -69,7 +69,7 @@
             transform: scale(1.05) rotate(5deg);
         }
 
-        .interactive-auth-card h1 { font-size: 22px; font-weight: 800; tracking: -0.5px; margin-bottom: 6px; }
+        .interactive-auth-card h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
         .interactive-auth-card p { font-size: 13.5px; color: var(--text-muted); margin-bottom: 35px; line-height: 1.45; }
 
         /* Dynamic Visual Input Row Bundling Elements */
@@ -80,7 +80,7 @@
         .field-input-wrapper { position: relative; width: 100%; }
         .field-input-wrapper i.leading-ico { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; transition: color 0.2s ease; }
         
-        /* 👁️ PASSIVE EYE OVERRIDE PASSWORDS TOGGLE SELECTOR BUTTON */
+        /* 👁️ PASSWORD VISIBILITY EYE TOGGLE BUTTON */
         .password-toggle-trigger {
             position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
             color: var(--text-muted); cursor: pointer; padding: 4px; font-size: 14px;
@@ -94,7 +94,7 @@
             color: var(--text-dark); outline: none; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* Interactive Input Focus State Feedback Loops Elements Styling */
+        /* Interactive Input Focus State Feedback Loops */
         .auth-form-flow input:focus {
             border-color: var(--accent-sky);
             background-color: #ffffff;
@@ -103,7 +103,7 @@
         .input-floating-group:focus-within label { color: var(--accent-sky); }
         .input-floating-group:focus-within i.leading-ico { color: var(--accent-sky); }
 
-        /* Realtime validation green status accent loop indicator rule class */
+        /* Real-time validation status loops classes */
         .input-floating-group.is-valid input { border-color: var(--valid-green); }
         .input-floating-group.is-valid label { color: var(--valid-green); }
 
@@ -121,7 +121,6 @@
         .back-to-portal-link { text-decoration: none; font-size: 13.5px; font-weight: 600; color: var(--text-muted); transition: color 0.15s ease; display: inline-flex; align-items: center; gap: 6px; margin-top: 30px; }
         .back-to-portal-link:hover { color: var(--accent-sky); }
 
-        /* Smartphone adaptation layers framework metrics rules */
         @media screen and (max-width: 480px) {
             body { padding: 12px; }
             .interactive-auth-card { padding: 35px 20px; border-radius: 14px; }
@@ -136,42 +135,43 @@
         <div class="logo-pulse-box">
             <i class="fa-solid fa-graduation-cap"></i>
         </div>
-        <h1>Injira mu Rubuga</h1>
-        <p>Injiza umwirondoro wawe w'akazi kugira ngo ubashe guhindura cyangwa kwinjiza ibibazo bishya.</p>
+        <!-- 🇬🇧 TRANSLATED CONTAINER CONTENTS HEADER TEXTS -->
+        <h1>Admin Control Panel</h1>
+        <p>Please log in using your authorized staff credentials to manage exam questions and review student scores.</p>
         
-        <!-- 🎯 LOCKED CONFIG: Points directly to your operational server.js backend route path -->
+        <!-- 🎯 CONFIG: Submits securely to your custom authentication API path -->
         <form action="/api/admin/auth" method="POST" class="auth-form-flow" id="portalAuthForm">
             
             <div class="input-floating-group" id="userGroupContainer">
-                <label for="username">Izina Ry'akazi (Username)</label>
+                <label for="username">Username</label>
                 <div class="field-input-wrapper">
                     <i class="fa-solid fa-user-shield leading-ico"></i>
-                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="Andika izina ryawe...">
+                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter your username...">
                 </div>
             </div>
 
             <div class="input-floating-group" id="passGroupContainer">
-                <label for="password">Ijambo Ry'ibanga (Password)</label>
+                <label for="password">Password</label>
                 <div class="field-input-wrapper">
                     <i class="fa-solid fa-lock leading-ico"></i>
-                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Andika ijambo ry'ibanga...">
-                    <!-- 👁️ INTERACTIVE VISIBILITY SHIFTER GESTURE BUTTON -->
-                    <i class="fa-solid fa-eye password-toggle-trigger" id="passwordToggleTriggerBtn" title="Kureba ijambo ry'ibanga"></i>
+                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your secret password...">
+                    <!-- 👁️ INTERACTIVE EYE VISIBILITY ICON TOGGLE -->
+                    <i class="fa-solid fa-eye password-toggle-trigger" id="passwordToggleTriggerBtn" title="Show password"></i>
                 </div>
             </div>
 
             <button type="submit" class="btn-submit-engine" id="authSubmitBtn">
-                <span>Winjira mu Dashboard</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                <span>Access Dashboard</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
             </button>
             
         </form>
 
         <a href="index.html" class="back-to-portal-link">
-            <i class="fa-solid fa-arrow-left-long"></i> Subira Inyuma
+            <i class="fa-solid fa-arrow-left-long"></i> Back to Main Website
         </a>
     </div>
 
-    <!-- Interactive Client UX Enhancement Logic Core Scripts Engine -->
+    <!-- Client Runtime UX Optimization Controller Scripts Engine -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const passInput = document.getElementById('password');
@@ -183,45 +183,45 @@
             const authForm = document.getElementById('portalAuthForm');
             const submitBtn = document.getElementById('authSubmitBtn');
 
-            // 👁️ 1. PASSWORD VISIBILITY TOGGLE SWITCH IMPLEMENTATION
+            // 👁️ 1. ENGLISH VISIBILITY TOOLTIP LABEL SHIFTER
             passToggleBtn.addEventListener('click', () => {
                 if (passInput.type === 'password') {
                     passInput.type = 'text';
                     passToggleBtn.classList.remove('fa-eye');
                     passToggleBtn.classList.add('fa-eye-slash');
-                    passToggleBtn.title = "Guhisha ijambo ry'ibanga";
-                } else {
-                    passInput.type = 'password';
-                    passToggleBtn.classList.remove('fa-eye-slash');
-                                        passToggleBtn.classList.add('fa-eye');
-                    passToggleBtn.title = "Kureba ijambo ry'ibanga";
-                }
-            });
-
-            // ⚡ 2. REAL-TIME INTERACTIVE VALIDATION BINDINGS (Adds premium green border when data is written)
-            userInput.addEventListener('input', () => {
-                if (userInput.value.trim().length >= 3) {
-                    userGroup.classList.add('is-valid');
-                } else {
-                    userGroup.classList.remove('is-valid');
-                }
-            });
-
-            passInput.addEventListener('input', () => {
-                if (passInput.value.length >= 4) {
-                    passGroup.classList.add('is-valid');
-                } else {
-                    passGroup.classList.remove('is-valid');
-                }
-            });
-
-            // ⚡ 3. SUBMIT LOADING ANIMATION STATE (Changes text to prevent duplicate clicks)
-            authForm.addEventListener('submit', () => {
-                submitBtn.style.opacity = '0.85';
-                submitBtn.querySelector('span').innerText = "Tegereza gake...";
-                submitBtn.querySelector('i').className = "fa-solid fa-spinner fa-spin";
-            });
+                    passToggleBtn.title = "Hide password";
+                }else {
+                passInput.type = 'password';
+                passToggleBtn.classList.remove('fa-eye-slash');
+                passToggleBtn.classList.add('fa-eye');
+                passToggleBtn.title = "Show password";
+            }
         });
-    </script>
+
+        // ⚡ 2. REAL-TIME INTERACTIVE VALIDATION BINDINGS
+        userInput.addEventListener('input', () => {
+            if (userInput.value.trim().length >= 3) {
+                userGroup.classList.add('is-valid');
+            } else {
+                userGroup.classList.remove('is-valid');
+            }
+        });
+
+        passInput.addEventListener('input', () => {
+            if (passInput.value.length >= 4) {
+                passGroup.classList.add('is-valid');
+            } else {
+                passGroup.classList.remove('is-valid');
+            }
+        });
+
+        // ⚡ 3. ENGLISH SUBMIT BUTTON SPINNING ACTION FRAME LOADING TEXT
+        authForm.addEventListener('submit', () => {
+            submitBtn.style.opacity = '0.85';
+            submitBtn.querySelector('span').innerText = "Authenticating...";
+            submitBtn.querySelector('i').className = "fa-solid fa-spinner fa-spin";
+        });
+    });
+</script>
 </body>
 </html>
