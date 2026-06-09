@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
-        <style>
-        /* 🪐 CLEAN PROFESSIONAL LIGHT-CARD THEME FOR THE MAIN FORM */
+    <style>
+        /* 🪐 PREMIUM ADMIN DESIGN SYSTEM VARIABLE BALANCES */
         :root {
             --bg-primary: #f8fafc;        /* Soft off-white backdrop */
             --bg-secondary: #ffffff;      /* Crisp pure white for the main form card */
@@ -45,7 +45,7 @@
             gap: 35px;
             flex-shrink: 0;
         }
-        
+
         .sidebar-panel h2 {
             font-size: 18px;
             font-weight: 800;
@@ -204,9 +204,8 @@
     </style>
 </head>
 <body>
-
     <div class="admin-layout-grid">
-        <!-- Sidebar Navigation Menu Menu Worker -->
+        <!-- Sidebar Navigation Menu Left Workspace -->
         <aside class="sidebar-panel">
             <h2><i class="fa-solid fa-graduation-cap"></i> IKIZAME</h2>
             <nav class="sidebar-nav">
@@ -215,14 +214,15 @@
                 <a href="/api/admin/logout"><i class="fa-solid fa-power-off"></i> Soka Hano</a>
             </nav>
         </aside>
-                <!-- Main Form Workstation Display Body Frame -->
+
+        <!-- Main Workspace Panel Wrapper Container Frame -->
         <main class="workspace-panel">
             <header class="header-title-bar">
                 <div>
                     <h1>Injiza Ikibazo Gishya</h1>
                     <p>Sanura imiterere y'ikibazo ukoresheje amahitamo agezweho ya Text cyangwa Amafoto.</p>
                 </div>
-                <!-- 🎯 INTERACTIVE TYPE CONTROL LAYER TOGGLE BUTTON MAPPINGS -->
+                <!-- 🎛️ TEXT MODE VS 4 IMAGES INTERACTIVE ENGINE SWITCH TOGGLE BOX -->
                 <div class="engine-mode-card">
                     <span id="labelModeIndicator">Text Options Mode</span>
                     <div class="toggle-switch-btn" id="toggleLayoutEngineBtn" title="Hindura imiterere y'amahitamo"></div>
@@ -232,7 +232,7 @@
             <div class="form-card-scroller">
                 <form action="/api/exams/add" method="POST" enctype="multipart/form-data" class="main-inputs-form">
                     
-                    <!-- Hidden reference value checking mode metrics state parameters -->
+                    <!-- Hidden reference state token reading form selection mapping -->
                     <input type="hidden" id="optionsLayoutMode" name="optionsLayoutMode" value="text">
 
                     <div class="form-group-block">
@@ -251,7 +251,7 @@
                         </div>
                     </div>
 
-                    <!-- 🎯 INTERACTIVE FORM CONTENT RENDERING GRID HOUSING CONTAINER -->
+                    <!-- 🎯 INTERACTIVE CONTENT CONTAINER TARGET: Text fields or image upload elements inject here dynamically -->
                     <div class="dynamic-options-wrapper" id="dynamicOptionsInputGridContainer"></div>
 
                     <div class="form-group-block" style="max-width: 320px;">
@@ -265,7 +265,7 @@
                         </select>
                     </div>
 
-                    <div class="form-actions-row">
+                    <div class="execution-actions-bar">
                         <button type="submit" class="btn-core-submit"><i class="fa-solid fa-cloud-arrow-up"></i> Bika Ikibazo Gishya</button>
                         <a href="dashboard.html" class="btn-core-cancel">Anula / Subira Inyuma</a>
                     </div>
@@ -291,7 +291,7 @@
 
             // ⚡ 1. REAL-TIME FILE READER PREVIEW FOR CORE TRAFFIC SIGN SYMBOL IMAGE
             mainImgInput.addEventListener('change', function() {
-                const targetFile = this.files;
+                const targetFile = this.files[0];
                 if (targetFile) {
                     const readerInstance = new FileReader();
                     readerInstance.onload = function(e) {
@@ -303,7 +303,7 @@
                 }
             });
 
-            // 🪐 Structural string template maps for traditional textual multiple choice fields option settings
+            // 🪐 Structural string template maps for traditional textual fields choice inputs mapping
             const textLayoutTemplateStr = `
                 <div class="form-group-block">
                     <label for="optionA">Ihitamo A (Option A)</label>
@@ -323,7 +323,7 @@
                 </div>
             `;
 
-            // 🪐 Structural string template maps for progressive multi-image file selectors options grids upload boxes
+            // 🪐 🎯 FIX: Matches input "name" elements explicitly with server.js multer attributes (optionA_File, optionB_File, etc.)
             const imageLayoutTemplateStr = `
                 <div class="option-uploader-card">
                     <div class="option-header-row">Option Image A</div>
@@ -357,7 +357,7 @@
                     toggleBtn.classList.add('active-img-mode');
                     modeIndicatorLabel.innerText = "Four Image Options Mode";
                     dynamicGridContainer.innerHTML = imageLayoutTemplateStr;
-                    registerLiveThumbEventListeners(); // Bind fresh file reader hooks to the newly created elements
+                    registerLiveThumbEventListeners(); // Bind active file reader listeners to new image fields
                 } else {
                     layoutModeInput.value = 'text';
                     toggleBtn.classList.remove('active-img-mode');
@@ -375,10 +375,11 @@
 
                     if (inputElement && previewElement) {
                         inputElement.addEventListener('change', function() {
-                            const file = this.files;
+                                                        const file = this.files[0];
                             if (file) {
                                 const readerInstance = new FileReader();
                                 readerInstance.onload = function(e) {
+                                    // 🎯 FIXED: Wrapped template string with proper backticks
                                     previewElement.innerHTML = `<img src="${e.target.result}" alt="Option ${key}">`;
                                 }
                                 readerInstance.readAsDataURL(file);
@@ -393,4 +394,3 @@
     </script>
 </body>
 </html>
-
