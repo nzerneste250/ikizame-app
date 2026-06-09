@@ -10,7 +10,7 @@
     <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* 🪐 PREMIUM ADMIN DESIGN SYSTEM VARIABLE BALANCES */
+        /* 🪐 CLEAN PROFESSIONAL LIGHT-CARD THEME FOR THE MAIN FORM */
         :root {
             --bg-primary: #f8fafc;        /* Soft off-white backdrop */
             --bg-secondary: #ffffff;      /* Crisp pure white for the main form card */
@@ -180,7 +180,7 @@
             </header>
 
             <div class="form-card-scroller">
-                <!-- Redirect maps straight to the hybrid multi-field database editor route -->
+                <!-- Redirect maps straight to the hybrid edit handler endpoint -->
                 <form action="/api/exams/edit" method="POST" enctype="multipart/form-data" class="main-inputs-form">
                     
                     <!-- Hidden targeting reference parameter keys -->
@@ -188,7 +188,7 @@
                     <input type="hidden" id="optionsLayoutMode" name="optionsLayoutMode" value="text">
                     <input type="hidden" id="existingImagePath" name="existingImagePath">
 
-                    <!-- Keep separate references for option files to retain previous items if unreplaced -->
+                    <!-- Fallback placeholders used to keep old filenames if unreplaced by new uploads -->
                     <input type="hidden" id="existingOptA" name="existingOptA">
                     <input type="hidden" id="existingOptB" name="existingOptB">
                     <input type="hidden" id="existingOptC" name="existingOptC">
@@ -210,7 +210,7 @@
                         </div>
                     </div>
 
-                    <!-- 🎯 INTERACTIVE CONFIG HOUSING CONTAINER: Script injects options text inputs OR image cells automatically -->
+                    <!-- 🎯 INTERACTIVE CONFIG HOUSING CONTAINER: Script injects text fields OR image fields automatically -->
                     <div class="dynamic-options-wrapper" id="dynamicOptionsInputGridContainer"></div>
 
                     <div class="form-group-block" style="max-width: 320px;">
@@ -240,7 +240,7 @@
     <!-- Client Runtime Core Execution Script Engine Block -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Extract the dynamic query reference URL ID token attribute
+            // Extract the query parameter ID from the browser window's URL line
             const queryParamsString = window.location.search;
             const urlParametersParser = new URLSearchParams(queryParamsString);
             const questionTargetId = urlParametersParser.get('id');
@@ -270,20 +270,20 @@
                 }
             });
 
-            // ⚡ 2. RUN DATA HANDSHAKE PIPELINE TO ACQUIRE ACTIVE RECORD PROPERTIES
+            // ⚡ 2. FETCH THE ACTIVE RECORD VALUES TO POPULATE THE COMPANION FIELD CONTAINER
             fetch(`/api/exams/${questionTargetId}`)
                 .then(res => res.json())
                 .then(questionPayloadBox => {
-                    // Extract row dictionary straight out of array block packaging wrapper
+                    // Extract row dictionary data cleanly out of index array box if packed
                     const exam = Array.isArray(questionPayloadBox) ? questionPayloadBox[0] : questionPayloadBox;
                     
                     if (!exam) {
-                        alert('Question record not found.');
+                        alert('Question parameters row entity context object not found.');
                         window.location.replace('dashboard.html');
                         return;
                     }
 
-                    // Bind basic string tracking identities fields straight to hidden tags
+                    // Bind basic tracking properties straight into hidden attributes
                     document.getElementById('targetRecordId').value = exam.id;
                     document.getElementById('question').value = exam.question;
                     document.getElementById('correctOption').value = exam.correct_option;
@@ -294,15 +294,16 @@
                     document.getElementById('existingOptC').value = exam.option_c || '';
                     document.getElementById('existingOptD').value = exam.option_d || '';
 
+                    // Load main question sign graphic image relative path safely (no leading /)
                     if (exam.image_path) {
-                        mainImgPreview.innerHTML = `<img src="/assets/uploads/${exam.image_path}" alt="Main Sign">`;
+                        mainImgPreview.innerHTML = `<img src="assets/uploads/${exam.image_path}" alt="Main Sign">`;
                     }
 
-                    // 🎯 MEDIA SNIFFER CRITERIA: Scans column contents for graphic extensions stamps
-                    const isImageOptionsLayout = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a) || (exam.option_a && exam.option_a.startsWith('optionA_File-'));
+                    // 🎯 MEDIA SNIFFER ENGINE: Looks for image suffix formats inside columns string values
+                    const isImageOptionsLayout = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a) || (exam.option_a && exam.option_a.includes('optionA_File-'));
 
                     if (isImageOptionsLayout) {
-                        // 📸 TRIGGER GRAPHIC IMAGES MODE SWITCH
+                        // 📸 CHOOSE MULTI-IMAGE INPUT LAYOUT
                         layoutModeInput.value = 'image';
                         modeBadge.innerText = "Four Image Options Mode";
                         modeBadge.parentElement.style.borderColor = "#0284c7";
@@ -311,36 +312,36 @@
                             <div class="option-uploader-card">
                                 <div class="option-header-row">Option Image A</div>
                                 <div class="option-thumb-preview" id="previewOptionImage_A">
-                                    <img src="/assets/uploads/${exam.option_a}" alt="Option A">
+                                    <img src="assets/uploads/${exam.option_a}" alt="Option A">
                                 </div>
                                 <input type="file" name="optionA_File" id="input_file_A" accept="image/*" class="file-input-ghost">
                             </div>
                             <div class="option-uploader-card">
                                 <div class="option-header-row">Option Image B</div>
                                 <div class="option-thumb-preview" id="previewOptionImage_B">
-                                    <img src="/assets/uploads/${exam.option_b}" alt="Option B">
+                                    <img src="assets/uploads/${exam.option_b}" alt="Option B">
                                 </div>
                                 <input type="file" name="optionB_File" id="input_file_B" accept="image/*" class="file-input-ghost">
                             </div>
                             <div class="option-uploader-card">
                                 <div class="option-header-row">Option Image C</div>
                                 <div class="option-thumb-preview" id="previewOptionImage_C">
-                                    <img src="/assets/uploads/${exam.option_c}" alt="Option C">
+                                    <img src="assets/uploads/${exam.option_c}" alt="Option C">
                                 </div>
                                 <input type="file" name="optionC_File" id="input_file_C" accept="image/*" class="file-input-ghost">
                             </div>
                             <div class="option-uploader-card">
                                 <div class="option-header-row">Option Image D</div>
                                 <div class="option-thumb-preview" id="previewOptionImage_D">
-                                    <img src="/assets/uploads/${exam.option_d}" alt="Option D">
+                                    <img src="assets/uploads/${exam.option_d}" alt="Option D">
                                 </div>
                                 <input type="file" name="optionD_File" id="input_file_D" accept="image/*" class="file-input-ghost">
                             </div>
                         `;
                         registerLiveThumbEventListeners();
-                    }else {
-                        // 📝 TRIGGER TEXTUAL STRINGS MODE SWITCH
-                        layoutModeInput.value = 'text';
+                    } else {
+                        // 📝 CHOOSE TRADITIONAL IN-LINE STRINGS TEXT FIELD LAYOUT
+                                                layoutModeInput.value = 'text';
                         modeBadge.innerText = "Text Options Mode";
 
                         dynamicGridContainer.innerHTML = `
@@ -375,12 +376,12 @@
                     if (inputElement && previewElement) {
                         inputElement.addEventListener('change', function() {
                             const file = this.files;
-                            if (file && file[0]) {
+                            if (file && file) {
                                 const readerInstance = new FileReader();
                                 readerInstance.onload = function(e) {
                                     previewElement.innerHTML = `<img src="${e.target.result}" alt="Option ${key}">`;
                                 }
-                                readerInstance.readAsDataURL(file[0]);
+                                readerInstance.readAsDataURL(file);
                             }
                         });
                     }
@@ -390,4 +391,3 @@
     </script>
 </body>
 </html>
-
