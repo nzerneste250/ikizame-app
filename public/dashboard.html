@@ -83,7 +83,7 @@
             background-color: #f8fafc; color: var(--text-muted); font-size: 11px; font-weight: 800;
             text-transform: uppercase; letter-spacing: 0.75px; padding: 14px 20px; border-bottom: 2px solid var(--border-color); text-align: left;
         }
-        .data-table-container td { padding: 12px 20px; font-size: 13.5px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
+        .data-table-container td { padding: 14px 20px; font-size: 13.5px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
         .data-table-container tr:last-child td { border-bottom: none; }
         .data-table-container tr:hover td { background-color: #fbfdfe; }
 
@@ -92,29 +92,34 @@
 
         /* 📸 IMAGE OPTIONS CELL RENDERING ENGINE BOX STYLING */
         .cell-image-wrapper {
-            width: 55px; height: 55px; border: 1px solid var(--border-color); border-radius: 6px;
-            background-color: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 2px;
+            width: 65px; height: 65px; border: 1px solid var(--border-color); border-radius: 6px;
+            background-color: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
         .cell-image-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
         .correct-answer-pill { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background-color: #dcfce7; color: #15803d; font-weight: 800; font-size: 12px; }
 
-        .actions-btn-cluster { display: flex; gap: 8px; align-items: center; }
-        .action-icon-link {
-            border: 1px solid var(--border-color); padding: 8px; border-radius: 6px; cursor: pointer;
-            background-color: #ffffff; color: var(--text-muted); font-size: 13px; transition: all 0.15s ease;
-            display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+        /* 🎯 HIGHLY VISIBLE PROFESSIONAL REAL BUTTONS CLUSTER */
+        .actions-btn-cluster { display: flex; flex-direction: column; gap: 6px; align-items: stretch; width: 100%; max-width: 110px; }
+        .real-action-button {
+            border: none; padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700;
+            cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            text-decoration: none; text-transform: uppercase; letter-spacing: 0.25px; transition: all 0.15s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); width: 100%;
         }
-        .action-icon-link.edit-lnk:hover { border-color: var(--accent-blue); color: var(--accent-blue); background-color: #f0f9ff; }
-        .action-icon-link.delete-lnk:hover { border-color: var(--accent-delete); color: var(--accent-delete); background-color: #fef2f2; }
+        .real-action-button.btn-edit { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .real-action-button.btn-edit:hover { background-color: #0284c7; color: #ffffff; border-color: #0284c7; }
+        .real-action-button.btn-delete { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .real-action-button.btn-delete:hover { background-color: #ef4444; color: #ffffff; border-color: #ef4444; }
 
         .admin-footer-panel {
             background-color: var(--sidebar-bg); color: #64748b; text-align: center;
-            padding: 14px; font-size: 11.5px; border-top: 1px solid var(--sidebar-border); height: 45px; z-index: 100;
+            padding: 14px; font-size: 11.5px; border-top: 1px solid var(--border-color); height: 45px; z-index: 100;
         }
         .admin-footer-panel strong { color: #38bdf8; }
 
-        @media screen and (max-width: 992px) {
+        @media screen and (max-width: 1200px) {
             .sidebar-panel { display: none; }
             .header-title-bar { padding: 20px; flex-direction: column; align-items: flex-start; gap: 15px; }
             .search-engine-box { width: 100%; }
@@ -152,15 +157,15 @@
                 <table class="data-table-container">
                     <thead>
                         <tr>
-                            <th style="width: 70px;">No.</th>
-                            <th style="width: 320px;">Question Details</th>
-                            <th style="width: 90px;">Sign Image</th>
+                            <th style="width: 60px;">No.</th>
+                            <th style="width: 280px;">Question Details</th>
+                            <th style="width: 100px;">Sign Image</th>
                             <th>Option A</th>
                             <th>Option B</th>
                             <th>Option C</th>
                             <th>Option D</th>
-                            <th style="width: 70px; text-align: center;">Key</th>
-                            <th style="width: 90px; text-align: center;">Actions</th>
+                            <th style="width: 60px; text-align: center;">Key</th>
+                            <th style="width: 120px; text-align: center;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="inventoryTableTargetBody">
@@ -170,20 +175,13 @@
             </div>
         </main>
     </div>
+        </footer>
 
-    <footer class="admin-footer-panel">
-        <p>Developed by <strong>izo service quicky</strong></p>
-    </footer>
-
+    <!-- Async Data Compilers and Real-time Search Engine script Execution Block -->
     <script>
-        // 🔒 FRONTEND SESSION ACCESS SHIELD CHECK
-        if (!document.cookie.includes('connect.sid') && !sessionStorage.getItem('latestScore')) {
-            console.warn("Unauthorized access detected. Redirecting to auth gateway.");
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             const tableBody = document.getElementById('inventoryTableTargetBody');
-                        const searchInput = document.getElementById('autoSearchFilterInput');
+            const searchInput = document.getElementById('autoSearchFilterInput');
             let masterQuestionsCacheArray = [];
 
             // ⚡ 1. FETCH LIVE RECORDS FROM BACKEND EXAMS API
@@ -221,10 +219,10 @@
                                         trimmedValue.includes('optionD_File');
                 
                 if (isRealImageFile) {
-                    // 🎯 FIX: Points directly to public assets/uploads sub-repository folder cleanly
+                    // 🎯 FIX: Changed path to absolute string format (/assets/uploads/) to ensure direct file fetching on Render [ENSURE LEADING SLASH]
                     return `
-                        <div class="cell-image-wrapper" style="box-shadow: 0 2px 4px rgba(0,0,0,0.04);" title="Asset Link: ${trimmedValue}">
-                            <img src="assets/uploads/${trimmedValue}" alt="Visual Option" loading="lazy" style="display:block; max-width:100%; max-height:100%; object-fit:contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:11px; word-break:break-all; color:#64748b;\'>${trimmedValue}</span>'">
+                        <div class="cell-image-wrapper" title="Asset Link: ${trimmedValue}">
+                            <img src="/assets/uploads/${trimmedValue}" alt="Visual Option" loading="lazy" style="display:block; max-width:100%; max-height:100%; object-fit:contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:11px; word-break:break-all; color:#64748b;\'>${trimmedValue}</span>'">
                         </div>`;
                 }
                 
@@ -249,7 +247,7 @@
                             </td>
                             <td>
                                 ${exam.image_path ? 
-                                    `<div class="cell-image-wrapper"><img src="assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy"></div>` : 
+                                    `<div class="cell-image-wrapper"><img src="/assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy"></div>` : 
                                     `<span style="color:#cbd5e1; font-size:11px;">None</span>`
                                 }
                             </td>
@@ -259,9 +257,14 @@
                             <td>${resolveChoiceCellLayout(exam.option_d)}</td>
                             <td style="text-align: center;"><span class="correct-answer-pill">${exam.correct_option}</span></td>
                             <td style="text-align: center;">
+                                <!-- 🎯 REAL BUTTONS: Highly visible real corporate buttons with labels and icons -->
                                 <div class="actions-btn-cluster">
-                                    <a href="edit-exam.html?id=${exam.id}" class="action-icon-link edit-lnk" title="Edit Question Parameters"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <button onclick="executeSecureRecordDeletion(${exam.id})" class="action-icon-link delete-lnk" title="Delete Question Object"><i class="fa-solid fa-trash-can"></i></button>
+                                    <a href="edit-exam.html?id=${exam.id}" class="real-action-button btn-edit" title="Edit Parameters">
+                                        <i class="fa-solid fa-pen"></i> Edit
+                                    </a>
+                                    <button onclick="executeSecureRecordDeletion(${exam.id})" class="real-action-button btn-delete" title="Delete Object">
+                                        <i class="fa-solid fa-trash"></i> Delete
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -297,7 +300,7 @@
 
             // ⚡ 5. SECURE TRANSACTIONAL REMOVAL API ROUTINE
             window.executeSecureRecordDeletion = function(questionRecordId) {
-                if (confirm('Are you absolutely certain you want to remove this question permanently from your system database records configuration pool? This operation cannot be undone!')) {
+                if (confirm('Are you absolutely certain you want to remove this question permanently? This operation cannot be undone!')) {
                     fetch(`/api/exams/delete/${questionRecordId}`, { method: 'DELETE' })
                         .then(res => res.json())
                         .then(response => {
@@ -309,7 +312,6 @@
                                     targetRowElement.style.transition = 'all 0.3s ease';
                                     targetRowElement.style.opacity = '0';
                                     setTimeout(() => { 
-                                        // Refresh metrics sequencing numbers mapping order instantly
                                         renderQuestionsTableRows(masterQuestionsCacheArray); 
                                     }, 300);
                                 }
