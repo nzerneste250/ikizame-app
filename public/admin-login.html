@@ -3,76 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kwinjira - IKIZAME Admin Access</title>
-    <!-- Link to your standard public layout stylesheet -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <!-- Font Awesome vectors library -->
+    <title>Injira - IKIZAME Admin Portal</title>
+    <!-- Google Fonts Hierarchy Inter -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* Standalone adjustments for centering the security form */
-        .login-box { 
-            width: 100%; 
-            max-width: 400px; 
-            margin: 80px auto; 
-            background: white; 
-            padding: 40px 30px; 
-            border-radius: 8px; 
-            border: 1px solid #cbd5e1; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+        /* 🪐 BRAND PLATFORM MOTION DESIGN SYSTEM */
+        :root {
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-backdrop: #f1f5f9;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --accent-sky: #0b698b;
+            --accent-glow: rgba(11, 105, 139, 0.2);
+            --accent-hover: #08536e;
+            --border-line: #cbd5e1;
+            --valid-green: #10b981;
         }
-        .login-box h2 { 
-            text-align: center; 
-            margin-bottom: 25px; 
-            color: #0b698b; 
-            font-weight: 700;
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%); 
+            color: var(--text-dark); 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 20px;
+            overflow-x: hidden;
         }
-        .password-field {
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 6px; 
-            outline: none;
-            font-size: 15px;
+
+        /* ✨ INTERACTIVE PARALLAX FLOATING CARD CARD CONTAINER */
+        .interactive-auth-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            padding: 45px 35px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.03);
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
         }
-        .password-field:focus {
-            border-color: #0b698b;
+        .interactive-auth-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 30px -5px rgba(0,0,0,0.08), 0 12px 12px -5px rgba(0,0,0,0.04);
+        }
+
+        /* Animated Pulsing Icon Header Box */
+        .logo-pulse-box {
+            width: 60px; height: 60px; background-color: var(--accent-sky); color: #ffffff;
+            border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; margin: 0 auto 20px;
+            box-shadow: 0 8px 16px rgba(11, 105, 139, 0.25);
+            transition: transform 0.3s ease;
+        }
+        .interactive-auth-card:hover .logo-pulse-box {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .interactive-auth-card h1 { font-size: 22px; font-weight: 800; tracking: -0.5px; margin-bottom: 6px; }
+        .interactive-auth-card p { font-size: 13.5px; color: var(--text-muted); margin-bottom: 35px; line-height: 1.45; }
+
+        /* Dynamic Visual Input Row Bundling Elements */
+        .auth-form-flow { display: flex; flex-direction: column; gap: 22px; text-align: left; }
+        .input-floating-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
+        .input-floating-group label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.75px; transition: color 0.2s ease; }
+        
+        .field-input-wrapper { position: relative; width: 100%; }
+        .field-input-wrapper i.leading-ico { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; transition: color 0.2s ease; }
+        
+        /* 👁️ PASSIVE EYE OVERRIDE PASSWORDS TOGGLE SELECTOR BUTTON */
+        .password-toggle-trigger {
+            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); cursor: pointer; padding: 4px; font-size: 14px;
+            transition: color 0.15s ease; user-select: none;
+        }
+        .password-toggle-trigger:hover { color: var(--accent-sky); }
+
+        .auth-form-flow input {
+            width: 100%; padding: 14px 44px 14px 44px; background-color: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--border-line); border-radius: 10px; font-size: 14.5px; font-weight: 500;
+            color: var(--text-dark); outline: none; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Interactive Input Focus State Feedback Loops Elements Styling */
+        .auth-form-flow input:focus {
+            border-color: var(--accent-sky);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+        .input-floating-group:focus-within label { color: var(--accent-sky); }
+        .input-floating-group:focus-within i.leading-ico { color: var(--accent-sky); }
+
+        /* Realtime validation green status accent loop indicator rule class */
+        .input-floating-group.is-valid input { border-color: var(--valid-green); }
+        .input-floating-group.is-valid label { color: var(--valid-green); }
+
+        .btn-submit-engine {
+            background-color: var(--accent-sky); color: #ffffff; border: none; padding: 14px 24px;
+            font-size: 14px; font-weight: 700; border-radius: 10px; cursor: pointer; width: 100%;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            transition: all 0.2s ease; margin-top: 8px;
+            box-shadow: 0 4px 12px rgba(11, 105, 139, 0.2);
+            position: relative; overflow: hidden;
+        }
+        .btn-submit-engine:hover { background-color: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(11, 105, 139, 0.3); }
+        .btn-submit-engine:active { transform: translateY(0); }
+
+        .back-to-portal-link { text-decoration: none; font-size: 13.5px; font-weight: 600; color: var(--text-muted); transition: color 0.15s ease; display: inline-flex; align-items: center; gap: 6px; margin-top: 30px; }
+        .back-to-portal-link:hover { color: var(--accent-sky); }
+
+        /* Smartphone adaptation layers framework metrics rules */
+        @media screen and (max-width: 480px) {
+            body { padding: 12px; }
+            .interactive-auth-card { padding: 35px 20px; border-radius: 14px; }
+            .interactive-auth-card h1 { font-size: 20px; }
+            .auth-form-flow input { padding: 13px 40px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Upper Security Navbar Branding Header -->
-    <header class="navbar">
-        <div class="logo">IKIZAME - Admin System Gate</div>
-        <a href="index.html" class="lang-selector" style="text-decoration: none; color: #4a5568; font-weight: 500;">
-            <i class="fa-solid fa-arrow-left"></i> Subira Ahabanza
-        </a>
-    </header>
-
-    <!-- Centered Login Credentials Box Module -->
-    <div class="login-box">
-        <h2>Kwinjira Muri Admin Panel</h2>
+    <div class="interactive-auth-card" id="loginGlassCard">
+        <div class="logo-pulse-box">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <h1>Injira mu Rubuga</h1>
+        <p>Injiza umwirondoro wawe w'akazi kugira ngo ubashe guhindura cyangwa kwinjiza ibibazo bishya.</p>
         
-        <!-- form target hits our secure express-session post endpoint routing path -->
-        <form action="/api/admin/auth" method="POST">
-            <div class="input-group">
-                <label for="username">Izina ry'Ikoresha (Username)</label>
-                <input type="text" id="username" name="username" required placeholder="ex: admin">
-            </div>
+        <!-- 🎯 LOCKED CONFIG: Points directly to your operational server.js backend route path -->
+        <form action="/api/admin/auth" method="POST" class="auth-form-flow" id="portalAuthForm">
             
-            <div class="input-group">
-                <label for="password">Ijambo ry'Ibanga (Password)</label>
-                <input type="password" id="password" name="password" class="password-field" required placeholder="••••••••">
+            <div class="input-floating-group" id="userGroupContainer">
+                <label for="username">Izina Ry'akazi (Username)</label>
+                <div class="field-input-wrapper">
+                    <i class="fa-solid fa-user-shield leading-ico"></i>
+                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="Andika izina ryawe...">
+                </div>
             </div>
+
+            <div class="input-floating-group" id="passGroupContainer">
+                <label for="password">Ijambo Ry'ibanga (Password)</label>
+                <div class="field-input-wrapper">
+                    <i class="fa-solid fa-lock leading-ico"></i>
+                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Andika ijambo ry'ibanga...">
+                    <!-- 👁️ INTERACTIVE VISIBILITY SHIFTER GESTURE BUTTON -->
+                    <i class="fa-solid fa-eye password-toggle-trigger" id="passwordToggleTriggerBtn" title="Kureba ijambo ry'ibanga"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit-engine" id="authSubmitBtn">
+                <span>Winjira mu Dashboard</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
             
-            <button type="submit" class="submit-form-btn">Injira Hano</button>
         </form>
+
+        <a href="index.html" class="back-to-portal-link">
+            <i class="fa-solid fa-arrow-left-long"></i> Subira Inyuma
+        </a>
     </div>
 
-    <!-- Corporate Signoff Footer Layout -->
-    <footer class="footer-bar" style="margin-top: auto;">
-        <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
-    </footer>
+    <!-- Interactive Client UX Enhancement Logic Core Scripts Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const passInput = document.getElementById('password');
+            const passToggleBtn = document.getElementById('passwordToggleTriggerBtn');
+            
+            const userInput = document.getElementById('username');
+            const userGroup = document.getElementById('userGroupContainer');
+            const passGroup = document.getElementById('passGroupContainer');
+            const authForm = document.getElementById('portalAuthForm');
+            const submitBtn = document.getElementById('authSubmitBtn');
 
+            // 👁️ 1. PASSWORD VISIBILITY TOGGLE SWITCH IMPLEMENTATION
+            passToggleBtn.addEventListener('click', () => {
+                if (passInput.type === 'password') {
+                    passInput.type = 'text';
+                    passToggleBtn.classList.remove('fa-eye');
+                    passToggleBtn.classList.add('fa-eye-slash');
+                    passToggleBtn.title = "Guhisha ijambo ry'ibanga";
+                } else {
+                    passInput.type = 'password';
+                    passToggleBtn.classList.remove('fa-eye-slash');
+                                        passToggleBtn.classList.add('fa-eye');
+                    passToggleBtn.title = "Kureba ijambo ry'ibanga";
+                }
+            });
+
+            // ⚡ 2. REAL-TIME INTERACTIVE VALIDATION BINDINGS (Adds premium green border when data is written)
+            userInput.addEventListener('input', () => {
+                if (userInput.value.trim().length >= 3) {
+                    userGroup.classList.add('is-valid');
+                } else {
+                    userGroup.classList.remove('is-valid');
+                }
+            });
+
+            passInput.addEventListener('input', () => {
+                if (passInput.value.length >= 4) {
+                    passGroup.classList.add('is-valid');
+                } else {
+                    passGroup.classList.remove('is-valid');
+                }
+            });
+
+            // ⚡ 3. SUBMIT LOADING ANIMATION STATE (Changes text to prevent duplicate clicks)
+            authForm.addEventListener('submit', () => {
+                submitBtn.style.opacity = '0.85';
+                submitBtn.querySelector('span').innerText = "Tegereza gake...";
+                submitBtn.querySelector('i').className = "fa-solid fa-spinner fa-spin";
+            });
+        });
+    </script>
 </body>
 </html>
