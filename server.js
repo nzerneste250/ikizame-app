@@ -119,10 +119,12 @@ const examUploadFieldsConfig = upload.fields([
     { name: 'optionC_File', maxCount: 1 }, // Optional upload choice image C
     { name: 'optionD_File', maxCount: 1 }  // Optional upload choice image D
 ]);
-
 // ➕ B. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
 app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
-    const { question, correctOption, optionsLayoutMode } = req.body;
+    // Extract body strings safely with absolute structural fallback guards
+    const question = req.body.question || '';
+    const correctOption = req.body.correctOption || '';
+    const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
     
     // Process main question sign preview path safely
     const mainQuestionImage = req.files && req.files['imageFile'] ? req.files['imageFile'].filename : null;
@@ -132,18 +134,25 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
     let finalOptionC = '';
     let finalOptionD = '';
 
-    // 🎯 DYNAMIC SANITIZATION: Safely assigns filenames OR strings depending on layout choice mode
+    // 🎯 INTEGRITY SHIELD: Safely extracts files if image mode is on, or form inputs if text mode is on
     if (optionsLayoutMode === 'image') {
         finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'].filename : '';
         finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'].filename : '';
         finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'].filename : '';
         finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'].filename : '';
     } else {
+        // Fallback to empty string ('') if form elements arrive unmapped or empty to prevent NULL database errors
         finalOptionA = req.body.optionA || '';
         finalOptionB = req.body.optionB || '';
         finalOptionC = req.body.optionC || '';
         finalOptionD = req.body.optionD || '';
     }
+
+    // 🔒 ULTIMATE FORCE LOCK: Secondary check to guarantee no variables can ever pass as NULL to the SQL compiler
+    if (!finalOptionA) finalOptionA = '';
+    if (!finalOptionB) finalOptionB = '';
+    if (!finalOptionC) finalOptionC = '';
+    if (!finalOptionD) finalOptionD = '';
 
     const sql = `INSERT INTO exams (question, option_a, option_b, option_c, option_d, correct_option, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, mainQuestionImage], (err, result) => {
