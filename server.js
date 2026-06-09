@@ -40,10 +40,11 @@ db.connect((err) => {
     console.log('🚀 Successfully connected to the active MySQL database!');
 });
 
-// --- 📸 2. Advanced Disk Storage Multer Engine Core Mapping ---
+// --- 📸 2. Advanced Absolute Disk Storage Multer Engine Core Configuration ---
 const storageEngine = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, 'public/assets/uploads'));
+        // 🎯 FIXED: Uses path.resolve to force absolute path context execution regardless of ephemeral cloud states
+        cb(null, path.resolve(__dirname, 'public', 'assets', 'uploads'));
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
@@ -51,7 +52,10 @@ const storageEngine = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storageEngine });
+const upload = multer({ 
+    storage: storageEngine,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB File size safety limitation limit guard
+});
 
 // --- Dynamic File Fields Matrix Multi-Upload Concurrency Setup ---
 const examUploadFieldsConfig = upload.fields([
@@ -73,6 +77,7 @@ function requireAdminLogin(req, res, next) {
 // ==========================================================================
 // 🛣️ ADMINISTRATIVE SERVICE APP ROUTING PATHS ENDPOINTS
 // ==========================================================================
+
 // ➕ A. PORTAL ADMIN LOGIN AUTHENTICATION VERIFIER ROUTE (English Response Update)
 app.post('/api/admin/auth', (req, res) => {
     const { username, password } = req.body;
@@ -82,14 +87,14 @@ app.post('/api/admin/auth', (req, res) => {
         
         if (results && results.length > 0) {
             req.session.isAdminAuthenticated = true;
-            req.session.adminUser = results[0].username; // Corrected dictionary key tracking references
+            req.session.adminUser = results[0].username;
             res.redirect('/dashboard.html');
         } else {
-            // 🎯 TRANSLATION ACCENT: Displays a professional clean English warning modal pop-up alert
             res.send('<script>alert("Invalid administrator username or password! Please check your credentials and try again."); window.location.href="/admin-login.html";</script>');
         }
     });
 });
+
 // ➕ B. LOGOUT SESSION TERMINATION GATEWAY
 app.get('/api/admin/logout', (req, res) => {
     req.session.destroy(() => {
@@ -104,13 +109,14 @@ app.get('/api/exams', (req, res) => {
         res.json(results);
     });
 });
-// ➕ B. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
+
+// ➕ D. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
 app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
     const question = req.body.question || '';
     const correctOption = req.body.correctOption || '';
     const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
     
-    // 🎯 FIX: Pulls the zero-index offset explicitly out of the main picture field array box
+    // Process main question sign preview path safely via absolute validation arrays array index checks
     const mainQuestionImage = req.files && req.files['imageFile'] && req.files['imageFile'][0] 
         ? req.files['imageFile'][0].filename 
         : null;
@@ -120,7 +126,7 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
     let finalOptionC = '';
     let finalOptionD = '';
 
-    // 🎯 CRUCIAL ZERO-INDEX FIXED: Target [0].filename pulls the string name out of the array box
+    // 🎯 FIX: Points explicitly to array index offset zero [0].filename to extract the real string out of the Multer files bucket array wrapper [2]
     if (optionsLayoutMode === 'image') {
         finalOptionA = req.files && req.files['optionA_File'] && req.files['optionA_File'][0] ? req.files['optionA_File'][0].filename : '';
         finalOptionB = req.files && req.files['optionB_File'] && req.files['optionB_File'][0] ? req.files['optionB_File'][0].filename : '';
@@ -133,7 +139,7 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
         finalOptionD = req.body.optionD || '';
     }
 
-    // Safety checks ensuring absolute string fallbacks to satisfy NOT NULL constraints
+    // Secondary bulletproof integrity fallback layer locks out crash-inducing null errors
     if (!finalOptionA) finalOptionA = '';
     if (!finalOptionB) finalOptionB = '';
     if (!finalOptionC) finalOptionC = '';
@@ -143,11 +149,12 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
     db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, mainQuestionImage], (err, result) => {
         if (err) {
             console.error('❌ Database insertion error:', err.message);
-            return res.status(500).send('Database Error: ' + err.message);
+            return res.status(500).send('Database Error Inserting Question Record: ' + err.message);
         }
         res.redirect('/dashboard.html');
     });
 });
+
 // ➕ E. GET SINGLE EXAM RECORD OBJECT FOR COMPILING MANIFEST DATA VIEWS
 app.get('/api/exams/:id', (req, res) => {
     const targetId = parseInt(req.params.id, 10);
