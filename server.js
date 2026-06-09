@@ -105,14 +105,13 @@ app.get('/api/exams', (req, res) => {
         res.json(results);
     });
 });
-
 // ➕ D. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
 app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
     const question = req.body.question || '';
     const correctOption = req.body.correctOption || '';
     const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
     
-    // Process main question sign preview path safely via array offset checks
+    // 🎯 FIX: Pulls the first item index [0] safely from the imageFile array block
     const mainQuestionImage = req.files && req.files['imageFile'] && req.files['imageFile'][0] 
         ? req.files['imageFile'][0].filename 
         : null;
@@ -122,7 +121,7 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
     let finalOptionC = '';
     let finalOptionD = '';
 
-    // 🎯 100% SECURE EXTRACTION: Target files are packed inside an array. We point directly to [0].filename
+    // 🎯 FIX: Points explicitly to [0].filename to extract the actual uploaded string from the Multer array box
     if (optionsLayoutMode === 'image') {
         finalOptionA = req.files && req.files['optionA_File'] && req.files['optionA_File'][0] ? req.files['optionA_File'][0].filename : '';
         finalOptionB = req.files && req.files['optionB_File'] && req.files['optionB_File'][0] ? req.files['optionB_File'][0].filename : '';
@@ -135,7 +134,7 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
         finalOptionD = req.body.optionD || '';
     }
 
-    // Secondary bulletproof integrity fallback layer locks out crash-inducing null errors
+    // Secondary fallback lock to protect your database columns integrity constraints
     if (!finalOptionA) finalOptionA = '';
     if (!finalOptionB) finalOptionB = '';
     if (!finalOptionC) finalOptionC = '';
