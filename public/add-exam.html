@@ -3,222 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Injiza Ikizame Gishya - IKIZAME Admin</title>
-    <!-- Link to the clean admin layout stylesheet -->
-    <link rel="stylesheet" href="assets/css/admin.css">
-    <!-- Font Awesome icons support library -->
+    <title>Injiza Ikibazo - IKIZAME Professional Admin</title>
+    <!-- Premium Font Hierarchies -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* 🎨 Custom User-Friendly Form Styles */
-        .form-wrapper {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 35px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-            max-width: 850px;
-            margin-top: 10px;
+        /* 🪐 PREMIUM ADMIN DESIGN SYSTEM VARIABLE BALANCES */
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #131a2c;
+            --bg-surface: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-glow: #38bdf8;
+            --accent-save: #10b981;
+            --border-color: #334155;
+            --input-focus: #0b698b;
         }
 
-        .form-group {
-            margin-bottom: 20px;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        html, body { height: 100vh; background-color: var(--bg-primary); color: var(--text-main); overflow: hidden; }
+
+        .admin-layout-grid { display: flex; height: calc(100vh - 45px); overflow: hidden; }
+
+        /* 🔒 1. FIXED GLASS-EFFECT SIDEBAR PANEL */
+        .sidebar-panel {
+            width: 260px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 35px;
+            flex-shrink: 0;
         }
 
-        .form-group label {
-            font-size: 13px;
-            font-weight: 700;
-            color: #475569;
+        .sidebar-panel h2 {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: var(--accent-glow);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-wrapper textarea,
-        .form-wrapper input[type="text"],
-        .form-wrapper select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            color: #1e293b;
-            background-color: #ffffff;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-wrapper textarea:focus,
-        .form-wrapper input[type="text"]:focus,
-        .form-wrapper select:focus {
-            border-color: #0b698b;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px 24px;
-        }
-
-        /* 📷 Premium Interactive Image Upload Layout Card */
-        .image-upload-card {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .preview-pane-box {
-            border: 2px dashed #cbd5e1;
-            border-radius: 8px;
-            padding: 4px;
-            background-color: #ffffff;
-            height: 100px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            gap: 10px;
         }
 
-        .preview-pane-box img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .preview-pane-box .no-img-text {
-            font-size: 12px;
-            color: #94a3b8;
-            font-style: italic;
-            text-align: center;
-        }
-
-        .upload-action-side p {
-            font-size: 13px;
+        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 14px 16px;
+            font-size: 14px;
             font-weight: 600;
-            color: #475569;
-            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
         }
-
-        .custom-file-input {
-            font-size: 13px;
-            color: #64748b;
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            color: var(--text-main);
+            background-color: var(--bg-surface);
         }
+        .sidebar-nav a.active { border-left: 4px solid var(--accent-glow); padding-left: 12px; }
 
-        /* Execution Buttons Bar Styling */
-        .form-actions {
+        /* 🔒 2. SCROLLABLE PRO-WORKSPACE WRAPPER PANEL */
+        .workspace-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .header-title-bar {
+            padding: 25px 40px;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-title-bar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
+        .header-title-bar p { font-size: 13px; color: var(--text-muted); }
+
+        /* 🎛️ DYNAMIC SWITCHER MODE CONTROLLER CARD */
+        .engine-mode-card {
+            background-color: var(--bg-secondary);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 10px 20px;
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-top: 15px;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 20px;
         }
+        .engine-mode-card span { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .toggle-switch-btn {
+            position: relative; width: 60px; height: 30px; background-color: var(--bg-surface);
+            border-radius: 20px; border: 2px solid var(--border-color); cursor: pointer; transition: background 0.2s ease;
+        }
+        .toggle-switch-btn::after {
+            content: ''; position: absolute; top: 2px; left: 3px; width: 22px; height: 22px;
+            background-color: var(--text-main); border-radius: 50%; transition: all 0.2s ease;
+        }
+        .toggle-switch-btn.active-img-mode { background-color: var(--input-focus); border-color: var(--accent-glow); }
+        .toggle-switch-btn.active-img-mode::after { left: 31px; background-color: var(--accent-glow); }
 
-        .save-btn {
-            background-color: #0b698b;
-            color: #ffffff;
-            border: none;
-            padding: 12px 28px;
-            font-size: 14px;
-            font-weight: 700;
-            border-radius: 6px;
-            cursor: pointer;
+        /* Scroll Box Card Frame */
+        .form-card-scroller { flex: 1; overflow-y: auto; padding: 30px 40px; min-height: 0; }
+        
+        .main-inputs-form {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 35px;
+            max-width: 900px;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s ease;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .save-btn:hover { background-color: #08536e; }
+        .form-group-block { display: flex; flex-direction: column; gap: 8px; }
+        .form-group-block label { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .cancel-btn {
-            color: #64748b;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            transition: color 0.2s ease;
+        .main-inputs-form textarea,
+        .main-inputs-form input[type="text"],
+        .main-inputs-form select {
+            width: 100%; padding: 12px 16px; background-color: var(--bg-primary);
+            border: 2px solid var(--border-color); border-radius: 8px; font-size: 14px; font-weight: 500;
+            color: var(--text-main); outline: none; transition: border-color 0.15s ease;
+        }
+        .main-inputs-form textarea:focus,
+        .main-inputs-form input[type="text"]:focus,
+        .main-inputs-form select:focus {
+            border-color: var(--accent-glow);
         }
 
-        .cancel-btn:hover { color: #0f172a; }
+        /* 📸 QUESTION SIGN PREVIEW LOGIC STRIP CARD */
+        .studio-upload-strip {
+            background-color: #172237; border: 2px dashed #334e75; border-radius: 8px;
+            padding: 20px; display: grid; grid-template-columns: 100px 1fr; gap: 24px; align-items: center;
+        }
+        .studio-preview-box {
+            height: 75px; background-color: var(--bg-primary); border: 1px solid var(--border-color);
+            border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;
+        }
+        .studio-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .studio-preview-box .placeholder-ico { color: #475569; font-size: 22px; }
+        .upload-actions-box p { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+        .file-input-ghost { font-size: 12px; color: var(--text-muted); }
 
-        @media screen and (max-width: 768px) {
-            .options-grid { grid-template-columns: 1fr; gap: 0; }
-            .image-upload-card { grid-template-columns: 1fr; text-align: center; }
-            .preview-pane-box { width: 120px; margin: 0 auto; }
+        /* 🎯 OPTIONS GRID SEPARATORS CONTAINERS */
+        .dynamic-options-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        .option-uploader-card {
+            background-color: var(--bg-primary); border: 2px solid var(--border-color);
+            border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .option-header-row { font-size: 11px; font-weight: 800; color: var(--accent-glow); text-transform: uppercase; }
+        
+        .option-thumb-preview {
+            width: 100%; height: 85px; background-color: var(--bg-secondary); border: 1px dashed var(--border-color);
+            border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;
+        }
+        .option-thumb-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .option-thumb-preview span { font-size: 11px; color: #475569; font-style: italic; }
+
+        /* Action Buttons Row Panel Layout */
+        .execution-actions-bar {
+            display: flex; align-items: center; gap: 20px; border-top: 1px solid var(--border-color);
+            padding-top: 25px; margin-top: 5px;
+        }
+        .btn-core-submit {
+            background-color: var(--input-focus); color: #ffffff; border: none; padding: 12px 28px;
+            font-size: 14px; font-weight: 700; border-radius: 6px; cursor: pointer; display: inline-flex;
+            align-items: center; gap: 8px; transition: background 0.15s ease;
+        }
+        .btn-core-submit:hover { background-color: #08536e; }
+        .btn-core-cancel { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; }
+        .btn-core-cancel:hover { color: var(--text-main); }
+
+        /* Footers Baseline Branding Frame */
+        .admin-footer-panel {
+            background-color: var(--bg-secondary); color: #475569; text-align: center;
+            padding: 14px; font-size: 11.5px; border-top: 1px solid var(--border-color); height: 45px; z-index: 100;
+        }
+        .admin-footer-panel strong { color: var(--accent-glow); }
+
+        @media screen and (max-width: 992px) {
+            .dynamic-options-wrapper { grid-template-columns: 1fr; gap: 15px; }
+            .sidebar-panel { display: none; }
+            .form-card-scroller { padding: 20px; }
+            .main-inputs-form { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="admin-container">
-        <!-- Sidebar Navigation Menu Left Panel Workstation -->
-        <aside class="sidebar">
-            <h2>IKIZAME Admin</h2>
-            <nav>
-                <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-                <a href="add-exam.html" class="active"><i class="fa-solid fa-plus"></i> Injiza Ikizame</a>
-                <a href="/api/admin/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Soka hano</a>
+    <div class="admin-layout-grid">
+        <!-- Sidebar Navigation Menu Menu Worker -->
+        <aside class="sidebar-panel">
+            <h2><i class="fa-solid fa-graduation-cap"></i> IKIZAME</h2>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="add-exam.html" class="active"><i class="fa-solid fa-square-plus"></i> Injiza Ikizame</a>
+                <a href="/api/admin/logout"><i class="fa-solid fa-power-off"></i> Soka Hano</a>
             </nav>
         </aside>
-
-        <!-- Right Side Core Administrative Input Form Panel -->
-        <main class="main-content">
-            <header class="content-header">
-                <h1>Injiza Ikizame Gishya</h1>
-                <p>Andika ikibazo gishya hano ubanze ugenzure amahitamo mbere yo kubika mu bubiko bwa database.</p>
+                <!-- Main Form Workstation Display Body Frame -->
+        <main class="workspace-panel">
+            <header class="header-title-bar">
+                <div>
+                    <h1>Injiza Ikibazo Gishya</h1>
+                    <p>Sanura imiterere y'ikibazo ukoresheje amahitamo agezweho ya Text cyangwa Amafoto.</p>
+                </div>
+                <!-- 🎯 INTERACTIVE TYPE CONTROL LAYER TOGGLE BUTTON MAPPINGS -->
+                <div class="engine-mode-card">
+                    <span id="labelModeIndicator">Text Options Mode</span>
+                    <div class="toggle-switch-btn" id="toggleLayoutEngineBtn" title="Hindura imiterere y'amahitamo"></div>
+                </div>
             </header>
 
-            <section class="form-wrapper">
-                <!-- Points directly to your secure Node server upload pipeline route -->
-                <form action="/api/exams/add" method="POST" enctype="multipart/form-data">
+            <div class="form-card-scroller">
+                <form action="/api/exams/add" method="POST" enctype="multipart/form-data" class="main-inputs-form">
                     
-                    <div class="form-group">
-                        <label for="question">Ikibazo cy'Ikizamini (Question Text)</label>
+                    <!-- Hidden reference value checking mode metrics state parameters -->
+                    <input type="hidden" id="optionsLayoutMode" name="optionsLayoutMode" value="text">
+
+                    <div class="form-group-block">
+                        <label for="question">Ikibazo cy'Ikizamini (Question Wording)</label>
                         <textarea id="question" name="question" rows="3" required placeholder="Andika imiterere y'ikibazo hano..."></textarea>
                     </div>
 
-                    <!-- 🎥 INTERACTIVE TRAFFIC SIGN IMAGE UPLOAD CARD -->
-                    <div class="image-upload-card">
-                        <!-- Left pane: Displays live real-time image selection choices -->
-                        <div class="preview-pane-box" id="imageLivePreviewPane">
-                            <span class="no-img-text"><i class="fa-solid fa-image fa-lg"></i><br>No file chosen</span>
+                    <!-- 📸 CORE TRAFFIC SIGN ICON ROW PREVIEW STRIP CARD -->
+                    <div class="studio-upload-strip">
+                        <div class="studio-preview-box" id="mainQuestionImagePreviewPane">
+                            <i class="fa-solid fa-image placeholder-ico"></i>
                         </div>
-                        
-                        <!-- Right pane: File selector interaction triggers -->
-                        <div class="upload-action-side">
-                            <p>Hitamo Ifoto y'Ikibazo / Ikimenyetso (Niba ihari):</p>
-                            <input type="file" id="imageFile" name="imageFile" class="custom-file-input" accept="image/*">
+                        <div class="upload-actions-box">
+                            <p>Ifoto y'Ikibazo / Ikimenyetso (Niba ihari):</p>
+                            <input type="file" id="imageFile" name="imageFile" class="file-input-ghost" accept="image/*">
                         </div>
                     </div>
 
-                    <div class="options-grid">
-                        <div class="form-group">
-                            <label for="optionA">Ihitamo A (Option A)</label>
-                            <input type="text" id="optionA" name="optionA" required placeholder="Andika ihitamo rya A">
-                        </div>
-                        <div class="form-group">
-                            <label for="optionB">Ihitamo B (Option B)</label>
-                            <input type="text" id="optionB" name="optionB" required placeholder="Andika ihitamo rya B">
-                        </div>
-                        <div class="form-group">
-                            <label for="optionC">Ihitamo C (Option C)</label>
-                            <input type="text" id="optionC" name="optionC" required placeholder="Andika ihitamo rya C">
-                        </div>
-                        <div class="form-group">
-                            <label for="optionD">Ihitamo D (Option D)</label>
-                            <input type="text" id="optionD" name="optionD" required placeholder="Andika ihitamo rya D">
-                        </div>
-                    </div>
+                    <!-- 🎯 INTERACTIVE FORM CONTENT RENDERING GRID HOUSING CONTAINER -->
+                    <div class="dynamic-options-wrapper" id="dynamicOptionsInputGridContainer"></div>
 
-                    <div class="form-group" style="max-width: 320px;">
-                        <label for="correctOption">Igisubizo Cy'ukuri (Correct Option Key)</label>
+                    <div class="form-group-block" style="max-width: 320px;">
+                        <label for="correctOption">Igisubizo Cy'ukuri (Correct Option Answer Key)</label>
                         <select id="correctOption" name="correctOption" required>
                             <option value="">-- Hitamo inyandiko y'ukuri --</option>
                             <option value="A">A</option>
@@ -228,40 +258,132 @@
                         </select>
                     </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="save-btn"><i class="fa-solid fa-floppy-disk"></i> Bika Ikibazo</button>
-                        <a href="dashboard.html" class="cancel-btn">Anula / Subira Inyuma</a>
+                    <div class="form-actions-row">
+                        <button type="submit" class="btn-core-submit"><i class="fa-solid fa-cloud-arrow-up"></i> Bika Ikibazo Gishya</button>
+                        <a href="dashboard.html" class="btn-core-cancel">Anula / Subira Inyuma</a>
                     </div>
                 </form>
-            </section>
+            </div>
         </main>
     </div>
 
-    <footer class="admin-footer">
+    <footer class="admin-footer-panel">
         <p>Developed by <strong>izo service quicky</strong></p>
     </footer>
 
-    <!-- Interactive Client Script Engine -->
+    <!-- Client Runtime Controller Execution Script Engine Block -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const previewPane = document.getElementById('imageLivePreviewPane');
-            const fileInput = document.getElementById('imageFile');
+            const toggleBtn = document.getElementById('toggleLayoutEngineBtn');
+            const modeIndicatorLabel = document.getElementById('labelModeIndicator');
+            const layoutModeInput = document.getElementById('optionsLayoutMode');
+            const dynamicGridContainer = document.getElementById('dynamicOptionsInputGridContainer');
+            
+            const mainImgInput = document.getElementById('imageFile');
+            const mainImgPreview = document.getElementById('mainQuestionImagePreviewPane');
 
-            // ⚡ HIGH-TECH LIVE PREVIEW MECHANIC: Reads file choice and renders preview instantly on screen
-            fileInput.addEventListener('change', function() {
-                const chosenFile = this.files[0];
-                if (chosenFile) {
+            // ⚡ 1. REAL-TIME FILE READER PREVIEW FOR CORE TRAFFIC SIGN SYMBOL IMAGE
+            mainImgInput.addEventListener('change', function() {
+                const targetFile = this.files;
+                if (targetFile) {
                     const readerInstance = new FileReader();
                     readerInstance.onload = function(e) {
-                        // Injects image element directly with stylish accent borders
-                        previewPane.innerHTML = `<img src="${e.target.result}" alt="New Selection Preview" style="border: 2px solid #0b698b;">`;
-                    };
-                                        readerInstance.readAsDataURL(chosenFile);
+                        mainImgPreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                    }
+                    readerInstance.readAsDataURL(targetFile);
                 } else {
-                    previewPane.innerHTML = `<span class="no-img-text"><i class="fa-solid fa-image fa-lg"></i><br>No file chosen</span>`;
+                    mainImgPreview.innerHTML = `<i class="fa-solid fa-image placeholder-ico"></i>`;
                 }
             });
+
+            // 🪐 Structural string template maps for traditional textual multiple choice fields option settings
+            const textLayoutTemplateStr = `
+                <div class="form-group-block">
+                    <label for="optionA">Ihitamo A (Option A)</label>
+                    <input type="text" id="optionA" name="optionA" required placeholder="Andika ihitamo rya A">
+                </div>
+                <div class="form-group-block">
+                    <label for="optionB">Ihitamo B (Option B)</label>
+                    <input type="text" id="optionB" name="optionB" required placeholder="Andika ihitamo rya B">
+                </div>
+                <div class="form-group-block">
+                    <label for="optionC">Ihitamo C (Option C)</label>
+                    <input type="text" id="optionC" name="optionC" required placeholder="Andika ihitamo rya C">
+                </div>
+                <div class="form-group-block">
+                    <label for="optionD">Ihitamo D (Option D)</label>
+                    <input type="text" id="optionD" name="optionD" required placeholder="Andika ihitamo rya D">
+                </div>
+            `;
+
+            // 🪐 Structural string template maps for progressive multi-image file selectors options grids upload boxes
+            const imageLayoutTemplateStr = `
+                <div class="option-uploader-card">
+                    <div class="option-header-row">Option Image A</div>
+                    <div class="option-thumb-preview" id="previewOptionImage_A"><span>No image chosen</span></div>
+                    <input type="file" name="optionA_File" id="input_file_A" accept="image/*" required class="file-input-ghost">
+                </div>
+                <div class="option-uploader-card">
+                    <div class="option-header-row">Option Image B</div>
+                    <div class="option-thumb-preview" id="previewOptionImage_B"><span>No image chosen</span></div>
+                    <input type="file" name="optionB_File" id="input_file_B" accept="image/*" required class="file-input-ghost">
+                </div>
+                <div class="option-uploader-card">
+                    <div class="option-header-row">Option Image C</div>
+                    <div class="option-thumb-preview" id="previewOptionImage_C"><span>No image chosen</span></div>
+                    <input type="file" name="optionC_File" id="input_file_C" accept="image/*" required class="file-input-ghost">
+                </div>
+                <div class="option-uploader-card">
+                    <div class="option-header-row">Option Image D</div>
+                    <div class="option-thumb-preview" id="previewOptionImage_D"><span>No image chosen</span></div>
+                    <input type="file" name="optionD_File" id="input_file_D" accept="image/*" required class="file-input-ghost">
+                </div>
+            `;
+
+            // Initialize display to handle default text input layout parameters setup
+            dynamicGridContainer.innerHTML = textLayoutTemplateStr;
+
+            // ⚡ 2. DYNAMIC LAYOUT ENGINE CONTROLLER SWITCH ROUTINE
+            toggleBtn.addEventListener('click', () => {
+                if (layoutModeInput.value === 'text') {
+                    layoutModeInput.value = 'image';
+                    toggleBtn.classList.add('active-img-mode');
+                    modeIndicatorLabel.innerText = "Four Image Options Mode";
+                    dynamicGridContainer.innerHTML = imageLayoutTemplateStr;
+                    registerLiveThumbEventListeners(); // Bind fresh file reader hooks to the newly created elements
+                } else {
+                    layoutModeInput.value = 'text';
+                    toggleBtn.classList.remove('active-img-mode');
+                    modeIndicatorLabel.innerText = "Text Options Mode";
+                    dynamicGridContainer.innerHTML = textLayoutTemplateStr;
+                }
+            });
+
+            // ⚡ 3. ASYNCHRONOUS TARGET HOOKS LOGIC PACKS: Handles live thumbnails for the 4 option images
+            function registerLiveThumbEventListeners() {
+                const targetKeys = ["A", "B", "C", "D"];
+                targetKeys.forEach(key => {
+                    const inputElement = document.getElementById(`input_file_${key}`);
+                    const previewElement = document.getElementById(`previewOptionImage_${key}`);
+
+                    if (inputElement && previewElement) {
+                        inputElement.addEventListener('change', function() {
+                            const file = this.files;
+                            if (file) {
+                                const readerInstance = new FileReader();
+                                readerInstance.onload = function(e) {
+                                    previewElement.innerHTML = `<img src="${e.target.result}" alt="Option ${key}">`;
+                                }
+                                readerInstance.readAsDataURL(file);
+                            } else {
+                                previewElement.innerHTML = `<span>No image chosen</span>`;
+                            }
+                        });
+                    }
+                });
+            }
         });
     </script>
 </body>
 </html>
+
