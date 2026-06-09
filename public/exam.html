@@ -7,72 +7,27 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* 📱 ULTRA-COMPACT VIEWPORT ARCHITECTURE - REMOVING USELESS SPACES */
+        /* 📱 ULTRA-COMPACT MOBILE-OPTIMIZED ARCHITECTURE */
         html, body { min-height: 100vh; margin: 0; padding: 0; background-color: #f8fafc; }
         body { display: flex; flex-direction: column; }
         .navbar { height: 50px; flex-shrink: 0; }
-        
-        /* 🎯 FIX 1: Allow fluid expansion so text never overflows the container */
-        .footer-bar { min-height: 35px; height: auto; flex-shrink: 0; padding: 10px; box-sizing: border-box; }
+        .footer-bar { min-height: 55px !important; height: auto !important; padding: 12px 15px !important; box-sizing: border-box; margin-top: 15px !important; }
 
         .exam-page-wrapper { 
-            max-width: 1040px; 
-            margin: 0 auto; 
-            padding: 4px 15px; 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 4px; 
-            justify-content: space-between;
-            width: 100%;
-            box-sizing: border-box;
+            max-width: 1040px; margin: 0 auto; padding: 4px 15px; flex: 1; 
+            display: flex; flex-direction: column; gap: 4px; justify-content: space-between; width: 100%; box-sizing: border-box;
         }
         
-        .timer-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 12px; text-align: center; flex-shrink: 0; width: 100%; box-sizing: border-box; }
-        .timer-label { font-size: 10px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+        .timer-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 12px; text-align: center; flex-shrink: 0; }
         .timer-display { font-size: 20px; font-weight: 800; color: #0f172a; margin-top: 1px; }
         
-        .stepper-card { 
-            background: #ffffff; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 6px; 
-            padding: 8px 12px; 
-            display: flex; 
-            align-items: center; 
-            width: 100%; 
-            box-sizing: border-box; 
-            flex-shrink: 0;
-            margin: 0 !important;
-        }
-        
-        .step-bubble { 
-            min-width: 25px; height: 25px; border-radius: 50%; border: 1.5px solid #cbd5e1; 
-            display: flex; align-items: center; justify-content: center; font-size: 10px; 
-            font-weight: 700; color: #64748b; cursor: pointer; background: #ffffff; flex-shrink: 0; transition: all 0.1s ease; 
-        }
-        .step-bubble.active { border-color: #0b698b; color: #0b698b; box-shadow: 0 0 0 2px rgba(11, 105, 139, 0.15); font-size: 10.5px; }
+        .stepper-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; display: flex; align-items: center; width: 100%; box-sizing: border-box; flex-shrink: 0; }
+        .step-bubble { min-width: 25px; height: 25px; border-radius: 50%; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #64748b; cursor: pointer; transition: all 0.1s ease; }
+        .step-bubble.active { border-color: #0b698b; color: #0b698b; box-shadow: 0 0 0 2px rgba(11, 105, 139, 0.15); }
         .step-bubble.answered { background-color: #0b698b; border-color: #0b698b; color: #ffffff; }
         
-        .question-card-container { 
-            background: #ffffff; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 6px; 
-            padding: 8px 25px !important; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01); 
-            display: flex; 
-            flex-direction: column; 
-            gap: 6px; 
-            flex: 1; 
-            min-height: 0; 
-            width: 100%; 
-            box-sizing: border-box; 
-            margin-top: 0 !important; 
-        }
-        
-        .question-txt { 
-            font-size: 16px; font-weight: 700; color: #0f172a; flex-shrink: 0; line-height: 1.35;
-            white-space: normal; word-wrap: break-word; word-break: normal; margin: 0 0 2px 0;
-        }
+        .question-card-container { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 25px !important; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01); display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; box-sizing: border-box; }
+        .question-txt { font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.35; margin: 0 0 2px 0; }
         
         .split-exam-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 12px; align-items: center; min-height: 0; }
         .split-exam-grid.no-image-layout { grid-template-columns: 1fr !important; gap: 6px !important; }
@@ -81,55 +36,51 @@
         .image-frame-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
         
         .options-vertical-list { display: flex; flex-direction: column; gap: 6px; justify-content: center; box-sizing: border-box; }
+        
+        /* 🎯 HYBRID GRID SHIFTER: Adapts automatically if the choices are standard text blocks or 4 uploaded image links */
+        .options-vertical-list.image-options-grid-mode {
+            display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; width: 100%;
+        }
+
         .radio-option-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 6px; cursor: pointer; transition: all 0.1s ease; width: 100%; box-sizing: border-box; background-color: #ffffff; }
         .radio-option-row:hover { background: #f8fafc; border-color: #cbd5e1; }
         .radio-option-row.selected-row { border-color: #0b698b; background: rgba(11, 105, 139, 0.02); }
-        .radio-option-row input[type="radio"] { width: 15px; height: 15px; accent-color: #0b698b; cursor: pointer; flex-shrink: 0; }
-        .choice-label-txt { font-size: 13.5px; font-weight: 500; color: #334155; white-space: normal; word-break: break-word; }
+        .radio-option-row input[type="radio"] { width: 15px; height: 15px; accent-color: #0b698b; flex-shrink: 0; }
+        .choice-label-txt { font-size: 13.5px; font-weight: 500; color: #334155; word-break: break-word; display: flex; align-items: center; gap: 8px; width: 100%; }
         
-        .navigation-action-bar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 8px; flex-shrink: 0; width: 100%; }
+        /* Premium Thumbnail Container styling inside multi-image choices grid layouts */
+        .option-embedded-img-box {
+            height: 70px; max-width: 110px; flex: 1; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px; background: #fafafa; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .option-embedded-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .navigation-action-bar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 8px; flex-shrink: 0; }
         .counter-badge-txt { font-size: 12.5px; font-weight: 700; color: #64748b; }
         .nav-buttons-cluster { display: flex; gap: 8px; }
-        .btn-nav-control { border: none; padding: 8px 20px; font-size: 12.5px; font-weight: 700; border-radius: 5px; cursor: pointer; transition: background 0.1s ease; }
+        .btn-nav-control { border: none; padding: 8px 20px; font-size: 12.5px; font-weight: 700; border-radius: 5px; cursor: pointer; }
         .btn-nav-control.back-btn { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
-        .btn-nav-control.back-btn:hover { background: #e2e8f0; }
         .btn-nav-control.next-btn { background: #0b698b; color: #ffffff; }
-        .btn-nav-control.next-btn:hover { background: #08536e; }
         .btn-nav-control.submit-btn { background: #22c55e; color: #ffffff; }
-        .btn-nav-control.submit-btn:hover { background: #16a34a; }
         
         @media screen and (min-width: 992px) {
             html, body { height: 100vh; overflow: hidden; }
             .exam-page-wrapper { height: calc(100vh - 85px); }
-            .stepper-card { justify-content: space-between; gap: 4px; flex-wrap: nowrap; }
             .options-vertical-list { overflow-y: auto; }
         }
 
         @media screen and (max-width: 991px) {
             html, body { overflow: auto; height: auto; }
-            
-            .exam-page-wrapper { 
-                padding: 4px; 
-                gap: 4px; 
-                height: auto !important; 
-                flex: none !important;
-                justify-content: flex-start !important;
-            }
-            
+            .exam-page-wrapper { padding: 4px; gap: 4px; height: auto !important; flex: none !important; justify-content: flex-start !important; }
             .timer-display { font-size: 18px; }
-            
-            /* 🎯 FIX 2: Downscale font and adjust line-height so the text wraps beautifully on small smartphone viewports */
-            .footer-bar p { font-size: 11px !important; line-height: 1.4; margin: 0; }
-            
-            .stepper-card { 
-                display: flex !important; flex-wrap: wrap !important; justify-content: center !important;
-                gap: 6px 12px !important; margin-top: 4px !important; margin-bottom: 4px !important; padding: 8px !important;
-            }
+            .footer-bar p { font-size: 11px !important; line-height: 1.5; margin: 0; }
+            .stepper-card { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; gap: 6px 12px !important; margin-top: 4px !important; margin-bottom: 4px !important; padding: 8px !important; }
             .split-exam-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
             .image-frame-box { height: 140px; }
             .question-card-container { padding: 10px 15px !important; height: auto; flex: none; gap: 6px !important; }
             .options-vertical-list { height: auto; gap: 5px !important; }
             .radio-option-row { padding: 8px 12px; }
+            .options-vertical-list.image-options-grid-mode { gap: 8px !important; }
+            .option-embedded-img-box { height: 55px; }
         }
     </style>
 </head>
@@ -190,19 +141,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             window.history.pushState(null, "", window.location.href);
             window.onpopstate = function () {
-    window.history.pushState(null, "", window.location.href);
-    alert("Ntabwo wemerewe gusubira inyuma ikizamini kigikomeza!");
-};
+                window.history.pushState(null, "", window.location.href);
+                alert("Ntabwo wemerewe gusubira inyuma ikizamini kigikomeza!");
+            };
 
-let questionsList = [];
-let currentActiveIndex = 0;
-const studentAnswersMap = {};
+            let questionsList = [];
+            let currentActiveIndex = 0;
+            const studentAnswersMap = {}; 
 
-const timerDisplay = document.getElementById('examCountdown');
-const stepperContainer = document.getElementById('stepperContainer');
-const questionText = document.getElementById('targetQuestionText');
-const gridWrapper = document.getElementById('dynamicGridWrapper');
-const imageFrame = document.getElementById('targetImageFrame');
+            const timerDisplay = document.getElementById('examCountdown');
+            const stepperContainer = document.getElementById('stepperContainer');
+            const questionText = document.getElementById('targetQuestionText');
+            const gridWrapper = document.getElementById('dynamicGridWrapper');
+            const imageFrame = document.getElementById('targetImageFrame');
 const optionsContainer = document.getElementById('targetOptionsContainer');
 const counterLabel = document.getElementById('questionCounterLabel');
 const prevBtn = document.getElementById('prevQuestionBtn');
@@ -276,6 +227,10 @@ function renderActiveQuestionCard() {
     }
     
     const savedAnswer = studentAnswersMap[currentExam.id] || "";
+    
+    // 🎯 CHECK IF MULTI-IMAGE OPTIONS ARE ACTIVE: Looks for file extensions (.png, .jpg, .gif, .jpeg)
+    const isImageOptionsMode = /\.(png|jpg|jpeg|gif|webp)$/i.test(currentExam.option_a);
+    
     const standardOptions = [
         { key: "A", text: currentExam.option_a },
         { key: "B", text: currentExam.option_b },
@@ -283,17 +238,33 @@ function renderActiveQuestionCard() {
         { key: "D", text: currentExam.option_d }
     ];
     
-    optionsContainer.innerHTML = standardOptions.map(opt => `
-        <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
-            <input type="radio" name="active_choice" value="${opt.key}" ${savedAnswer === opt.key ? 'checked' : ''} onchange="registerChoiceSelection('${opt.key}', ${currentExam.id})">
-            <span class="choice-label-txt"><strong>${opt.key.toLowerCase()})</strong> ${opt.text}</span>
-        </label>
-    `).join('');
+    if (isImageOptionsMode) {
+        optionsContainer.classList.add('image-options-grid-mode');
+        optionsContainer.innerHTML = standardOptions.map(opt => `
+            <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
+                <input type="radio" name="active_choice" value="${opt.key}" ${savedAnswer === opt.key ? 'checked' : ''} onchange="registerChoiceSelection('${opt.key}', ${currentExam.id})">
+                <span class="choice-label-txt">
+                    <strong>${opt.key.toLowerCase()})</strong>
+                    <div class="option-embedded-img-box">
+                        <img src="assets/uploads/${opt.text}" alt="Choice Image" loading="lazy">
+                    </div>
+                </span>
+            </label>
+        `).join('');
+    } else {
+        optionsContainer.classList.remove('image-options-grid-mode');
+        optionsContainer.innerHTML = standardOptions.map(opt => `
+            <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
+                <input type="radio" name="active_choice" value="${opt.key}" ${savedAnswer === opt.key ? 'checked' : ''} onchange="registerChoiceSelection('${opt.key}', ${currentExam.id})">
+                <span class="choice-label-txt"><strong>${opt.key.toLowerCase()})</strong> ${opt.text}</span>
+            </label>
+        `).join('');
+    }
     
     prevBtn.style.visibility = currentActiveIndex === 0 ? 'hidden' : 'visible';
     
     if (currentActiveIndex === questionsList.length - 1) {
-        nextBtn.innerText = "Soza Ikizamini";
+        nextBtn.innerText = "Yandika Ikizamini";
         nextBtn.className = "btn-nav-control submit-btn";
     } else {
         nextBtn.innerText = "Komeza";
@@ -317,38 +288,44 @@ window.registerChoiceSelection = function(originalKey, examId) {
         if (bubbleTxt) bubbleTxt.style.display = 'none';
     }
 };
-            window.jumpToQuestionIndex = function(index) {
-                currentActiveIndex = index;
-                renderActiveQuestionCard();
-            };
 
-            prevBtn.addEventListener('click', () => {
-                if (currentActiveIndex > 0) { 
-                    currentActiveIndex--; 
-                    renderActiveQuestionCard(); 
-                }
-            });
+window.jumpToQuestionIndex = function(index) {
+    currentActiveIndex = index;
+    renderActiveQuestionCard();
+};
 
-            nextBtn.addEventListener('click', () => {
-                if (currentActiveIndex < questionsList.length - 1) {
-                    currentActiveIndex++;
-                    renderActiveQuestionCard();
-                } else {
-                    if (confirm('Urifuza Guoza ikizamini? Igihe cyarangiye kandi ntuzongera kubona amahirwe yo kugikora.')) {
-                        sessionStorage.removeItem('isExamAlreadyStarted'); 
-                        executeAutoSubmission();
-                    }
-                }
-            });
+prevBtn.addEventListener('click', () => {
+    if (currentActiveIndex > 0) {
+        currentActiveIndex--;
+        renderActiveQuestionCard();
+    }
+});
 
+nextBtn.addEventListener('click', () => {
+    if (currentActiveIndex < questionsList.length - 1) {
+        currentActiveIndex++;
+        renderActiveQuestionCard();
+    } else {
+        if (confirm('Ese muryhejeje neza ibibazo byose urashaka kureba amanota?')) {
+            sessionStorage.removeItem('isExamAlreadyStarted');
+            executeAutoSubmission();
+        }
+    }
+});
             function executeAutoSubmission() {
+                // Clear the active timer interval to stop the countdown loop
                 clearInterval(countdownInterval);
+                
+                // Initialize an empty object container to build our form payload
                 const submissionPayload = {};
+                
+                // Loop through every answer registered inside the student choices map
                 for (const examId in studentAnswersMap) {
-                    // 🎯 FIX: Wrapped the key with proper backticks to avoid broken evaluation strings
+                    // Map the unique question database ID as a dynamic request payload key
                     submissionPayload[`question_${examId}`] = studentAnswersMap[examId];
                 }
 
+                // Send the collected answers securely to the backend evaluation endpoint
                 fetch('/api/exams/submit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -356,14 +333,17 @@ window.registerChoiceSelection = function(originalKey, examId) {
                 })
                 .then(res => res.json())
                 .then(result => {
+                    // Lock the final calculated grading metrics inside your browser storage
                     sessionStorage.setItem('latestScore', result.score);
                     sessionStorage.setItem('latestTotal', result.total);
                     sessionStorage.setItem('studentAnswerMapping', JSON.stringify(studentAnswersMap));
                     sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questionsList));
 
+                    // Reset the working arrays memory back to a pristine clean slate state
                     questionsList = [];
                     for (const key in studentAnswersMap) delete studentAnswersMap[key];
                     
+                    // Route the student forward into the detailed review evaluation interface
                     window.location.replace('exam-result.html');
                 })
                 .catch(err => console.error('Submission transaction failure error:', err));
