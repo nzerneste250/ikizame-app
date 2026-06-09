@@ -2,225 +2,263 @@
 <html lang="rw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKIZAME - Amanota Yabonetse</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IKIZAME - Ibanga Ry'Amanota</title>
+    <!-- Premium Google Fonts Hierarchy Inter -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* Infinite content correction tracking grid stylesheet elements */
-        html, body { height: auto; overflow-y: auto; margin: 0; padding: 0; background-color: #f8fafc; }
-        body { display: flex; flex-direction: column; }
-        .results-page-wrapper { max-width: 900px; margin: 30px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 20px; }
-        
-        /* Dashboard Summary Circular Circle Metrics Card */
-        .score-card { background-color: #ffffff; padding: 30px 20px; border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01); text-align: center; position: relative; }
-        
-        /* 👤 STUDENT IDENTITY PRESET METRICS INFO STRIP */
-        .student-identity-banner { background: #f1f5f9; padding: 12px 20px; border-radius: 8px; margin-bottom: 25px; text-align: left; border-left: 5px solid #0b698b; display: flex; flex-direction: column; gap: 4px; }
-        .student-identity-banner h4 { font-size: 16px; color: #0f172a; font-weight: 700; margin: 0; }
-        .student-identity-banner p { font-size: 13px; color: #475569; margin: 0; font-weight: 500; }
-        
-        .score-badge-circle { width: 120px; height: 120px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px; border: 6px solid #e2e8f0; }
-        .score-badge-circle .obtained { font-size: 34px; font-weight: 800; color: #1e293b; line-height: 1; }
-        .score-badge-circle .total-max { font-size: 14px; color: #64748b; margin-top: 4px; border-top: 1px solid #cbd5e1; padding-top: 4px; width: 50%; }
-        
-        .status-banner { padding: 10px 24px; border-radius: 25px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; text-transform: uppercase; }
-        .status-banner.passed { background-color: #dcfce7; color: #166534; }
-        .status-banner.failed { background-color: #fee2e2; color: #991b1b; }
-        
-        .feedback-message h2 { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
-        .feedback-message p { font-size: 13.5px; color: #64748b; margin-bottom: 10px; line-height: 1.4; }
-        
-        /* Interactive Correction Elements Grid Cards Structure */
-        .review-section-title { font-size: 18px; font-weight: 800; color: #0f172a; border-left: 5px solid #0b698b; padding-left: 10px; margin-top: 10px; }
-        .review-question-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
-        
-        /* SKIPPED QUESTIONS OUTLINE RED DASHED SPECIFICATIONS OVERRIDE */
-        .review-question-card.state-skipped { border: 2.5px dashed #ef4444 !important; background: rgba(239, 68, 68, 0.01); }
-        
-        .review-q-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; }
-        .review-q-text { font-size: 15px; font-weight: 700; color: #1e293b; line-height: 1.4; }
-        
-        /* 🎯 Flex Grid Shifter: Switches dynamically between full-width or two columns */
-        .review-split-grid { display: grid; grid-template-columns: 130px 1fr; gap: 20px; align-items: center; }
-        .review-split-grid.review-no-image-layout { grid-template-columns: 1fr !important; gap: 0 !important; }
-        
-        .review-img-box { border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px; background: #fafafa; height: 90px; display: flex; align-items: center; justify-content: center; }
-        .review-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        
-        .review-options-list { display: flex; flex-direction: column; gap: 6px; }
-        .review-option-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13.5px; font-weight: 500; color: #475569; background: #ffffff; }
-        
-        /* Interactive Highlight Assessment Styles Rules */
-        .review-option-row.highlight-correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d !important; font-weight: 700; }
-        .review-option-row.highlight-incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c !important; font-weight: 700; }
-        
-        .status-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-left: auto; display: inline-flex; align-items: center; gap: 4px; }
-        .status-badge.correct { background: #22c55e; color: white; }
-        .status-badge.wrong { background: #ef4444; color: white; }
-        .status-badge.skipped { background: #ef4444; color: white; }
+        /* 🪐 CLEAN SYSTEM GRAPHICS PERFORMANCE DESIGN SYSTEM */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --accent-blue: #0b698b;
+            --border-color: #cbd5e1;
+            
+            --success-bg: #dcfce7;
+            --success-text: #15803d;
+            --error-bg: #fee2e2;
+            --error-text: #b91c1c;
+            
+            /* Fluid base sizing scales smoothly across device dimensions */
+            font-size: clamp(12px, 1.2vw, 16px);
+        }
 
-        .btn-navigation { text-decoration: none; padding: 12px 40px; font-size: 14px; font-weight: 700; border-radius: 25px; transition: background 0.2s ease; text-align: center; display: inline-block; background-color: #0b698b; color: #ffffff; box-shadow: 0 4px 10px rgba(11, 105, 139, 0.2); border: none; cursor: pointer; margin: 10px auto; }
-        .btn-navigation:hover { background-color: #08536e; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-primary); color: var(--text-dark); padding: 30px 15px; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
-        /* 📱 RESPONSIVE MEDIA GRID ADJUSTMENTS FOR PORTRAIT SMARTPHONES */
-        @media screen and (max-width: 768px) {
-            .results-page-wrapper { padding: 10px; gap: 15px; margin: 15px auto; }
-            .score-card { padding: 20px 15px; }
-            .review-split-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
-            .review-img-box { height: 140px; width: 100%; max-width: 180px; margin: 0 auto; }
-            .review-question-card { padding: 15px; }
-            .radio-option-row { padding: 10px; font-size: 13px; }
+        .result-layout-wrapper { max-width: 840px; margin: 0 auto; display: flex; flex-direction: column; gap: 25px; width: 100%; }
+
+        /* 🏆 METRIC SCOREBOARD SUMMARY HEADER CARD */
+        .summary-banner-card {
+            background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 35px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            display: flex; flex-direction: column; align-items: center; gap: 12px; position: relative; overflow: hidden;
+        }
+        .summary-banner-card h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+        .summary-banner-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.45; }
+        
+        .score-circle-badge {
+            width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(#ffffff, #f8fafc);
+            border: 4px solid var(--border-color); display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.04); margin: 10px 0;
+        }
+        .score-num { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); line-height: 1; }
+        .score-total-txt { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-top: 2px; }
+
+        .status-ribbon { padding: 8px 24px; font-size: 0.85rem; font-weight: 800; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-ribbon.pass { background-color: var(--success-bg); color: var(--success-text); }
+        .status-ribbon.fail { background-color: var(--error-bg); color: var(--error-text); }
+
+        .btn-restart-exam {
+            display: inline-flex; align-items: center; gap: 8px; background-color: var(--accent-blue);
+            color: #ffffff; text-decoration: none; padding: 12px 24px; font-size: 0.9rem; font-weight: 700;
+            border-radius: 8px; transition: background 0.15s ease; box-shadow: 0 4px 6px rgba(11, 105, 139, 0.15); margin-top: 5px;
+        }
+        .btn-restart-exam:hover { background-color: #08536e; }
+
+        /* 📝 CORRECTIONS REVIEW REPOSITORY CONTAINER SHEET */
+        .section-title { font-size: 1.1rem; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.75px; margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+        .corrections-master-feed { display: flex; flex-direction: column; gap: 20px; }
+
+        .correction-item-row {
+            background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 24px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01);
+        }
+        
+        .row-header-meta { display: flex; justify-content: space-between; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
+        .question-number-index { font-size: 0.85rem; font-weight: 800; color: var(--accent-blue); background-color: #e0f2fe; padding: 4px 10px; border-radius: 4px; }
+        
+        .verdict-badge { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; }
+        .verdict-badge.correct { background-color: var(--success-bg); color: var(--success-text); }
+        .verdict-badge.wrong { background-color: var(--error-bg); color: var(--error-text); }
+
+        .question-wording-txt { font-size: 1.05rem; font-weight: 700; color: #1e293b; line-height: 1.45; }
+
+        .question-media-wrapper { display: flex; flex-direction: column; gap: 15px; }
+        .question-sign-preview-box { width: 140px; height: 140px; border: 1px solid var(--border-color); border-radius: 8px; background-color: #fafafa; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; }
+        .question-sign-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+
+        /* 🎛️ DYNAMIC CHOICES PRESENTATION SHIFTER GRID CONTAINER */
+        .choices-review-block { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        
+        /* 📸 MEDIA SHIFTER ACCENT: Automatically scales into a responsive 2-column image layout grid */
+        .choices-review-block.image-options-grid-mode {
+            display: grid !important; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important; gap: 14px !important;
+        }
+
+        .choice-strip-item {
+            display: flex; align-items: center; gap: 14px; padding: 12px 18px; border: 2px solid #e2e8f0;
+            border-radius: 8px; font-size: 0.95rem; font-weight: 600; color: #334155; background-color: #ffffff; width: 100%; box-sizing: border-box;
+        }
+        .choice-strip-item.student-selected { border-color: #fca5a5; background-color: #fef2f2; color: #991b1b; }
+        .choice-strip-item.system-correct { border-color: #86efac; background-color: #f0fdf4; color: #166534; font-weight: 700; }
+        .choice-strip-item.both-matched { border-color: #22c55e; background-color: #f0fdf4; color: #166534; font-weight: 700; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15); }
+
+        .letter-marker { font-weight: 800; text-transform: uppercase; margin-right: 2px; }
+
+        /* Embedded Thumbnails inside image options review cards */
+        .choice-embedded-thumb-box {
+            height: 75px; max-width: 120px; flex: 1; border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 4px; background: #f8fafc; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .choice-embedded-thumb-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* Footer Frame */
+        .brand-attribution-footer { text-align: center; color: #94a3b8; font-size: 0.8rem; margin-top: auto; padding-top: 30px; }
+        .brand-attribution-footer strong { color: #38bdf8; }
+
+        @media screen and (max-width: 991px) {
+            .choices-review-block.image-options-grid-mode { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+            .choice-embedded-thumb-box { height: 65px; }
+        }
+
+        @media screen and (max-width: 480px) {
+            body { padding: 15px 8px; }
+            .choices-review-block.image-options-grid-mode { grid-template-columns: 1fr !important; }
+            .summary-banner-card { padding: 25px 15px; }
+            .correction-item-row { padding: 16px; }
         }
     </style>
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="logo"><i class="fa-solid fa-car-side"></i> IKIZAME</div>
-    </header>
+    <main class="result-layout-wrapper">
+        <!-- Summary Scorecard Overview Panel Component -->
+        <section class="summary-banner-card">
+            <h1>Ibyavuye mu Kizame</h1>
+            <p id="studentGreetingLabel">Urakoze cyane gukora isuzuma ry'ubumenyi.</p>
+            
+            <div class="score-circle-badge">
+                <div class="score-num" id="displayScoreNum">0</div>
+                <div class="score-total-txt" id="displayTotalCount">/ 20</div>
+            </div>
 
-    <main class="results-page-wrapper">
-        <section class="score-card" id="metricsOverviewCard"></section>
+            <div class="status-ribbon" id="verdictStatusRibbon">---</div>
+            
+            <a href="index.html" class="btn-restart-exam"><i class="fa-solid fa-rotate-left"></i> Subira Inyuma / Ongera Ukore</a>
+        </section>
 
-        <h3 class="review-section-title">Genzura Ibisubizo Byose (20)</h3>
-        <section id="detailedReviewContainer" style="display: flex; flex-direction: column; gap: 15px;"></section>
+        <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Isuzuma rya buri Kibazo (Detailed Correction)</h2>
 
-        <div style="text-align: center; margin-bottom: 30px;">
-            <a href="index.html" class="btn-navigation"><i class="fa-solid fa-rotate-left"></i> Kora ikindi kizame</a>
-        </div>
+        <!-- Interactive Sheet feed where row iterations append -->
+        <section class="corrections-master-feed" id="correctionsMasterContainerFeed"></section>
+
+        <footer class="brand-attribution-footer">
+            <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
+        </footer>
     </main>
 
-    <footer class="footer-bar">
-        <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
-    </footer>
-
+    <!-- Async Controller Data Mapping Logic Core Engine Script Block -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            window.history.pushState(null, "", window.location.href);
-            window.onpopstate = function () {
-                window.history.pushState(null, "", window.location.href);
-                window.location.replace('index.html'); 
-            };
-
-            const studentName = sessionStorage.getItem('studentName') || 'Umusomyi';
-            const phoneNumber = sessionStorage.getItem('phoneNumber') || '0780000000';
-            const score = parseInt(sessionStorage.getItem('latestScore')) || 0;
-            const total = 20; 
-
-            const cachedQuestionsJSON = sessionStorage.getItem('shuffledQuestionsReview');
-            const studentAnswers = JSON.parse(sessionStorage.getItem('studentAnswerMapping') || '{}');
-
-            const metricsCard = document.getElementById('metricsOverviewCard');
-            const reviewContainer = document.getElementById('detailedReviewContainer');
-            const isPassed = score >= 12;
-
-            if (isPassed) {
-                metricsCard.innerHTML = `
-                    
-                        <h4><i class="fa-solid fa-user"></i> Amazina: ${studentName}</h4>
-                        <p><i class="fa-solid fa-phone"></i> Telefone: +250 ${phoneNumber}</p>
-                    </div>
-                    <div class="status-banner passed"><i class="fa-solid fa-circle-check"></i> MWATSINZE NEZA</div>
-                    <div class="score-badge-circle" style="border-color: #22c55e;">
-                        <span class="obtained">${score}</span>
-                        <span class="total-max">${total}</span>
-                    </div>
-                    <div class="feedback-message">
-                        <h2>Mwarakoze cyane!</h2>
-                        <p>Mwatsinze isuzuma bumenyi ry'amategeko y'umuhanda.</p>
-                    </div>`;
+            const studentName = sessionStorage.getItem('studentName') || "Umunyeshuri";
+            const score = parseInt(sessionStorage.getItem('latestScore'), 10) || 0;
+            const total = parseInt(sessionStorage.getItem('latestTotal'), 10) || 20;
+            
+            const rawAnswersMapping = sessionStorage.getItem('studentAnswerMapping');
+            const rawQuestionsReviewPool = sessionStorage.getItem('shuffledQuestionsReview');
+                        // Formulate greetings banner attributes configurations
+            document.getElementById('studentGreetingLabel').innerText = `Urakoze cyane ${studentName}, ngaha ibyavuye mu isuzuma ryawe:`;
+            document.getElementById('displayScoreNum').innerText = score;
+            document.getElementById('displayTotalCount').innerText = `/ ${total}`;
+            
+            const ribbon = document.getElementById('verdictStatusRibbon');
+            // Pass mark grading assessment condition parameters set at standard 12/20 boundaries
+            if (score >= 12) {
+                ribbon.innerText = "YATSINZE (PASSED)";
+                ribbon.className = "status-ribbon pass";
             } else {
-                metricsCard.innerHTML = `
-                    
-                        <h4><i class="fa-solid fa-user"></i> Amazina: ${studentName}</h4>
-                        <p><i class="fa-solid fa-phone"></i> Telefone: +250 ${phoneNumber}</p>
-                    </div>
-                    <div class="status-banner failed"><i class="fa-solid fa-circle-xmark"></i> NTABWO MWATSINZE</div>
-                    <div class="score-badge-circle" style="border-color: #ef4444;">
-                        <span class="obtained">${score}</span>
-                        <span class="total-max">${total}</span>
-                    </div>
-                    <div class="feedback-message">
-                        <h2>Mwongere mugerageze!</h2>
-                        <p>Gutsinda bisaba gutsindira nibura amanota <strong>12/20</strong>. Ongera usome amategeko neza.</p>
-                    </div>`;
+                ribbon.innerText = "YATSINZWE (FAILED)";
+                ribbon.className = "status-ribbon fail";
             }
 
-            if (cachedQuestionsJSON) {
-                                const exams = JSON.parse(cachedQuestionsJSON);
-                
-                reviewContainer.innerHTML = exams.map((exam, index) => {
-                    const studentChoice = studentAnswers[exam.id]; 
-                    const correctKey = exam.correct_option.toUpperCase();
+            const feedContainer = document.getElementById('correctionsMasterContainerFeed');
 
-                    let cardStatusClass = "";
-                    let statusBadgeHtml = "";
+            if (!rawAnswersMapping || !rawQuestionsReviewPool) {
+                feedContainer.innerHTML = `<p style="text-align:center; padding:30px; font-style:italic; color:#64748b;">Nta makuru y'isuzuma agaragara mu bubiko muryo bw'akanya kanyengetera.</p>`;
+                return;
+            }
 
-                    if (!studentChoice) {
-                        cardStatusClass = "state-skipped";
-                        statusBadgeHtml = `<span class="status-badge skipped"><i class="fa-solid fa-circle-minus"></i> Mwasimbutse</span>`;
-                    } else if (studentChoice === correctKey) {
-                        cardStatusClass = "state-correct";
-                        statusBadgeHtml = `<span class="status-badge correct"><i class="fa-solid fa-circle-check"></i>Mwagikoze</span>`;
-                    } else {
-                        cardStatusClass = "state-incorrect";
-                        statusBadgeHtml = `<span class="status-badge wrong"><i class="fa-solid fa-circle-xmark"></i> Amakosa</span>`;
-                    }
+            const studentAnswers = JSON.parse(rawAnswersMapping);
+            const questionsList = JSON.parse(rawQuestionsReviewPool);
 
-                    const optionsMetaArray = [
-                        { key: "A", text: exam.option_a },
-                        { key: "B", text: exam.option_b },
-                        { key: "C", text: exam.option_c },
-                        { key: "D", text: exam.option_d }
-                    ];
+            // ⚡ MAIN RUNTIME FEED REPOSITORY MATRIX GENERATOR LOOP
+            feedContainer.innerHTML = questionsList.map((exam, index) => {
+                const questionNumber = index + 1;
+                const studentSelectionKey = studentAnswers[exam.id] || "Nta gihari";
+                const systemCorrectKey = exam.correct_option;
+                const isUserCorrect = studentSelectionKey === systemCorrectKey;
 
-                    const optionsRowsHtml = optionsMetaArray.map(opt => {
-                        let highlightClass = "";
-                        if (opt.key === correctKey) {
-                            highlightClass = "highlight-correct";
-                        } else if (studentChoice && opt.key === studentChoice && studentChoice !== correctKey) {
-                            highlightClass = "highlight-incorrect";
-                        }
+                // Utility element compiler to structure clean option items profiles dynamically
+                function compileOptionCardMarkup(letterKey, textValue) {
+                    if (!textValue) return "";
+                    
+                    let customStyleClass = "choice-strip-item";
+                    if (letterKey === studentSelectionKey) customStyleClass += " student-selected";
+                    if (letterKey === systemCorrectKey) customStyleClass += " system-correct";
+                    if (letterKey === studentSelectionKey && letterKey === systemCorrectKey) customStyleClass = "choice-strip-item both-matched";
+
+                    // 📸 OPTIONS INTERCEPT ENGINE: Evaluates string formats to find file expansions or prefixes
+                    const isChoiceGraphicImage = /\.(png|jpg|jpeg|gif|webp)$/i.test(textValue) || 
+                                                 textValue.startsWith('optionA_File-') || 
+                                                 textValue.startsWith('optionB_File-') || 
+                                                 textValue.startsWith('optionC_File-') || 
+                                                 textValue.startsWith('optionD_File-');
+
+                    if (isChoiceGraphicImage) {
                         return `
-                            <div class="review-option-row ${highlightClass}">
-                                <strong>${opt.key.toLowerCase()})</strong> &nbsp; ${opt.text}
+                            <div class="${customStyleClass}">
+                                <span class="letter-marker">${letterKey.toLowerCase()})</span>
+                                <div class="choice-embedded-thumb-box">
+                                    <img src="assets/uploads/${textValue}" alt="Choice Thumbnail" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerText='${textValue}'">
+                                </div>
                             </div>
                         `;
-                    }).join('');
-
-                    // 🎯 CONDITIONALLY RENDER IMAGE PORTION ONLY IF IT EXISTS
-                    let imageFrameHtml = "";
-                    let customGridModifierClass = "";
-
-                    if (exam.image_path) {
-                        imageFrameHtml = `
-                            <div class="review-img-box">
-                                <img src="assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy">
-                            </div>`;
-                    } else {
-                        customGridModifierClass = "review-no-image-layout"; // Collapses column widths instantly [1]
                     }
 
                     return `
-                        <div class="review-question-card ${cardStatusClass}">
-                            <div class="review-q-header">
-                                <span>Ikibazo cya #${index + 1}</span>
-                                ${statusBadgeHtml}
-                            </div>
-                            <p class="review-q-text">${exam.question}</p>
-                            <div class="review-split-grid ${customGridModifierClass}">
-                                ${imageFrameHtml}
-                                <div class="review-options-list">
-                                    ${optionsRowsHtml}
-                                </div>
-                            </div>
+                        <div class="${customStyleClass}">
+                            <span class="letter-marker">${letterKey.toLowerCase()})</span> <span>${textValue}</span>
                         </div>
                     `;
-                }).join('');
-            } else {
-                reviewContainer.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:20px; font-style:italic;">Nta makuru y'ibibazo asanzwe ari mu bubiko bwa paji.</p>`;
-            }
+                }
+
+                // Verify if full multi-choice items collection is image-based to shift the container wrapper grid
+                const isOptionCollectionImageBased = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a) || (exam.option_a && exam.option_a.includes('optionA_File-'));
+
+                return `
+                    <div class="correction-item-row">
+                        <div class="row-header-meta">
+                            <span class="question-number-index">Ikibazo cya ${questionNumber}</span>
+                            <span class="verdict-badge ${isUserCorrect ? 'correct' : 'wrong'}">
+                                ${isUserCorrect ? '<i class="fa-solid fa-circle-check"></i> Mucyenye' : '<i class="fa-solid fa-circle-xmark"></i> Mwazize'}
+                            </span>
+                        </div>
+
+                        <div class="question-media-wrapper">
+                            <div class="question-wording-txt">${exam.question}</div>
+                            ${exam.image_path ? `
+                                <div class="question-sign-preview-box">
+                                    <img src="assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy">
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- 🎯 MULTI-CHOICE VIEWPORT CORRECTION SHEET LAYOUT GRID -->
+                        <div class="choices-review-block ${isOptionCollectionImageBased ? 'image-options-grid-mode' : ''}">
+                            ${compileOptionCardMarkup("A", exam.option_a)}
+                            ${compileOptionCardMarkup("B", exam.option_b)}
+                            ${compileOptionCardMarkup("C", exam.option_c)}
+                            ${compileOptionCardMarkup("D", exam.option_d)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
         });
     </script>
 </body>
