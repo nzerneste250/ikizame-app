@@ -33,7 +33,7 @@
 
         .admin-layout-grid { display: flex; height: calc(100vh - 45px); overflow: hidden; }
 
-        /* 🔒 1. PERMANENT GLASS-EFFECT SIDEBAR PANEL */
+        /* 🔒 1. PERMANENT SIDEBAR PANEL */
         .sidebar-panel {
             width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border);
             padding: 30px 20px; display: flex; flex-direction: column; gap: 35px; flex-shrink: 0;
@@ -60,7 +60,7 @@
         .header-title-bar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
         .header-title-bar p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
 
-        /* 🔍 REAL-TIME INTELLIGENT AUTO-SEARCH INPUT FIELD WRAPPER */
+        /* 🔍 REAL-TIME AUTO-SEARCH BOX */
         .search-engine-box { position: relative; width: 340px; }
         .search-engine-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
         .search-engine-box input {
@@ -70,7 +70,7 @@
         }
         .search-engine-box input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1); background-color: #ffffff; }
 
-        /* Scrollable Data Records Inventory Board Workspace */
+        /* Scrollable Table Content */
         .table-scroller-view { flex: 1; overflow-y: auto; padding: 30px 40px; min-height: 0; }
         
         .data-table-container {
@@ -83,24 +83,22 @@
             background-color: #f8fafc; color: var(--text-muted); font-size: 11px; font-weight: 800;
             text-transform: uppercase; letter-spacing: 0.75px; padding: 14px 20px; border-bottom: 2px solid var(--border-color); text-align: left;
         }
-        .data-table-container td { padding: 16px 20px; font-size: 13.5px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
+        .data-table-container td { padding: 12px 20px; font-size: 13.5px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
         .data-table-container tr:last-child td { border-bottom: none; }
         .data-table-container tr:hover td { background-color: #fbfdfe; }
 
-        /* Question and Options Internal Cell Render Framework Blocks */
-        .question-cell-wording { font-weight: 700; color: #1e293b; line-height: 1.4; margin-bottom: 4px; }
+        .question-cell-wording { font-weight: 700; color: #1e293b; line-height: 1.4; }
         .question-id-badge { font-family: monospace; font-size: 11px; font-weight: 700; color: var(--accent-blue); background: #e0f2fe; padding: 2px 6px; border-radius: 4px; }
 
-        /* 📸 ADAPTIVE MEDIA RENDERER STYLING FOR DYNAMIC IMAGE BLOCKS Inside options cells */
+        /* 📸 IMAGE OPTIONS CELL RENDERING ENGINE BOX STYLING */
         .cell-image-wrapper {
-            width: 55px; height: 55px; border: 1px solid var(--border-color); border-radius: 6px;
+            width: 50px; height: 50px; border: 1px solid var(--border-color); border-radius: 6px;
             background-color: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 2px;
         }
         .cell-image-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
         .correct-answer-pill { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background-color: #dcfce7; color: #15803d; font-weight: 800; font-size: 12px; }
 
-        /* Actions Interaction Trigger Row Controls Menu Icons */
         .actions-btn-cluster { display: flex; gap: 8px; align-items: center; }
         .action-icon-link {
             border: 1px solid var(--border-color); padding: 8px; border-radius: 6px; cursor: pointer;
@@ -110,20 +108,17 @@
         .action-icon-link.edit-lnk:hover { border-color: var(--accent-blue); color: var(--accent-blue); background-color: #f0f9ff; }
         .action-icon-link.delete-lnk:hover { border-color: var(--accent-delete); color: var(--accent-delete); background-color: #fef2f2; }
 
-        /* Baseline Footer Panel Layout */
         .admin-footer-panel {
             background-color: var(--sidebar-bg); color: #64748b; text-align: center;
             padding: 14px; font-size: 11.5px; border-top: 1px solid var(--sidebar-border); height: 45px; z-index: 100;
         }
         .admin-footer-panel strong { color: #38bdf8; }
 
-        /* Responsive Mobile Breakpoint Layers Adjustments */
         @media screen and (max-width: 992px) {
             .sidebar-panel { display: none; }
             .header-title-bar { padding: 20px; flex-direction: column; align-items: flex-start; gap: 15px; }
             .search-engine-box { width: 100%; }
             .table-scroller-view { padding: 15px; }
-            .data-table-container th:nth-child(3), .data-table-container td:nth-child(3) { display: none; } /* Collapses images row on mobile */
         }
     </style>
 </head>
@@ -147,7 +142,6 @@
                     <h1>Questions Repository</h1>
                     <p>Live inventory of your exam questions data pool tables metrics.</p>
                 </div>
-                <!-- 🔍 THE AUTO-SEARCH MECHANISM BOX CONTAINER -->
                 <div class="search-engine-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="autoSearchFilterInput" placeholder="Search by question description or options...">
@@ -158,19 +152,19 @@
                 <table class="data-table-container">
                     <thead>
                         <tr>
-                            <th style="width: 80px;">Ref ID</th>
-                            <th>Question Details</th>
-                            <th style="width: 100px;">Sign Image</th>
+                            <th style="width: 70px;">No.</th>
+                            <th style="width: 320px;">Question Details</th>
+                            <th style="width: 90px;">Sign Image</th>
                             <th>Option A</th>
                             <th>Option B</th>
                             <th>Option C</th>
                             <th>Option D</th>
-                            <th style="width: 80px; text-align: center;">Key</th>
-                            <th style="width: 100px; text-align: center;">Actions</th>
+                            <th style="width: 70px; text-align: center;">Key</th>
+                            <th style="width: 90px; text-align: center;">Actions</th>
                         </tr>
                     </thead>
-                                        <tbody id="inventoryTableTargetBody">
-                        <!-- Async collection router injects data stream array tables loop records right here -->
+                    <tbody id="inventoryTableTargetBody">
+                        <!-- Async content loaded here -->
                     </tbody>
                 </table>
             </div>
@@ -181,19 +175,35 @@
         <p>Developed by <strong>izo service quicky</strong></p>
     </footer>
 
-    <!-- Async Data Compilers and Real-time Search Engine script Execution Block -->
     <script>
+        // 🔒 SESSION SECURITY GATEWAY: Block page loading if admin authentication does not exist
+        // This validates their presence on the front-end before issuing background transactions
+        if (!sessionStorage.getItem('studentName') && !document.cookie.includes('connect.sid')) {
+            // Checks if a standard login session is active, if not, expels them back to login page
+                        console.warn("Unauthorized access detected. Redirecting to auth gateway.");
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const tableBody = document.getElementById('inventoryTableTargetBody');
             const searchInput = document.getElementById('autoSearchFilterInput');
             let masterQuestionsCacheArray = [];
 
-            // ⚡ 1. RUN DATA ACQUISITION TRANSACTION HANDSHAKE WITH THE API
+            // ⚡ 1. RUN DATA ACQUISITION FROM EXAMS API
             fetch('/api/exams')
-                .then(res => res.json())
+                .then(res => {
+                    if (res.status === 401) {
+                        // 🔒 Backend session expired hook fallback
+                        alert("Session expired! Please log in again.");
+                        window.location.replace('admin-login.html');
+                        return;
+                    }
+                    return res.json();
+                })
                 .then(questionsList => {
-                    masterQuestionsCacheArray = questionsList;
-                    renderQuestionsTableRows(masterQuestionsCacheArray);
+                    if (questionsList) {
+                        masterQuestionsCacheArray = questionsList;
+                        renderQuestionsTableRows(masterQuestionsCacheArray);
+                    }
                 })
                 .catch(err => {
                     console.error('API Pull Failure:', err);
@@ -204,13 +214,13 @@
             function resolveChoiceCellLayout(optionValueString) {
                 if (!optionValueString) return `<span style="color:#cbd5e1; font-style:italic;">Empty</span>`;
                 
-                // 📸 Checks if value matches image extension strings signatures
-                const isImageFileFormat = /\.(png|jpg|jpeg|gif|webp)$/i.test(optionValueString);
+                // 📸 🎯 FIXED INTERCEPT: Matches file prefix option_file signatures or graphic strings pattern formats
+                const isImageFileFormat = /\.(png|jpg|jpeg|gif|webp)$/i.test(optionValueString) || optionValueString.startsWith('optionA_File-') || optionValueString.startsWith('optionB_File-') || optionValueString.startsWith('optionC_File-') || optionValueString.startsWith('optionD_File-');
                 
                 if (isImageFileFormat) {
                     return `
-                        <div class="cell-image-wrapper" title="Image choice path target: ${optionValueString}">
-                            <img src="assets/uploads/${optionValueString}" alt="Choice Thumbnail" loading="lazy">
+                        <div class="cell-image-wrapper" title="Image Choice: ${optionValueString}">
+                            <img src="assets/uploads/${optionValueString}" alt="Choice Thumbnail" loading="lazy" onerror="this.parentElement.innerHTML='<span>${optionValueString}</span>'">
                         </div>`;
                 }
                 return `<span>${optionValueString}</span>`;
@@ -223,10 +233,12 @@
                     return;
                 }
 
-                tableBody.innerHTML = dataSetArray.map((exam, idx) => {
+                // 🎯 FIXED NUMBERING: Uses loop array item index offsets to count perfectly from 1 upwards
+                tableBody.innerHTML = dataSetArray.map((exam, index) => {
+                    const rowSequentialNumber = index + 1;
                     return `
                         <tr id="question_row_id_${exam.id}">
-                            <td><span class="question-id-badge">#${exam.id}</span></td>
+                            <td><span class="question-id-badge">${rowSequentialNumber}</span></td>
                             <td>
                                 <div class="question-cell-wording">${exam.question}</div>
                             </td>
@@ -261,7 +273,6 @@
                     return;
                 }
 
-                // Filters through full description parameters and choices strings concurrently
                 const filteredResultsSubset = masterQuestionsCacheArray.filter(exam => {
                     const matchTextQuestion = (exam.question || '').toLowerCase();
                     const matchOptionA = (exam.option_a || '').toLowerCase();
@@ -279,22 +290,23 @@
                 renderQuestionsTableRows(filteredResultsSubset);
             });
 
-            // ⚡ 5. DELETION PIPELINE ASYNC INTERCEPT HANDLER TRANSFERS
+            // ⚡ 5. DELETION PIPELINE ASYNC INTERCEPT HANDLER
             window.executeSecureRecordDeletion = function(questionRecordId) {
                 if (confirm('Are you absolutely certain you want to remove this question permanently from your system database records configuration pool? This operation cannot be undone!')) {
                     fetch(`/api/exams/delete/${questionRecordId}`, { method: 'DELETE' })
                         .then(res => res.json())
                         .then(response => {
                             if (response.success) {
-                                // Slice the element out of the local cached memory stack array to avoid re-fetching
                                 masterQuestionsCacheArray = masterQuestionsCacheArray.filter(item => item.id !== questionRecordId);
                                 
-                                // Smoothly fade out and remove row from view
                                 const targetRowElement = document.getElementById(`question_row_id_${questionRecordId}`);
                                 if (targetRowElement) {
                                     targetRowElement.style.transition = 'all 0.3s ease';
                                     targetRowElement.style.opacity = '0';
-                                    setTimeout(() => { targetRowElement.remove(); }, 300);
+                                    setTimeout(() => { 
+                                        // Re-render table completely to recalculate sequence row index counts
+                                        renderQuestionsTableRows(masterQuestionsCacheArray); 
+                                    }, 300);
                                 }
                             } else {
                                 alert('Error running deletion routine transaction mapping.');
