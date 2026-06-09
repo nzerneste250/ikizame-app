@@ -2,96 +2,165 @@
 <html lang="rw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKIZAME - Isuzuma Bumenyi</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IKIZAME - Isuzuma Bumenyi Nyabyo</title>
+    <!-- Premium Google Fonts Hierarchy Inter for absolute layout readability -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* 📱 ULTRA-COMPACT MOBILE-OPTIMIZED ARCHITECTURE */
-        html, body { min-height: 100vh; margin: 0; padding: 0; background-color: #f8fafc; }
-        body { display: flex; flex-direction: column; }
-        .navbar { height: 50px; flex-shrink: 0; }
-        .footer-bar { min-height: 55px !important; height: auto !important; padding: 12px 15px !important; box-sizing: border-box; margin-top: 15px !important; }
+        /* 🪐 CLEAN ADVANCED MOBILE-FIRST FLUID VIEWPORT ARCHITECTURE */
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-primary: #0b698b;
+            --accent-hover: #08536e;
+            --accent-selected: rgba(11, 105, 139, 0.04);
+            --border-color: #cbd5e1;
+            --success-green: #22c55e;
+            
+            /* Fluid base sizing - dynamically scales with device dimensions */
+            font-size: clamp(12px, 1.2vw, 16px);
+        }
 
-        .exam-page-wrapper { 
-            max-width: 1040px; margin: 0 auto; padding: 4px 15px; flex: 1; 
-            display: flex; flex-direction: column; gap: 4px; justify-content: space-between; width: 100%; box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+
+        /* 📋 DYNAMIC STRUCTURAL CONTAINER HUBS */
+        .navbar {
+            height: 55px; background-color: #131a2c; color: #ffffff; display: flex;
+            align-items: center; justify-content: space-between; padding: 0 5%; flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .logo-txt { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; color: #38bdf8; }
+        .lang-badge { font-size: 0.85rem; font-weight: 700; background-color: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 20px; }
+
+        .exam-page-wrapper {
+            max-width: 1000px; width: 100%; margin: 0 auto; padding: 15px; flex: 1;
+            display: flex; flex-direction: column; gap: 15px; min-height: 0;
+        }
+
+        /* ⏳ TIMER BOX CARD GRID LAYER */
+        .timer-card {
+            background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px;
+            padding: 12px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); flex-shrink: 0;
+        }
+        .timer-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.75px; }
+        .timer-display { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+        /* 🧮 STEPPER NAVIGATION BUBBLES MATRICES CONTAINER */
+        .stepper-card {
+            background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px;
+            padding: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; width: 100%; box-shrink: 0;
+        }
+        .step-bubble {
+            width: 32px; height: 32px; border-radius: 50%; border: 2px solid #cbd5e1;
+            display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem;
+            font-weight: 700; color: var(--text-muted); cursor: default; background: #ffffff;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); user-select: none;
+        }
+        .step-bubble.active { border-color: var(--accent-primary); color: var(--accent-primary); background-color: rgba(11, 105, 139, 0.05); transform: scale(1.08); box-shadow: 0 0 0 3px rgba(11, 105, 139, 0.15); }
+        .step-bubble.answered { background-color: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
+
+        /* 🏢 WORKSPACE QUESTION INTERACTIVE CORE CARD */
+        .question-card-container {
+            background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02);
+            display: flex; flex-direction: column; gap: 20px; flex: 1; min-height: 0;
         }
         
-        .timer-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 12px; text-align: center; flex-shrink: 0; }
-        .timer-display { font-size: 20px; font-weight: 800; color: #0f172a; margin-top: 1px; }
+        .question-txt {
+            font-size: 1.15rem; font-weight: 700; color: #0f172a; line-height: 1.45;
+            white-space: normal; word-wrap: break-word; flex-shrink: 0;
+        }
+
+        /* Responsive Layout Switch Grid housing options or signs */
+        .split-exam-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start; min-height: 0; flex: 1; }
+        .split-exam-grid.no-image-layout { grid-template-columns: 1fr !important; }
+
+        /* 🖼️ ROAD SIGN PREVIEW WRAPPER CARD */
+        .image-frame-box {
+            border: 1px solid var(--border-color); border-radius: 8px; padding: 10px;
+            background-color: #fafafa; display: flex; justify-content: center; align-items: center;
+            height: 100%; max-height: 240px; box-sizing: border-box; overflow: hidden;
+        }
+        .image-frame-box img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+
+        /* 🎛️ ADAPTIVE SELECTION LAYOUT OPTIONS LIST MATRIX */
+        .options-vertical-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         
-        .stepper-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; display: flex; align-items: center; width: 100%; box-sizing: border-box; flex-shrink: 0; }
-        .step-bubble { min-width: 25px; height: 25px; border-radius: 50%; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #64748b; cursor: pointer; transition: all 0.1s ease; }
-        .step-bubble.active { border-color: #0b698b; color: #0b698b; box-shadow: 0 0 0 2px rgba(11, 105, 139, 0.15); }
-        .step-bubble.answered { background-color: #0b698b; border-color: #0b698b; color: #ffffff; }
-        
-        .question-card-container { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 25px !important; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01); display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; box-sizing: border-box; }
-        .question-txt { font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.35; margin: 0 0 2px 0; }
-        
-        .split-exam-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 12px; align-items: center; min-height: 0; }
-        .split-exam-grid.no-image-layout { grid-template-columns: 1fr !important; gap: 6px !important; }
-        
-        .image-frame-box { border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px; background: #fafafa; display: flex; justify-content: center; align-items: center; height: 100%; max-height: 200px; box-sizing: border-box; }
-        .image-frame-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        
-        .options-vertical-list { display: flex; flex-direction: column; gap: 6px; justify-content: center; box-sizing: border-box; }
-        
-        /* 🎯 HYBRID GRID SHIFTER: Adapts automatically if the choices are standard text blocks or 4 uploaded image links */
+        /* 📸 HYBRID FLEX GRID SWITCH: Converts choices to 2x2 grid automatically if options contain images */
         .options-vertical-list.image-options-grid-mode {
-            display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; width: 100%;
+            display: grid !important; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important; gap: 14px !important;
         }
 
-        .radio-option-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 6px; cursor: pointer; transition: all 0.1s ease; width: 100%; box-sizing: border-box; background-color: #ffffff; }
-        .radio-option-row:hover { background: #f8fafc; border-color: #cbd5e1; }
-        .radio-option-row.selected-row { border-color: #0b698b; background: rgba(11, 105, 139, 0.02); }
-        .radio-option-row input[type="radio"] { width: 15px; height: 15px; accent-color: #0b698b; flex-shrink: 0; }
-        .choice-label-txt { font-size: 13.5px; font-weight: 500; color: #334155; word-break: break-word; display: flex; align-items: center; gap: 8px; width: 100%; }
+        .radio-option-row {
+            display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+            border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer;
+            transition: all 0.15s ease; background-color: #ffffff; width: 100%; box-sizing: border-box;
+        }
+        .radio-option-row:hover { background-color: #f8fafc; border-color: #cbd5e1; }
+        .radio-option-row.selected-row { border-color: var(--accent-primary); background-color: var(--accent-selected); }
+        .radio-option-row input[type="radio"] { width: 18px; height: 18px; accent-color: var(--accent-primary); flex-shrink: 0; cursor: pointer; }
         
-        /* Premium Thumbnail Container styling inside multi-image choices grid layouts */
+        .choice-label-txt { font-size: 0.95rem; font-weight: 600; color: #334155; word-break: break-word; line-height: 1.4; display: flex; align-items: center; gap: 12px; width: 100%; }
+        
+        /* Premium Thumbnail Container styling inside choices elements if 4 images options mode is hit */
         .option-embedded-img-box {
-            height: 70px; max-width: 110px; flex: 1; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px; background: #fafafa; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
+            height: 80px; max-width: 130px; flex: 1; border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 4px; background: #f8fafc; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
         }
         .option-embedded-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        .navigation-action-bar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 8px; flex-shrink: 0; }
-        .counter-badge-txt { font-size: 12.5px; font-weight: 700; color: #64748b; }
-        .nav-buttons-cluster { display: flex; gap: 8px; }
-        .btn-nav-control { border: none; padding: 8px 20px; font-size: 12.5px; font-weight: 700; border-radius: 5px; cursor: pointer; }
-        .btn-nav-control.back-btn { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
-        .btn-nav-control.next-btn { background: #0b698b; color: #ffffff; }
-        .btn-nav-control.submit-btn { background: #22c55e; color: #ffffff; }
+        /* Bottom Controls Row Positioning */
+        .navigation-action-bar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 12px; flex-shrink: 0; margin-top: auto; }
+        .counter-badge-txt { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); }
+        .nav-buttons-cluster { display: flex; gap: 10px; }
         
-        @media screen and (min-width: 992px) {
-            html, body { height: 100vh; overflow: hidden; }
-            .exam-page-wrapper { height: calc(100vh - 85px); }
-            .options-vertical-list { overflow-y: auto; }
+        .btn-nav-control { border: none; padding: 10px 24px; font-size: 0.9rem; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-nav-control.back-btn { background: #f1f5f9; color: #475569; border: 1px solid var(--border-color); }
+        .btn-nav-control.back-btn:hover { background: #e2e8f0; }
+        .btn-nav-control.next-btn { background: var(--accent-primary); color: #ffffff; }
+        .btn-nav-control.next-btn:hover { background: var(--accent-hover); }
+        .btn-nav-control.submit-btn { background: var(--success-green); color: #ffffff; box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.2); }
+        .btn-nav-control.submit-btn:hover { background: #16a34a; }
+
+        /* 🔒 FOOTER LOGO WORKSPACE BOX WITH COMPACT PORTRAIT SCREEN WRAPPING FIX */
+        .footer-bar {
+            min-height: 55px !important; height: auto !important; background-color: #131a2c;
+            color: #94a3b8; text-align: center; padding: 15px 10px !important; font-size: 0.8rem;
+            border-top: 1px solid #1e293b; width: 100%; box-sizing: border-box; flex-shrink: 0; margin-top: auto;
+        }
+        .footer-bar strong { color: #38bdf8; }
+
+        /* 📱 DEVICE MEDIA BREAKPOINTS ADAPTATION LAYERS OVERRIDES */
+        @media screen and (max-width: 991px) {
+            .split-exam-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+            .image-frame-box { height: 160px; }
+            .question-card-container { padding: 15px !important; gap: 12px !important; }
+            .radio-option-row { padding: 12px 14px; }
+            .options-vertical-list.image-options-grid-mode { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+            .option-embedded-img-box { height: 65px; }
         }
 
-        @media screen and (max-width: 991px) {
-            html, body { overflow: auto; height: auto; }
-            .exam-page-wrapper { padding: 4px; gap: 4px; height: auto !important; flex: none !important; justify-content: flex-start !important; }
-            .timer-display { font-size: 18px; }
-            .footer-bar p { font-size: 11px !important; line-height: 1.5; margin: 0; }
-            .stepper-card { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; gap: 6px 12px !important; margin-top: 4px !important; margin-bottom: 4px !important; padding: 8px !important; }
-            .split-exam-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
-            .image-frame-box { height: 140px; }
-            .question-card-container { padding: 10px 15px !important; height: auto; flex: none; gap: 6px !important; }
-            .options-vertical-list { height: auto; gap: 5px !important; }
-            .radio-option-row { padding: 8px 12px; }
-            .options-vertical-list.image-options-grid-mode { gap: 8px !important; }
-            .option-embedded-img-box { height: 55px; }
+        @media screen and (max-width: 480px) {
+            .exam-page-wrapper { padding: 8px; gap: 10px; }
+            .step-bubble { width: 28px; height: 28px; font-size: 0.8rem; }
+            .options-vertical-list.image-options-grid-mode { grid-template-columns: 1fr !important; }
+            .btn-nav-control { padding: 8px 16px; font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
 
     <header class="navbar">
-        <div class="logo"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
-        <div class="lang-selector"><span>🇷🇼 Kinyarwanda</span></div>
+        <div class="logo-txt"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <div class="lang-badge"><span>🇷🇼 Kinyarwanda</span></div>
     </header>
-
-    <main class="exam-page-wrapper">
+        <main class="exam-page-wrapper">
         <section class="timer-card">
             <div class="timer-label">Igihe musigaranye</div>
             <div class="timer-display" id="examCountdown">20:00</div>
@@ -101,15 +170,17 @@
 
         <section class="question-card-container">
             <div class="question-txt" id="targetQuestionText">Uraza kubona ikibazo hano...</div>
+            
             <div class="split-exam-grid" id="dynamicGridWrapper">
                 <div class="image-frame-box" id="targetImageFrame"></div>
                 <div class="options-vertical-list" id="targetOptionsContainer"></div>
             </div>
+            
             <div class="navigation-action-bar">
                 <div class="counter-badge-txt" id="questionCounterLabel">< 1 / 20 ></div>
                 <div class="nav-buttons-cluster">
-                    <button class="btn-nav-control back-btn" id="prevQuestionBtn">Inyuma</button>
-                    <button class="btn-nav-control next-btn" id="nextQuestionBtn">Komeza</button>
+                    <button class="btn-nav-control back-btn" id="prevQuestionBtn"><i class="fa-solid fa-arrow-left"></i> Inyuma</button>
+                    <button class="btn-nav-control next-btn" id="nextQuestionBtn">Komeza <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
         </section>
@@ -119,6 +190,7 @@
         <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
     </footer>
 
+    <!-- Client Runtime Core Exams Processing Engine script Code Block -->
     <script>
         const savedSessionName = sessionStorage.getItem('studentName');
         const savedSessionPhone = sessionStorage.getItem('phoneNumber');
@@ -154,201 +226,183 @@
             const questionText = document.getElementById('targetQuestionText');
             const gridWrapper = document.getElementById('dynamicGridWrapper');
             const imageFrame = document.getElementById('targetImageFrame');
-const optionsContainer = document.getElementById('targetOptionsContainer');
-const counterLabel = document.getElementById('questionCounterLabel');
-const prevBtn = document.getElementById('prevQuestionBtn');
-const nextBtn = document.getElementById('nextQuestionBtn');
+            const optionsContainer = document.getElementById('targetOptionsContainer');
+            const counterLabel = document.getElementById('questionCounterLabel');
+            const prevBtn = document.getElementById('prevQuestionBtn');
+            const nextBtn = document.getElementById('nextQuestionBtn');
 
-let durationSeconds = 20 * 60;
+            let durationSeconds = 20 * 60;
+            const countdownInterval = setInterval(() => {
+                let minutes = Math.floor(durationSeconds / 60);
+                let seconds = durationSeconds % 60;
+                timerDisplay.innerText = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
 
-const countdownInterval = setInterval(() => {
-    let minutes = Math.floor(durationSeconds / 60);
-    let seconds = durationSeconds % 60;
-    
-    timerDisplay.innerText = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-    
-    if (durationSeconds <= 0) {
-        clearInterval(countdownInterval);
-        sessionStorage.removeItem('isExamAlreadyStarted');
-        alert("Igihe cyarangiye! Ikizamini kiroherezwa muri sisitemu.");
-        executeAutoSubmission();
-    }
-    durationSeconds--;
-}, 1000);
+                if (durationSeconds <= 0) {
+                    clearInterval(countdownInterval);
+                    sessionStorage.removeItem('isExamAlreadyStarted');
+                    alert("Igihe cyarangiye! Ikizamini kiroherezwa muri sisitemu.");
+                    executeAutoSubmission();
+                }
+                durationSeconds--;
+            }, 1000);
 
-fetch('/api/exams')
-    .then(res => res.json())
-    .then(exams => {
-        let completePool = exams;
-        for (let i = completePool.length - 1; i > 0; i--) {
-            const randomIndex = Math.floor(Math.random() * (i + 1));
-            [completePool[i], completePool[randomIndex]] = [completePool[randomIndex], completePool[i]];
-        }
-        
-        questionsList = completePool.slice(0, 20);
-        
-        if (questionsList.length === 0) {
-            document.querySelector('.question-card-container').innerHTML = `<p style="text-align:center; padding:40px;">Nta bibazo biri mu bubiko.</p>`;
-            clearInterval(countdownInterval);
-            return;
-        }
-        
-        buildProgressStepper();
-        renderActiveQuestionCard();
-    });
+            // Fetch questions from database pool arrays
+            fetch('/api/exams')
+                .then(res => res.json())
+                .then(exams => {
+                    let completePool = exams;
+                    for (let i = completePool.length - 1; i > 0; i--) {
+                        const randomIndex = Math.floor(Math.random() * (i + 1));
+                        [completePool[i], completePool[randomIndex]] = [completePool[randomIndex], completePool[i]];
+                    }
+                    
+                    questionsList = completePool.slice(0, 20);
 
-function buildProgressStepper() {
-    stepperContainer.innerHTML = questionsList.map((_, i) => `
-        <div class="step-bubble" id="bubble_step_${i}" onclick="jumpToQuestionIndex(${i})">
-            <i class="fa-solid fa-check" style="display:none; font-size:8px;"></i>
-            <span id="bubble_txt_${i}">${i + 1}</span>
-        </div>
-    `).join('');
-}
+                    if (questionsList.length === 0) {
+                        document.querySelector('.question-card-container').innerHTML = `<p style="text-align:center; padding:40px; font-weight:700;">Nta bibazo biri mu bubiko mu buryo bw'akanya kanyengetera.</p>`;
+                        clearInterval(countdownInterval);
+                        return;
+                    }
 
-function renderActiveQuestionCard() {
-    const currentExam = questionsList[currentActiveIndex];
-    
-    counterLabel.innerText = `< ${currentActiveIndex + 1} / ${questionsList.length} >`;
-    questionText.innerText = currentExam.question.replace(/\r?\n|\r/g, ' ');
-    
-    document.querySelectorAll('.step-bubble').forEach((b, idx) => {
-        b.classList.remove('active');
-        if (idx === currentActiveIndex) b.classList.add('active');
-    });
-    
-    if (currentExam.image_path) {
-        gridWrapper.classList.remove('no-image-layout');
-        imageFrame.style.display = 'flex';
-        imageFrame.innerHTML = `<img src="assets/uploads/${currentExam.image_path}" alt="Driving Sign" loading="lazy">`;
-    } else {
-        imageFrame.style.display = 'none';
-        gridWrapper.classList.add('no-image-layout');
-    }
-    
-    const savedAnswer = studentAnswersMap[currentExam.id] || "";
-    
-    // 🎯 CHECK IF MULTI-IMAGE OPTIONS ARE ACTIVE: Looks for file extensions (.png, .jpg, .gif, .jpeg)
-    const isImageOptionsMode = /\.(png|jpg|jpeg|gif|webp)$/i.test(currentExam.option_a);
-    
-    const standardOptions = [
-        { key: "A", text: currentExam.option_a },
-        { key: "B", text: currentExam.option_b },
-        { key: "C", text: currentExam.option_c },
-        { key: "D", text: currentExam.option_d }
-    ];
-    
-    if (isImageOptionsMode) {
-        optionsContainer.classList.add('image-options-grid-mode');
-        optionsContainer.innerHTML = standardOptions.map(opt => `
-            <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
-                <input type="radio" name="active_choice" value="${opt.key}" ${savedAnswer === opt.key ? 'checked' : ''} onchange="registerChoiceSelection('${opt.key}', ${currentExam.id})">
-                <span class="choice-label-txt">
-                    <strong>${opt.key.toLowerCase()})</strong>
-                    <div class="option-embedded-img-box">
-                        <img src="assets/uploads/${opt.text}" alt="Choice Image" loading="lazy">
+                    buildProgressStepper();
+                    renderActiveQuestionCard();
+                });
+
+            function buildProgressStepper() {
+                // 🎯 FIXED: The dynamic 'onclick' trigger attribute is completely disabled to secure straight sequential flows [INDEX]
+                stepperContainer.innerHTML = questionsList.map((_, i) => `
+                    <div class="step-bubble" id="bubble_step_${i}">
+                        <span id="bubble_txt_${i}">${i + 1}</span>
                     </div>
-                </span>
-            </label>
-        `).join('');
-    } else {
-        optionsContainer.classList.remove('image-options-grid-mode');
-        optionsContainer.innerHTML = standardOptions.map(opt => `
-            <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
-                <input type="radio" name="active_choice" value="${opt.key}" ${savedAnswer === opt.key ? 'checked' : ''} onchange="registerChoiceSelection('${opt.key}', ${currentExam.id})">
-                <span class="choice-label-txt"><strong>${opt.key.toLowerCase()})</strong> ${opt.text}</span>
-            </label>
-        `).join('');
-    }
-    
-    prevBtn.style.visibility = currentActiveIndex === 0 ? 'hidden' : 'visible';
-    
-    if (currentActiveIndex === questionsList.length - 1) {
-        nextBtn.innerText = "Yandika Ikizamini";
-        nextBtn.className = "btn-nav-control submit-btn";
-    } else {
-        nextBtn.innerText = "Komeza";
-        nextBtn.className = "btn-nav-control next-btn";
-    }
-}
+                `).join('');
+            }
 
-window.registerChoiceSelection = function(originalKey, examId) {
-    studentAnswersMap[examId] = originalKey;
-    
-    document.querySelectorAll('.radio-option-row').forEach(row => row.classList.remove('selected-row'));
-    event.currentTarget.closest('.radio-option-row').classList.add('selected-row');
-    
-    const bubble = document.getElementById(`bubble_step_${currentActiveIndex}`);
-    const bubbleTxt = document.getElementById(`bubble_txt_${currentActiveIndex}`);
-    const icon = bubble.querySelector('i');
-    
-    bubble.classList.add('answered');
-    if (icon) {
-        icon.style.display = 'block';
-        if (bubbleTxt) bubbleTxt.style.display = 'none';
-    }
-};
-
-window.jumpToQuestionIndex = function(index) {
-    currentActiveIndex = index;
-    renderActiveQuestionCard();
-};
-
-prevBtn.addEventListener('click', () => {
-    if (currentActiveIndex > 0) {
-        currentActiveIndex--;
-        renderActiveQuestionCard();
-    }
-});
-
-nextBtn.addEventListener('click', () => {
-    if (currentActiveIndex < questionsList.length - 1) {
-        currentActiveIndex++;
-        renderActiveQuestionCard();
-    } else {
-        if (confirm('Ese muryhejeje neza ibibazo byose urashaka kureba amanota?')) {
-            sessionStorage.removeItem('isExamAlreadyStarted');
-            executeAutoSubmission();
-        }
-    }
-});
-            function executeAutoSubmission() {
-                // Clear the active timer interval to stop the countdown loop
-                clearInterval(countdownInterval);
+            function renderActiveQuestionCard() {
+                const currentExam = questionsList[currentActiveIndex];
+                counterLabel.innerText = `< ${currentActiveIndex + 1} / ${questionsList.length} >`;
                 
-                // Initialize an empty object container to build our form payload
-                const submissionPayload = {};
-                
-                // Loop through every answer registered inside the student choices map
-                for (const examId in studentAnswersMap) {
-                    // Map the unique question database ID as a dynamic request payload key
-                    submissionPayload[`question_${examId}`] = studentAnswersMap[examId];
+                questionText.innerText = currentExam.question.replace(/\r?\n|\r/g, ' ');
+
+                document.querySelectorAll('.step-bubble').forEach((b, idx) => {
+                    b.classList.remove('active');
+                    if (idx === currentActiveIndex) b.classList.add('active');
+                });
+
+                // Display question sign graphic symbol if present
+                if (currentExam.image_path) {
+                    gridWrapper.classList.remove('no-image-layout');
+                    imageFrame.style.display = 'flex';
+                    imageFrame.innerHTML = `<img src="assets/uploads/${currentExam.image_path}" alt="Driving Sign" loading="lazy">`;
+                } else {
+                    imageFrame.style.display = 'none';
+                    gridWrapper.classList.add('no-image-layout');
                 }
 
-                // Send the collected answers securely to the backend evaluation endpoint
-                fetch('/api/exams/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(submissionPayload)
-                })
-                .then(res => res.json())
-                .then(result => {
-                    // Lock the final calculated grading metrics inside your browser storage
-                    sessionStorage.setItem('latestScore', result.score);
-                    sessionStorage.setItem('latestTotal', result.total);
-                    sessionStorage.setItem('studentAnswerMapping', JSON.stringify(studentAnswersMap));
-                    sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questionsList));
+                const savedAnswer = studentAnswersMap[currentExam.id] || "";
 
-                    // Reset the working arrays memory back to a pristine clean slate state
-                    questionsList = [];
-                    for (const key in studentAnswersMap) delete studentAnswersMap[key];
-                    
-                    // Route the student forward into the detailed review evaluation interface
-                    window.location.replace('exam-result.html');
-                })
-                .catch(err => console.error('Submission transaction failure error:', err));
+                // 🎯 INTERACTIVE CHOICES MODE SNIFFER: Automatically identifies if the values are image filenames or text sentences [INDEX]
+                const isImageOptionsMode = /\.(png|jpg|jpeg|gif|webp)$/i.test(currentExam.option_a) || 
+                                           currentExam.option_a.startsWith('optionA_File-') ||
+                                           currentExam.option_b.startsWith('optionB_File-');
+
+                const standardOptions = [
+                    { key: "A", text: currentExam.option_a },
+                    { key: "B", text: currentExam.option_b },
+                    { key: "C", text: currentExam.option_c },
+                    { key: "D", text: currentExam.option_d }
+                ];
+
+                if (isImageOptionsMode) {
+                    optionsContainer.classList.add('image-options-grid-mode');
+                    optionsContainer.innerHTML = standardOptions.map(opt => `
+                        <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
+                            <input type="radio" name="active_choice" value="${opt.key}" ${savedAnswer === opt.key ? 'checked' : ''} onchange="registerChoiceSelection('${opt.key}', ${currentExam.id})">
+                            <span class="choice-label-txt">
+                                <strong>${opt.key.toLowerCase()})</strong>
+                                <div class="option-embedded-img-box">
+                                    <img src="assets/uploads/${opt.text}" alt="Amahitamo Ifoto" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerText='${opt.text}'">
+                                </div>
+                            </span>
+                        </label>
+                    `).join('');
+                } else {
+                    optionsContainer.classList.remove('image-options-grid-mode');
+                    optionsContainer.innerHTML = standardOptions.map(opt => `
+                        <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
+                            <input type="radio" name="active_choice" value="${opt.key}" ${savedAnswer === opt.key ? 'checked' : ''} onchange="registerChoiceSelection('${opt.key}', ${currentExam.id})">
+                            <span class="choice-label-txt"><strong>${opt.key.toLowerCase()})</strong> ${opt.text}</span>
+                        </label>
+                    `).join('');
+                }
+
+                prevBtn.style.visibility = currentActiveIndex === 0 ? 'hidden' : 'visible';
+                if (currentActiveIndex === questionsList.length - 1) {
+                    nextBtn.innerHTML = `Yandika Ikizamini <i class="fa-solid fa-square-check"></i>`;
+                    nextBtn.className = "btn-nav-control submit-btn";
+                } else {
+                                    nextBtn.innerHTML = `Komeza <i class="fa-solid fa-arrow-right"></i>`;
+                nextBtn.className = "btn-nav-control next-btn";
+            }
+        }
+
+        window.registerChoiceSelection = function(originalKey, examId) {
+            studentAnswersMap[examId] = originalKey;
+
+            document.querySelectorAll('.radio-option-row').forEach(row => row.classList.remove('selected-row'));
+            event.currentTarget.closest('.radio-option-row').classList.add('selected-row');
+
+            const bubble = document.getElementById(`bubble_step_${currentActiveIndex}`);
+            if (bubble) bubble.classList.add('answered');
+        };
+
+        // 🎯 FIXED: Manual jumping routines return a safe void bypass to prevent click injection
+        window.jumpToQuestionIndex = function(index) {
+            return false; 
+        };
+
+        prevBtn.addEventListener('click', () => {
+            if (currentActiveIndex > 0) { currentActiveIndex--; renderActiveQuestionCard(); }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentActiveIndex < questionsList.length - 1) {
+                currentActiveIndex++;
+                renderActiveQuestionCard();
+            } else {
+                if (confirm('Ese muryhejeje neza ibibazo byose urashaka kureba amanota?')) {
+                    sessionStorage.removeItem('isExamAlreadyStarted'); 
+                    executeAutoSubmission();
+                }
             }
         });
-    </script>
+
+        function executeAutoSubmission() {
+            clearInterval(countdownInterval);
+            const submissionPayload = {};
+            for (const examId in studentAnswersMap) {
+                submissionPayload[`question_${examId}`] = studentAnswersMap[examId];
+            }
+
+            fetch('/api/exams/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(submissionPayload)
+            })
+            .then(res => res.json())
+            .then(result => {
+                sessionStorage.setItem('latestScore', result.score);
+                sessionStorage.setItem('latestTotal', result.total);
+                sessionStorage.setItem('studentAnswerMapping', JSON.stringify(studentAnswersMap));
+                sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questionsList));
+
+                questionsList = [];
+                for (const key in studentAnswersMap) delete studentAnswersMap[key];
+                
+                window.location.replace('exam-result.html');
+            })
+            .catch(err => console.error('Submission transaction failure error:', err));
+        }
+    });
+</script>
 </body>
 </html>
