@@ -337,7 +337,7 @@
 
                 prevBtn.style.visibility = currentActiveIndex === 0 ? 'hidden' : 'visible';
                 if (currentActiveIndex === questionsList.length - 1) {
-                    nextBtn.innerHTML = `Yandika Ikizamini <i class="fa-solid fa-square-check"></i>`;
+                    nextBtn.innerHTML = `Soza Ikizamini <i class="fa-solid fa-square-check"></i>`;
                     nextBtn.className = "btn-nav-control submit-btn";
                 } else {
                                     nextBtn.innerHTML = `Komeza <i class="fa-solid fa-arrow-right"></i>`;
@@ -369,7 +369,7 @@
                 currentActiveIndex++;
                 renderActiveQuestionCard();
             } else {
-                if (confirm('Ese muryhejeje neza ibibazo byose urashaka kureba amanota?')) {
+                if (confirm('Murifuza Gusoza Ikizamini?')) {
                     sessionStorage.removeItem('isExamAlreadyStarted'); 
                     executeAutoSubmission();
                 }
