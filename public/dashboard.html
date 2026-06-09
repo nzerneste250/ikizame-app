@@ -1,160 +1,309 @@
 <!DOCTYPE html>
-<html lang="rw">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - IKIZAME Admin Panel</title>
-    <link rel="stylesheet" href="assets/css/admin.css">
+    <title>Dashboard - IKIZAME Professional Admin</title>
+    <!-- Premium Google Fonts Hierarchy Inter -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        /* 🪐 CLEAN HIGH-CONTRAST MODERN WORKSPACE DESIGN SYSTEM */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-surface: #f1f5f9;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-blue: #0284c7;
+            --accent-delete: #ef4444;
+            --border-color: #cbd5e1;
+            
+            /* Sidebar Dark-Tokens Isolation Matrix */
+            --sidebar-bg: #131a2c;
+            --sidebar-border: #334155;
+            --sidebar-muted: #94a3b8;
+            --sidebar-active: #f8fafc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        html, body { height: 100vh; background-color: var(--bg-primary); color: var(--text-main); overflow: hidden; }
+
+        .admin-layout-grid { display: flex; height: calc(100vh - 45px); overflow: hidden; }
+
+        /* 🔒 1. PERMANENT GLASS-EFFECT SIDEBAR PANEL */
+        .sidebar-panel {
+            width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border);
+            padding: 30px 20px; display: flex; flex-direction: column; gap: 35px; flex-shrink: 0;
+        }
+        .sidebar-panel h2 {
+            font-size: 18px; font-weight: 800; letter-spacing: 1.5px; color: #38bdf8;
+            text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+        }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-nav a {
+            color: var(--sidebar-muted); text-decoration: none; padding: 14px 16px;
+            font-size: 14px; font-weight: 600; border-radius: 8px; display: flex; align-items: center; gap: 12px; transition: all 0.2s ease;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--sidebar-active); background-color: rgba(255,255,255,0.08); }
+        .sidebar-nav a.active { border-left: 4px solid #38bdf8; padding-left: 12px; font-weight: 700; }
+
+        /* 🔒 2. MAIN HUB WORKSPACE CONTAINER */
+        .workspace-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .header-title-bar {
+            padding: 25px 40px; border-bottom: 1px solid var(--border-color); background-color: var(--bg-secondary);
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+        }
+        .header-title-bar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+        .header-title-bar p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+        /* 🔍 REAL-TIME INTELLIGENT AUTO-SEARCH INPUT FIELD WRAPPER */
+        .search-engine-box { position: relative; width: 340px; }
+        .search-engine-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
+        .search-engine-box input {
+            width: 100%; padding: 11px 16px 11px 44px; background-color: var(--bg-primary);
+            border: 2px solid var(--border-color); border-radius: 8px; font-size: 13.5px; font-weight: 500;
+            outline: none; transition: all 0.15s ease; color: var(--text-main);
+        }
+        .search-engine-box input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1); background-color: #ffffff; }
+
+        /* Scrollable Data Records Inventory Board Workspace */
+        .table-scroller-view { flex: 1; overflow-y: auto; padding: 30px 40px; min-height: 0; }
+        
+        .data-table-container {
+            width: 100%; background-color: var(--bg-secondary); border: 1px solid var(--border-color);
+            border-radius: 12px; border-collapse: separate; border-spacing: 0; overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+        }
+        
+        .data-table-container th {
+            background-color: #f8fafc; color: var(--text-muted); font-size: 11px; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.75px; padding: 14px 20px; border-bottom: 2px solid var(--border-color); text-align: left;
+        }
+        .data-table-container td { padding: 16px 20px; font-size: 13.5px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
+        .data-table-container tr:last-child td { border-bottom: none; }
+        .data-table-container tr:hover td { background-color: #fbfdfe; }
+
+        /* Question and Options Internal Cell Render Framework Blocks */
+        .question-cell-wording { font-weight: 700; color: #1e293b; line-height: 1.4; margin-bottom: 4px; }
+        .question-id-badge { font-family: monospace; font-size: 11px; font-weight: 700; color: var(--accent-blue); background: #e0f2fe; padding: 2px 6px; border-radius: 4px; }
+
+        /* 📸 ADAPTIVE MEDIA RENDERER STYLING FOR DYNAMIC IMAGE BLOCKS Inside options cells */
+        .cell-image-wrapper {
+            width: 55px; height: 55px; border: 1px solid var(--border-color); border-radius: 6px;
+            background-color: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 2px;
+        }
+        .cell-image-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .correct-answer-pill { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background-color: #dcfce7; color: #15803d; font-weight: 800; font-size: 12px; }
+
+        /* Actions Interaction Trigger Row Controls Menu Icons */
+        .actions-btn-cluster { display: flex; gap: 8px; align-items: center; }
+        .action-icon-link {
+            border: 1px solid var(--border-color); padding: 8px; border-radius: 6px; cursor: pointer;
+            background-color: #ffffff; color: var(--text-muted); font-size: 13px; transition: all 0.15s ease;
+            display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+        }
+        .action-icon-link.edit-lnk:hover { border-color: var(--accent-blue); color: var(--accent-blue); background-color: #f0f9ff; }
+        .action-icon-link.delete-lnk:hover { border-color: var(--accent-delete); color: var(--accent-delete); background-color: #fef2f2; }
+
+        /* Baseline Footer Panel Layout */
+        .admin-footer-panel {
+            background-color: var(--sidebar-bg); color: #64748b; text-align: center;
+            padding: 14px; font-size: 11.5px; border-top: 1px solid var(--sidebar-border); height: 45px; z-index: 100;
+        }
+        .admin-footer-panel strong { color: #38bdf8; }
+
+        /* Responsive Mobile Breakpoint Layers Adjustments */
+        @media screen and (max-width: 992px) {
+            .sidebar-panel { display: none; }
+            .header-title-bar { padding: 20px; flex-direction: column; align-items: flex-start; gap: 15px; }
+            .search-engine-box { width: 100%; }
+            .table-scroller-view { padding: 15px; }
+            .data-table-container th:nth-child(3), .data-table-container td:nth-child(3) { display: none; } /* Collapses images row on mobile */
+        }
+    </style>
 </head>
 <body>
 
-    <div class="admin-container">
-        <!-- Sidebar Navigation Menu -->
-        <aside class="sidebar">
-            <h2>IKIZAME Admin</h2>
-            <nav>
-                <a href="dashboard.html" class="active"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-                <a href="add-exam.html"><i class="fa-solid fa-plus"></i> Injiza Ikizame</a>
-                <a href="/api/admin/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Soka hano</a>
+    <div class="admin-layout-grid">
+        <!-- Sidebar Menu Left Navigation Section -->
+        <aside class="sidebar-panel">
+            <h2><i class="fa-solid fa-graduation-cap"></i> IKIZAME Panel</h2>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+                <a href="add-exam.html"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
+                <a href="/api/admin/logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
             </nav>
         </aside>
 
-        <!-- Main Workspace Table Layout Area -->
-        <main class="main-content">
-            <header class="content-header layout-split">
+        <!-- Right Side Primary Workstation Viewport Frame -->
+        <main class="workspace-panel">
+            <header class="header-title-bar">
                 <div>
-                    <h1>Ibibazo Byose Biri mu Bubiko</h1>
-                    <p>Ubu urimo kureba no gucunga ibibazo bikoreshwa mu kizamini</p>
+                    <h1>Questions Repository</h1>
+                    <p>Live inventory of your exam questions data pool tables metrics.</p>
                 </div>
-                <a href="add-exam.html" class="action-btn-primary"><i class="fa-solid fa-plus"></i> Yongeramo Ikibazo</a>
+                <!-- 🔍 THE AUTO-SEARCH MECHANISM BOX CONTAINER -->
+                <div class="search-engine-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="autoSearchFilterInput" placeholder="Search by question description or options...">
+                </div>
             </header>
 
-            <section class="table-card" id="scrollableTableContainer">
-                <table class="exam-table">
+            <div class="table-scroller-view">
+                <table class="data-table-container">
                     <thead>
                         <tr>
-                            <th>No.</th>
-                            <th>Ifoto (Image)</th>
-                            <th>Ikibazo (Question Description)</th>
-                            <th>Amahitamo (Available Options)</th>
-                            <th>Igisubizo</th>
-                            <th>Guhindura</th>
+                            <th style="width: 80px;">Ref ID</th>
+                            <th>Question Details</th>
+                            <th style="width: 100px;">Sign Image</th>
+                            <th>Option A</th>
+                            <th>Option B</th>
+                            <th>Option C</th>
+                            <th>Option D</th>
+                            <th style="width: 80px; text-align: center;">Key</th>
+                            <th style="width: 100px; text-align: center;">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="examsTableBody">
-                        <!-- Content rendered dynamically by our background client script below -->
+                                        <tbody id="inventoryTableTargetBody">
+                        <!-- Async collection router injects data stream array tables loop records right here -->
                     </tbody>
                 </table>
-            </section>
+            </div>
         </main>
     </div>
 
-    <footer class="admin-footer">
+    <footer class="admin-footer-panel">
         <p>Developed by <strong>izo service quicky</strong></p>
     </footer>
 
+    <!-- Async Data Compilers and Real-time Search Engine script Execution Block -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const tableBody = document.getElementById('examsTableBody');
-            const tableContainer = document.getElementById('scrollableTableContainer');
+            const tableBody = document.getElementById('inventoryTableTargetBody');
+            const searchInput = document.getElementById('autoSearchFilterInput');
+            let masterQuestionsCacheArray = [];
 
-            // 🎯 Read URL parameters to check if a new question was just added
-            const urlParams = new URLSearchParams(window.location.search);
-            const newlyInsertedId = urlParams.get('newId');
-
+            // ⚡ 1. RUN DATA ACQUISITION TRANSACTION HANDSHAKE WITH THE API
             fetch('/api/exams')
-                .then(response => {
-                    if (response.status === 401 || response.redirected) {
-                        window.location.href = '/admin-login.html';
-                        return;
-                    }
-                    return response.json();
-                })
-                .then(exams => {
-                    if (!exams) return;
-                    
-                    if (exams.length === 0) {
-                        tableBody.innerHTML = `<tr><td colspan="6" class="empty-table-state">Ntago urashyiramo ibibazo. Kanda "Yongeramo Ikibazo" ubitangire.</td></tr>`;
-                        return;
-                    }
-
-                    // Sort sequentially from 1 to infinity
-                    const sortedExams = exams.sort((a, b) => a.id - b.id);
-
-                    tableBody.innerHTML = sortedExams.map((exam, index) => {
-                        // Check if this row matches the newly created database item ID
-                        const isNewItem = newlyInsertedId && parseInt(newlyInsertedId, 10) === exam.id;
-                        const highlightClass = isNewItem ? 'new-question-highlight' : '';
-                        const elementRowId = isNewItem ? `id="justAddedRowElement"` : '';
-
-                        return `
-                            <tr ${elementRowId} class="${highlightClass}">
-                                <td><strong>#${index + 1}</strong></td>
-                                <td>
-                                    ${exam.image_path ? 
-                                        `<img src="assets/uploads/${exam.image_path}" alt="Sign Image" class="table-thumbnail-preview" loading="lazy">` : 
-                                        `<span class="no-img-badge"><i class="fa-solid fa-ban"></i> Ntayihari</span>`
-                                    }
-                                </td>
-                                <td class="text-left-align font-medium">${exam.question}</td>
-                                <td class="text-left-align text-muted-small">
-                                    <strong>A:</strong> ${exam.option_a}<br>
-                                    <strong>B:</strong> ${exam.option_b}<br>
-                                    <strong>C:</strong> ${exam.option_c}<br>
-                                    <strong>D:</strong> ${exam.option_d}
-                                </td>
-                                <td><span class="correct-badge">${exam.correct_option}</span></td>
-                                <td>
-                                    <div class="row-actions">
-                                        <button onclick="window.location.href='edit-exam.html?id=${exam.id}'" class="real-admin-btn edit-trigger-btn" title="Hindura">
-                                            <i class="fa-solid fa-pen-to-square"></i> Hindura
-                                        </button>
-                                        <button onclick="deleteQuestion(${exam.id})" class="real-admin-btn delete-trigger-btn" title="Siba">
-                                            <i class="fa-solid fa-trash"></i> Siba
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    }).join('');
-
-                    // 🎯 4. AUTO-SCROLL TO TARGET LAYER INSTANTLY FOR VERIFICATION
-                    if (newlyInsertedId) {
-                        const targetHighlightedRow = document.getElementById('justAddedRowElement');
-                        if (targetHighlightedRow) {
-                            setTimeout(() => {
-                                // Smoothly center the row container inside our non-scrolling grid view
-                                targetHighlightedRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                
-                                // Cleanly remove the gold background alert color after 5 seconds
-                                setTimeout(() => {
-                                    targetHighlightedRow.classList.remove('new-question-highlight');
-                                    // Remove the ID parameters from the browser address bar for cleanliness
-                                    window.history.replaceState({}, document.title, "/dashboard.html");
-                                }, 5000);
-                            }, 400); // 400ms buffer gives table rows time to compile
-                        }
-                    }
+                .then(res => res.json())
+                .then(questionsList => {
+                    masterQuestionsCacheArray = questionsList;
+                    renderQuestionsTableRows(masterQuestionsCacheArray);
                 })
                 .catch(err => {
-                    console.error('Error fetching questions:', err);
-                    tableBody.innerHTML = `<tr><td colspan="6" style="color:red; padding:20px;">Guhura n'ikibazo mu kuzana amadata...</td></tr>`;
+                    console.error('API Pull Failure:', err);
+                    tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#ef4444; font-weight:600; padding:30px;">Error loading rows out of cloud cluster connection.</td></tr>`;
                 });
-        });
 
-        function deleteQuestion(id) {
-            if (confirm('Ese urashaka gusiba iki kibazo burundu?')) {
-                fetch(`/api/exams/delete/${id}`, { method: 'DELETE' })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.reload();
-                        }
-                    })
-                    .catch(err => console.error('Error deleting question:', err));
+            // ⚡ 2. UTILITY FILTER ENGINE: Renders text option OR custom option thumbnail images dynamically
+            function resolveChoiceCellLayout(optionValueString) {
+                if (!optionValueString) return `<span style="color:#cbd5e1; font-style:italic;">Empty</span>`;
+                
+                // 📸 Checks if value matches image extension strings signatures
+                const isImageFileFormat = /\.(png|jpg|jpeg|gif|webp)$/i.test(optionValueString);
+                
+                if (isImageFileFormat) {
+                    return `
+                        <div class="cell-image-wrapper" title="Image choice path target: ${optionValueString}">
+                            <img src="assets/uploads/${optionValueString}" alt="Choice Thumbnail" loading="lazy">
+                        </div>`;
+                }
+                return `<span>${optionValueString}</span>`;
             }
-        }
+
+            // ⚡ 3. GRID RECORDS GENERATION LOOP PROCESSOR MODULE
+            function renderQuestionsTableRows(dataSetArray) {
+                if (dataSetArray.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:30px; font-style:italic;">No records matched your current query criteria.</td></tr>`;
+                    return;
+                }
+
+                tableBody.innerHTML = dataSetArray.map((exam, idx) => {
+                    return `
+                        <tr id="question_row_id_${exam.id}">
+                            <td><span class="question-id-badge">#${exam.id}</span></td>
+                            <td>
+                                <div class="question-cell-wording">${exam.question}</div>
+                            </td>
+                            <td>
+                                ${exam.image_path ? 
+                                    `<div class="cell-image-wrapper"><img src="assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy"></div>` : 
+                                    `<span style="color:#cbd5e1; font-size:11px;">None</span>`
+                                }
+                            </td>
+                            <td>${resolveChoiceCellLayout(exam.option_a)}</td>
+                            <td>${resolveChoiceCellLayout(exam.option_b)}</td>
+                            <td>${resolveChoiceCellLayout(exam.option_c)}</td>
+                            <td>${resolveChoiceCellLayout(exam.option_d)}</td>
+                            <td style="text-align: center;"><span class="correct-answer-pill">${exam.correct_option}</span></td>
+                            <td style="text-align: center;">
+                                <div class="actions-btn-cluster">
+                                    <a href="edit-exam.html?id=${exam.id}" class="action-icon-link edit-lnk" title="Edit Question Parameters"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <button onclick="executeSecureRecordDeletion(${exam.id})" class="action-icon-link delete-lnk" title="Delete Question Object"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            // ⚡ 4. INTELLIGENT AUTO-SEARCH INPUT FILTER ENGINE
+            searchInput.addEventListener('input', function() {
+                const searchStringQuery = this.value.toLowerCase().trim();
+
+                if (!searchStringQuery) {
+                    renderQuestionsTableRows(masterQuestionsCacheArray);
+                    return;
+                }
+
+                // Filters through full description parameters and choices strings concurrently
+                const filteredResultsSubset = masterQuestionsCacheArray.filter(exam => {
+                    const matchTextQuestion = (exam.question || '').toLowerCase();
+                    const matchOptionA = (exam.option_a || '').toLowerCase();
+                    const matchOptionB = (exam.option_b || '').toLowerCase();
+                    const matchOptionC = (exam.option_c || '').toLowerCase();
+                    const matchOptionD = (exam.option_d || '').toLowerCase();
+
+                    return matchTextQuestion.includes(searchStringQuery) || 
+                           matchOptionA.includes(searchStringQuery) || 
+                           matchOptionB.includes(searchStringQuery) || 
+                           matchOptionC.includes(searchStringQuery) || 
+                           matchOptionD.includes(searchStringQuery);
+                });
+
+                renderQuestionsTableRows(filteredResultsSubset);
+            });
+
+            // ⚡ 5. DELETION PIPELINE ASYNC INTERCEPT HANDLER TRANSFERS
+            window.executeSecureRecordDeletion = function(questionRecordId) {
+                if (confirm('Are you absolutely certain you want to remove this question permanently from your system database records configuration pool? This operation cannot be undone!')) {
+                    fetch(`/api/exams/delete/${questionRecordId}`, { method: 'DELETE' })
+                        .then(res => res.json())
+                        .then(response => {
+                            if (response.success) {
+                                // Slice the element out of the local cached memory stack array to avoid re-fetching
+                                masterQuestionsCacheArray = masterQuestionsCacheArray.filter(item => item.id !== questionRecordId);
+                                
+                                // Smoothly fade out and remove row from view
+                                const targetRowElement = document.getElementById(`question_row_id_${questionRecordId}`);
+                                if (targetRowElement) {
+                                    targetRowElement.style.transition = 'all 0.3s ease';
+                                    targetRowElement.style.opacity = '0';
+                                    setTimeout(() => { targetRowElement.remove(); }, 300);
+                                }
+                            } else {
+                                alert('Error running deletion routine transaction mapping.');
+                            }
+                        })
+                        .catch(err => console.error('Deletion Exception Logged:', err));
+                }
+            };
+        });
     </script>
 </body>
 </html>
