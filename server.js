@@ -169,15 +169,56 @@ app.get('/api/exams/:id', (req, res) => {
         }
     });
 });
+// ➕ F. SUBMIT RUNTIME UPDATE EDITS OVER EXISTING EXAM RECORDS (Hybrid Engine Update)
+app.post('/api/exams/edit', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
+    // 🎯 Extract body variables safely with strict fallback guards
+    const id = req.body.id;
+    const question = req.body.question || '';
+    const correctOption = req.body.correctOption || '';
+    const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
+    const existingImagePath = req.body.existingImagePath || '';
+    
+    const existingOptA = req.body.existingOptA || '';
+    const existingOptB = req.body.existingOptB || '';
+    const existingOptC = req.body.existingOptC || '';
+    const existingOptD = req.body.existingOptD || '';
 
-// ➕ F. SUBMIT RUNTIME UPDATE EDITS OVER EXISTING EXAM RECORDS
-app.post('/api/exams/edit', requireAdminLogin, upload.single('imageFile'), (req, res) => {
-    const { id, question, optionA, optionB, optionC, optionD, correctOption, existingImagePath } = req.body;
-    const imagePath = req.file ? req.file.filename : existingImagePath;
+    // Process main road sign picture upload parameters safely
+    const imagePath = req.files && req.files['imageFile'] && req.files['imageFile'][0] 
+        ? req.files['imageFile'][0].filename 
+        : existingImagePath;
+
+    let finalOptionA = '';
+    let finalOptionB = '';
+    let finalOptionC = '';
+    let finalOptionD = '';
+
+    // 🎯 NESTED EXTRACTION CHECK: Reads new files if selected, drops back to previous image links, or maps text boxes
+    if (optionsLayoutMode === 'image') {
+        finalOptionA = req.files && req.files['optionA_File'] && req.files['optionA_File'][0] ? req.files['optionA_File'][0].filename : existingOptA;
+        finalOptionB = req.files && req.files['optionB_File'] && req.files['optionB_File'][0] ? req.files['optionB_File'][0].filename : existingOptB;
+        finalOptionC = req.files && req.files['optionC_File'] && req.files['optionC_File'][0] ? req.files['optionC_File'][0].filename : existingOptC;
+        finalOptionD = req.files && req.files['optionD_File'] && req.files['optionD_File'][0] ? req.files['optionD_File'][0].filename : existingOptD;
+    } else {
+        // Standard text box values mapping straight out of text mode layout fields
+        finalOptionA = req.body.optionA || '';
+        finalOptionB = req.body.optionB || '';
+        finalOptionC = req.body.optionC || '';
+        finalOptionD = req.body.optionD || '';
+    }
+
+    // Secondary structural integrity locks to guarantee no NULL database column errors
+    if (!finalOptionA) finalOptionA = '';
+    if (!finalOptionB) finalOptionB = '';
+    if (!finalOptionC) finalOptionC = '';
+    if (!finalOptionD) finalOptionD = '';
 
     const sql = `UPDATE exams SET question=?, option_a=?, option_b=?, option_c=?, option_d=?, correct_option=?, image_path=? WHERE id=?`;
-    db.query(sql, [question, optionA, optionB, optionC, optionD, correctOption, imagePath, id], (err, result) => {
-        if (err) return res.status(500).send('Database Error Updating Records Matrix: ' + err.message);
+    db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, imagePath, id], (err, result) => {
+        if (err) {
+            console.error('❌ Database update error:', err.message);
+            return res.status(500).send('Database Error Updating Records Matrix: ' + err.message);
+        }
         res.redirect('/dashboard.html');
     });
 });
