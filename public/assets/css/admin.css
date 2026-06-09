@@ -1,0 +1,331 @@
+/* Core system reset rules and administrative baseline typography */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 🔒 1. LOCK WHOLE VIEWPORT SYSTEM FRAME */
+html, body {
+    height: 100vh;
+    overflow: hidden; /* Stops whole body page scrolling */
+    background-color: #f8fafc;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Master Fixed Layout Framework Split Container */
+.admin-container {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 45px); /* Reserves clean spacing layer for footers layout */
+    overflow: hidden;
+    position: relative;
+}
+
+/* 🔒 2. FIXED PERSISTENT MENUS LEFT SIDEBAR PANEL */
+.sidebar {
+    width: 250px;
+    background-color: #0f172a;
+    color: #ffffff;
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    height: 100%; /* Spans full height frame */
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+.sidebar h2 {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #38bdf8;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sidebar nav a {
+    color: #94a3b8;
+    text-decoration: none;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    font-weight: 500;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.sidebar nav a:hover, .sidebar nav a.active {
+    color: #ffffff;
+    background-color: #1e293b;
+}
+
+.sidebar nav a.active {
+    border-left: 4px solid #38bdf8;
+    background-color: #1e293b;
+    padding-left: 10px;
+}
+
+/* 🔒 3. SCROLLABLE WORKSPACE AREA WRAPPER CONTAINER GRID */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden; /* Keeps outer workstation locked down */
+}
+
+/* 🔒 4. STICKY TOP LAYER TEXT RUNTIME TITLE BAR CARD */
+.content-header.layout-split {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 30px 30px 20px 30px;
+    background-color: #f8fafc;
+    flex-shrink: 0; /* Prevents title bars compression scales */
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.content-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.content-header p {
+    font-size: 13.5px;
+    color: #64748b;
+}
+
+/* Global Button Triggers */
+.action-btn-primary {
+    background-color: #0b698b;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+}
+
+.action-btn-primary:hover {
+    background-color: #08536e;
+}
+
+/* 🔒 5. DYNAMIC INDEPENDENT TABLE INVENTORY CONTAINER SCROLLBOX */
+.table-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    margin: 20px 30px 30px 30px;
+    border-radius: 8px;
+    flex: 1;
+    overflow-y: auto; /* ⚡ Only the items inside this section will scroll! */
+    min-height: 0;
+}
+
+.exam-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* 🔒 STICKY TABLE HEADERS PREVENT ROW OVERLAPS */
+.exam-table th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 14px;
+    border-bottom: 1px solid #e2e8f0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.exam-table td {
+    padding: 14px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 13.5px;
+    color: #334155;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.exam-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.text-left-align {
+    text-align: left !important;
+}
+
+.font-medium {
+    font-weight: 500;
+    color: #0f172a;
+}
+
+.text-muted-small {
+    font-size: 12.5px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* Image Presentation Previews */
+.table-thumbnail-preview {
+    width: 70px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    background-color: #f8fafc;
+    padding: 2px;
+}
+
+.no-img-badge {
+    font-size: 11px;
+    color: #94a3b8;
+    background-color: #f1f5f9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.correct-badge {
+    background-color: #dcfce7;
+    color: #166534;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+/* Premium Hover Action Buttons Panel Layout */
+.row-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 110px;
+    margin: 0 auto;
+}
+
+.real-admin-btn {
+    width: 100%;
+    border: none;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    color: #ffffff;
+}
+
+.real-admin-btn.edit-trigger-btn {
+    background-color: #eab308;
+    box-shadow: 0 2px 4px rgba(234, 179, 8, 0.15);
+}
+.real-admin-btn.edit-trigger-btn:hover {
+    background-color: #ca8a04;
+    transform: translateY(-1px);
+}
+
+.real-admin-btn.delete-trigger-btn {
+    background-color: #ef4444;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.15);
+}
+.real-admin-btn.delete-trigger-btn:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+}
+
+.empty-table-state {
+    padding: 30px !important;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* Fixed Base Trademark Footer Section */
+.admin-footer {
+    background-color: #0f172a;
+    color: #64748b;
+    text-align: center;
+    padding: 12px;
+    font-size: 11.5px;
+    border-top: 1px solid #1e293b;
+    height: 45px;
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+.admin-footer strong {
+    color: #38bdf8;
+}
+
+/* Form layouts validation wrappers constraints spacing */
+.form-wrapper {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    max-width: 850px;
+    margin: 20px 30px;
+    overflow-y: auto;
+}
+/* ==========================================================================
+   ⚡ NEW QUESTION VERIFICATION HIGHLIGHT ANIMATION
+   ========================================================================== */
+.new-question-highlight {
+    background-color: #fef08a !important; /* Premium Soft Gold Warning Fill Tint */
+    border-left: 5px solid #eab308 !important;
+    animation: flashGlowVerification 2.5s ease-in-out infinite;
+}
+
+@keyframes flashGlowVerification {
+    0% { box-shadow: inset 0 0 12px rgba(234, 179, 8, 0.2); }
+    50% { box-shadow: inset 0 0 24px rgba(234, 179, 8, 0.5); background-color: #fef9c3 !important; }
+    100% { box-shadow: inset 0 0 12px rgba(234, 179, 8, 0.2); }
+}
+/* Responsive Overrides */
+@media screen and (max-width: 992px) {
+    html, body { overflow: auto; height: auto; }
+    .admin-container { flex-direction: column; height: auto; }
+    .sidebar { width: 100%; padding: 15px; gap: 15px; height: auto; }
+    .sidebar h2 { text-align: left; }
+    .sidebar nav { flex-direction: row; flex-wrap: wrap; }
+    .main-content { height: auto; overflow: visible; }
+    .table-card { margin: 15px; overflow-y: visible; height: auto; }
+    .content-header.layout-split { padding: 20px 15px; position: static; }
+}

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - IKIZAME Admin Panel</title>
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="https://cloudflare.com">
+</head>
+<body>
+
+    <div class="admin-container">
+        <!-- Sidebar Navigation Menu -->
+        <aside class="sidebar">
+            <h2>IKIZAME Admin</h2>
+            <nav>
+                <a href="dashboard.html" class="active"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+                <a href="add-exam.html"><i class="fa-solid fa-plus"></i> Injiza Ikizame</a>
+                <a href="/api/admin/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Soka hano</a>
+            </nav>
+        </aside>
+
+        <!-- Main Workspace Table Layout Area -->
+        <main class="main-content">
+            <header class="content-header layout-split">
+                <div>
+                    <h1>Ibibazo Byose Biri mu Bubiko</h1>
+                    <p>Ubu urimo kureba no gucunga ibibazo bikoreshwa mu kizamini</p>
+                </div>
+                <a href="add-exam.html" class="action-btn-primary"><i class="fa-solid fa-plus"></i> Yongeramo Ikibazo</a>
+            </header>
+
+            <section class="table-card" id="scrollableTableContainer">
+                <table class="exam-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Ifoto (Image)</th>
+                            <th>Ikibazo (Question Description)</th>
+                            <th>Amahitamo (Available Options)</th>
+                            <th>Igisubizo</th>
+                            <th>Guhindura</th>
+                        </tr>
+                    </thead>
+                    <tbody id="examsTableBody">
+                        <!-- Content rendered dynamically by our background client script below -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <footer class="admin-footer">
+        <p>Developed by <strong>izo service quicky</strong></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.getElementById('examsTableBody');
+            const tableContainer = document.getElementById('scrollableTableContainer');
+
+            // 🎯 Read URL parameters to check if a new question was just added
+            const urlParams = new URLSearchParams(window.location.search);
+            const newlyInsertedId = urlParams.get('newId');
+
+            fetch('/api/exams')
+                .then(response => {
+                    if (response.status === 401 || response.redirected) {
+                        window.location.href = '/admin-login.html';
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(exams => {
+                    if (!exams) return;
+                    
+                    if (exams.length === 0) {
+                        tableBody.innerHTML = `<tr><td colspan="6" class="empty-table-state">Ntago urashyiramo ibibazo. Kanda "Yongeramo Ikibazo" ubitangire.</td></tr>`;
+                        return;
+                    }
+
+                    // Sort sequentially from 1 to infinity
+                    const sortedExams = exams.sort((a, b) => a.id - b.id);
+
+                    tableBody.innerHTML = sortedExams.map((exam, index) => {
+                        // Check if this row matches the newly created database item ID
+                        const isNewItem = newlyInsertedId && parseInt(newlyInsertedId, 10) === exam.id;
+                        const highlightClass = isNewItem ? 'new-question-highlight' : '';
+                        const elementRowId = isNewItem ? `id="justAddedRowElement"` : '';
+
+                        return `
+                            <tr ${elementRowId} class="${highlightClass}">
+                                <td><strong>#${index + 1}</strong></td>
+                                <td>
+                                    ${exam.image_path ? 
+                                        `<img src="assets/uploads/${exam.image_path}" alt="Sign Image" class="table-thumbnail-preview" loading="lazy">` : 
+                                        `<span class="no-img-badge"><i class="fa-solid fa-ban"></i> Ntayihari</span>`
+                                    }
+                                </td>
+                                <td class="text-left-align font-medium">${exam.question}</td>
+                                <td class="text-left-align text-muted-small">
+                                    <strong>A:</strong> ${exam.option_a}<br>
+                                    <strong>B:</strong> ${exam.option_b}<br>
+                                    <strong>C:</strong> ${exam.option_c}<br>
+                                    <strong>D:</strong> ${exam.option_d}
+                                </td>
+                                <td><span class="correct-badge">${exam.correct_option}</span></td>
+                                <td>
+                                    <div class="row-actions">
+                                        <button onclick="window.location.href='edit-exam.html?id=${exam.id}'" class="real-admin-btn edit-trigger-btn" title="Hindura">
+                                            <i class="fa-solid fa-pen-to-square"></i> Hindura
+                                        </button>
+                                        <button onclick="deleteQuestion(${exam.id})" class="real-admin-btn delete-trigger-btn" title="Siba">
+                                            <i class="fa-solid fa-trash"></i> Siba
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                    // 🎯 4. AUTO-SCROLL TO TARGET LAYER INSTANTLY FOR VERIFICATION
+                    if (newlyInsertedId) {
+                        const targetHighlightedRow = document.getElementById('justAddedRowElement');
+                        if (targetHighlightedRow) {
+                            setTimeout(() => {
+                                // Smoothly center the row container inside our non-scrolling grid view
+                                targetHighlightedRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                
+                                // Cleanly remove the gold background alert color after 5 seconds
+                                setTimeout(() => {
+                                    targetHighlightedRow.classList.remove('new-question-highlight');
+                                    // Remove the ID parameters from the browser address bar for cleanliness
+                                    window.history.replaceState({}, document.title, "/dashboard.html");
+                                }, 5000);
+                            }, 400); // 400ms buffer gives table rows time to compile
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error('Error fetching questions:', err);
+                    tableBody.innerHTML = `<tr><td colspan="6" style="color:red; padding:20px;">Guhura n'ikibazo mu kuzana amadata...</td></tr>`;
+                });
+        });
+
+        function deleteQuestion(id) {
+            if (confirm('Ese urashaka gusiba iki kibazo burundu?')) {
+                fetch(`/api/exams/delete/${id}`, { method: 'DELETE' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        }
+                    })
+                    .catch(err => console.error('Error deleting question:', err));
+            }
+        }
+    </script>
+</body>
+</html>

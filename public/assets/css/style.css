@@ -1,0 +1,275 @@
+/* Universal page layout reset rules */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Header Layout Navigation Bar --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px 50px;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0b698b;
+    letter-spacing: 1px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #4a5568;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 0;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: #0b698b;
+    border-bottom: 2px solid #0b698b;
+}
+
+.lang-selector {
+    border: 1px solid #cbd5e1;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #f8fafc;
+}
+
+/* --- Split Screen Hero Layout Framework --- */
+.hero-section {
+    flex: 1;
+    position: relative;
+    background: url('https://unsplash.com') no-repeat center center/cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.55); /* Tint background to match image overlay look */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10%;
+}
+
+/* Left Content panel typography */
+.hero-text-side {
+    color: #ffffff;
+    max-width: 500px;
+}
+
+.hero-text-side h1 {
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 25px;
+}
+
+.cta-btn {
+    background-color: #ffffff;
+    color: #0f172a;
+    border: none;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.cta-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Right Content Floating Interactive Box Model Card */
+.form-card {
+    background-color: #ffffff;
+    width: 460px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.form-tabs {
+    display: flex;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    background-color: #f8fafc;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    color: #64748b;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.active-tab {
+    background-color: #0b698b;
+    color: #ffffff;
+    border-bottom: 2px solid #0b698b;
+}
+
+.form-tabs .tab-btn:not(.active-tab) {
+    background-color: #ffffff;
+    color: #0b698b;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.form-body {
+    padding: 35px 30px;
+}
+
+.form-body h2 {
+    font-size: 22px;
+    color: #1e293b;
+    text-align: center;
+    line-height: 1.4;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Layout input parameter elements styles */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.input-group input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+}
+
+/* Phone validation text layout fields wrappers */
+.phone-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.country-prefix {
+    background-color: #f1f5f9;
+    padding: 12px;
+    font-size: 14px;
+    color: #334155;
+    border-right: 1px solid #cbd5e1;
+}
+
+.phone-input-wrapper input {
+    flex: 1;
+    border: none;
+    padding: 12px;
+    font-size: 15px;
+    outline: none;
+}
+
+.submit-form-btn {
+    width: 100%;
+    background-color: #0b698b;
+    color: #ffffff;
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.submit-form-btn:hover {
+    background-color: #08536e;
+}
+
+/* --- Fixed Base Portal Footer Section --- */
+.footer-bar {
+    background-color: #0f172a;
+    color: #94a3b8;
+    text-align: center;
+    padding: 15px;
+    font-size: 13px;
+    border-top: 1px solid #1e293b;
+}
+
+.footer-bar strong {
+    color: #38bdf8;
+}
+
+/* ==========================================================================
+   📱 RESPONSIVE MEDIA QUERIES FOR ALL MOBILE PHONE SIZES
+   ========================================================================== */
+
+@media screen and (max-width: 1024px) {
+    .navbar { padding: 15px 30px; }
+    .hero-overlay { padding: 40px 5%; flex-direction: column; justify-content: center; gap: 40px; overflow-y: auto; }
+    .hero-text-side { text-align: center; max-width: 100%; }
+    .hero-text-side h1 { font-size: 48px; }
+    .cta-btn { margin: 0 auto; }
+}
+
+@media screen and (max-width: 768px) {
+    .navbar { flex-direction: column; gap: 12px; padding: 15px; text-align: center; }
+    .nav-links { flex-wrap: wrap; justify-content: center; gap: 15px; }
+    .nav-links a { font-size: 13px; }
+    .hero-section { min-height: calc(100vh - 120px); }
+    .hero-overlay { position: relative; height: auto; padding: 30px 20px; }
+    .hero-text-side h1 { font-size: 36px; }
+    .form-card { width: 100%; max-width: 400px; }
+    .form-body { padding: 25px 20px; }
+    .form-body h2 { font-size: 18px; margin-bottom: 20px; }
+}
+
+@media screen and (max-width: 360px) {
+    .hero-text-side h1 { font-size: 28px; }
+    .form-tabs .tab-btn { padding: 12px 6px; font-size: 11px; }
+    .country-prefix { padding: 10px; font-size: 13px; }
+}

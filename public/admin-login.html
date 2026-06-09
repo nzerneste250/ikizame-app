@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kwinjira - IKIZAME Admin Access</title>
+    <!-- Link to your standard public layout stylesheet -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Font Awesome vectors library -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        /* Standalone adjustments for centering the security form */
+        .login-box { 
+            width: 100%; 
+            max-width: 400px; 
+            margin: 80px auto; 
+            background: white; 
+            padding: 40px 30px; 
+            border-radius: 8px; 
+            border: 1px solid #cbd5e1; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+        }
+        .login-box h2 { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            color: #0b698b; 
+            font-weight: 700;
+        }
+        .password-field {
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            outline: none;
+            font-size: 15px;
+        }
+        .password-field:focus {
+            border-color: #0b698b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Upper Security Navbar Branding Header -->
+    <header class="navbar">
+        <div class="logo">IKIZAME - Admin System Gate</div>
+        <a href="index.html" class="lang-selector" style="text-decoration: none; color: #4a5568; font-weight: 500;">
+            <i class="fa-solid fa-arrow-left"></i> Subira Ahabanza
+        </a>
+    </header>
+
+    <!-- Centered Login Credentials Box Module -->
+    <div class="login-box">
+        <h2>Kwinjira Muri Admin Panel</h2>
+        
+        <!-- form target hits our secure express-session post endpoint routing path -->
+        <form action="/api/admin/login" method="POST">
+            <div class="input-group">
+                <label for="username">Izina ry'Ikoresha (Username)</label>
+                <input type="text" id="username" name="username" required placeholder="ex: admin">
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Ijambo ry'Ibanga (Password)</label>
+                <input type="password" id="password" name="password" class="password-field" required placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="submit-form-btn">Injira Hano</button>
+        </form>
+    </div>
+
+    <!-- Corporate Signoff Footer Layout -->
+    <footer class="footer-bar" style="margin-top: auto;">
+        <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
+    </footer>
+
+</body>
+</html>

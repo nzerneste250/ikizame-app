@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IKIZAME - Amanota Yabonetse</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        /* Infinite content correction tracking grid stylesheet elements */
+        html, body { height: auto; overflow-y: auto; margin: 0; padding: 0; background-color: #f8fafc; }
+        body { display: flex; flex-direction: column; }
+        .results-page-wrapper { max-width: 900px; margin: 30px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* Dashboard Summary Circular Circle Metrics Card */
+        .score-card { background-color: #ffffff; padding: 30px 20px; border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01); text-align: center; position: relative; }
+        
+        /* 👤 STUDENT IDENTITY PRESET METRICS INFO STRIP */
+        .student-identity-banner { background: #f1f5f9; padding: 12px 20px; border-radius: 8px; margin-bottom: 25px; text-align: left; border-left: 5px solid #0b698b; display: flex; flex-direction: column; gap: 4px; }
+        .student-identity-banner h4 { font-size: 16px; color: #0f172a; font-weight: 700; margin: 0; }
+        .student-identity-banner p { font-size: 13px; color: #475569; margin: 0; font-weight: 500; }
+        
+        .score-badge-circle { width: 120px; height: 120px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px; border: 6px solid #e2e8f0; }
+        .score-badge-circle .obtained { font-size: 34px; font-weight: 800; color: #1e293b; line-height: 1; }
+        .score-badge-circle .total-max { font-size: 14px; color: #64748b; margin-top: 4px; border-top: 1px solid #cbd5e1; padding-top: 4px; width: 50%; }
+        
+        .status-banner { padding: 10px 24px; border-radius: 25px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; text-transform: uppercase; }
+        .status-banner.passed { background-color: #dcfce7; color: #166534; }
+        .status-banner.failed { background-color: #fee2e2; color: #991b1b; }
+        
+        .feedback-message h2 { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+        .feedback-message p { font-size: 13.5px; color: #64748b; margin-bottom: 10px; line-height: 1.4; }
+        
+        /* Interactive Correction Elements Grid Cards Structure */
+        .review-section-title { font-size: 18px; font-weight: 800; color: #0f172a; border-left: 5px solid #0b698b; padding-left: 10px; margin-top: 10px; }
+        .review-question-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
+        
+        /* SKIPPED QUESTIONS OUTLINE RED DASHED SPECIFICATIONS OVERRIDE */
+        .review-question-card.state-skipped { border: 2.5px dashed #ef4444 !important; background: rgba(239, 68, 68, 0.01); }
+        
+        .review-q-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; }
+        .review-q-text { font-size: 15px; font-weight: 700; color: #1e293b; line-height: 1.4; }
+        
+        /* 🎯 Flex Grid Shifter: Switches dynamically between full-width or two columns */
+        .review-split-grid { display: grid; grid-template-columns: 130px 1fr; gap: 20px; align-items: center; }
+        .review-split-grid.review-no-image-layout { grid-template-columns: 1fr !important; gap: 0 !important; }
+        
+        .review-img-box { border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px; background: #fafafa; height: 90px; display: flex; align-items: center; justify-content: center; }
+        .review-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .review-options-list { display: flex; flex-direction: column; gap: 6px; }
+        .review-option-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13.5px; font-weight: 500; color: #475569; background: #ffffff; }
+        
+        /* Interactive Highlight Assessment Styles Rules */
+        .review-option-row.highlight-correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d !important; font-weight: 700; }
+        .review-option-row.highlight-incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c !important; font-weight: 700; }
+        
+        .status-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-left: auto; display: inline-flex; align-items: center; gap: 4px; }
+        .status-badge.correct { background: #22c55e; color: white; }
+        .status-badge.wrong { background: #ef4444; color: white; }
+        .status-badge.skipped { background: #ef4444; color: white; }
+
+        .btn-navigation { text-decoration: none; padding: 12px 40px; font-size: 14px; font-weight: 700; border-radius: 25px; transition: background 0.2s ease; text-align: center; display: inline-block; background-color: #0b698b; color: #ffffff; box-shadow: 0 4px 10px rgba(11, 105, 139, 0.2); border: none; cursor: pointer; margin: 10px auto; }
+        .btn-navigation:hover { background-color: #08536e; }
+
+        /* 📱 RESPONSIVE MEDIA GRID ADJUSTMENTS FOR PORTRAIT SMARTPHONES */
+        @media screen and (max-width: 768px) {
+            .results-page-wrapper { padding: 10px; gap: 15px; margin: 15px auto; }
+            .score-card { padding: 20px 15px; }
+            .review-split-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+            .review-img-box { height: 140px; width: 100%; max-width: 180px; margin: 0 auto; }
+            .review-question-card { padding: 15px; }
+            .radio-option-row { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo"><i class="fa-solid fa-car-side"></i> IKIZAME</div>
+    </header>
+
+    <main class="results-page-wrapper">
+        <section class="score-card" id="metricsOverviewCard"></section>
+
+        <h3 class="review-section-title">Genzura Ibisubizo Byose (20)</h3>
+        <section id="detailedReviewContainer" style="display: flex; flex-direction: column; gap: 15px;"></section>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="index.html" class="btn-navigation"><i class="fa-solid fa-rotate-left"></i> Kora ikindi kizame</a>
+        </div>
+    </main>
+
+    <footer class="footer-bar">
+        <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = function () {
+                window.history.pushState(null, "", window.location.href);
+                window.location.replace('index.html'); 
+            };
+
+            const studentName = sessionStorage.getItem('studentName') || 'Umusomyi';
+            const phoneNumber = sessionStorage.getItem('phoneNumber') || '0780000000';
+            const score = parseInt(sessionStorage.getItem('latestScore')) || 0;
+            const total = 20; 
+
+            const cachedQuestionsJSON = sessionStorage.getItem('shuffledQuestionsReview');
+            const studentAnswers = JSON.parse(sessionStorage.getItem('studentAnswerMapping') || '{}');
+
+            const metricsCard = document.getElementById('metricsOverviewCard');
+            const reviewContainer = document.getElementById('detailedReviewContainer');
+            const isPassed = score >= 12;
+
+            if (isPassed) {
+                metricsCard.innerHTML = `
+                    
+                        <h4><i class="fa-solid fa-user"></i> Amazina: ${studentName}</h4>
+                        <p><i class="fa-solid fa-phone"></i> Telefone: +250 ${phoneNumber}</p>
+                    </div>
+                    <div class="status-banner passed"><i class="fa-solid fa-circle-check"></i> MWATSINZE NEZA</div>
+                    <div class="score-badge-circle" style="border-color: #22c55e;">
+                        <span class="obtained">${score}</span>
+                        <span class="total-max">${total}</span>
+                    </div>
+                    <div class="feedback-message">
+                        <h2>Mwarakoze cyane!</h2>
+                        <p>Mwatsinze isuzuma bumenyi ry'amategeko y'umuhanda.</p>
+                    </div>`;
+            } else {
+                metricsCard.innerHTML = `
+                    
+                        <h4><i class="fa-solid fa-user"></i> Amazina: ${studentName}</h4>
+                        <p><i class="fa-solid fa-phone"></i> Telefone: +250 ${phoneNumber}</p>
+                    </div>
+                    <div class="status-banner failed"><i class="fa-solid fa-circle-xmark"></i> NTABWO MWATSINZE</div>
+                    <div class="score-badge-circle" style="border-color: #ef4444;">
+                        <span class="obtained">${score}</span>
+                        <span class="total-max">${total}</span>
+                    </div>
+                    <div class="feedback-message">
+                        <h2>Mwongere mugerageze!</h2>
+                        <p>Gutsinda bisaba gutsindira nibura amanota <strong>12/20</strong>. Ongera usome amategeko neza.</p>
+                    </div>`;
+            }
+
+            if (cachedQuestionsJSON) {
+                                const exams = JSON.parse(cachedQuestionsJSON);
+                
+                reviewContainer.innerHTML = exams.map((exam, index) => {
+                    const studentChoice = studentAnswers[exam.id]; 
+                    const correctKey = exam.correct_option.toUpperCase();
+
+                    let cardStatusClass = "";
+                    let statusBadgeHtml = "";
+
+                    if (!studentChoice) {
+                        cardStatusClass = "state-skipped";
+                        statusBadgeHtml = `<span class="status-badge skipped"><i class="fa-solid fa-circle-minus"></i> Mwasimbutse</span>`;
+                    } else if (studentChoice === correctKey) {
+                        cardStatusClass = "state-correct";
+                        statusBadgeHtml = `<span class="status-badge correct"><i class="fa-solid fa-circle-check"></i>Mwagikoze</span>`;
+                    } else {
+                        cardStatusClass = "state-incorrect";
+                        statusBadgeHtml = `<span class="status-badge wrong"><i class="fa-solid fa-circle-xmark"></i> Amakosa</span>`;
+                    }
+
+                    const optionsMetaArray = [
+                        { key: "A", text: exam.option_a },
+                        { key: "B", text: exam.option_b },
+                        { key: "C", text: exam.option_c },
+                        { key: "D", text: exam.option_d }
+                    ];
+
+                    const optionsRowsHtml = optionsMetaArray.map(opt => {
+                        let highlightClass = "";
+                        if (opt.key === correctKey) {
+                            highlightClass = "highlight-correct";
+                        } else if (studentChoice && opt.key === studentChoice && studentChoice !== correctKey) {
+                            highlightClass = "highlight-incorrect";
+                        }
+                        return `
+                            <div class="review-option-row ${highlightClass}">
+                                <strong>${opt.key.toLowerCase()})</strong> &nbsp; ${opt.text}
+                            </div>
+                        `;
+                    }).join('');
+
+                    // 🎯 CONDITIONALLY RENDER IMAGE PORTION ONLY IF IT EXISTS
+                    let imageFrameHtml = "";
+                    let customGridModifierClass = "";
+
+                    if (exam.image_path) {
+                        imageFrameHtml = `
+                            <div class="review-img-box">
+                                <img src="assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy">
+                            </div>`;
+                    } else {
+                        customGridModifierClass = "review-no-image-layout"; // Collapses column widths instantly [1]
+                    }
+
+                    return `
+                        <div class="review-question-card ${cardStatusClass}">
+                            <div class="review-q-header">
+                                <span>Ikibazo cya #${index + 1}</span>
+                                ${statusBadgeHtml}
+                            </div>
+                            <p class="review-q-text">${exam.question}</p>
+                            <div class="review-split-grid ${customGridModifierClass}">
+                                ${imageFrameHtml}
+                                <div class="review-options-list">
+                                    ${optionsRowsHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                reviewContainer.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:20px; font-style:italic;">Nta makuru y'ibibazo asanzwe ari mu bubiko bwa paji.</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

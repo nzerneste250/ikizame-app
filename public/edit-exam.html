@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hindura Ikibazo - IKIZAME Admin</title>
+    <!-- Link to the global administrative stylesheet -->
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <!-- Font Awesome vectors library support CDN -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        /* 🎨 Custom User-Friendly Workspace Adjustments */
+        .form-wrapper {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            max-width: 850px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-wrapper textarea,
+        .form-wrapper input[type="text"],
+        .form-wrapper select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            color: #1e293b;
+            background-color: #ffffff;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-wrapper textarea:focus,
+        .form-wrapper input[type="text"]:focus,
+        .form-wrapper select:focus {
+            border-color: #0b698b;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px 24px;
+        }
+
+        /* 📷 Premium Interactive Image Revision Container Card */
+        .image-revision-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .preview-pane-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 4px;
+            background-color: #ffffff;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .preview-pane-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .preview-pane-box .no-img-text {
+            font-size: 12px;
+            color: #94a3b8;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .upload-action-side p {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        .custom-file-input {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        /* Form Execution Buttons Bar styling */
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+
+        .save-btn {
+            background-color: #0b698b;
+            color: #ffffff;
+            border: none;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .save-btn:hover { background-color: #08536e; }
+
+        .cancel-btn {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .cancel-btn:hover { color: #0f172a; }
+
+        @media screen and (max-width: 768px) {
+            .options-grid { grid-template-columns: 1fr; gap: 0; }
+            .image-revision-card { grid-template-columns: 1fr; text-align: center; }
+            .preview-pane-box { width: 120px; margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <!-- Sidebar Navigation Menu Left Panel Workstation -->
+        <aside class="sidebar">
+            <h2>IKIZAME Admin</h2>
+            <nav>
+                <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+                <a href="add-exam.html"><i class="fa-solid fa-plus"></i> Injiza Ikizame</a>
+                <a href="/api/admin/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Soka hano</a>
+            </nav>
+        </aside>
+
+        <!-- Right Side Core Administrative Configuration Form Panel -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Hindura Ikibazo Kibitswe</h1>
+                <p>Ubu urimo guhindura amadata y'iki kibazo. Genzura neza mbere yo kubika impinduka muri database.</p>
+            </header>
+
+            <section class="form-wrapper">
+                <!-- Hits our secure Node.js app dynamic image update endpoint directly -->
+                <form action="/api/exams/edit" method="POST" enctype="multipart/form-data">
+                    
+                    <!-- Hidden reference attributes needed by the Node.js server router -->
+                    <input type="hidden" id="examId" name="id">
+                    <input type="hidden" id="existingImagePath" name="existingImagePath">
+
+                    <div class="form-group">
+                        <label for="question">Ikibazo cy'Ikizamini (Question Text)</label>
+                        <textarea id="question" name="question" rows="3" required placeholder="Andika imiterere y'ikibazo hano..."></textarea>
+                    </div>
+
+                    <!-- 🎥 INTERACTIVE SIGN PICTURE REVISION MANAGEMENT CARD -->
+                    <div class="image-revision-card">
+                        <!-- Left pane: Displays the live current thumbnail or fresh file selections -->
+                        <div class="preview-pane-box" id="imageLivePreviewPane">
+                            <span class="no-img-text">Loading preview...</span>
+                        </div>
+                        
+                        <!-- Right pane: Upload input triggers -->
+                        <div class="upload-action-side">
+                            <p><i class="fa-solid fa-cloud-arrow-up"></i> Simbura Ifoto cyangwa Shyiraho nshya:</p>
+                            <input type="file" id="imageFile" name="imageFile" class="custom-file-input" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="form-group">
+                            <label for="optionA">Ihitamo A (Option A)</label>
+                            <input type="text" id="optionA" name="optionA" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="optionB">Ihitamo B (Option B)</label>
+                            <input type="text" id="optionB" name="optionB" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="optionC">Ihitamo C (Option C)</label>
+                            <input type="text" id="optionC" name="optionC" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="optionD">Ihitamo D (Option D)</label>
+                            <input type="text" id="optionD" name="optionD" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="max-width: 320px;">
+                        <label for="correctOption">Igisubizo Cy'ukuri (Correct Option)</label>
+                        <select id="correctOption" name="correctOption" required>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn"><i class="fa-solid fa-floppy-disk"></i> Bika Impinduka</button>
+                        <a href="dashboard.html" class="cancel-btn">Anula / Subira Inyuma</a>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <footer class="admin-footer">
+        <p>Developed by <strong>izo service quicky</strong></p>
+    </footer>
+        <!-- Interactive Client Script Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            if (!id) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            const previewPane = document.getElementById('imageLivePreviewPane');
+            const fileInput = document.getElementById('imageFile');
+
+            // 1. Fetch targeted single question object parameters from Node server API
+            fetch(`/api/exams/${id}`)
+                .then(res => {
+                    if (res.status === 401) {
+                        window.location.href = '/admin-login.html';
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(exam => {
+                    // 🎯 ABSOLUTE FIX: Verify object attributes fields map directly to inputs
+                    if (exam && exam.id) {
+                        document.getElementById('examId').value = exam.id;
+                        document.getElementById('existingImagePath').value = exam.image_path || '';
+                        document.getElementById('question').value = exam.question || '';
+                        document.getElementById('optionA').value = exam.option_a || '';
+                        document.getElementById('optionB').value = exam.option_b || '';
+                        document.getElementById('optionC').value = exam.option_c || '';
+                        document.getElementById('optionD').value = exam.option_d || '';
+                        document.getElementById('correctOption').value = exam.correct_option || 'A';
+
+                        // Process image panel thumbnail renders
+                        if (exam.image_path) {
+                            previewPane.innerHTML = `<img src="assets/uploads/${exam.image_path}" alt="Current Sign Image">`;
+                        } else {
+                            previewPane.innerHTML = `<span class="no-img-text"><i class="fa-solid fa-ban"></i> Nta foto iriho</span>`;
+                        }
+                    } else {
+                        previewPane.innerHTML = `<span class="no-img-text" style="color:red;"><i class="fa-solid fa-triangle-exclamation"></i> Ikibazo ntacyo twabonye</span>`;
+                    }
+                })
+                .catch(err => {
+                    console.error('Error fetching question matrix details:', err);
+                    previewPane.innerHTML = `<span style="color:red; font-size:12px;">Error loading configuration data</span>`;
+                });
+
+            // 2. ⚡ HIGH-TECH LIVE PREVIEW: Swaps preview instantly on screen when picking a new file
+            fileInput.addEventListener('change', function() {
+                const chosenFile = this.files[0];
+                if (chosenFile) {
+                    const readerInstance = new FileReader();
+                    readerInstance.onload = function(e) {
+                        previewPane.innerHTML = `<img src="${e.target.result}" alt="New Selection Preview" style="border: 2px solid #0b698b;">`;
+                    };
+                    readerInstance.readAsDataURL(chosenFile);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

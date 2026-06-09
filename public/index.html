@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IKIZAME - Provisional Driving License Portal</title>
+    <!-- Core Responsive Layout Stylesheet -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Premium Vector Fonts Kit Support CDN -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        /* Modern CSS Variable Extensions for Premium Branding Design */
+        :root {
+            --primary: #0b698b;
+            --primary-dark: #08536e;
+            --accent: #38bdf8;
+            --text-dark: #0f172a;
+            --text-light: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --shadow-premium: 0 20px 40px -15px rgba(15, 23, 42, 0.3);
+        }
+
+        /* Fluid Animated Background Setup */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(11, 105, 139, 0.75)), 
+                        url('https://unsplash.com') no-repeat center center/cover;
+            background-attachment: fixed;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Left Side Advanced Content Layout Branding */
+        .hero-text-side {
+            max-width: 550px;
+            animation: fadeInHorizontal 0.8s ease-out;
+        }
+
+        .hero-text-side h1 {
+            font-size: 64px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.05;
+            background: linear-gradient(to right, #ffffff, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero-slogan {
+            font-size: 18px;
+            color: #cbd5e1;
+            margin-bottom: 35px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .features-pill-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .feature-pill {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(4px);
+        }
+
+        .feature-pill i {
+            color: var(--accent);
+        }
+
+        /* High-Tech Premium Interactive Form Layout Card */
+        .form-card {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            width: 440px;
+            box-shadow: var(--shadow-premium);
+            animation: fadeInVertical 0.8s ease-out;
+            backdrop-filter: blur(8px);
+        }
+
+        .form-tabs {
+            background: #f1f5f9;
+            padding: 6px;
+            border-bottom: none;
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: all 0.25s ease;
+            border: none;
+            background: transparent;
+            color: #64748b;
+        }
+
+        .tab-btn.active-tab {
+            background: #ffffff;
+            color: var(--primary);
+            box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.08);
+            border-bottom: none;
+        }
+
+        .form-body {
+            padding: 40px 35px;
+        }
+
+        .form-body h2 {
+            font-size: 24px;
+            color: var(--text-dark);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .form-desc {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .input-group input[type="text"] {
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input[type="text"]:focus,
+        .phone-input-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(11, 105, 139, 0.15);
+        }
+
+        .phone-input-wrapper {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+
+        .country-prefix {
+            font-weight: 700;
+            background: #f8fafc;
+            padding: 14px;
+        }
+
+        .phone-input-wrapper input {
+            padding: 14px;
+            font-weight: 500;
+        }
+
+        .submit-form-btn {
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 10px 20px -5px rgba(11, 105, 139, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .submit-form-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -5px rgba(11, 105, 139, 0.4);
+            background: var(--primary-dark);
+        }
+
+        /* System Animations Definition Parameters Mapping Context */
+        @keyframes fadeInHorizontal {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInVertical {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tablet Grid Refinements Overrides */
+        @media screen and (max-width: 1024px) {
+            .hero-text-side h1 { font-size: 44px; }
+            .features-pill-row { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Upper Main Framework Header Navigation Panel -->
+    <header class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-graduation-cap"></i> IKIZAME
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="active"><i class="fa-solid fa-house"></i> Ahabanza</a>
+            <a href="#"><i class="fa-solid fa-circle-info"></i> Ubufasha</a>
+            <a href="#"><i class="fa-solid fa-book-bookmark"></i> Ifashanyigisho</a>
+            <a href="#"><i class="fa-solid fa-tags"></i> Ibiciro</a>
+            <a href="#"><i class="fa-solid fa-square-poll-vertical"></i> Amanota</a>
+        </nav>
+        <div class="lang-selector">
+            <span>🇷🇼 Kinyarwanda</span> <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <!-- Optimized Split Screen Container Viewport Layout -->
+    <main class="hero-section">
+        <div class="hero-overlay">
+            
+            <!-- Left Grid Panel: Elegant typography + Quick statistics tags element pills -->
+            <div class="hero-text-side">
+                <div class="features-pill-row">
+                    <span class="feature-pill"><i class="fa-solid fa-bolt"></i> Isuzuma Rihuse</span>
+                    <span class="feature-pill"><i class="fa-solid fa-shield-halved"></i> Amategeko 2026</span>
+                </div>
+                <h1>Kora rimwe<br>utsinde Ikizamini.</h1>
+                <p class="hero-slogan">
+                    Iga, isuzume, kora imyitozo y'amategeko y'umuhanda ukoresheje ikoranabuhanga rigezweho ririnda ikoreshwa ry'internet nyinshi.
+                </p>
+                <button class="cta-btn" style="background: var(--primary); color: white; border: none;">
+                    Tangira Imyitozo <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Right Grid Panel: High-Tech registration system entry interaction module card -->
+            <div class="form-card">
+                <div class="form-tabs">
+                    <button class="tab-btn active-tab" id="tabRegister">KWIYANDIKISHA</button>
+                    <button class="tab-btn" id="tabCode">KORESHA KODE</button>
+                </div>
+                
+                <div class="form-body">
+                    <h2 id="formTitle">Isuzuma Bumenyi</h2>
+                    <p class="form-desc" id="formDesc">Iyandikishe gukora isuzuma ry'amategeko y'umuhanda kugira ngo uhabwe kode y'ikizamini.</p>
+                    
+                    <form action="/start-exam" method="POST" id="mainPortalForm">
+                        <div class="input-group" id="nameGroup">
+                            <label for="studentName">Amazina Yanyu</label>
+                            <input type="text" id="studentName" name="studentName" placeholder="Ugereranyije: Felix Irakoze" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="phoneNumber">Numero ya Telefone</label>
+                            <div class="phone-input-wrapper">
+                                <span class="country-prefix">🇷🇼 +250</span>
+                                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="788000000" required style="border: none; outline: none; width: 100%;">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="submit-form-btn" id="submitBtn">Tangira Ikizamini</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Fixed Portal Trademark Copyright Bar Footer -->
+        <!-- Fixed Portal Trademark Copyright Bar Footer -->
+    <footer class="footer-bar">
+        <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
+    </footer>
+
+    <!-- Interactive Framework Execution Scripts Module -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabRegister = document.getElementById('tabRegister');
+            const tabCode = document.getElementById('tabCode');
+            const formTitle = document.getElementById('formTitle');
+            const formDesc = document.getElementById('formDesc');
+            const nameGroup = document.getElementById('nameGroup');
+            const studentNameInput = document.getElementById('studentName');
+            const submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('mainPortalForm');
+
+            // Interactive interface changes when clicking the "KORESHA KODE" option tab
+            tabCode.addEventListener('click', () => {
+                tabRegister.classList.remove('active-tab');
+                tabCode.classList.add('active-tab');
+                formTitle.innerText = "Koresha Kode yawe";
+                formDesc.innerText = "Niba waramaze kwiyandikisha ugahabwa kode, yinjize hano winjire mu kizamini muryo uhuse.";
+                nameGroup.style.display = 'none';
+                studentNameInput.removeAttribute('required');
+                submitBtn.innerText = "Injira mu Kizame";
+            });
+
+            // Interactive interface restoration changes when clicking the "KWIYANDIKISHA" option tab
+            tabRegister.addEventListener('click', () => {
+                tabCode.classList.remove('active-tab');
+                tabRegister.classList.add('active-tab');
+                formTitle.innerText = "Isuzuma Bumenyi";
+                formDesc.innerText = "Iyandikishe gukora isuzuma ry'amategeko y'umuhanda kugira ngo uhabwe kode y'ikizamini.";
+                nameGroup.style.display = 'flex';
+                studentNameInput.setAttribute('required', 'required');
+                submitBtn.innerText = "Tangira Ikizamini";
+            });
+
+            // Handle submission mapping into local memory frames storage pools
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const nameValue = studentNameInput.value || 'Umusomyi Ufite Kode';
+                const phoneValue = document.getElementById('phoneNumber').value;
+
+                sessionStorage.setItem('studentName', nameValue);
+                sessionStorage.setItem('phoneNumber', phoneValue);
+                
+                // Route user seamlessly right into the active running exam testing layout view
+                window.location.href = 'exam.html';
+            });
+
+            // Register background Data-Saving Service Worker utilities safely
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(reg => console.log('⚡ High-performance Service Worker active!'))
+                        .catch(err => console.error('Service Worker sync warning:', err));
+                });
+            }
+        });
+    </script>
+</body>
+</html>
