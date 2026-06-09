@@ -105,13 +105,13 @@ app.get('/api/exams', (req, res) => {
         res.json(results);
     });
 });
-// ➕ D. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
+// ➕ B. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
 app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
     const question = req.body.question || '';
     const correctOption = req.body.correctOption || '';
     const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
     
-    // 🎯 FIX: Pulls the first item index [0] safely from the imageFile array block
+    // 🎯 FIX: Pulls the zero-index offset explicitly out of the main picture field array box
     const mainQuestionImage = req.files && req.files['imageFile'] && req.files['imageFile'][0] 
         ? req.files['imageFile'][0].filename 
         : null;
@@ -121,7 +121,7 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
     let finalOptionC = '';
     let finalOptionD = '';
 
-    // 🎯 FIX: Points explicitly to [0].filename to extract the actual uploaded string from the Multer array box
+    // 🎯 CRUCIAL ZERO-INDEX FIXED: Target [0].filename pulls the string name out of the array box
     if (optionsLayoutMode === 'image') {
         finalOptionA = req.files && req.files['optionA_File'] && req.files['optionA_File'][0] ? req.files['optionA_File'][0].filename : '';
         finalOptionB = req.files && req.files['optionB_File'] && req.files['optionB_File'][0] ? req.files['optionB_File'][0].filename : '';
@@ -134,7 +134,7 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
         finalOptionD = req.body.optionD || '';
     }
 
-    // Secondary fallback lock to protect your database columns integrity constraints
+    // Safety checks ensuring absolute string fallbacks to satisfy NOT NULL constraints
     if (!finalOptionA) finalOptionA = '';
     if (!finalOptionB) finalOptionB = '';
     if (!finalOptionC) finalOptionC = '';
@@ -144,12 +144,11 @@ app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res)
     db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, mainQuestionImage], (err, result) => {
         if (err) {
             console.error('❌ Database insertion error:', err.message);
-            return res.status(500).send('Database Error Inserting Question Record: ' + err.message);
+            return res.status(500).send('Database Error: ' + err.message);
         }
         res.redirect('/dashboard.html');
     });
 });
-
 // ➕ E. GET SINGLE EXAM RECORD OBJECT FOR COMPILING MANIFEST DATA VIEWS
 app.get('/api/exams/:id', (req, res) => {
     const targetId = parseInt(req.params.id, 10);
