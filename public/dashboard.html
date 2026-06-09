@@ -175,7 +175,9 @@
             </div>
         </main>
     </div>
-        </footer>
+        <footer class="admin-footer-panel">
+        <p>Developed by <strong>izo service quicky</strong></p>
+    </footer>
 
     <!-- Async Data Compilers and Real-time Search Engine script Execution Block -->
     <script>
@@ -219,10 +221,10 @@
                                         trimmedValue.includes('optionD_File');
                 
                 if (isRealImageFile) {
-                    // 🎯 FIX: Changed path to absolute string format (/assets/uploads/) to ensure direct file fetching on Render [ENSURE LEADING SLASH]
+                    // 🎯 FIXED relative path route context (dropped leading /) to secure asset handshakes on Render
                     return `
                         <div class="cell-image-wrapper" title="Asset Link: ${trimmedValue}">
-                            <img src="/assets/uploads/${trimmedValue}" alt="Visual Option" loading="lazy" style="display:block; max-width:100%; max-height:100%; object-fit:contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:11px; word-break:break-all; color:#64748b;\'>${trimmedValue}</span>'">
+                            <img src="assets/uploads/${trimmedValue}" alt="Visual Option" loading="lazy" style="display:block; max-width:100%; max-height:100%; object-fit:contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:11px; word-break:break-all; color:#64748b;\'>${trimmedValue}</span>'">
                         </div>`;
                 }
                 
@@ -247,7 +249,7 @@
                             </td>
                             <td>
                                 ${exam.image_path ? 
-                                    `<div class="cell-image-wrapper"><img src="/assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy"></div>` : 
+                                    `<div class="cell-image-wrapper"><img src="assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy"></div>` : 
                                     `<span style="color:#cbd5e1; font-size:11px;">None</span>`
                                 }
                             </td>
