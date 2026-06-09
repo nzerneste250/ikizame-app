@@ -11,7 +11,9 @@
         html, body { min-height: 100vh; margin: 0; padding: 0; background-color: #f8fafc; }
         body { display: flex; flex-direction: column; }
         .navbar { height: 50px; flex-shrink: 0; }
-        .footer-bar { height: 35px; flex-shrink: 0; padding: 8px; }
+        
+        /* 🎯 FIX 1: Allow fluid expansion so text never overflows the container */
+        .footer-bar { min-height: 35px; height: auto; flex-shrink: 0; padding: 10px; box-sizing: border-box; }
 
         .exam-page-wrapper { 
             max-width: 1040px; 
@@ -103,14 +105,12 @@
             .options-vertical-list { overflow-y: auto; }
         }
 
-        /* 📱 MOBILE RESPONSIVE REPAIR OVERRIDES */
         @media screen and (max-width: 991px) {
             html, body { overflow: auto; height: auto; }
             
-            /* 🎯 FIX: Changes justify-content to flex-start and removes high stretching to eliminate the empty gap */
             .exam-page-wrapper { 
-                padding: 6px; 
-                gap: 6px; 
+                padding: 4px; 
+                gap: 4px; 
                 height: auto !important; 
                 flex: none !important;
                 justify-content: flex-start !important;
@@ -118,9 +118,12 @@
             
             .timer-display { font-size: 18px; }
             
+            /* 🎯 FIX 2: Downscale font and adjust line-height so the text wraps beautifully on small smartphone viewports */
+            .footer-bar p { font-size: 11px !important; line-height: 1.4; margin: 0; }
+            
             .stepper-card { 
                 display: flex !important; flex-wrap: wrap !important; justify-content: center !important;
-                gap: 6px 12px !important; margin-top: 2px !important; margin-bottom: 2px !important; padding: 8px !important;
+                gap: 6px 12px !important; margin-top: 4px !important; margin-bottom: 4px !important; padding: 8px !important;
             }
             .split-exam-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
             .image-frame-box { height: 140px; }
@@ -187,179 +190,185 @@
         document.addEventListener('DOMContentLoaded', () => {
             window.history.pushState(null, "", window.location.href);
             window.onpopstate = function () {
-                window.history.pushState(null, "", window.location.href);
-                            alert("Ntabwo wemerewe gusubira inyuma ikizamini kigikomeza!");
-        };
+    window.history.pushState(null, "", window.location.href);
+    alert("Ntabwo wemerewe gusubira inyuma ikizamini kigikomeza!");
+};
 
-        let questionsList = [];
-        let currentActiveIndex = 0;
-        const studentAnswersMap = {}; 
+let questionsList = [];
+let currentActiveIndex = 0;
+const studentAnswersMap = {};
 
-        const timerDisplay = document.getElementById('examCountdown');
-        const stepperContainer = document.getElementById('stepperContainer');
-        const questionText = document.getElementById('targetQuestionText');
-        const gridWrapper = document.getElementById('dynamicGridWrapper');
-        const imageFrame = document.getElementById('targetImageFrame');
-        const optionsContainer = document.getElementById('targetOptionsContainer');
-        const counterLabel = document.getElementById('questionCounterLabel');
-        const prevBtn = document.getElementById('prevQuestionBtn');
-        const nextBtn = document.getElementById('nextQuestionBtn');
+const timerDisplay = document.getElementById('examCountdown');
+const stepperContainer = document.getElementById('stepperContainer');
+const questionText = document.getElementById('targetQuestionText');
+const gridWrapper = document.getElementById('dynamicGridWrapper');
+const imageFrame = document.getElementById('targetImageFrame');
+const optionsContainer = document.getElementById('targetOptionsContainer');
+const counterLabel = document.getElementById('questionCounterLabel');
+const prevBtn = document.getElementById('prevQuestionBtn');
+const nextBtn = document.getElementById('nextQuestionBtn');
 
-        let durationSeconds = 20 * 60;
-        const countdownInterval = setInterval(() => {
-            let minutes = Math.floor(durationSeconds / 60);
-            let seconds = durationSeconds % 60;
-            timerDisplay.innerText = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+let durationSeconds = 20 * 60;
 
-            if (durationSeconds <= 0) {
-                clearInterval(countdownInterval);
-                sessionStorage.removeItem('isExamAlreadyStarted');
-                alert("Igihe cyarangiye! Ikizamini kiroherezwa muri sisitemu.");
-                executeAutoSubmission();
-            }
-            durationSeconds--;
-        }, 1000);
+const countdownInterval = setInterval(() => {
+    let minutes = Math.floor(durationSeconds / 60);
+    let seconds = durationSeconds % 60;
+    
+    timerDisplay.innerText = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    
+    if (durationSeconds <= 0) {
+        clearInterval(countdownInterval);
+        sessionStorage.removeItem('isExamAlreadyStarted');
+        alert("Igihe cyarangiye! Ikizamini kiroherezwa muri sisitemu.");
+        executeAutoSubmission();
+    }
+    durationSeconds--;
+}, 1000);
 
-        fetch('/api/exams')
-            .then(res => res.json())
-            .then(exams => {
-                let completePool = exams;
-                for (let i = completePool.length - 1; i > 0; i--) {
-                    const randomIndex = Math.floor(Math.random() * (i + 1));
-                    [completePool[i], completePool[randomIndex]] = [completePool[randomIndex], completePool[i]];
-                }
-                
-                questionsList = completePool.slice(0, 20);
-
-                if (questionsList.length === 0) {
-                    document.querySelector('.question-card-container').innerHTML = `<p style="text-align:center; padding:40px;">Nta bibazo biri mu bubiko.</p>`;
-                    clearInterval(countdownInterval);
-                    return;
-                }
-
-                buildProgressStepper();
-                renderActiveQuestionCard();
-            });
-
-        function buildProgressStepper() {
-            stepperContainer.innerHTML = questionsList.map((_, i) => `
-                <div class="step-bubble" id="bubble_step_${i}" onclick="jumpToQuestionIndex(${i})">
-                    <i class="fa-solid fa-check" style="display:none; font-size:8px;"></i>
-                    <span id="bubble_txt_${i}">${i + 1}</span>
-                </div>
-            `).join('');
+fetch('/api/exams')
+    .then(res => res.json())
+    .then(exams => {
+        let completePool = exams;
+        for (let i = completePool.length - 1; i > 0; i--) {
+            const randomIndex = Math.floor(Math.random() * (i + 1));
+            [completePool[i], completePool[randomIndex]] = [completePool[randomIndex], completePool[i]];
         }
-
-        function renderActiveQuestionCard() {
-            const currentExam = questionsList[currentActiveIndex];
-            counterLabel.innerText = `< ${currentActiveIndex + 1} / ${questionsList.length} >`;
-            
-            questionText.innerText = currentExam.question.replace(/\r?\n|\r/g, ' ');
-
-            document.querySelectorAll('.step-bubble').forEach((b, idx) => {
-                b.classList.remove('active');
-                if (idx === currentActiveIndex) b.classList.add('active');
-            });
-
-            if (currentExam.image_path) {
-                gridWrapper.classList.remove('no-image-layout');
-                imageFrame.style.display = 'flex';
-                imageFrame.innerHTML = `<img src="assets/uploads/${currentExam.image_path}" alt="Driving Sign" loading="lazy">`;
-            } else {
-                imageFrame.style.display = 'none';
-                gridWrapper.classList.add('no-image-layout');
-            }
-
-            const savedAnswer = studentAnswersMap[currentExam.id] || "";
-
-            const standardOptions = [
-                { key: "A", text: currentExam.option_a },
-                { key: "B", text: currentExam.option_b },
-                { key: "C", text: currentExam.option_c },
-                { key: "D", text: currentExam.option_d }
-            ];
-
-            optionsContainer.innerHTML = standardOptions.map(opt => `
-                <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
-                    <input type="radio" name="active_choice" value="${opt.key}" ${savedAnswer === opt.key ? 'checked' : ''} onchange="registerChoiceSelection('${opt.key}', ${currentExam.id})">
-                    <span class="choice-label-txt"><strong>${opt.key.toLowerCase()})</strong> ${opt.text}</span>
-                </label>
-            `).join('');
-
-            prevBtn.style.visibility = currentActiveIndex === 0 ? 'hidden' : 'visible';
-            if (currentActiveIndex === questionsList.length - 1) {
-                nextBtn.innerText = "Yandika Ikizamini";
-                nextBtn.className = "btn-nav-control submit-btn";
-            } else {
-                nextBtn.innerText = "Komeza";
-                nextBtn.className = "btn-nav-control next-btn";
-            }
-        }
-
-        window.registerChoiceSelection = function(originalKey, examId) {
-            studentAnswersMap[examId] = originalKey;
-
-            document.querySelectorAll('.radio-option-row').forEach(row => row.classList.remove('selected-row'));
-            event.currentTarget.closest('.radio-option-row').classList.add('selected-row');
-
-            const bubble = document.getElementById(`bubble_step_${currentActiveIndex}`);
-            const bubbleTxt = document.getElementById(`bubble_txt_${currentActiveIndex}`);
-            const icon = bubble.querySelector('i');
-            bubble.classList.add('answered');
-            if (icon) {
-                icon.style.display = 'block';
-                if (bubbleTxt) bubbleTxt.style.display = 'none';
-            }
-        };
-
-        window.jumpToQuestionIndex = function(index) {
-            currentActiveIndex = index;
-            renderActiveQuestionCard();
-        };
-
-        prevBtn.addEventListener('click', () => {
-            if (currentActiveIndex > 0) { currentActiveIndex--; renderActiveQuestionCard(); }
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (currentActiveIndex < questionsList.length - 1) {
-                currentActiveIndex++;
-                renderActiveQuestionCard();
-            } else {
-                if (confirm('Ese muryhejeje neza ibibazo byose urashaka kureba amanota?')) {
-                    sessionStorage.removeItem('isExamAlreadyStarted'); 
-                    executeAutoSubmission();
-                }
-            }
-        });
-
-        function executeAutoSubmission() {
+        
+        questionsList = completePool.slice(0, 20);
+        
+        if (questionsList.length === 0) {
+            document.querySelector('.question-card-container').innerHTML = `<p style="text-align:center; padding:40px;">Nta bibazo biri mu bubiko.</p>`;
             clearInterval(countdownInterval);
-            const submissionPayload = {};
-            for (const examId in studentAnswersMap) {
-                submissionPayload[`question_${examId}`] = studentAnswersMap[examId];
-            }
-
-            fetch('/api/exams/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(submissionPayload)
-            })
-            .then(res => res.json())
-            .then(result => {
-                sessionStorage.setItem('latestScore', result.score);
-                sessionStorage.setItem('latestTotal', result.total);
-                sessionStorage.setItem('studentAnswerMapping', JSON.stringify(studentAnswersMap));
-                sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questionsList));
-
-                questionsList = [];
-                for (const key in studentAnswersMap) delete studentAnswersMap[key];
-                
-                window.location.replace('exam-result.html');
-            })
-            .catch(err => console.error('Submission transaction failure error:', err));
+            return;
         }
+        
+        buildProgressStepper();
+        renderActiveQuestionCard();
     });
-</script>
+
+function buildProgressStepper() {
+    stepperContainer.innerHTML = questionsList.map((_, i) => `
+        <div class="step-bubble" id="bubble_step_${i}" onclick="jumpToQuestionIndex(${i})">
+            <i class="fa-solid fa-check" style="display:none; font-size:8px;"></i>
+            <span id="bubble_txt_${i}">${i + 1}</span>
+        </div>
+    `).join('');
+}
+
+function renderActiveQuestionCard() {
+    const currentExam = questionsList[currentActiveIndex];
+    
+    counterLabel.innerText = `< ${currentActiveIndex + 1} / ${questionsList.length} >`;
+    questionText.innerText = currentExam.question.replace(/\r?\n|\r/g, ' ');
+    
+    document.querySelectorAll('.step-bubble').forEach((b, idx) => {
+        b.classList.remove('active');
+        if (idx === currentActiveIndex) b.classList.add('active');
+    });
+    
+    if (currentExam.image_path) {
+        gridWrapper.classList.remove('no-image-layout');
+        imageFrame.style.display = 'flex';
+        imageFrame.innerHTML = `<img src="assets/uploads/${currentExam.image_path}" alt="Driving Sign" loading="lazy">`;
+    } else {
+        imageFrame.style.display = 'none';
+        gridWrapper.classList.add('no-image-layout');
+    }
+    
+    const savedAnswer = studentAnswersMap[currentExam.id] || "";
+    const standardOptions = [
+        { key: "A", text: currentExam.option_a },
+        { key: "B", text: currentExam.option_b },
+        { key: "C", text: currentExam.option_c },
+        { key: "D", text: currentExam.option_d }
+    ];
+    
+    optionsContainer.innerHTML = standardOptions.map(opt => `
+        <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
+            <input type="radio" name="active_choice" value="${opt.key}" ${savedAnswer === opt.key ? 'checked' : ''} onchange="registerChoiceSelection('${opt.key}', ${currentExam.id})">
+            <span class="choice-label-txt"><strong>${opt.key.toLowerCase()})</strong> ${opt.text}</span>
+        </label>
+    `).join('');
+    
+    prevBtn.style.visibility = currentActiveIndex === 0 ? 'hidden' : 'visible';
+    
+    if (currentActiveIndex === questionsList.length - 1) {
+        nextBtn.innerText = "Yandika Ikizamini";
+        nextBtn.className = "btn-nav-control submit-btn";
+    } else {
+        nextBtn.innerText = "Komeza";
+        nextBtn.className = "btn-nav-control next-btn";
+    }
+}
+
+window.registerChoiceSelection = function(originalKey, examId) {
+    studentAnswersMap[examId] = originalKey;
+    
+    document.querySelectorAll('.radio-option-row').forEach(row => row.classList.remove('selected-row'));
+    event.currentTarget.closest('.radio-option-row').classList.add('selected-row');
+    
+    const bubble = document.getElementById(`bubble_step_${currentActiveIndex}`);
+    const bubbleTxt = document.getElementById(`bubble_txt_${currentActiveIndex}`);
+    const icon = bubble.querySelector('i');
+    
+    bubble.classList.add('answered');
+    if (icon) {
+        icon.style.display = 'block';
+        if (bubbleTxt) bubbleTxt.style.display = 'none';
+    }
+};
+            window.jumpToQuestionIndex = function(index) {
+                currentActiveIndex = index;
+                renderActiveQuestionCard();
+            };
+
+            prevBtn.addEventListener('click', () => {
+                if (currentActiveIndex > 0) { 
+                    currentActiveIndex--; 
+                    renderActiveQuestionCard(); 
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentActiveIndex < questionsList.length - 1) {
+                    currentActiveIndex++;
+                    renderActiveQuestionCard();
+                } else {
+                    if (confirm('Ese muryhejeje neza ibibazo byose urashaka kureba amanota?')) {
+                        sessionStorage.removeItem('isExamAlreadyStarted'); 
+                        executeAutoSubmission();
+                    }
+                }
+            });
+
+            function executeAutoSubmission() {
+                clearInterval(countdownInterval);
+                const submissionPayload = {};
+                for (const examId in studentAnswersMap) {
+                    // 🎯 FIX: Wrapped the key with proper backticks to avoid broken evaluation strings
+                    submissionPayload[`question_${examId}`] = studentAnswersMap[examId];
+                }
+
+                fetch('/api/exams/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submissionPayload)
+                })
+                .then(res => res.json())
+                .then(result => {
+                    sessionStorage.setItem('latestScore', result.score);
+                    sessionStorage.setItem('latestTotal', result.total);
+                    sessionStorage.setItem('studentAnswerMapping', JSON.stringify(studentAnswersMap));
+                    sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questionsList));
+
+                    questionsList = [];
+                    for (const key in studentAnswersMap) delete studentAnswersMap[key];
+                    
+                    window.location.replace('exam-result.html');
+                })
+                .catch(err => console.error('Submission transaction failure error:', err));
+            }
+        });
+    </script>
 </body>
 </html>
