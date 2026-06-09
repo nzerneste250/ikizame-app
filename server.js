@@ -109,18 +109,49 @@ app.get('/api/exams', (req, res) => {
         res.json(results);
     });
 });
-// ➕ B. ADD NEW QUESTION WITH IMAGERY CAPABILITIES
-app.post('/api/exams/add', requireAdminLogin, upload.single('imageFile'), (req, res) => {
-    const { question, optionA, optionB, optionC, optionD, correctOption } = req.body;
-    const imagePath = req.file ? req.file.filename : null;
+// ==========================================================================
+// 🛠️ MULTI-FIELD MULTER CONFIGURATION FOR MULTI-IMAGE OPTIONS
+// ==========================================================================
+const examUploadFieldsConfig = upload.fields([
+    { name: 'imageFile', maxCount: 1 },    // Main question sign symbol picture
+    { name: 'optionA_File', maxCount: 1 }, // Optional upload choice image A
+    { name: 'optionB_File', maxCount: 1 }, // Optional upload choice image B
+    { name: 'optionC_File', maxCount: 1 }, // Optional upload choice image C
+    { name: 'optionD_File', maxCount: 1 }  // Optional upload choice image D
+]);
+
+// ➕ B. ADD NEW QUESTION WITH HYBRID TEXT OR MULTI-IMAGE OPTIONS
+app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
+    const { question, correctOption, optionsLayoutMode } = req.body;
+    
+    // Process main question sign preview path safely
+    const mainQuestionImage = req.files && req.files['imageFile'] ? req.files['imageFile'].filename : null;
+
+    let finalOptionA = '';
+    let finalOptionB = '';
+    let finalOptionC = '';
+    let finalOptionD = '';
+
+    // 🎯 DYNAMIC SANITIZATION: Safely assigns filenames OR strings depending on layout choice mode
+    if (optionsLayoutMode === 'image') {
+        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'].filename : '';
+        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'].filename : '';
+        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'].filename : '';
+        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'].filename : '';
+    } else {
+        finalOptionA = req.body.optionA || '';
+        finalOptionB = req.body.optionB || '';
+        finalOptionC = req.body.optionC || '';
+        finalOptionD = req.body.optionD || '';
+    }
 
     const sql = `INSERT INTO exams (question, option_a, option_b, option_c, option_d, correct_option, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    db.query(sql, [question, optionA, optionB, optionC, optionD, correctOption, imagePath], (err, result) => {
-        if (err) return res.status(500).send('Database Error Inserting Entry: ' + err.message);
-        
-        // 🎯 UPDATE: Redirect passing the newly created item's auto-increment ID attribute
-        const newInsertedId = result.insertId;
-        res.redirect(`/dashboard.html?newId=${newInsertedId}`);
+    db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, mainQuestionImage], (err, result) => {
+        if (err) {
+            console.error('❌ Database insertion error:', err.message);
+            return res.status(500).send('Database Error: ' + err.message);
+        }
+        res.redirect('/dashboard.html');
     });
 });
 
@@ -135,7 +166,6 @@ app.get('/api/exams/:id', (req, res) => {
     db.query('SELECT * FROM exams WHERE id = ?', [targetId], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         
-        // 🎯 CRUCIAL SYNC FIX: Extracts the raw row dictionary directly out of the array box wrapper
         if (results && results.length > 0) {
             res.json(results[0]); 
         } else {
@@ -167,10 +197,8 @@ app.delete('/api/exams/delete/:id', requireAdminLogin, (req, res) => {
 // ==========================================================================
 // 📝 OPEN PUBLIC STUDENT EXAM EVALUATION API TESTING ENGINE
 // ==========================================================================
-
-// Process student choice checks and return numerical scoring variables
 app.post('/api/exams/submit', (req, res) => {
-    const studentAnswers = req.body; // Parses incoming array data map e.g., {"question_2": "A"}
+    const studentAnswers = req.body; 
     
     db.query('SELECT id, correct_option FROM exams', (err, exams) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -185,7 +213,7 @@ app.post('/api/exams/submit', (req, res) => {
             }
         });
 
-        res.json({ score: score, total: totalQuestions }); // Output simple clean payload string
+        res.json({ score: score, total: totalQuestions }); 
     });
 });
 
