@@ -229,21 +229,39 @@ body {
 .submit-form-btn:hover {
     background-color: #08536e;
 }
-
-/* --- Fixed Base Portal Footer Section --- */
+/* ==========================================================================
+   ⚡ MOBILE SMARTPHONE FOOTER HEIGHT EXTENSION FIX
+   ========================================================================== */
 .footer-bar {
-    background-color: #0f172a;
+    min-height: 55px !important; /* Increased from 35px to give your signature plenty of space */
+    height: auto !important;     /* Allows the box to expand dynamically if the text wraps */
+    background-color: #0f172a;   /* Premium deep dark theme color fill */
     color: #94a3b8;
     text-align: center;
-    padding: 15px;
-    font-size: 13px;
-    border-top: 1px solid #1e293b;
+    padding: 12px 15px !important;
+    font-size: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 15px !important; /* Pushes the footer cleanly away from your options grid card */
+    flex-shrink: 0;
+    z-index: 100;
 }
 
 .footer-bar strong {
-    color: #38bdf8;
+    color: #38bdf8; /* Gives your name 'izo service quicky' a premium cyan accent color highlight */
 }
 
+/* Smartphone portrait screen overrides optimization */
+@media screen and (max-width: 768px) {
+    .footer-bar {
+        padding: 14px 10px !important;
+    }
+    .footer-bar p {
+        font-size: 11px !important;
+        line-height: 1.5 !important;
+        margin: 0;
+    }
+}
 /* ==========================================================================
    📱 RESPONSIVE MEDIA QUERIES FOR ALL MOBILE PHONE SIZES
    ========================================================================== */
