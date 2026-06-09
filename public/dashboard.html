@@ -209,22 +209,33 @@
                     console.error('API Pull Failure:', err);
                     tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#ef4444; font-weight:600; padding:30px;">Error loading rows out of cloud cluster connection.</td></tr>`;
                 });
-
-            // ⚡ 2. UTILITY FILTER ENGINE: Renders text option OR custom option thumbnail images dynamically
+                            // ⚡ 2. HIGH-FIDELITY MEDIA ENGINE: Automatically renders raw string filenames as real graphic images
             function resolveChoiceCellLayout(optionValueString) {
+                // Return an empty placeholder style badge if the string data is completely blank
                 if (!optionValueString) return `<span style="color:#cbd5e1; font-style:italic;">Empty</span>`;
                 
-                // 📸 🎯 FIXED INTERCEPT: Matches file prefix option_file signatures or graphic strings pattern formats
-                const isImageFileFormat = /\.(png|jpg|jpeg|gif|webp)$/i.test(optionValueString) || optionValueString.startsWith('optionA_File-') || optionValueString.startsWith('optionB_File-') || optionValueString.startsWith('optionC_File-') || optionValueString.startsWith('optionD_File-');
+                // Trim tracking whitespace logs out of the database string variables mapping
+                const trimmedValue = optionValueString.trim();
+
+                // 📸 DYNAMIC DETECTOR: Forces an exact structural lookup if it contains file extensions or your field signatures
+                const isRealImageFile = /\.(png|jpg|jpeg|gif|webp|bmp|svg)$/i.test(trimmedValue) || 
+                                        trimmedValue.includes('optionA_File') || 
+                                        trimmedValue.includes('optionB_File') || 
+                                        trimmedValue.includes('optionC_File') || 
+                                        trimmedValue.includes('optionD_File');
                 
-                if (isImageFileFormat) {
+                if (isRealImageFile) {
+                    // 🎯 Renders the real graphic thumbnail pointing directly into your physical public upload repository folder
                     return `
-                        <div class="cell-image-wrapper" title="Image Choice: ${optionValueString}">
-                            <img src="assets/uploads/${optionValueString}" alt="Choice Thumbnail" loading="lazy" onerror="this.parentElement.innerHTML='<span>${optionValueString}</span>'">
+                        <div class="cell-image-wrapper" style="box-shadow: 0 2px 4px rgba(0,0,0,0.04);" title="Live Asset File: ${trimmedValue}">
+                            <img src="assets/uploads/${trimmedValue}" alt="Choice Visual Asset" loading="lazy" style="display:block; max-width:100%; max-height:100%; object-fit:contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:11px; word-break:break-all; color:#64748b;\'>${trimmedValue}</span>'">
                         </div>`;
                 }
-                return `<span>${optionValueString}</span>`;
+                
+                // Regular textual sentences fallback render output route path
+                return `<span>${trimmedValue}</span>`;
             }
+
 
             // ⚡ 3. GRID RECORDS GENERATION LOOP PROCESSOR MODULE
             function renderQuestionsTableRows(dataSetArray) {
