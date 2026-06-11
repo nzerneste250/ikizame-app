@@ -36,7 +36,7 @@
         /* 🔒 1. PERMANENT SIDEBAR PANEL */
         .sidebar-panel {
             width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border);
-            padding: 30px 20px; display: flex; flex-direction: column; gap: 35px; flex-shrink: 0;
+            padding: 30px 20px; display: flex; flex-shrink: 0; flex-direction: column; gap: 35px;
         }
         .sidebar-panel h2 {
             font-size: 18px; font-weight: 800; letter-spacing: 1.5px; color: #38bdf8;
@@ -60,8 +60,8 @@
         .header-title-bar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
         .header-title-bar p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
 
-        /* 🔍 REAL-TIME AUTO-SEARCH BOX */
-        .search-engine-box { position: relative; width: 340px; }
+        /* 🔍 ULTRA-INTELLIGENT FUZZY SEARCH INPUT */
+        .search-engine-box { position: relative; width: 380px; }
         .search-engine-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
         .search-engine-box input {
             width: 100%; padding: 11px 16px 11px 44px; background-color: var(--bg-primary);
@@ -70,8 +70,45 @@
         }
         .search-engine-box input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1); background-color: #ffffff; }
 
+        /* 📊 THE LIVE RE-COMPILING ANALYTICS SUMMARY REPORT ROW CARD GRAPHICS (UPDATED TO 4 COLUMNS) */
+        .analytics-metrics-strip-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+            padding: 20px 40px 0 40px; flex-shrink: 0;
+        }
+        .metric-report-card {
+            background-color: var(--bg-secondary); border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; gap: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02); position: relative;
+        }
+        .metric-icon-bubble {
+            width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center;
+            justify-content: center; font-size: 18px;
+        }
+        .metric-icon-bubble.total-blue { background-color: #e0f2fe; color: #0369a1; }
+        .metric-icon-bubble.sign-teal { background-color: #ccfbf1; color: #0f766e; }
+        .metric-icon-bubble.choice-purple { background-color: #f3e8ff; color: #6b21a8; }
+        .metric-icon-bubble.duplicate-orange { background-color: #ffedd5; color: #c2410c; }
+        
+        .metric-data-labels { display: flex; flex-direction: column; flex: 1; }
+        .metric-data-labels .num-counter { font-size: 1.4rem; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+        .metric-data-labels .title-txt { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+
+        /* 🎛️ PREMIUM INTERACTIVE REUSE TOGGLE SWITCH BUTTON STYLING */
+        .switch-wrapper-box { display: flex; align-items: center; margin-left: auto; }
+        .ios-toggle-btn {
+            position: relative; width: 50px; height: 26px; background-color: #cbd5e1;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s ease;
+        }
+        .ios-toggle-btn::after {
+            content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+            background-color: #ffffff; border-radius: 50%; transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .ios-toggle-btn.active-switch { background-color: #ea580c; }
+        .ios-toggle-btn.active-switch::after { left: 27px; }
+
         /* Scrollable Table Content */
-        .table-scroller-view { flex: 1; overflow-y: auto; padding: 30px 40px; min-height: 0; }
+        .table-scroller-view { flex: 1; overflow-y: auto; padding: 20px 40px 30px 40px; min-height: 0; }
         
         .data-table-container {
             width: 100%; background-color: var(--bg-secondary); border: 1px solid var(--border-color);
@@ -87,7 +124,7 @@
         .data-table-container tr:last-child td { border-bottom: none; }
         .data-table-container tr:hover td { background-color: #fbfdfe; }
 
-        .question-cell-wording { font-weight: 700; color: #1e293b; line-height: 1.4; }
+        .question-cell-wording { font-weight: 700; color: #1e293b; line-height: 1.4; white-space: pre-line; }
         .question-id-badge { font-family: monospace; font-size: 11px; font-weight: 700; color: var(--accent-blue); background: #e0f2fe; padding: 2px 6px; border-radius: 4px; }
 
         /* 📸 IMAGE OPTIONS CELL RENDERING ENGINE BOX STYLING */
@@ -119,10 +156,15 @@
         }
         .admin-footer-panel strong { color: #38bdf8; }
 
+        @media screen and (max-width: 1400px) {
+            .analytics-metrics-strip-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
         @media screen and (max-width: 1200px) {
-            .sidebar-panel { display: none; }
+                        .sidebar-panel { display: none; }
             .header-title-bar { padding: 20px; flex-direction: column; align-items: flex-start; gap: 15px; }
             .search-engine-box { width: 100%; }
+            .analytics-metrics-strip-row { padding: 15px 15px 0 15px; grid-template-columns: 1fr; gap: 10px; }
             .table-scroller-view { padding: 15px; }
         }
     </style>
@@ -149,9 +191,45 @@
                 </div>
                 <div class="search-engine-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="autoSearchFilterInput" placeholder="Search by question description or options...">
+                    <input type="text" id="autoSearchFilterInput" placeholder="Fuzzy match search descriptions or choices...">
                 </div>
             </header>
+
+            <!-- 📊 THE LIVE METRICS BANNER STRIP REPORT ROW (UPDATED WITH DETAILED DUPLICATE ISOLATION MODULE) -->
+            <section class="analytics-metrics-strip-row">
+                <div class="metric-report-card">
+                    <div class="metric-icon-bubble total-blue"><i class="fa-solid fa-database"></i></div>
+                    <div class="metric-data-labels">
+                        <span class="num-counter" id="statTotalCount">0</span>
+                        <span class="title-txt">Total Questions</span>
+                    </div>
+                </div>
+                <div class="metric-report-card">
+                    <div class="metric-icon-bubble sign-teal"><i class="fa-solid fa-image"></i></div>
+                    <div class="metric-data-labels">
+                        <span class="num-counter" id="statQuestionImageCount">0</span>
+                        <span class="title-txt">Sign Images</span>
+                    </div>
+                </div>
+                <div class="metric-report-card">
+                    <div class="metric-icon-bubble choice-purple"><i class="fa-solid fa-images"></i></div>
+                    <div class="metric-data-labels">
+                        <span class="num-counter" id="statChoiceImageCount">0</span>
+                        <span class="title-txt">Image Options</span>
+                    </div>
+                </div>
+                <!-- 🎯 NEW INTERACTIVE FOURTH CARD WITH EXPLICIT DUPLICATE FILTER TOGGLE SWITCH BUTTON -->
+                <div class="metric-report-card" style="border-color: #fed7aa; background: linear-gradient(to bottom, #ffffff, #fff7ed);">
+                    <div class="metric-icon-bubble duplicate-orange"><i class="fa-solid fa-clone"></i></div>
+                    <div class="metric-data-labels">
+                        <span class="num-counter" id="statDuplicateCount">0</span>
+                        <span class="title-txt" style="color: #c2410c;">Show Duplicates</span>
+                    </div>
+                    <div class="switch-wrapper-box">
+                        <div class="ios-toggle-btn" id="toggleDuplicateSwitchBtn" title="Isolate Duplicate Questions Only"></div>
+                    </div>
+                </div>
+            </section>
 
             <div class="table-scroller-view">
                 <table class="data-table-container">
@@ -175,7 +253,8 @@
             </div>
         </main>
     </div>
-        <footer class="admin-footer-panel">
+
+    <footer class="admin-footer-panel">
         <p>Developed by <strong>izo service quicky</strong></p>
     </footer>
 
@@ -184,7 +263,17 @@
         document.addEventListener('DOMContentLoaded', () => {
             const tableBody = document.getElementById('inventoryTableTargetBody');
             const searchInput = document.getElementById('autoSearchFilterInput');
+            const duplicateSwitch = document.getElementById('toggleDuplicateSwitchBtn');
+            
+            // Analytics UI hooks references mapping balances
+            const totalCounter = document.getElementById('statTotalCount');
+            const questionImgCounter = document.getElementById('statQuestionImageCount');
+            const choiceImgCounter = document.getElementById('statChoiceImageCount');
+            const duplicateCounter = document.getElementById('statDuplicateCount');
+            
             let masterQuestionsCacheArray = [];
+            let duplicateQuestionsSubset = [];
+            let isDuplicateFilterOn = false;
 
             // ⚡ 1. FETCH LIVE RECORDS FROM BACKEND EXAMS API
             fetch('/api/exams')
@@ -199,6 +288,7 @@
                 .then(questionsList => {
                     if (questionsList) {
                         masterQuestionsCacheArray = questionsList;
+                        calculateLiveAnalyticsAndIdentifyDuplicates(masterQuestionsCacheArray);
                         renderQuestionsTableRows(masterQuestionsCacheArray);
                     }
                 })
@@ -207,13 +297,68 @@
                     tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#ef4444; font-weight:600; padding:30px;">Error loading rows out of cloud cluster connection.</td></tr>`;
                 });
 
-            // ⚡ 2. HIGH-FIDELITY MEDIA ENGINE: Automatically renders option filenames as real graphic images
+            // ⚡ 2. RE-COMPILING LIVE STATS ALGORITHMS CALCULATOR WITH PERFECT DUPLICATES FINDER
+            function cleanAndNormalizeString(inputString) {
+                if (!inputString) return "";
+                return inputString.toString().toLowerCase().replace(/[\s\r\n\t]+/g, '');
+            }
+
+            function calculateLiveAnalyticsAndIdentifyDuplicates(dataSet) {
+                let totalItems = dataSet.length;
+                let textQuestionsWithSignsCount = 0;
+                let multiImageChoicesQuestionsCount = 0;
+
+                // Reset subsets container bounds
+                duplicateQuestionsSubset = [];
+                const trackingSignaturesMap = {};
+
+                dataSet.forEach(exam => {
+                    if (exam.image_path && exam.image_path.trim() !== '') {
+                        textQuestionsWithSignsCount++;
+                    }
+
+                    const isOptionImage = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a || '') || 
+                                          (exam.option_a && exam.option_a.includes('optionA_File'));
+                    if (isOptionImage) {
+                        multiImageChoicesQuestionsCount++;
+                    }
+
+                    // 🎯 GENERATE UNIQUE STABLE RECORD SIGNATURE COMBINATION FOR DUPLICATE SCANNING
+                    const signatureKey = cleanAndNormalizeString(exam.question) + "_" +
+                                         cleanAndNormalizeString(exam.image_path) + "_" +
+                                         cleanAndNormalizeString(exam.option_a) + "_" +
+                                         cleanAndNormalizeString(exam.option_b) + "_" +
+                                         cleanAndNormalizeString(exam.option_c) + "_" +
+                                         cleanAndNormalizeString(exam.option_d);
+
+                    if (!trackingSignaturesMap[signatureKey]) {
+                        trackingSignaturesMap[signatureKey] = [];
+                    }
+                    trackingSignaturesMap[signatureKey].push(exam);
+                });
+
+                // Isolate duplicates into cached array
+                for (const key in trackingSignaturesMap) {
+                    if (trackingSignaturesMap[key].length > 1) {
+                        trackingSignaturesMap[key].forEach(examItem => {
+                            if (!duplicateQuestionsSubset.some(d => d.id === examItem.id)) {
+                                duplicateQuestionsSubset.push(examItem);
+                            }
+                        });
+                    }
+                }
+                                totalCounter.innerText = totalItems;
+                questionImgCounter.innerText = textQuestionsWithSignsCount;
+                choiceImgCounter.innerText = multiImageChoicesQuestionsCount;
+                duplicateCounter.innerText = duplicateQuestionsSubset.length;
+            }
+
+            // ⚡ 3. HIGH-FIDELITY MEDIA ENGINE: Automatically renders option filenames as real graphic images
             function resolveChoiceCellLayout(optionValueString) {
                 if (!optionValueString) return `<span style="color:#cbd5e1; font-style:italic;">Empty</span>`;
                 
                 const trimmedValue = optionValueString.trim();
 
-                // 📸 Checks if the row option contains unique Multer prefix stamps or standard extensions
                 const isRealImageFile = /\.(png|jpg|jpeg|gif|webp|bmp|svg)$/i.test(trimmedValue) || 
                                         trimmedValue.includes('optionA_File') || 
                                         trimmedValue.includes('optionB_File') || 
@@ -221,7 +366,6 @@
                                         trimmedValue.includes('optionD_File');
                 
                 if (isRealImageFile) {
-                    // 🎯 FIXED relative path route context (dropped leading /) to secure asset handshakes on Render
                     return `
                         <div class="cell-image-wrapper" title="Asset Link: ${trimmedValue}">
                             <img src="assets/uploads/${trimmedValue}" alt="Visual Option" loading="lazy" style="display:block; max-width:100%; max-height:100%; object-fit:contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:11px; word-break:break-all; color:#64748b;\'>${trimmedValue}</span>'">
@@ -231,14 +375,13 @@
                 return `<span>${trimmedValue}</span>`;
             }
 
-            // ⚡ 3. DYNAMIC RECORDS RENDERING ENG GENERATOR MATRIX
+            // ⚡ 4. DYNAMIC RECORDS RENDERING ENG GENERATOR MATRIX
             function renderQuestionsTableRows(dataSetArray) {
                 if (dataSetArray.length === 0) {
                     tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:30px; font-style:italic;">No records matched your current query criteria.</td></tr>`;
                     return;
                 }
 
-                // 🎯 CONTINUOUS NUMBERING FIX: Relies on array runtime row item offsets to count sequentially from 1 upwards
                 tableBody.innerHTML = dataSetArray.map((exam, index) => {
                     const rowSequentialNumber = index + 1;
                     return `
@@ -259,7 +402,6 @@
                             <td>${resolveChoiceCellLayout(exam.option_d)}</td>
                             <td style="text-align: center;"><span class="correct-answer-pill">${exam.correct_option}</span></td>
                             <td style="text-align: center;">
-                                <!-- 🎯 REAL BUTTONS: Highly visible real corporate buttons with labels and icons -->
                                 <div class="actions-btn-cluster">
                                     <a href="edit-exam.html?id=${exam.id}" class="real-action-button btn-edit" title="Edit Parameters">
                                         <i class="fa-solid fa-pen"></i> Edit
@@ -274,33 +416,48 @@
                 }).join('');
             }
 
-            // ⚡ 4. INTELLIGENT SEARCH FIELD COMPILER ENGINE
-            searchInput.addEventListener('input', function() {
-                const searchStringQuery = this.value.toLowerCase().trim();
+            // ⚡ 5. THE TOGGLE SWITCH INTERACTION EVENT HANDLER LISTENER
+            duplicateSwitch.addEventListener('click', () => {
+                isDuplicateFilterOn = !isDuplicateFilterOn;
+                searchInput.value = ''; // Clear search inputs if toggle triggers
 
-                if (!searchStringQuery) {
+                if (isDuplicateFilterOn) {
+                    duplicateSwitch.classList.add('active-switch');
+                    renderQuestionsTableRows(duplicateQuestionsSubset);
+                } else {
+                    duplicateSwitch.classList.remove('active-switch');
                     renderQuestionsTableRows(masterQuestionsCacheArray);
+                }
+            });
+
+            // ⚡ 6. ULTRA-INTELLIGENT FUZZY MATRICES SEARCH ENGINE FILTER
+            searchInput.addEventListener('input', function() {
+                const normalizedQueryString = cleanAndNormalizeString(this.value);
+                const baseActiveDataSet = isDuplicateFilterOn ? duplicateQuestionsSubset : masterQuestionsCacheArray;
+
+                if (!normalizedQueryString) {
+                    renderQuestionsTableRows(baseActiveDataSet);
                     return;
                 }
 
-                const filteredResultsSubset = masterQuestionsCacheArray.filter(exam => {
-                    const matchTextQuestion = (exam.question || '').toLowerCase();
-                    const matchOptionA = (exam.option_a || '').toLowerCase();
-                    const matchOptionB = (exam.option_b || '').toLowerCase();
-                    const matchOptionC = (exam.option_c || '').toLowerCase();
-                    const matchOptionD = (exam.option_d || '').toLowerCase();
+                const filteredResultsSubset = baseActiveDataSet.filter(exam => {
+                    const matchTextQuestion = cleanAndNormalizeString(exam.question);
+                    const matchOptionA = cleanAndNormalizeString(exam.option_a);
+                    const matchOptionB = cleanAndNormalizeString(exam.option_b);
+                    const matchOptionC = cleanAndNormalizeString(exam.option_c);
+                    const matchOptionD = cleanAndNormalizeString(exam.option_d);
 
-                    return matchTextQuestion.includes(searchStringQuery) || 
-                           matchOptionA.includes(searchStringQuery) || 
-                           matchOptionB.includes(searchStringQuery) || 
-                           matchOptionC.includes(searchStringQuery) || 
-                           matchOptionD.includes(searchStringQuery);
+                    return matchTextQuestion.includes(normalizedQueryString) || 
+                           matchOptionA.includes(normalizedQueryString) || 
+                           matchOptionB.includes(normalizedQueryString) || 
+                           matchOptionC.includes(normalizedQueryString) || 
+                           matchOptionD.includes(normalizedQueryString);
                 });
 
                 renderQuestionsTableRows(filteredResultsSubset);
             });
 
-            // ⚡ 5. SECURE TRANSACTIONAL REMOVAL API ROUTINE
+            // ⚡ 7. SECURE TRANSACTIONAL REMOVAL ROUTINE
             window.executeSecureRecordDeletion = function(questionRecordId) {
                 if (confirm('Are you absolutely certain you want to remove this question permanently? This operation cannot be undone!')) {
                     fetch(`/api/exams/delete/${questionRecordId}`, { method: 'DELETE' })
@@ -308,15 +465,10 @@
                         .then(response => {
                             if (response.success) {
                                 masterQuestionsCacheArray = masterQuestionsCacheArray.filter(item => item.id !== questionRecordId);
+                                calculateLiveAnalyticsAndIdentifyDuplicates(masterQuestionsCacheArray);
                                 
-                                const targetRowElement = document.getElementById(`question_row_id_${questionRecordId}`);
-                                if (targetRowElement) {
-                                    targetRowElement.style.transition = 'all 0.3s ease';
-                                    targetRowElement.style.opacity = '0';
-                                    setTimeout(() => { 
-                                        renderQuestionsTableRows(masterQuestionsCacheArray); 
-                                    }, 300);
-                                }
+                                const targetRenderSet = isDuplicateFilterOn ? duplicateQuestionsSubset : masterQuestionsCacheArray;
+                                renderQuestionsTableRows(targetRenderSet);
                             } else {
                                 alert('Error running deletion routine transaction mapping.');
                             }
@@ -328,3 +480,5 @@
     </script>
 </body>
 </html>
+
+

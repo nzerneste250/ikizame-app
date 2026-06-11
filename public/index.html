@@ -2,339 +2,380 @@
 <html lang="rw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKIZAME - Provisional Driving License Portal</title>
-    <!-- Core Responsive Layout Stylesheet -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <!-- Premium Vector Fonts Kit Support CDN -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IKIZAME Nyabyo - Isuzuma Bumenyi Nyabyo</title>
+    <!-- Premium Geometric Typography Fonts Hierarchies -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* Modern CSS Variable Extensions for Premium Branding Design */
+        /* 🪐 LUXURY DRIVING INTERFACE SYSTEM DEFINITION BALANCES */
         :root {
-            --primary: #0b698b;
-            --primary-dark: #08536e;
-            --accent: #38bdf8;
+            --bg-dark-slate: #1e293b;
+            --bg-card: #ffffff;
             --text-dark: #0f172a;
-            --text-light: #f8fafc;
-            --glass-bg: rgba(255, 255, 255, 0.95);
-            --shadow-premium: 0 20px 40px -15px rgba(15, 23, 42, 0.3);
+            --text-muted: #64748b;
+            --accent-teal: #08536e;
+            --accent-teal-hover: #063d52;
+            --border-color: #cbd5e1;
+            --error-crimson: #ef4444;
+            --success-emerald: #10b981;
+            
+            font-size: clamp(12px, 1.2vw, 15px);
         }
 
-        /* Fluid Animated Background Setup */
-        .hero-section {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(11, 105, 139, 0.75)), 
-                        url('https://unsplash.com') no-repeat center center/cover;
-            background-attachment: fixed;
-            transition: all 0.3s ease-in-out;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        /* 🚫 STRICT LOCKOUT: Locks outer frame body preventing overflow glitches */
+        html, body { 
+            height: 100vh; height: -webkit-fill-available; 
+            background-color: #1a2432; color: #ffffff; 
+            overflow: hidden; display: flex; flex-direction: column; width: 100%; position: relative;
         }
 
-        /* Left Side Advanced Content Layout Branding */
-        .hero-text-side {
-            max-width: 550px;
-            animation: fadeInHorizontal 0.8s ease-out;
+        /* 🛣️ ANIMATED DRIVING HIGHWAY CANVAS CANVAS BED SYSTEM */
+        .highway-animation-canvas-bed {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            background: linear-gradient(to right, #1a2432 0%, #111823 50%, #1a2432 100%);
+            z-index: 1; overflow: hidden;
+        }
+        
+        /* Moving road center dashed lines */
+        .highway-animation-canvas-bed::before {
+            content: ''; position: absolute; left: 50%; top: -10%; width: 4px; height: 120%;
+            transform: translateX(-50%);
+            background: repeating-linear-gradient(to bottom, transparent 0px, transparent 40px, rgba(255,255,255,0.08) 40px, rgba(255,255,255,0.08) 100px);
+            animation: infiniteDrivingHighwayScroll 1.2s linear infinite;
+        }
+        @keyframes infiniteDrivingHighwayScroll {
+            from { background-position: 0 0; }
+            to { background-position: 0 140px; }
         }
 
-        .hero-text-side h1 {
-            font-size: 64px;
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            line-height: 1.05;
-            background: linear-gradient(to right, #ffffff, #93c5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
+        /* 🚗 VECTOR VEHICLES & ROAD SIGNS ANIMATION LAYERS */
+        /* Animated Silhouette Vehicles flowing up lanes */
+        .animated-traffic-entity {
+            position: absolute; bottom: -60px; color: rgba(255, 255, 255, 0.05); font-size: 28px;
+            animation: vehicleDrivingUpwards 6s linear infinite; pointer-events: none;
+        }
+        .animated-traffic-entity.car-left { left: 42%; animation-duration: 5s; animation-delay: 1s; }
+        .animated-traffic-entity.bike-right { left: 54%; animation-duration: 4s; animation-delay: 3s; font-size: 24px; }
+        
+        /* Floating glowing road sign markers traveling sideways */
+        .animated-sign-marker {
+            position: absolute; color: rgba(56, 189, 248, 0.04); font-size: 60px;
+            animation: floatingSignDrift 12s linear infinite; pointer-events: none;
+        }
+        .animated-sign-marker.sign-left { left: -80px; top: 25%; animation-delay: 0s; }
+        .animated-sign-marker.sign-right { right: -80px; top: 60%; animation-direction: reverse; animation-delay: 4s; }
+
+        @keyframes vehicleDrivingUpwards {
+            0% { bottom: -60px; transform: scale(0.9); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: -60px; bottom: auto; transform: scale(1.1); opacity: 0; }
+        }
+        @keyframes floatingSignDrift {
+            0% { transform: translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(110vw) rotate(360deg); opacity: 0; }
         }
 
-        .hero-slogan {
-            font-size: 18px;
-            color: #cbd5e1;
-            margin-bottom: 35px;
-            line-height: 1.6;
-            font-weight: 400;
+        /* 📋 1. NAVBAR FIXED ROW NAVIGATION HEADER */
+        .portal-header-navbar {
+            height: 60px; width: 100%; display: flex; align-items: center;
+            justify-content: space-between; padding: 0 6%; flex-shrink: 0;
+            background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10;
+        }
+        .portal-brand-logo { font-size: 1.35rem; font-weight: 800; color: #0b698b; letter-spacing: -0.5px; text-transform: uppercase; }
+        
+        .portal-navigation-links-row { display: flex; align-items: center; gap: 24px; list-style: none; }
+        .portal-navigation-links-row a { 
+            color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600; 
+            padding: 6px 0; border-bottom: 2px solid transparent; transition: all 0.2s ease;
+        }
+        .portal-navigation-links-row a:hover, .portal-navigation-links-row a.active-link { color: #0b698b; }
+        .portal-navigation-links-row a.active-link { border-color: #0b698b; font-weight: 700; }
+
+        .language-switcher-dropdown-badge {
+            font-size: 0.85rem; font-weight: 600; color: var(--text-dark);
+            background-color: #f1f5f9; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border-color);
         }
 
-        .features-pill-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+        /* 📋 2. MAIN COUPLER CENTRAL VIEWPORT WORKSPACE */
+        .portal-central-workspace-grid {
+            flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 4%;
+            display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 40px; z-index: 5; min-height: 0;
         }
 
-        .feature-pill {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-light);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            backdrop-filter: blur(4px);
+        .hero-messaging-sidebar { display: flex; flex-direction: column; gap: 20px; }
+        
+        .badge-tags-container-row { display: flex; gap: 10px; }
+        .hero-pill-badge { 
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            color: #ffffff; background-color: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+            padding: 6px 14px; border-radius: 30px;
         }
 
-        .feature-pill i {
-            color: var(--accent);
+        .hero-messaging-sidebar h1 { 
+            font-size: clamp(2.2rem, 3.8vw, 3.4rem); font-weight: 800; line-height: 1.15; letter-spacing: -1px; color: #ffffff; 
         }
+        .hero-messaging-sidebar p { 
+            font-size: 1.05rem; font-weight: 500; color: #94a3b8; line-height: 1.5; max-width: 480px; 
+        }
+        
+        .btn-flat-action-link {
+            align-self: flex-start; background-color: #0b698b; color: #ffffff; text-decoration: none;
+            padding: 12px 26px; font-size: 0.95rem; font-weight: 700; border-radius: 30px;
+            box-shadow: 0 4px 12px rgba(11,105,139,0.2); transition: all 0.2s ease;
+        }
+        .btn-flat-action-link:hover { background-color: #08536e; transform: translateY(-1px); }
 
-        /* High-Tech Premium Interactive Form Layout Card */
-        .form-card {
-            background: var(--glass-bg);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            width: 440px;
-            box-shadow: var(--shadow-premium);
-            animation: fadeInVertical 0.8s ease-out;
-            backdrop-filter: blur(8px);
+        /* 📋 3. RIGHT COLUMN: INPUT FORM DISPLAY CONTAINER CARD */
+        .registration-panel-card-container {
+            background-color: var(--bg-card); border-radius: 16px; width: 100%; max-width: 440px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column;
+            overflow: hidden; animation: cardGlowUpEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            margin-left: auto; border: 1px solid rgba(255,255,255,0.1);
         }
-
-        .form-tabs {
-            background: #f1f5f9;
-            padding: 6px;
-            border-bottom: none;
-            display: flex;
-            gap: 4px;
-        }
-
-        .tab-btn {
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            transition: all 0.25s ease;
-            border: none;
-            background: transparent;
-            color: #64748b;
-        }
-
-        .tab-btn.active-tab {
-            background: #ffffff;
-            color: var(--primary);
-            box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.08);
-            border-bottom: none;
-        }
-
-        .form-body {
-            padding: 40px 35px;
-        }
-
-        .form-body h2 {
-            font-size: 24px;
-            color: var(--text-dark);
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-            text-align: left;
-        }
-
-        .form-desc {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 30px;
-            line-height: 1.4;
-        }
-
-        .input-group input[type="text"] {
-            padding: 14px;
-            border-radius: 10px;
-            border: 2px solid #e2e8f0;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .input-group input[type="text"]:focus,
-        .phone-input-wrapper:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(11, 105, 139, 0.15);
-        }
-
-        .phone-input-wrapper {
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            transition: all 0.2s ease;
-            overflow: hidden;
-        }
-
-        .country-prefix {
-            font-weight: 700;
-            background: #f8fafc;
-            padding: 14px;
-        }
-
-        .phone-input-wrapper input {
-            padding: 14px;
-            font-weight: 500;
-        }
-
-        .submit-form-btn {
-            border-radius: 10px;
-            padding: 16px;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            box-shadow: 0 10px 20px -5px rgba(11, 105, 139, 0.3);
-            transition: all 0.25s ease;
-        }
-
-        .submit-form-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px -5px rgba(11, 105, 139, 0.4);
-            background: var(--primary-dark);
-        }
-
-        /* System Animations Definition Parameters Mapping Context */
-        @keyframes fadeInHorizontal {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeInVertical {
-            from { opacity: 0; transform: translateY(30px); }
+        @keyframes cardGlowUpEntrance {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Tablet Grid Refinements Overrides */
-        @media screen and (max-width: 1024px) {
-            .hero-text-side h1 { font-size: 44px; }
-            .features-pill-row { justify-content: center; }
+        .card-tabs-header-nav { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #e2e8f0; background-color: #f8fafc; }
+        .tab-nav-toggle-btn {
+            border: none; padding: 16px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--text-muted); background: transparent; cursor: pointer; text-align: center;
+        }
+        .tab-nav-toggle-btn.active-tab { color: #0b698b; background-color: #ffffff; border-bottom: 3px solid #0b698b; font-weight: 900; }
+
+        .form-card-inner-workspace-body { padding: 35px 30px; display: flex; flex-direction: column; gap: 20px; }
+        .form-card-inner-workspace-body h2 { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px; }
+        .form-card-inner-workspace-body .helper-intro-txt { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); line-height: 1.4; margin-top: -12px; }
+
+        .interactive-form-handler-wrapper { display: flex; flex-direction: column; gap: 16px; }
+        
+        .form-field-block-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-field-block-group label { font-size: 0.75rem; font-weight: 700; color: var(--text-dark); }
+        
+        .field-input-coupler-row { position: relative; width: 100%; }
+        .field-input-coupler-row input {
+            width: 100%; padding: 12px 16px; background-color: #ffffff;
+            border: 2px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; font-weight: 600;
+            color: var(--text-dark); outline: none; transition: border-color 0.15s ease;
+        }
+        .field-input-coupler-row input:focus { border-color: #0b698b; }
+
+        .field-input-coupler-row.phone-prefix-mode input { padding-left: 105px !important; }
+        .rw-prefix-badge-static-label {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            font-size: 0.9rem; font-weight: 700; color: var(--text-dark); display: inline-flex; align-items: center; gap: 6px;
+            border-right: 1px solid #cbd5e1; padding-right: 10px; user-select: none;
+        }
+        .validation-hint-badge-message { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); margin-top: 1px; display: block; transition: color 0.1s ease; }
+        .validation-hint-badge-message.error-active { color: var(--error-crimson); font-weight: 700; }
+        .validation-hint-badge-message.success-active { color: var(--success-emerald); font-weight: 700; }
+
+        .btn-submit-action-start {
+            width: 100%; border: none; background-color: var(--accent-teal); color: #ffffff;
+            padding: 13px; font-size: 0.95rem; font-weight: 700; border-radius: 6px;
+            cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 4px 10px rgba(8,83,110,0.25); transition: background 0.15s ease; margin-top: 5px;
+        }
+        .btn-submit-action-start:hover { background-color: var(--accent-teal-hover); }
+
+        .portal-footer-copyright-attribution-bar {
+            height: 45px; width: 100%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; color: #64748b; border-top: 1px solid rgba(255, 255, 255, 0.05); flex-shrink: 0; z-index: 10;
+            background-color: rgba(19, 26, 44, 0.6); backdrop-filter: blur(10px);
+        }
+        .portal-footer-copyright-attribution-bar strong { color: #38bdf8; margin-left: 3px; }
+
+        @media screen and (max-width: 991px) {
+            .portal-central-workspace-grid { grid-template-columns: 1fr !important; padding: 20px 4% !important; gap: 30px !important; align-content: center; }
+            .hero-messaging-sidebar { text-align: center; align-items: center; }
+            .hero-messaging-sidebar p { max-width: 100%; }
+            .btn-flat-action-link { align-self: center; }
+            .registration-panel-card-container { margin: 0 auto; }
+            .portal-header-navbar { padding: 0 4%; }
+            .portal-navigation-links-row { display: none; }
+            .animated-sign-marker { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Upper Main Framework Header Navigation Panel -->
-    <header class="navbar">
-        <div class="logo">
-            <i class="fa-solid fa-graduation-cap"></i> IKIZAME
-        </div>
-        <nav class="nav-links">
-            <a href="#" class="active"><i class="fa-solid fa-house"></i> Ahabanza</a>
-            <a href="#"><i class="fa-solid fa-circle-info"></i> Ubufasha</a>
-            <a href="#"><i class="fa-solid fa-book-bookmark"></i> Ifashanyigisho</a>
-            <a href="#"><i class="fa-solid fa-tags"></i> Ibiciro</a>
-            <a href="#"><i class="fa-solid fa-square-poll-vertical"></i> Amanota</a>
+    <!-- 🛣️ Animated Highway Base Canvas Layout Layer -->
+    <div class="highway-animation-canvas-bed">
+        <!-- Moving Vehicles Icons Silhouette Stream -->
+        <i class="fa-solid fa-car-side"></i></div>
+        <i class="fa-solid fa-motorcycle"></i></div>
+        
+        <!-- Floating Drifting Road Signs Graphic Indicators Layer -->
+        <div class="animated-sign-marker sign-left"><i class="fa-solid fa-circle-exclamation"></i></div>
+        <div class="animated-sign-marker sign-right"><i class="fa-solid fa-diamond-turn-right"></i></div>
+    </div>
+
+    <!-- 📋 1. FIXED TOP NAVBAR NAVIGATION NAVIGATION LINKS PANEL -->
+    <header class="portal-header-navbar">
+        <div class="portal-brand-logo">IKIZAME</div>
+        <nav>
+            <ul class="portal-navigation-links-row">
+                <li><a href="#" class="active-link">Ahabanza</a></li>
+                <li><a href="#">Ubufasha</a></li>
+                <li><a href="#">Ifashanyigisho</a></li>
+                <li><a href="#">Ibiciro</a></li>
+                <li><a href="#">Amanota</a></li>
+            </ul>
         </nav>
-        <div class="lang-selector">
-            <span>🇷🇼 Kinyarwanda</span> <i class="fa-solid fa-chevron-down"></i>
+        <div class="language-switcher-dropdown-badge">
+            <span>rw Kinyarwanda</span>
         </div>
     </header>
 
-    <!-- Optimized Split Screen Container Viewport Layout -->
-    <main class="hero-section">
-        <div class="hero-overlay">
-            
-            <!-- Left Grid Panel: Elegant typography + Quick statistics tags element pills -->
-            <div class="hero-text-side">
-                <div class="features-pill-row">
-                    <span class="feature-pill"><i class="fa-solid fa-bolt"></i> Isuzuma Rihuse</span>
-                    <span class="feature-pill"><i class="fa-solid fa-shield-halved"></i> Amategeko 2026</span>
-                </div>
-                <h1>Kora rimwe<br>utsinde Ikizamini.</h1>
-                <p class="hero-slogan">
-                    Iga, isuzume, kora imyitozo y'amategeko y'umuhanda ukoresheje ikoranabuhanga rigezweho ririnda ikoreshwa ry'internet nyinshi.
-                </p>
-                <button class="cta-btn" style="background: var(--primary); color: white; border: none;">
-                    Tangira Imyitozo <i class="fa-solid fa-chevron-right"></i>
-                </button>
+    <!-- 📋 2. CENTRAL ELASTIC SPLIT WORKSPACE HUB FRAME -->
+    <main class="portal-central-workspace-grid">
+        
+        <!-- Left Side Hero Content Column Block Descriptions -->
+        <section class="hero-messaging-sidebar">
+            <div class="badge-tags-container-row">
+                <span class="hero-pill-badge">Isuzuma Rihuse</span>
+                <span class="hero-pill-badge">Amategeko 2026</span>
+            </div>
+            <h1>Kora rimwe<br>utsinde Ikizamini.</h1>
+            <p>Iga, isuzume, kora imyitozo y'amategeko y'umuhanda ukoresheje ikoranabuhanga rigezweho ririnda ikoreshwa ry'internet nyinshi.</p>
+            <a href="#" class="btn-flat-action-link">Tangira Imyitozo</a>
+        </section>
+
+        <!-- Right Side User Profiles Registration Input Panel Card -->
+        <section class="registration-panel-card-container">
+            <div class="card-tabs-header-nav">
+                <button class="tab-nav-toggle-btn active-tab">Kwiyandikisha</button>
+                <button class="tab-nav-toggle-btn" onclick="alert('Ubu buryo bugiye kuboneka vuba!')">Koresha Kode</button>
             </div>
 
-            <!-- Right Grid Panel: High-Tech registration system entry interaction module card -->
-            <div class="form-card">
-                <div class="form-tabs">
-                    <button class="tab-btn active-tab" id="tabRegister">KWIYANDIKISHA</button>
-                    <button class="tab-btn" id="tabCode">KORESHA KODE</button>
-                </div>
-                
-                <div class="form-body">
-                    <h2 id="formTitle">Isuzuma Bumenyi</h2>
-                    <p class="form-desc" id="formDesc">Iyandikishe gukora isuzuma ry'amategeko y'umuhanda kugira ngo uhabwe kode y'ikizamini.</p>
-                    
-                    <form action="/start-exam" method="POST" id="mainPortalForm">
-                        <div class="input-group" id="nameGroup">
-                            <label for="studentName">Amazina Yanyu</label>
-                            <input type="text" id="studentName" name="studentName" placeholder="Ugereranyije: Felix Irakoze" required>
+            <div class="form-card-inner-workspace-body">
+                <h2>Isuzuma Bumenyi</h2>
+                <p class="helper-intro-txt">Iyandikishe gukora isuzuma ry'amategeko y'umuhanda kugira ngo uhabwe kode y'ikizamini.</p>
+
+                <form id="candidateRegistrationInteractiveForm" class="interactive-form-handler-wrapper" novalidate>
+                    <!-- Field Row 1: Candidate Names Block Group -->
+                    <div class="form-field-block-group">
+                        <label for="studentNameInput">Amazina Yanyu</label>
+                        <div class="field-input-coupler-row">
+                            <input type="text" id="studentNameInput" placeholder="Ugereranyije: Felix Irakoze" required autocomplete="off">
                         </div>
-                        
-                        <div class="input-group">
-                            <label for="phoneNumber">Numero ya Telefone</label>
-                            <div class="phone-input-wrapper">
-                                <span class="country-prefix">🇷🇼 +250</span>
-                                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="788000000" required style="border: none; outline: none; width: 100%;">
+                        <span class="validation-hint-badge-message" id="nameValidationHint">Andika amazina yanyu yose</span>
+                    </div>
+
+                    <!-- Field Row 2: Precision Validated Carrier Network Telephone Block Group -->
+                    <div class="form-field-block-group">
+                        <label for="studentPhoneInput">Numero ya Telefone</label>
+                        <div class="field-input-coupler-row phone-prefix-mode">
+                            <div class="rw-prefix-badge-static-label">
+                                <span style="font-size:11px;">rw</span> <span>+250</span>
                             </div>
+                            <input type="tel" id="studentPhoneInput" placeholder="788000000" maxlength="9" required autocomplete="off">
                         </div>
-                        
-                        <button type="submit" class="submit-form-btn" id="submitBtn">Tangira Ikizamini</button>
-                    </form>
-                </div>
-            </div>
+                        <span class="validation-hint-badge-message" id="phoneValidationHint">Igomba gutangizwa na 7 (Inimero 9 gusa)</span>
+                    </div>
 
-        </div>
+                    <!-- Trigger Controller Button Node Row Submit Action -->
+                    <button type="submit" class="btn-submit-action-start">
+                        Tangira Ikizamini
+                    </button>
+                </form>
+            </div>
+        </section>
     </main>
 
-    <!-- Fixed Portal Trademark Copyright Bar Footer -->
-        <!-- Fixed Portal Trademark Copyright Bar Footer -->
-    <footer class="footer-bar">
+    <!-- Lower Footer Copyright Branding Attribution Strip Bar Line -->
+    <footer class="portal-footer-copyright-attribution-bar">
         <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
     </footer>
 
-    <!-- Interactive Framework Execution Scripts Module -->
+    <!-- Client-Side Form Sanitizers and Phone Validations Rules Execution Engine Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const tabRegister = document.getElementById('tabRegister');
-            const tabCode = document.getElementById('tabCode');
-            const formTitle = document.getElementById('formTitle');
-            const formDesc = document.getElementById('formDesc');
-            const nameGroup = document.getElementById('nameGroup');
-            const studentNameInput = document.getElementById('studentName');
-            const submitBtn = document.getElementById('submitBtn');
-            const form = document.getElementById('mainPortalForm');
+            sessionStorage.clear();
 
-            // Interactive interface changes when clicking the "KORESHA KODE" option tab
-            tabCode.addEventListener('click', () => {
-                tabRegister.classList.remove('active-tab');
-                tabCode.classList.add('active-tab');
-                formTitle.innerText = "Koresha Kode yawe";
-                formDesc.innerText = "Niba waramaze kwiyandikisha ugahabwa kode, yinjize hano winjire mu kizamini muryo uhuse.";
-                nameGroup.style.display = 'none';
-                studentNameInput.removeAttribute('required');
-                submitBtn.innerText = "Injira mu Kizame";
+            const registrationForm = document.getElementById('candidateRegistrationInteractiveForm');
+            const nameField = document.getElementById('studentNameInput');
+            const phoneField = document.getElementById('studentPhoneInput');
+            
+            const nameHint = document.getElementById('nameValidationHint');
+            const phoneHint = document.getElementById('phoneValidationHint');
+
+            // ⚡ 1. LIVE CARRIER PATTERN FILTER LISTENER
+            phoneField.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, ''); // Numbers only
+                
+                const currentVal = this.value;
+
+                // 🛡️ STRICT VALIDATION CRITERIA: Must start with 7, second character must be 8, 9, or 3
+                if (currentVal.length > 0 && !currentVal.startsWith('7')) {
+                    phoneHint.innerText = "IKOSA: Numero ya telefone igomba gutangirana n'umubare 7 gusa!";
+                    phoneHint.className = "validation-hint-badge-message error-active";
+                } else if (currentVal.length >= 2 && !['8', '9', '3','2'].includes(currentVal.charAt(1))) {
+                    phoneHint.innerText = "IKOSA: Umubare wa kabiri ugomba kuba 8, 9, cyangwa 3,2 (MTN / Airtel)!";
+                    phoneHint.className = "validation-hint-badge-message error-active";
+                } else if (currentVal.length > 0 && currentVal.length < 9) {
+                    phoneHint.innerText = `Haracyabura imibare (${currentVal.length} / 9)`;
+                    phoneHint.className = "validation-hint-badge-message error-active";
+                } else if (currentVal.length === 9) {
+                    phoneHint.innerText = "✓ Numero yuzuye neza kandi iremewe mu Rwanda!";
+                    phoneHint.className = "validation-hint-badge-message success-active";
+                } else {
+                    phoneHint.innerText = "Igomba gutangizwa na 7 (Inimero 9 gusa)";
+                    phoneHint.className = "validation-hint-badge-message";
+                }
             });
 
-            // Interactive interface restoration changes when clicking the "KWIYANDIKISHA" option tab
-            tabRegister.addEventListener('click', () => {
-                tabCode.classList.remove('active-tab');
-                tabRegister.classList.add('active-tab');
-                formTitle.innerText = "Isuzuma Bumenyi";
-                formDesc.innerText = "Iyandikishe gukora isuzuma ry'amategeko y'umuhanda kugira ngo uhabwe kode y'ikizamini.";
-                nameGroup.style.display = 'flex';
-                studentNameInput.setAttribute('required', 'required');
-                submitBtn.innerText = "Tangira Ikizamini";
+            nameField.addEventListener('input', function() {
+                if (this.value.trim().length >= 3) {
+                    nameHint.innerText = "✓ Amazina aremewe!";
+                    nameHint.className = "validation-hint-badge-message success-active";
+                } else {
+                    nameHint.innerText = "Andika amazina yanyu yose";
+                    nameHint.className = "validation-hint-badge-message";
+                }
             });
+                        // ⚡ 2. SECURE PROFILE TRANSACTION VALIDATOR SUBMIT INTERCEPT
+            registrationForm.addEventListener('submit', function(event) {
+                event.preventDefault(); 
 
-            // Handle submission mapping into local memory frames storage pools
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const nameValue = studentNameInput.value || 'Umusomyi Ufite Kode';
-                const phoneValue = document.getElementById('phoneNumber').value;
+                const targetCleanedName = nameField.value.trim();
+                const targetCleanedPhone = phoneField.value.trim();
 
-                sessionStorage.setItem('studentName', nameValue);
-                sessionStorage.setItem('phoneNumber', phoneValue);
-                
-                // Route user seamlessly right into the active running exam testing layout view
+                let isFormVerificationPassed = true;
+
+                if (targetCleanedName.length < 3) {
+                    nameHint.innerText = "IKOSA: Cyinjize amazina yanyu neza (Atari munsi y'inyuguti 3)!";
+                    nameHint.className = "validation-hint-badge-message error-active";
+                    nameField.focus();
+                    isFormVerificationPassed = false;
+                }
+
+                // Server-side strict carrier criteria enforcement checkpoint
+                const isValidSecondDigit = targetCleanedPhone.length >= 2 && ['8', '9', '3'].includes(targetCleanedPhone.charAt(1));
+                if (targetCleanedPhone.length !== 9 || !targetCleanedPhone.startsWith('7') || !isValidSecondDigit) {
+                    phoneHint.innerText = "IKOSA: Numero ntabwo yuzuye cyangwa ntabwo ihuye n'imirongo ya Rwanda (78, 79, 73)!";
+                    phoneHint.className = "validation-hint-badge-message error-active";
+                    if (isFormVerificationPassed) phoneField.focus();
+                    isFormVerificationPassed = false;
+                }
+
+                if (!isFormVerificationPassed) return; 
+
+                sessionStorage.setItem('studentName', targetCleanedName);
+                sessionStorage.setItem('phoneNumber', '+250' + targetCleanedPhone);
+                sessionStorage.setItem('isExamAlreadyStarted', 'false');
+
                 window.location.href = 'exam.html';
             });
-
-            // Register background Data-Saving Service Worker utilities safely
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(reg => console.log('⚡ High-performance Service Worker active!'))
-                        .catch(err => console.error('Service Worker sync warning:', err));
-                });
-            }
         });
     </script>
 </body>

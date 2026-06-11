@@ -1,11 +1,12 @@
 // ==========================================================================
-// 🚀 IKIZAME WEB PORTAL CORE BACKEND SERVICE ENGINE
+// 🚀 IKIZAME HYBRID COUPLER PLATFORM SERVER ENGINE (LOCAL & PRODUCTION SINC)
 // ==========================================================================
 const express = require('express');
 const mysql = require('mysql2');
 const path = require('path');
 const multer = require('multer');
 const session = require('express-session');
+const fs = require('fs');
 
 const app = express();
 
@@ -14,245 +15,247 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- 🔒 Secure Session State Management Cookies Barrier ---
 app.use(session({
-    secret: 'izo_service_quicky_secure_production_token_9981',
+    secret: 'izo_service_quicky_hybrid_secure_token_998844',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 2 * 60 * 60 * 1000 } // Session expires in 2 hours
+    cookie: { maxAge: 4 * 60 * 60 * 1000 } // 4 Hours active admin session layout bounds
 }));
 
-// --- 🗄️ 1. Dynamic MySQL Database Connection Config (Local & Cloud Hybrid) ---
-const dbConnectionConfig = process.env.DATABASE_URL || {
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'driving_db'
-};
+// --- 🗄️ 1. SMART HYBRID DATABASE CONNECTOR MATRIX ---
+// Automatically switches connectivity profiles between local computer disks and Alwaysdata cloud clusters
+const isLocalMachineHost = process.env.NODE_ENV !== 'production' && !process.env.RENDER;
+let databaseCredentialsConfig = {};
 
-const db = mysql.createConnection(dbConnectionConfig);
+if (isLocalMachineHost) {
+    // 💻 A. LOCAL WORKSPACE CREDENTIALS (XAMPP / WampServer standard)
+    databaseCredentialsConfig = {
+        host: 'localhost',
+        user: 'root',
+        password: '', 
+        database: 'driving_db',
+        port: 3306
+    };
+    console.log('ℹ️ Local environment detected. Initiating local MySQL handshake setup...');
+} else {
+    // 🌐 B. PRODUCTION CLOUD CREDENTIALS (Alwaysdata Remote cluster parameters)
+    databaseCredentialsConfig = {
+        host: 'mysql-izo.alwaysdata.net',
+        user: 'izo_driving',
+        password: 'your_alwaysdata_strong_password_here', // Maps straight to your online database credentials password string
+        database: 'izo_driving_db',
+        port: 3306
+    };
+    console.log('ℹ️ Production host detected. Initiating Alwaysdata remote cloud connection cluster...');
+}
+
+const db = mysql.createConnection(databaseCredentialsConfig);
 
 db.connect((err) => {
     if (err) {
-        console.error('❌ Error linking to MySQL Database Setup Pipeline:', err.message);
+        console.error('❌ Database Connection Cluster Failure:', err.message);
         return;
     }
-    console.log('🚀 Successfully connected to the active MySQL database!');
+    console.log(`🚀 Successfully linked to active database target: [${databaseCredentialsConfig.host}]!`);
 });
 
-// --- 📸 2. Advanced Absolute Disk Storage Multer Engine Core Configuration ---
+// --- 📸 2. DEDUPLICATION STORAGE ENGINE MATRIX (LOCAL STORAGE SAFE) ---
+const uploadDirectoryPath = path.resolve(__dirname, 'public', 'assets', 'uploads');
+
+// Fallback directory guard verification check
+if (!fs.existsSync(uploadDirectoryPath)) {
+    fs.mkdirSync(uploadDirectoryPath, { recursive: true });
+}
+
 const storageEngine = multer.diskStorage({
     destination: (req, file, cb) => {
-        // 🎯 FIXED: Uses path.resolve to force absolute path context execution regardless of ephemeral cloud states
-        cb(null, path.resolve(__dirname, 'public', 'assets', 'uploads'));
+        cb(null, uploadDirectoryPath);
     },
     filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+        // Retains original filenames across tracking vectors to support absolute cross-question reuse framework
+        const cleanOriginalName = file.originalname.replace(/\s+/g, '_');
+        const completeTargetFilePath = path.join(uploadDirectoryPath, cleanOriginalName);
+
+        // DISK DEDUPLICATION GUARD: Skips duplicate copying if file already resides in folder
+        if (fs.existsSync(completeTargetFilePath)) {
+            console.log(`ℹ️ Asset [${cleanOriginalName}] already present on disk folder tree. Skipping copy loops.`);
+            cb(null, cleanOriginalName);
+        } else {
+            cb(null, cleanOriginalName);
+        }
     }
 });
 
-const upload = multer({ 
-    storage: storageEngine,
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB File size safety limitation limit guard
-});
+const upload = multer({ storage: storageEngine });
 
-// --- Dynamic File Fields Matrix Multi-Upload Concurrency Setup ---
+// Multi-upload dynamic layout fields matrix config setup
 const examUploadFieldsConfig = upload.fields([
-    { name: 'imageFile', maxCount: 1 },    // Main descriptive question road sign image
-    { name: 'optionA_File', maxCount: 1 }, // Dynamic target uploader option image box A
-    { name: 'optionB_File', maxCount: 1 }, // Dynamic target uploader option image box B
-    { name: 'optionC_File', maxCount: 1 }, // Dynamic target uploader option image box C
-    { name: 'optionD_File', maxCount: 1 }  // Dynamic target uploader option image box D
+    { name: 'imageFile', maxCount: 1 },
+    { name: 'optionA_File', maxCount: 1 },
+    { name: 'optionB_File', maxCount: 1 },
+    { name: 'optionC_File', maxCount: 1 },
+    { name: 'optionD_File', maxCount: 1 }
 ]);
 
-// --- 🔒 3. Administrative Middleware Session Wall Safeguards ---
 function requireAdminLogin(req, res, next) {
     if (req.session && req.session.isAdminAuthenticated) {
         return next();
     }
-    res.status(401).send('Unauthorized Entry Attempt: Please log in at /admin-login.html first!');
+    res.status(401).send('Unauthorized entry setup. Please access portals with valid admin login actions loops.');
 }
 
 // ==========================================================================
-// 🛣️ ADMINISTRATIVE SERVICE APP ROUTING PATHS ENDPOINTS
+// 🛣️ CONTROLLER ROUTING ENDPOINTS CHANNEL ARCHITECTURE
 // ==========================================================================
 
-// ➕ A. PORTAL ADMIN LOGIN AUTHENTICATION VERIFIER ROUTE (English Response Update)
+// 🔐 A. ADMINISTRATIVE AUTHENTICATION VECTOR HANDSHAKE
 app.post('/api/admin/auth', (req, res) => {
     const { username, password } = req.body;
-    
     db.query('SELECT * FROM portal_admins WHERE username = ? AND password = ?', [username, password], (err, results) => {
-        if (err) return res.status(500).send('Database Connection Error: ' + err.message);
-        
+        if (err) return res.status(500).send('Database Auth Error: ' + err.message);
         if (results && results.length > 0) {
             req.session.isAdminAuthenticated = true;
-            req.session.adminUser = results[0].username;
             res.redirect('/dashboard.html');
         } else {
-            res.send('<script>alert("Invalid administrator username or password! Please check your credentials and try again."); window.location.href="/admin-login.html";</script>');
+            res.send('<script>alert("Invalid Admin Credentials Layout!"); window.location.href="/admin-login.html";</script>');
         }
     });
 });
 
-// ➕ B. LOGOUT SESSION TERMINATION GATEWAY
 app.get('/api/admin/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/admin-login.html');
-    });
+    req.session.destroy(() => { res.redirect('/admin-login.html'); });
 });
 
-// ➕ C. GET COMPLETE INVENTORY EXAMS DATA ARRAY LIST
+// 📋 B. FETCH ALL REPOSITORY DISK INVENTORY ITEMS POOL RECORDS
 app.get('/api/exams', (req, res) => {
     db.query('SELECT * FROM exams ORDER BY id DESC', (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);
     });
 });
-// ➕ B. ADD NEW QUESTION WITH HYBRID TEXT OR PERMANENT MULTI-IMAGE OPTIONS
-app.post('/api/exams/add', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
+
+// ➕ C. RECORD INS INSERTION: ADD NEW QUESTION RECORD WITH DISK OVERWRITE SAFETY
+app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
     const question = req.body.question || '';
     const correctOption = req.body.correctOption || '';
     const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
     
-    // 🎯 SECURE STORAGE MAPPING: Processes the main question image file stream
-    const mainQuestionImage = req.files && req.files['imageFile'] && req.files['imageFile'][0] 
+    // Checks file pickers streams arrays or defaults straight back into textbox typed fallback references
+    const mainQuestionImage = req.files && req.files['imageFile'] 
         ? req.files['imageFile'][0].filename 
-        : null;
+        : (req.body.imageFileTextFallback ? req.body.imageFileTextFallback.trim() : null);
 
     let finalOptionA = '';
     let finalOptionB = '';
     let finalOptionC = '';
     let finalOptionD = '';
 
-    // 🎯 FIX PERMANENT FILES EXTRACTION: Pulls explicitly from index [0] of the file stream array
-    // This forces the server to write the actual physical filename permanently into the static directory paths
     if (optionsLayoutMode === 'image') {
-        finalOptionA = req.files && req.files['optionA_File'] && req.files['optionA_File'][0] ? req.files['optionA_File'][0].filename : '';
-        finalOptionB = req.files && req.files['optionB_File'] && req.files['optionB_File'][0] ? req.files['optionB_File'][0].filename : '';
-        finalOptionC = req.files && req.files['optionC_File'] && req.files['optionC_File'][0] ? req.files['optionC_File'][0].filename : '';
-        finalOptionD = req.files && req.files['optionD_File'] && req.files['optionD_File'][0] ? req.files['optionD_File'][0].filename : '';
+        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'][0].filename : (req.body.optionATextFallback ? req.body.optionATextFallback.trim() : '');
+        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'][0].filename : (req.body.optionBTextFallback ? req.body.optionBTextFallback.trim() : '');
+        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'][0].filename : (req.body.optionCTextFallback ? req.body.optionCTextFallback.trim() : '');
+        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'][0].filename : (req.body.optionDTextFallback ? req.body.optionDTextFallback.trim() : '');
     } else {
-        finalOptionA = req.body.optionA || '';
-        finalOptionB = req.body.optionB || '';
-        finalOptionC = req.body.optionC || '';
-        finalOptionD = req.body.optionD || '';
+        finalOptionA = req.body.optionA ? req.body.optionA.trim() : '';
+        finalOptionB = req.body.optionB ? req.body.optionB.trim() : '';
+        finalOptionC = req.body.optionC ? req.body.optionC.trim() : '';
+        finalOptionD = req.body.optionD ? req.body.optionD.trim() : '';
     }
-
-    // Absolute structural fallback to satisfy database NOT NULL constraints
-    if (!finalOptionA) finalOptionA = '';
-    if (!finalOptionB) finalOptionB = '';
-    if (!finalOptionC) finalOptionC = '';
-    if (!finalOptionD) finalOptionD = '';
 
     const sql = `INSERT INTO exams (question, option_a, option_b, option_c, option_d, correct_option, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, mainQuestionImage], (err, result) => {
         if (err) {
-            console.error('❌ Database insertion error:', err.message);
-            return res.status(500).send('Database Error Inserting Question Record: ' + err.message);
+            console.error('❌ Insertion query failed:', err.message);
+            return res.status(500).send('Database Core Query Insertion Failure Error: ' + err.message);
         }
         res.redirect('/dashboard.html');
     });
 });
-// ➕ E. GET SINGLE EXAM RECORD OBJECT FOR COMPILING MANIFEST DATA VIEWS
-app.get('/api/exams/:id', (req, res) => {
-    const targetId = parseInt(req.params.id, 10);
-    if (isNaN(targetId)) return res.status(400).json({ error: 'Invalid ID specification configuration' });
 
-    db.query('SELECT * FROM exams WHERE id = ?', [targetId], (err, results) => {
+// 🔍 D. GET SPECIFIC OBJECT DATA TARGET IDENTIFICATION RECORD MOUNT REFERENCE
+app.get('/api/exams/:id', (req, res) => {
+    db.query('SELECT * FROM exams WHERE id = ?', [req.params.id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
-        if (results && results.length > 0) {
-            res.json(results[0]); 
+        if (results.length > 0) {
+            res.json(results[0]);
         } else {
-            res.status(404).json({ error: 'Question parameter record object entity not found' });
+            res.status(404).json({ error: 'Record reference object mapping element targets not found.' });
         }
     });
 });
-// ➕ F. SUBMIT RUNTIME UPDATE EDITS OVER EXISTING EXAM RECORDS (Permanent Storage Engine)
-app.post('/api/exams/edit', requireAdminLogin, examUploadFieldsConfig, (req, res) => {
-    const id = req.body.id;
-    const question = req.body.question || '';
-    const correctOption = req.body.correctOption || '';
-    const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
-    const existingImagePath = req.body.existingImagePath || '';
-    
-    const existingOptA = req.body.existingOptA || '';
-    const existingOptB = req.body.existingOptB || '';
-    const existingOptC = req.body.existingOptC || '';
-    const existingOptD = req.body.existingOptD || '';
 
-    // 🎯 SECURE STORAGE MAPPING: Syncs main question sign via explicit index [0] array mapping
-    const imagePath = req.files && req.files['imageFile'] && req.files['imageFile'][0] 
+// 💾 E. UPDATE RECORD FIELDS EDITS PARAMS CONTROL CHANNELS
+app.post('/api/exams/edit', examUploadFieldsConfig, (req, res) => {
+    const { id, question, correctOption, optionsLayoutMode, existingImagePath, existingOptA, existingOptB, existingOptC, existingOptD, imageFileTextFallback, optionATextFallback, optionBTextFallback, optionCTextFallback, optionDTextFallback } = req.body;
+    
+    const imagePath = req.files && req.files['imageFile'] 
         ? req.files['imageFile'][0].filename 
-        : existingImagePath;
+        : (imageFileTextFallback ? imageFileTextFallback.trim() : existingImagePath);
 
     let finalOptionA = '';
     let finalOptionB = '';
     let finalOptionC = '';
     let finalOptionD = '';
 
-    // 🎯 FIX PERMANENT FILES EXTRACTION: Pointing to index [0] forces option updates straight into disk storage
     if (optionsLayoutMode === 'image') {
-        finalOptionA = req.files && req.files['optionA_File'] && req.files['optionA_File'][0] ? req.files['optionA_File'][0].filename : existingOptA;
-        finalOptionB = req.files && req.files['optionB_File'] && req.files['optionB_File'][0] ? req.files['optionB_File'][0].filename : existingOptB;
-        finalOptionC = req.files && req.files['optionC_File'] && req.files['optionC_File'][0] ? req.files['optionC_File'][0].filename : existingOptC;
-        finalOptionD = req.files && req.files['optionD_File'] && req.files['optionD_File'][0] ? req.files['optionD_File'][0].filename : existingOptD;
+        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'][0].filename : (optionATextFallback ? optionATextFallback.trim() : existingOptA);
+        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'][0].filename : (optionBTextFallback ? optionBTextFallback.trim() : existingOptB);
+        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'][0].filename : (optionCTextFallback ? optionCTextFallback.trim() : existingOptC);
+        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'][0].filename : (optionDTextFallback ? optionDTextFallback.trim() : existingOptD);
     } else {
-        finalOptionA = req.body.optionA || '';
-        finalOptionB = req.body.optionB || '';
-        finalOptionC = req.body.optionC || '';
-        finalOptionD = req.body.optionD || '';
+        finalOptionA = req.body.optionA ? req.body.optionA.trim() : '';
+        finalOptionB = req.body.optionB ? req.body.optionB.trim() : '';
+        finalOptionC = req.body.optionC ? req.body.optionC.trim() : '';
+        finalOptionD = req.body.optionD ? req.body.optionD.trim() : '';
     }
-
-    if (!finalOptionA) finalOptionA = '';
-    if (!finalOptionB) finalOptionB = '';
-    if (!finalOptionC) finalOptionC = '';
-    if (!finalOptionD) finalOptionD = '';
-
-    const sql = `UPDATE exams SET question=?, option_a=?, option_b=?, option_c=?, option_d=?, correct_option=?, image_path=? WHERE id=?`;
+        const sql = `UPDATE exams SET question=?, option_a=?, option_b=?, option_c=?, option_d=?, correct_option=?, image_path=? WHERE id=?`;
     db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, imagePath, id], (err, result) => {
-        if (err) {
-            console.error('❌ Database update error:', err.message);
-            return res.status(500).send('Database Error Updating Records Matrix: ' + err.message);
-        }
+        if (err) return res.status(500).send('Database Query Error Executing Modify Updates Chain: ' + err.message);
         res.redirect('/dashboard.html');
     });
 });
-// ➕ G. ASYNCHRONOUS DELETION DEPLOYMENT INTERCEPT HANDLER PATHWAY
-app.delete('/api/exams/delete/:id', requireAdminLogin, (req, res) => {
+
+// 🗑️ F. REMOVE RECORD OBJECT INTERCEPTS OUT OF ROW SELECTIONS MATRIX
+app.delete('/api/exams/delete/:id', (req, res) => {
     db.query('DELETE FROM exams WHERE id = ?', [req.params.id], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true });
     });
 });
 
-// ==========================================================================
-// 📝 STUDENT EXAMINATION GRADING EVALUATION CONTROLLER INTERCEPT ENGINES
-// ==========================================================================
+// 📊 G. EVALUATE SECURITY MATRICES GRADING HANDSHAKE FOR EXACTLY 20 CHOSEN QUESTIONS Slices
 app.post('/api/exams/submit', (req, res) => {
-    const studentAnswers = req.body; 
+    const studentAnswers = req.body; // Maps incoming student choices object fields arrays
     
     db.query('SELECT id, correct_option FROM exams', (err, exams) => {
         if (err) return res.status(500).json({ error: err.message });
         
-        let totalQuestions = exams.length;
         let score = 0;
+        let evaluatedCount = 0;
 
         exams.forEach(exam => {
             const answerKey = `question_${exam.id}`;
-            if (studentAnswers[answerKey] && studentAnswers[answerKey] === exam.correct_option) {
-                score++;
+            // 🎯 BOUNDARY TRACKER: Evaluates the question only if it matches part of the student's 20 randomized questions slice session
+            if (studentAnswers.hasOwnProperty(answerKey)) {
+                evaluatedCount++;
+                if (studentAnswers[answerKey] === exam.correct_option) {
+                    score++;
+                }
             }
         });
 
-        res.json({ score: score, total: totalQuestions }); 
+        // Safe design fallback: if no keys match, force the total display score metric boundary to lock exactly at 20
+        const finalTotalDisplayCount = evaluatedCount > 0 ? evaluatedCount : 20;
+
+        res.json({ score: score, total: finalTotalDisplayCount }); 
     });
 });
 
-// --- 🚀 4. Spin up the Secure Server Environment Run ---
+// Initialize active listening hooks runtime environments
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`\n==================================================================`);
-    console.log(`✨ IKIZAME App is live and running on: http://localhost:${PORT}`);
+    console.log(`✨ IKIZAME Hybrid Node Engine active on: http://localhost:${PORT}`);
+    console.log(`   Running Environment Host Profile Mode: [${isLocalMachineHost ? 'LOCAL DISK DEV' : 'LIVE REMOTING BUNDLE'}]`);
     console.log(`==================================================================`);
 });

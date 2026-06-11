@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IKIZAME - Ibanga Ry'Amanota</title>
+    <title>IKIZAME - Ibyavuye mu Suzuma</title>
     <!-- Premium Google Fonts Hierarchy Inter -->
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* 🪐 CLEAN SYSTEM GRAPHICS PERFORMANCE DESIGN SYSTEM */
+        /* 🪐 PREMIUM FLUID SYSTEM ARCHITECTURE */
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
@@ -24,126 +24,155 @@
             --error-bg: #fee2e2;
             --error-text: #b91c1c;
             
-            /* Fluid base sizing scales smoothly across device dimensions */
             font-size: clamp(12px, 1.2vw, 16px);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-primary); color: var(--text-dark); padding: 30px 15px; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        body { background-color: var(--bg-primary); color: var(--text-dark); padding: 25px 15px; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
-        .result-layout-wrapper { max-width: 840px; margin: 0 auto; display: flex; flex-direction: column; gap: 25px; width: 100%; }
+        .result-layout-wrapper { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; width: 100%; }
 
-        /* 🏆 METRIC SCOREBOARD SUMMARY HEADER CARD */
+        /* 🏆 PREMIUM METRIC SCOREBOARD SUMMARY CARD */
         .summary-banner-card {
-            background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px;
-            padding: 35px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-            display: flex; flex-direction: column; align-items: center; gap: 12px; position: relative; overflow: hidden;
+            background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 35px 30px; text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02);
+            display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative;
         }
-        .summary-banner-card h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
-        .summary-banner-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.45; }
+        .summary-banner-card h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; color: #0046b8; margin-bottom: 5px; }
         
-        .score-circle-badge {
-            width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(#ffffff, #f8fafc);
-            border: 4px solid var(--border-color); display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.04); margin: 10px 0;
+        /* Profile Metadata Grid */
+        .student-meta-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 550px;
+            margin: 5px 0; padding: 14px 18px; background-color: #f1f5f9; border-radius: 10px; text-align: left;
         }
-        .score-num { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); line-height: 1; }
-        .score-total-txt { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-top: 2px; }
+        .meta-item { display: flex; flex-direction: column; gap: 2px; }
+        .meta-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .meta-value { font-size: 1rem; font-weight: 700; color: var(--text-dark); }
 
-        .status-ribbon { padding: 8px 24px; font-size: 0.85rem; font-weight: 800; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .status-ribbon.pass { background-color: var(--success-bg); color: var(--success-text); }
-        .status-ribbon.fail { background-color: var(--error-bg); color: var(--error-text); }
+        /* 🎯 SCORE CIRCLE BADGE: Uruziga runini kandi rugaragara neza n'amabara ahinduka ku buryo bwikora */
+        .score-circle-badge {
+            width: 140px; height: 140px; border-radius: 50%; background-color: #ffffff;
+            border: 4px solid var(--border-color); display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; box-shadow: 0 6px 15px rgba(0,0,0,0.03); 
+            margin: 10px 0; flex-shrink: 0; transition: border-color 0.2s ease;
+        }
+        
+        /* Ubunini bw'Amanota (Score size alignment) */
+        .score-num-display {
+            display: flex; align-items: center; justify-content: center; gap: 4px; line-height: 1;
+        }
+        .score-num { font-size: 2.2rem; font-weight: 900; transition: color 0.2s ease; }
+        .score-divider { font-size: 1.8rem; font-weight: 500; color: var(--text-muted); }
+        
+        /* 🚨 SPECIFICATION FIX: Umubare 20 ungana n'amanota kandi uguma ari umutuku buri gihe */
+        .score-total-txt { font-size: 2.2rem; font-weight: 900; color: #000000 !important; }
+
+        .status-ribbon { padding: 10px 28px; font-size: 0.9rem; font-weight: 800; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .status-ribbon.pass { background-color: var(--success-bg); color: var(--success-text); border: 1px solid #bbf7d0; }
+        .status-ribbon.fail { background-color: var(--error-bg); color: var(--error-text); border: 1px solid #fecaca; }
 
         .btn-restart-exam {
             display: inline-flex; align-items: center; gap: 8px; background-color: var(--accent-blue);
-            color: #ffffff; text-decoration: none; padding: 12px 24px; font-size: 0.9rem; font-weight: 700;
-            border-radius: 8px; transition: background 0.15s ease; box-shadow: 0 4px 6px rgba(11, 105, 139, 0.15); margin-top: 5px;
+            color: #ffffff; text-decoration: none; padding: 12px 28px; font-size: 0.95rem; font-weight: 700;
+            border-radius: 8px; transition: all 0.15s ease; margin-top: 5px; box-shadow: 0 4px 10px rgba(11, 105, 139, 0.2);
         }
-        .btn-restart-exam:hover { background-color: #08536e; }
+        .btn-restart-exam:hover { background-color: #08536e; transform: translateY(-1px); }
 
-        /* 📝 CORRECTIONS REVIEW REPOSITORY CONTAINER SHEET */
-        .section-title { font-size: 1.1rem; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.75px; margin-top: 10px; display: flex; align-items: center; gap: 8px; }
-        .corrections-master-feed { display: flex; flex-direction: column; gap: 20px; }
+        /* 📝 CORRECTIONS MASTER FEED LIST */
+        .section-title { font-size: 1.1rem; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 15px; display: flex; align-items: center; gap: 8px; }
+        .corrections-master-feed { display: flex; flex-direction: column; gap: 16px; margin-top: 5px; }
 
         .correction-item-row {
             background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px;
-            padding: 24px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01);
+            padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.01);
         }
         
-        .row-header-meta { display: flex; justify-content: space-between; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
-        .question-number-index { font-size: 0.85rem; font-weight: 800; color: var(--accent-blue); background-color: #e0f2fe; padding: 4px 10px; border-radius: 4px; }
+        /* 🚨 SKIPPED QUESTION ALERTER */
+        .correction-item-row.question-skipped-row {
+            border: 2px solid #ef4444 !important;
+            background: #fff5f5;
+        }
+        
+        .row-header-meta { display: flex; justify-content: space-between; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
+        .question-number-index { font-size: 0.8rem; font-weight: 800; color: var(--accent-blue); background-color: #e0f2fe; padding: 4px 10px; border-radius: 4px; }
         
         .verdict-badge { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; }
         .verdict-badge.correct { background-color: var(--success-bg); color: var(--success-text); }
         .verdict-badge.wrong { background-color: var(--error-bg); color: var(--error-text); }
+        .verdict-badge.skipped { background-color: #ffedd5; color: #c2410c; }
 
         .question-wording-txt { font-size: 1.05rem; font-weight: 700; color: #1e293b; line-height: 1.45; }
 
-        .question-media-wrapper { display: flex; flex-direction: column; gap: 15px; }
-        .question-sign-preview-box { width: 140px; height: 140px; border: 1px solid var(--border-color); border-radius: 8px; background-color: #fafafa; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; }
-        .question-sign-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+        .question-media-wrapper { display: flex; flex-direction: column; gap: 12px; }
+        .question-sign-preview-box { width: 130px; height: 130px; border: 1px solid var(--border-color); border-radius: 8px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px; }
+        .question-sign-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* 🎛️ DYNAMIC CHOICES PRESENTATION SHIFTER GRID CONTAINER */
-        .choices-review-block { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        
-        /* 📸 MEDIA SHIFTER ACCENT: Automatically scales into a responsive 2-column image layout grid */
+        /* 🎛️ OPTIONS PRESENTATION SHIFTER GRID */
+        .choices-review-block { display: flex; flex-direction: column; gap: 8px; width: 100%; }
         .choices-review-block.image-options-grid-mode {
-            display: grid !important; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important; gap: 14px !important;
+            display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important;
         }
 
         .choice-strip-item {
-            display: flex; align-items: center; gap: 14px; padding: 12px 18px; border: 2px solid #e2e8f0;
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 2px solid #e2e8f0;
             border-radius: 8px; font-size: 0.95rem; font-weight: 600; color: #334155; background-color: #ffffff; width: 100%; box-sizing: border-box;
         }
         .choice-strip-item.student-selected { border-color: #fca5a5; background-color: #fef2f2; color: #991b1b; }
         .choice-strip-item.system-correct { border-color: #86efac; background-color: #f0fdf4; color: #166534; font-weight: 700; }
-        .choice-strip-item.both-matched { border-color: #22c55e; background-color: #f0fdf4; color: #166534; font-weight: 700; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15); }
+        .choice-strip-item.both-matched { border-color: #22c55e; background-color: #f0fdf4; color: #166534; font-weight: 700; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1); }
 
         .letter-marker { font-weight: 800; text-transform: uppercase; margin-right: 2px; }
 
-        /* Embedded Thumbnails inside image options review cards */
         .choice-embedded-thumb-box {
-            height: 75px; max-width: 120px; flex: 1; border: 1px solid var(--border-color);
-            border-radius: 6px; padding: 4px; background: #f8fafc; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
+            height: 70px; width: 100%; max-width: 120px; border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 4px; background-color: #ffffff; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
         }
         .choice-embedded-thumb-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* Footer Frame */
-        .brand-attribution-footer { text-align: center; color: #94a3b8; font-size: 0.8rem; margin-top: auto; padding-top: 30px; }
+        .brand-attribution-footer { text-align: center; color: #94a3b8; font-size: 0.8rem; margin-top: auto; padding-top: 25px; }
         .brand-attribution-footer strong { color: #38bdf8; }
 
-        @media screen and (max-width: 991px) {
-            .choices-review-block.image-options-grid-mode { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
-            .choice-embedded-thumb-box { height: 65px; }
-        }
-
-        @media screen and (max-width: 480px) {
-            body { padding: 15px 8px; }
-            .choices-review-block.image-options-grid-mode { grid-template-columns: 1fr !important; }
+        @media screen and (max-width: 768px) {
+            .choices-review-block.image-options-grid-mode { grid-template-columns: 1fr !important; gap: 8px !important; }
+            .student-meta-grid { grid-template-columns: 1fr; gap: 10px; }
             .summary-banner-card { padding: 25px 15px; }
-            .correction-item-row { padding: 16px; }
+            .correction-item-row { padding: 15px; }
         }
     </style>
 </head>
 <body>
 
     <main class="result-layout-wrapper">
-        <!-- Summary Scorecard Overview Panel Component -->
+        <!-- Summary Scorecard Overview Panel -->
         <section class="summary-banner-card">
-            <h1>Ibyavuye mu Kizame</h1>
-            <p id="studentGreetingLabel">Urakoze cyane gukora isuzuma ry'ubumenyi.</p>
+            <h1>IBYO MWAKOZE MUKIZAMI MWAKOZE</h1>
             
-            <div class="score-circle-badge">
-                <div class="score-num" id="displayScoreNum">0</div>
-                <div class="score-total-txt" id="displayTotalCount">/ 20</div>
+            <!-- Student Profile Metadata Row -->
+            <div class="student-meta-grid">
+                <div class="meta-item">
+                    <span class="meta-label">Amazina yombi</span>
+                    <span class="meta-value" id="lblStudentName">---</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Numero ya Telefone</span>
+                    <span class="meta-value" id="lblStudentPhone">---</span>
+                </div>
+            </div> 
+                        <!-- 🎯 INTENDED SCORE CIRCLE BADGE: Uruziga rwagutse neza, umubare 20 urangana neza n'amanota kandi uratukura buri gihe -->
+            <div id="dynamicScoreCircle" class="score-circle-badge">
+                <div class="score-num-display">
+                    <span class="score-num" id="displayScoreNum">0</span>
+                    <span class="score-divider">/</span>
+                    <span class="score-total-txt">20</span>
+                </div>
             </div>
 
             <div class="status-ribbon" id="verdictStatusRibbon">---</div>
             
-            <a href="index.html" class="btn-restart-exam"><i class="fa-solid fa-rotate-left"></i> Subira Inyuma / Ongera Ukore</a>
+            <a href="index.html" class="btn-restart-exam"><i class="fa-solid fa-rotate-left"></i> Tangira Ikizami Gishya</a>
         </section>
 
-        <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Isuzuma rya buri Kibazo (Detailed Correction)</h2>
+        <h2 class="section-title"><i class="fa-solid fa-list-check"></i>IBIBAZO BYOSE WAKOZE N'IBISUBIZO</h2>
 
         <!-- Interactive Sheet feed where row iterations append -->
         <section class="corrections-master-feed" id="correctionsMasterContainerFeed"></section>
@@ -153,34 +182,56 @@
         </footer>
     </main>
 
-    <!-- Async Controller Data Mapping Logic Core Engine Script Block -->
+    <!-- Async Controller Data Mapping Logic Core Engine -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const studentName = sessionStorage.getItem('studentName') || "Umunyeshuri";
+            let rawPhone = sessionStorage.getItem('phoneNumber') || "";
             const score = parseInt(sessionStorage.getItem('latestScore'), 10) || 0;
-            const total = parseInt(sessionStorage.getItem('latestTotal'), 10) || 20;
             
+            // 🛡️ TELEPHONE PREFIX SECURITY MATRIX: Normalizes numbers to start exactly with +250
+            let formattedPhone = rawPhone.trim().replace(/\s+/g, '');
+            if (formattedPhone && !formattedPhone.startsWith('+')) {
+                if (formattedPhone.startsWith('250')) {
+                    formattedPhone = '+' + formattedPhone;
+                } else if (formattedPhone.startsWith('07')) {
+                    formattedPhone = '+250' + formattedPhone.substring(1);
+                } else if (formattedPhone.startsWith('7')) {
+                    formattedPhone = '+250' + formattedPhone;
+                } else {
+                    formattedPhone = '+250' + formattedPhone;
+                }
+            }
+
             const rawAnswersMapping = sessionStorage.getItem('studentAnswerMapping');
             const rawQuestionsReviewPool = sessionStorage.getItem('shuffledQuestionsReview');
-                        // Formulate greetings banner attributes configurations
-            document.getElementById('studentGreetingLabel').innerText = `Urakoze cyane ${studentName}, ngaha ibyavuye mu isuzuma ryawe:`;
+
+            // Inject candidate data tokens safely
+            document.getElementById('lblStudentName').innerText = studentName;
+            document.getElementById('lblStudentPhone').innerText = formattedPhone || "Nta gihari";
             document.getElementById('displayScoreNum').innerText = score;
-            document.getElementById('displayTotalCount').innerText = `/ ${total}`;
-            
+
             const ribbon = document.getElementById('verdictStatusRibbon');
-            // Pass mark grading assessment condition parameters set at standard 12/20 boundaries
+            const scoreCircle = document.getElementById('dynamicScoreCircle');
+            const scoreNumText = document.getElementById('displayScoreNum');
+
+            // 🎯 PASS MARK THRESHOLD SPECIFIED AT 12 OUT OF FIXED 20 WITH DYNAMIC BORDER COLOR INJECTIONS
             if (score >= 12) {
-                ribbon.innerText = "YATSINZE (PASSED)";
+                ribbon.innerText = "MWATSINZE IKIZAMINI 🎉";
                 ribbon.className = "status-ribbon pass";
+                scoreCircle.style.borderColor = "#22c55e"; // Uruziga ruba icyatsi (Green border)
+                scoreNumText.style.color = "#15803d";      // Imibare y'amanota yatsinzwe iba icyatsi
             } else {
-                ribbon.innerText = "YATSINZWE (FAILED)";
+                ribbon.innerText = "YATSINZWE (GOMBA GUSUBIRAMO) ❌";
                 ribbon.className = "status-ribbon fail";
+                scoreCircle.style.borderColor = "#ef4444"; // Uruziga ruba umutuku (Red border)
+                scoreNumText.style.color = "#b91c1c";      // Imibare y'amanota yatsinzwe iba umutuku
             }
 
             const feedContainer = document.getElementById('correctionsMasterContainerFeed');
 
             if (!rawAnswersMapping || !rawQuestionsReviewPool) {
-                feedContainer.innerHTML = `<p style="text-align:center; padding:30px; font-style:italic; color:#64748b;">Nta makuru y'isuzuma agaragara mu bubiko muryo bw'akanya kanyengetera.</p>`;
+                feedContainer.innerHTML = `<p style="text-align:center; padding:30px; font-style:italic; color:#64748b;">Nta makuru y'isuzuma agaragara mu bubiko muryo bw'akanya.</p>`;
                 return;
             }
 
@@ -190,11 +241,12 @@
             // ⚡ MAIN RUNTIME FEED REPOSITORY MATRIX GENERATOR LOOP
             feedContainer.innerHTML = questionsList.map((exam, index) => {
                 const questionNumber = index + 1;
-                const studentSelectionKey = studentAnswers[exam.id] || "Nta gihari";
+                const studentSelectionKey = studentAnswers[exam.id]; 
                 const systemCorrectKey = exam.correct_option;
+                
+                const isQuestionSkipped = !studentSelectionKey; 
                 const isUserCorrect = studentSelectionKey === systemCorrectKey;
 
-                // Utility element compiler to structure clean option items profiles dynamically
                 function compileOptionCardMarkup(letterKey, textValue) {
                     if (!textValue) return "";
                     
@@ -203,7 +255,6 @@
                     if (letterKey === systemCorrectKey) customStyleClass += " system-correct";
                     if (letterKey === studentSelectionKey && letterKey === systemCorrectKey) customStyleClass = "choice-strip-item both-matched";
 
-                    // 📸 OPTIONS INTERCEPT ENGINE: Evaluates string formats to find file expansions or prefixes
                     const isChoiceGraphicImage = /\.(png|jpg|jpeg|gif|webp)$/i.test(textValue) || 
                                                  textValue.startsWith('optionA_File-') || 
                                                  textValue.startsWith('optionB_File-') || 
@@ -215,7 +266,7 @@
                             <div class="${customStyleClass}">
                                 <span class="letter-marker">${letterKey.toLowerCase()})</span>
                                 <div class="choice-embedded-thumb-box">
-                                    <img src="assets/uploads/${textValue}" alt="Choice Thumbnail" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerText='${textValue}'">
+                                    <img src="assets/uploads/${textValue}" alt="Amahitamo" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerText='${textValue}'">
                                 </div>
                             </div>
                         `;
@@ -228,16 +279,22 @@
                     `;
                 }
 
-                // Verify if full multi-choice items collection is image-based to shift the container wrapper grid
                 const isOptionCollectionImageBased = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a) || (exam.option_a && exam.option_a.includes('optionA_File-'));
 
+                let verdictBadgeMarkup = "";
+                if (isQuestionSkipped) {
+                    verdictBadgeMarkup = `<span class="verdict-badge skipped"><i class="fa-solid fa-circle-minus"></i>Mwagisimbutse</span>`;
+                } else if (isUserCorrect) {
+                    verdictBadgeMarkup = `<span class="verdict-badge correct"><i class="fa-solid fa-circle-check"></i>Mwagikoze</span>`;
+                } else {
+                    verdictBadgeMarkup = `<span class="verdict-badge wrong"><i class="fa-solid fa-circle-xmark"></i>Ntagomwagikoze</span>`;
+                }
+
                 return `
-                    <div class="correction-item-row">
+                    <div class="correction-item-row ${isQuestionSkipped ? 'question-skipped-row' : ''}">
                         <div class="row-header-meta">
                             <span class="question-number-index">Ikibazo cya ${questionNumber}</span>
-                            <span class="verdict-badge ${isUserCorrect ? 'correct' : 'wrong'}">
-                                ${isUserCorrect ? '<i class="fa-solid fa-circle-check"></i> Mucyenye' : '<i class="fa-solid fa-circle-xmark"></i> Mwazize'}
-                            </span>
+                            ${verdictBadgeMarkup}
                         </div>
 
                         <div class="question-media-wrapper">
@@ -249,7 +306,6 @@
                             ` : ''}
                         </div>
 
-                        <!-- 🎯 MULTI-CHOICE VIEWPORT CORRECTION SHEET LAYOUT GRID -->
                         <div class="choices-review-block ${isOptionCollectionImageBased ? 'image-options-grid-mode' : ''}">
                             ${compileOptionCardMarkup("A", exam.option_a)}
                             ${compileOptionCardMarkup("B", exam.option_b)}
@@ -263,3 +319,4 @@
     </script>
 </body>
 </html>
+
