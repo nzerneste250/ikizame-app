@@ -40,7 +40,7 @@ if (isLocalMachineHost) {
 } else {
     // 🌐 B. PRODUCTION CLOUD CREDENTIALS (Alwaysdata Remote cluster parameters)
     databaseCredentialsConfig = {
-        host: 'mysql-izo.alwaysdata.net',
+        host: 'mysql-ikizame.alwaysdata.net',
         user: 'ikizame',
         password: 'Kigali@1234', 
         database: 'ikizame_driving_db',
