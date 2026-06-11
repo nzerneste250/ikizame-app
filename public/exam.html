@@ -40,7 +40,8 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10;
         }
         .logo-txt { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 8px; color: #38bdf8; text-transform: uppercase; }
-        .lang-badge { font-size: 0.75rem; font-weight: 700; background-color: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
+        .lang-badge { font-size: 0.75rem; font-weight: 600; background-color: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; color: #ffffff; }
+        .lang-badge img { width: 18px; height: 12px; object-fit: cover; border-radius: 1px; }
 
         .exam-page-wrapper {
             width: 100%; max-width: 1000px; margin: 0 auto; padding: 8px;
@@ -55,19 +56,6 @@
         .timer-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .timer-display { font-size: 1.25rem; font-weight: 800; color: var(--text-main); font-variant-numeric: tabular-nums; }
 
-        .stepper-card {
-            background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px;
-            padding: 6px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; width: 100%; flex-shrink: 0;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.01);
-        }
-        .step-bubble {
-            width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #cbd5e1;
-            display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem;
-            font-weight: 700; color: var(--text-muted); background: #ffffff; user-select: none;
-        }
-        .step-bubble.active { border-color: var(--accent-primary); color: var(--accent-primary); background-color: rgba(11, 105, 139, 0.05); transform: scale(1.05); }
-        .step-bubble.answered { background-color: var(--accent-primary); border-color: var(--accent-primary); color: #ffffff; }
-
         /* 🏢 PRIMARY VIEWPORT COMPLIANT WORKSPACE CONTAINER */
         .question-card-container {
             background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px;
@@ -75,7 +63,7 @@
             display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden !important;
         }
         
-        /* 🔥 FIXED DESCRIPTION VISIBILITY: Allocates clean auto-height scaling with a dedicated local fallback scroller */
+        /* 🔥 FIXED DESCRIPTION VISIBILITY */
         .question-txt {
             font-size: 1.15rem; font-weight: 800; color: #0f172a; line-height: 1.4;
             border-left: 5px solid var(--accent-primary); padding-left: 12px;
@@ -94,13 +82,13 @@
         }
         .image-frame-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* 📝 OPTIONS SCROLL BOX: Captures remaining space efficiently without empty gaps */
+        /* 📝 OPTIONS SCROLL BOX */
         .options-vertical-list { display: flex; flex-direction: column; gap: 8px; width: 100%; height: 100%; min-height: 0; overflow-y: auto !important; padding-right: 2px; }
         
-        /* 🎨 ADDED OPTION PADDING: Premium cushioned row blocks for optimal mobile selection */
+        /* 🎨 OPTION PADDING */
         .options-vertical-list .radio-option-row {
             display: flex; align-items: center; gap: 14px; 
-            padding: 14px 18px !important; /* Increased padding gives options premium readability */
+            padding: 14px 18px !important; 
             border: 1px solid #e2e8f0 !important; border-radius: 8px; cursor: pointer; background-color: #f8fafc; width: 100%;
             transition: all 0.15s ease; flex-shrink: 0; box-sizing: border-box;
         }
@@ -143,19 +131,17 @@
 
         .footer-bar {
             height: 30px; background-color: #131a2c; color: #94a3b8; text-align: center;
-                        display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; z-index: 10;
+            display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; z-index: 10;
         }
         .footer-bar strong { color: #38bdf8; }
 
         /* 📱 DEVICE BREAKPOINTS LAYERS FOR TINY MOBILE VIEWPORTS EXPLICIT ROW RATIOS */
         @media screen and (max-width: 840px) {
             .split-exam-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
-            /* 🚀 FLEX SHIFT: Question details scale properly, image takes 22%, options list fills rest */
             .image-frame-box { height: 110px !important; max-height: 110px !important; padding: 4px; }
             .question-card-container { padding: 12px; gap: 6px; }
             .options-vertical-list.image-options-grid-mode { gap: 6px !important; }
             .options-vertical-list .radio-option-row { padding: 11px 14px !important; }
-            .step-bubble { width: 18px; height: 18px; font-size: 0.65rem; }
             .question-txt { font-size: 1.05rem; border-left-width: 4px; padding-left: 10px; max-height: 30%; margin-bottom: 4px; }
         }
     </style>
@@ -164,7 +150,10 @@
 
     <header class="navbar">
         <div class="logo-txt"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
-        <div class="lang-badge"><img src="https://wikimedia.org" alt="Rwanda" style="width:16px; height:11px; object-fit:cover;"> <span>Kinyarwanda</span></div>
+        <div class="lang-badge">
+                        <img src="https://wikimedia.org" alt="Rwanda"> 
+            <span>Kinyarwanda</span>
+        </div>
     </header>
 
     <main class="exam-page-wrapper">
@@ -256,7 +245,7 @@
                 .then(exams => {
                     let completePool = exams;
                     
-                    // 🛡️ UNIQUE FIXED ARRAY SHUFFLER MATRIX (FISHER-YATES ENGINE)
+                    // 🛡️ FISHER-YATES SHUFFLER ENGINE
                     for (let i = completePool.length - 1; i > 0; i--) {
                         const randomIndex = Math.floor(Math.random() * (i + 1));
                         [completePool[i], completePool[randomIndex]] = [completePool[randomIndex], completePool[i]];
@@ -282,10 +271,12 @@
 
             function renderActiveQuestionCard() {
                 const currentExam = questionsList[currentActiveIndex];
-                counterLabel.innerText = `< {currentActiveIndex + 1} / {questionsList.length} >`;
+                counterLabel.innerText = `< ${currentActiveIndex + 1} / ${questionsList.length} >`;
                 
-                questionText.innerText = currentExam.question.replace(/\r?\n|\r/g, ' ');
+                const rawStatementText = currentExam.question.replace(/\r?\n|\r/g, ' ');
+                questionText.innerText = rawStatementText;
 
+                // 🎯 FIXED AUTO-SCALING ALGORITHM ENGINE
                 if (rawStatementText.length > 140) {
                     questionText.style.fontSize = "1.05rem"; 
                 } else if (rawStatementText.length > 80) {
@@ -329,7 +320,7 @@
                             </div>
                         </label>
                     `).join('');
-                }else {
+                } else {
                     optionsContainer.classList.remove('image-options-grid-mode');
                     optionsContainer.innerHTML = standardOptions.map(opt => `
                         <label class="radio-option-row ${savedAnswer === opt.key ? 'selected-row' : ''}">
@@ -348,8 +339,7 @@
                     nextBtn.className = "btn-nav-control next-btn";
                 }
             }
-
-            window.registerChoiceSelection = function(originalKey, examId) {
+                        window.registerChoiceSelection = function(originalKey, examId) {
                 studentAnswersMap[examId] = originalKey;
                 document.querySelectorAll('.radio-option-row').forEach(row => row.classList.remove('selected-row'));
                 event.currentTarget.closest('.radio-option-row').classList.add('selected-row');
