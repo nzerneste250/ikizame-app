@@ -32,7 +32,7 @@ if (isLocalMachineHost) {
     databaseCredentialsConfig = {
     host: 'mysql-yourusername.alwaysdata.net', // Put your exact Alwaysdata host name here
     user: 'izo_driving',
-    password: 'your_actual_real_alwaysdata_password', // Put your actual MySQL user password here
+    password: 'Kigali@1234', // Put your actual MySQL user password here
     database: 'izo_driving_db',
     port: 3306
 };
