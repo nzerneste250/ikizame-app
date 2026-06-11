@@ -20,6 +20,8 @@
             --border-color: #cbd5e1;
             --error-crimson: #ef4444;
             --success-emerald: #10b981;
+            
+            font-size: clamp(12px, 1.2vw, 15px);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -96,9 +98,9 @@
         .language-switcher-dropdown-badge {
             font-size: 0.85rem; font-weight: 600; color: var(--text-dark);
             background-color: #f1f5f9; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border-color);
-            display: flex; align-items: center; gap: 6px;
+            display: flex; align-items: center; gap: 8px;
         }
-        .language-switcher-dropdown-badge img { width: 18px; height: auto; border-radius: 2px; }
+        .language-switcher-dropdown-badge img { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; }
 
         /* 📋 CONTAINER VIEWPORT */
         .portal-central-workspace-grid {
@@ -153,17 +155,16 @@
         }
         .field-input-coupler-row input:focus { border-color: #0b698b; }
 
-        /* 🇷🇼 VECTOR RWANDAN FLAG STYLING FIXED */
+        /* 🇷🇼 HIGH-RELIABILITY WIKIMEDIA CDN VECTOR FLAG INTEGRATION */
         .field-input-coupler-row.phone-prefix-mode input { padding-left: 105px !important; }
         .rw-prefix-badge-static-label {
             position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
             font-size: 0.95rem; font-weight: 700; color: var(--text-dark); display: inline-flex; align-items: center; gap: 6px;
             border-right: 1px solid #cbd5e1; padding-right: 10px; user-select: none;
         }
-        /* Forces the flag thumbnail dimension limits securely */
         .rw-prefix-badge-static-label img {
-            width: 20px; height: 14px; object-fit: cover; border-radius: 1px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            width: 24px; height: 16px; object-fit: cover; border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15); border: 1px solid #e2e8f0;
         }
 
         .validation-hint-badge-message { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); margin-top: 1px; display: block; }
@@ -172,8 +173,8 @@
 
         .btn-submit-action-start {
             width: 100%; border: none; background-color: #08536e; color: #ffffff;
-            padding: 13px; font-size: 0.95rem; font-weight: 700; border-radius: 6px; cursor: pointer;
-                        display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px;
+                        padding: 13px; font-size: 0.95rem; font-weight: 700; border-radius: 6px; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px;
         }
 
         .portal-footer-copyright-attribution-bar {
@@ -215,7 +216,7 @@
             </ul>
         </nav>
         <div class="language-switcher-dropdown-badge">
-            <img src="https://flagcdn.com" alt="Rwanda Flag">
+            <img src="https://wikimedia.org" alt="Rwanda Flag">
             <span>Kinyarwanda</span>
         </div>
     </header>
@@ -254,7 +255,7 @@
                         <label for="studentPhoneInput">Numero ya Telefone</label>
                         <div class="field-input-coupler-row phone-prefix-mode">
                             <div class="rw-prefix-badge-static-label">
-                                <img src="https://flagcdn.com" alt="Rwanda">
+                                <img src="https://wikimedia.org" alt="Rwanda">
                                 <span>+250</span>
                             </div>
                             <input type="tel" id="studentPhoneInput" placeholder="788000000" maxlength="9" required autocomplete="off">
