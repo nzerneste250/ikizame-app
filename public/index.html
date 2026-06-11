@@ -10,9 +10,8 @@
     <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* 🪐 LUXURY DRIVING INTERFACE SYSTEM DEFINITION BALANCES */
+        /* 🪐 DRIVING INTERFACE STYLE SPECIFICATIONS */
         :root {
-            --bg-dark-slate: #1e293b;
             --bg-card: #ffffff;
             --text-dark: #0f172a;
             --text-muted: #64748b;
@@ -21,31 +20,28 @@
             --border-color: #cbd5e1;
             --error-crimson: #ef4444;
             --success-emerald: #10b981;
-            
-            font-size: clamp(12px, 1.2vw, 15px);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* 🚫 STRICT LOCKOUT: Locks outer frame body preventing overflow glitches */
         html, body { 
-            height: 100vh; height: -webkit-fill-available; 
+            min-height: 100vh;
             background-color: #1a2432; color: #ffffff; 
-            overflow: hidden; display: flex; flex-direction: column; width: 100%; position: relative;
+            display: flex; flex-direction: column; width: 100%; position: relative;
         }
 
         /* 🛣️ ANIMATED DRIVING HIGHWAY CANVAS CANVAS BED SYSTEM */
         .highway-animation-canvas-bed {
             position: absolute; inset: 0; width: 100%; height: 100%;
             background: linear-gradient(to right, #1a2432 0%, #111823 50%, #1a2432 100%);
-            z-index: 1; overflow: hidden;
+            z-index: 1; overflow: hidden; pointer-events: none;
         }
         
         /* Moving road center dashed lines */
         .highway-animation-canvas-bed::before {
             content: ''; position: absolute; left: 50%; top: -10%; width: 4px; height: 120%;
             transform: translateX(-50%);
-            background: repeating-linear-gradient(to bottom, transparent 0px, transparent 40px, rgba(255,255,255,0.08) 40px, rgba(255,255,255,0.08) 100px);
+            background: repeating-linear-gradient(to bottom, transparent 0px, transparent 40px, rgba(255,255,255,0.06) 40px, rgba(255,255,255,0.06) 100px);
             animation: infiniteDrivingHighwayScroll 1.2s linear infinite;
         }
         @keyframes infiniteDrivingHighwayScroll {
@@ -53,37 +49,35 @@
             to { background-position: 0 140px; }
         }
 
-        /* 🚗 VECTOR VEHICLES & ROAD SIGNS ANIMATION LAYERS */
-        /* Animated Silhouette Vehicles flowing up lanes */
-        .animated-traffic-entity {
-            position: absolute; bottom: -60px; color: rgba(255, 255, 255, 0.05); font-size: 28px;
-            animation: vehicleDrivingUpwards 6s linear infinite; pointer-events: none;
+        /* 🚗 TRAFFIC ENTITIES AND SIGNAGE ANIMATIONS CONTAINER */
+        .moving-traffic-asset {
+            position: absolute; color: rgba(255, 255, 255, 0.04); font-size: 32px;
+            animation: moveTrafficUpwards 7s linear infinite;
         }
-        .animated-traffic-entity.car-left { left: 42%; animation-duration: 5s; animation-delay: 1s; }
-        .animated-traffic-entity.bike-right { left: 54%; animation-duration: 4s; animation-delay: 3s; font-size: 24px; }
-        
-        /* Floating glowing road sign markers traveling sideways */
-        .animated-sign-marker {
-            position: absolute; color: rgba(56, 189, 248, 0.04); font-size: 60px;
-            animation: floatingSignDrift 12s linear infinite; pointer-events: none;
-        }
-        .animated-sign-marker.sign-left { left: -80px; top: 25%; animation-delay: 0s; }
-        .animated-sign-marker.sign-right { right: -80px; top: 60%; animation-direction: reverse; animation-delay: 4s; }
+        .moving-traffic-asset.car-lane { left: 44%; animation-duration: 5s; animation-delay: 0.5s; }
+        .moving-traffic-asset.moto-lane { left: 53%; animation-duration: 4.2s; animation-delay: 2.5s; font-size: 26px; }
 
-        @keyframes vehicleDrivingUpwards {
-            0% { bottom: -60px; transform: scale(0.9); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: -60px; bottom: auto; transform: scale(1.1); opacity: 0; }
+        .floating-sign-asset {
+            position: absolute; color: rgba(56, 189, 248, 0.03); font-size: 65px;
+            animation: driftSignAcross 14s linear infinite;
         }
-        @keyframes floatingSignDrift {
+        .floating-sign-asset.sign-left { left: -85px; top: 20%; }
+        .floating-sign-asset.sign-right { right: -85px; top: 65%; animation-direction: reverse; animation-delay: 3.5s; }
+
+        @keyframes moveTrafficUpwards {
+            0% { bottom: -70px; transform: scale(0.85); opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { bottom: 105vh; transform: scale(1.1); opacity: 0; }
+        }
+        @keyframes driftSignAcross {
             0% { transform: translateX(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateX(110vw) rotate(360deg); opacity: 0; }
+            12% { opacity: 1; }
+            88% { opacity: 1; }
+            100% { transform: translateX(115vw) rotate(360deg); opacity: 0; }
         }
 
-        /* 📋 1. NAVBAR FIXED ROW NAVIGATION HEADER */
+        /* 📋 NAVBAR */
         .portal-header-navbar {
             height: 60px; width: 100%; display: flex; align-items: center;
             justify-content: space-between; padding: 0 6%; flex-shrink: 0;
@@ -104,14 +98,13 @@
             background-color: #f1f5f9; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border-color);
         }
 
-        /* 📋 2. MAIN COUPLER CENTRAL VIEWPORT WORKSPACE */
+        /* 📋 CONTAINER VIEWPORT */
         .portal-central-workspace-grid {
-            flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 4%;
-            display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 40px; z-index: 5; min-height: 0;
+            flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 30px 4%;
+            display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 40px; z-index: 5;
         }
 
         .hero-messaging-sidebar { display: flex; flex-direction: column; gap: 20px; }
-        
         .badge-tags-container-row { display: flex; gap: 10px; }
         .hero-pill-badge { 
             font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
@@ -119,30 +112,20 @@
             padding: 6px 14px; border-radius: 30px;
         }
 
-        .hero-messaging-sidebar h1 { 
-            font-size: clamp(2.2rem, 3.8vw, 3.4rem); font-weight: 800; line-height: 1.15; letter-spacing: -1px; color: #ffffff; 
-        }
-        .hero-messaging-sidebar p { 
-            font-size: 1.05rem; font-weight: 500; color: #94a3b8; line-height: 1.5; max-width: 480px; 
-        }
+        .hero-messaging-sidebar h1 { font-size: clamp(2.2rem, 3.8vw, 3.4rem); font-weight: 800; line-height: 1.15; letter-spacing: -1px; color: #ffffff; }
+        .hero-messaging-sidebar p { font-size: 1.05rem; font-weight: 500; color: #94a3b8; line-height: 1.5; max-width: 480px; }
         
         .btn-flat-action-link {
             align-self: flex-start; background-color: #0b698b; color: #ffffff; text-decoration: none;
             padding: 12px 26px; font-size: 0.95rem; font-weight: 700; border-radius: 30px;
             box-shadow: 0 4px 12px rgba(11,105,139,0.2); transition: all 0.2s ease;
         }
-        .btn-flat-action-link:hover { background-color: #08536e; transform: translateY(-1px); }
 
-        /* 📋 3. RIGHT COLUMN: INPUT FORM DISPLAY CONTAINER CARD */
+        /* 📋 REGISTRATION PANEL CARD */
         .registration-panel-card-container {
             background-color: var(--bg-card); border-radius: 16px; width: 100%; max-width: 440px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column;
-            overflow: hidden; animation: cardGlowUpEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            margin-left: auto; border: 1px solid rgba(255,255,255,0.1);
-        }
-        @keyframes cardGlowUpEntrance {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            overflow: hidden; margin-left: auto; border: 1px solid rgba(255,255,255,0.1);
         }
 
         .card-tabs-header-nav { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #e2e8f0; background-color: #f8fafc; }
@@ -157,7 +140,6 @@
         .form-card-inner-workspace-body .helper-intro-txt { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); line-height: 1.4; margin-top: -12px; }
 
         .interactive-form-handler-wrapper { display: flex; flex-direction: column; gap: 16px; }
-        
         .form-field-block-group { display: flex; flex-direction: column; gap: 6px; }
         .form-field-block-group label { font-size: 0.75rem; font-weight: 700; color: var(--text-dark); }
         
@@ -169,57 +151,51 @@
         }
         .field-input-coupler-row input:focus { border-color: #0b698b; }
 
+        /* 🇷🇼 RWANDAN FLAG DESIGN PREFIX FIX */
         .field-input-coupler-row.phone-prefix-mode input { padding-left: 105px !important; }
         .rw-prefix-badge-static-label {
-            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-            font-size: 0.9rem; font-weight: 700; color: var(--text-dark); display: inline-flex; align-items: center; gap: 6px;
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            font-size: 0.95rem; font-weight: 700; color: var(--text-dark); display: inline-flex; align-items: center; gap: 6px;
             border-right: 1px solid #cbd5e1; padding-right: 10px; user-select: none;
         }
-        .validation-hint-badge-message { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); margin-top: 1px; display: block; transition: color 0.1s ease; }
+
+        .validation-hint-badge-message { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); margin-top: 1px; display: block; }
         .validation-hint-badge-message.error-active { color: var(--error-crimson); font-weight: 700; }
         .validation-hint-badge-message.success-active { color: var(--success-emerald); font-weight: 700; }
 
         .btn-submit-action-start {
-            width: 100%; border: none; background-color: var(--accent-teal); color: #ffffff;
-            padding: 13px; font-size: 0.95rem; font-weight: 700; border-radius: 6px;
-            cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 10px rgba(8,83,110,0.25); transition: background 0.15s ease; margin-top: 5px;
+            width: 100%; border: none; background-color: #08536e; color: #ffffff;
+            padding: 13px; font-size: 0.95rem; font-weight: 700; border-radius: 6px; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px;
         }
-        .btn-submit-action-start:hover { background-color: var(--accent-teal-hover); }
 
         .portal-footer-copyright-attribution-bar {
             height: 45px; width: 100%; display: flex; align-items: center; justify-content: center;
             font-size: 0.75rem; color: #64748b; border-top: 1px solid rgba(255, 255, 255, 0.05); flex-shrink: 0; z-index: 10;
-            background-color: rgba(19, 26, 44, 0.6); backdrop-filter: blur(10px);
+                        background-color: rgba(19, 26, 44, 0.6); backdrop-filter: blur(10px);
         }
         .portal-footer-copyright-attribution-bar strong { color: #38bdf8; margin-left: 3px; }
 
+        /* 📱 RESPONSIVE INTERFACE FIXES FOR SMARTPHONES */
         @media screen and (max-width: 991px) {
-            .portal-central-workspace-grid { grid-template-columns: 1fr !important; padding: 20px 4% !important; gap: 30px !important; align-content: center; }
+            html, body { overflow-y: auto !important; height: auto !important; } /* Eliminates compressed inputs on mobile */
+            .portal-central-workspace-grid { grid-template-columns: 1fr !important; padding: 30px 4% !important; gap: 24px !important; }
             .hero-messaging-sidebar { text-align: center; align-items: center; }
-            .hero-messaging-sidebar p { max-width: 100%; }
-            .btn-flat-action-link { align-self: center; }
             .registration-panel-card-container { margin: 0 auto; }
-            .portal-header-navbar { padding: 0 4%; }
-            .portal-navigation-links-row { display: none; }
-            .animated-sign-marker { display: none; }
+            .portal-navigation-links-row, .animated-sign-marker, .highway-animation-canvas-bed { display: none !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 🛣️ Animated Highway Base Canvas Layout Layer -->
+    <!-- Highway Base Layer -->
     <div class="highway-animation-canvas-bed">
-        <!-- Moving Vehicles Icons Silhouette Stream -->
-        <i class="fa-solid fa-car-side"></i></div>
-        <i class="fa-solid fa-motorcycle"></i></div>
-        
-        <!-- Floating Drifting Road Signs Graphic Indicators Layer -->
-        <div class="animated-sign-marker sign-left"><i class="fa-solid fa-circle-exclamation"></i></div>
-        <div class="animated-sign-marker sign-right"><i class="fa-solid fa-diamond-turn-right"></i></div>
+        <div class="moving-traffic-asset car-lane"><i class="fa-solid fa-car-side"></i></div>
+        <div class="moving-traffic-asset moto-lane"><i class="fa-solid fa-motorcycle"></i></div>
+        <div class="floating-sign-asset sign-left"><i class="fa-solid fa-circle-exclamation"></i></div>
+        <div class="floating-sign-asset sign-right"><i class="fa-solid fa-diamond-turn-right"></i></div>
     </div>
 
-    <!-- 📋 1. FIXED TOP NAVBAR NAVIGATION NAVIGATION LINKS PANEL -->
     <header class="portal-header-navbar">
         <div class="portal-brand-logo">IKIZAME</div>
         <nav>
@@ -232,25 +208,21 @@
             </ul>
         </nav>
         <div class="language-switcher-dropdown-badge">
-            <span>rw Kinyarwanda</span>
+            <span>🇷🇼 Kinyarwanda</span>
         </div>
     </header>
 
-    <!-- 📋 2. CENTRAL ELASTIC SPLIT WORKSPACE HUB FRAME -->
     <main class="portal-central-workspace-grid">
-        
-        <!-- Left Side Hero Content Column Block Descriptions -->
         <section class="hero-messaging-sidebar">
             <div class="badge-tags-container-row">
                 <span class="hero-pill-badge">Isuzuma Rihuse</span>
                 <span class="hero-pill-badge">Amategeko 2026</span>
             </div>
             <h1>Kora rimwe<br>utsinde Ikizamini.</h1>
-            <p>Iga, isuzume, kora imyitozo y'amategeko y'umuhanda ukoresheje ikoranabuhanga rigezweho ririnda ikoreshwa ry'internet nyinshi.</p>
-            <a href="#" class="btn-flat-action-link">Tangira Imyitozo</a>
+            <p>Iga, isuzume, kora imyitozo y'amategeko y'umuhanda ukokesheje ikoranabuhanga rigezweho ririnda ikoreshwa ry'internet nyinshi.</p>
+            <a href="#" class="btn-flat-action-link" style="display:none;">Tangira Imyitozo</a>
         </section>
 
-        <!-- Right Side User Profiles Registration Input Panel Card -->
         <section class="registration-panel-card-container">
             <div class="card-tabs-header-nav">
                 <button class="tab-nav-toggle-btn active-tab">Kwiyandikisha</button>
@@ -262,7 +234,6 @@
                 <p class="helper-intro-txt">Iyandikishe gukora isuzuma ry'amategeko y'umuhanda kugira ngo uhabwe kode y'ikizamini.</p>
 
                 <form id="candidateRegistrationInteractiveForm" class="interactive-form-handler-wrapper" novalidate>
-                    <!-- Field Row 1: Candidate Names Block Group -->
                     <div class="form-field-block-group">
                         <label for="studentNameInput">Amazina Yanyu</label>
                         <div class="field-input-coupler-row">
@@ -271,19 +242,17 @@
                         <span class="validation-hint-badge-message" id="nameValidationHint">Andika amazina yanyu yose</span>
                     </div>
 
-                    <!-- Field Row 2: Precision Validated Carrier Network Telephone Block Group -->
                     <div class="form-field-block-group">
                         <label for="studentPhoneInput">Numero ya Telefone</label>
                         <div class="field-input-coupler-row phone-prefix-mode">
                             <div class="rw-prefix-badge-static-label">
-                                <span style="font-size:11px;">rw</span> <span>+250</span>
+                                <span>🇷🇼</span> <span>+250</span>
                             </div>
                             <input type="tel" id="studentPhoneInput" placeholder="788000000" maxlength="9" required autocomplete="off">
                         </div>
                         <span class="validation-hint-badge-message" id="phoneValidationHint">Igomba gutangizwa na 7 (Inimero 9 gusa)</span>
                     </div>
 
-                    <!-- Trigger Controller Button Node Row Submit Action -->
                     <button type="submit" class="btn-submit-action-start">
                         Tangira Ikizamini
                     </button>
@@ -292,12 +261,10 @@
         </section>
     </main>
 
-    <!-- Lower Footer Copyright Branding Attribution Strip Bar Line -->
     <footer class="portal-footer-copyright-attribution-bar">
         <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
     </footer>
 
-    <!-- Client-Side Form Sanitizers and Phone Validations Rules Execution Engine Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.clear();
@@ -305,22 +272,18 @@
             const registrationForm = document.getElementById('candidateRegistrationInteractiveForm');
             const nameField = document.getElementById('studentNameInput');
             const phoneField = document.getElementById('studentPhoneInput');
-            
             const nameHint = document.getElementById('nameValidationHint');
             const phoneHint = document.getElementById('phoneValidationHint');
 
-            // ⚡ 1. LIVE CARRIER PATTERN FILTER LISTENER
             phoneField.addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, ''); // Numbers only
-                
+                this.value = this.value.replace(/\D/g, ''); 
                 const currentVal = this.value;
 
-                // 🛡️ STRICT VALIDATION CRITERIA: Must start with 7, second character must be 8, 9, or 3
                 if (currentVal.length > 0 && !currentVal.startsWith('7')) {
                     phoneHint.innerText = "IKOSA: Numero ya telefone igomba gutangirana n'umubare 7 gusa!";
                     phoneHint.className = "validation-hint-badge-message error-active";
-                } else if (currentVal.length >= 2 && !['8', '9', '3','2'].includes(currentVal.charAt(1))) {
-                    phoneHint.innerText = "IKOSA: Umubare wa kabiri ugomba kuba 8, 9, cyangwa 3,2 (MTN / Airtel)!";
+                } else if (currentVal.length >= 2 && !['8', '9', '3'].includes(currentVal.charAt(1))) {
+                    phoneHint.innerText = "IKOSA: Umubare wa kabiri ugomba kuba 8, 9, cyangwa 3 (MTN / Airtel)!";
                     phoneHint.className = "validation-hint-badge-message error-active";
                 } else if (currentVal.length > 0 && currentVal.length < 9) {
                     phoneHint.innerText = `Haracyabura imibare (${currentVal.length} / 9)`;
@@ -343,13 +306,11 @@
                     nameHint.className = "validation-hint-badge-message";
                 }
             });
-                        // ⚡ 2. SECURE PROFILE TRANSACTION VALIDATOR SUBMIT INTERCEPT
+
             registrationForm.addEventListener('submit', function(event) {
                 event.preventDefault(); 
-
                 const targetCleanedName = nameField.value.trim();
                 const targetCleanedPhone = phoneField.value.trim();
-
                 let isFormVerificationPassed = true;
 
                 if (targetCleanedName.length < 3) {
@@ -359,7 +320,6 @@
                     isFormVerificationPassed = false;
                 }
 
-                // Server-side strict carrier criteria enforcement checkpoint
                 const isValidSecondDigit = targetCleanedPhone.length >= 2 && ['8', '9', '3'].includes(targetCleanedPhone.charAt(1));
                 if (targetCleanedPhone.length !== 9 || !targetCleanedPhone.startsWith('7') || !isValidSecondDigit) {
                     phoneHint.innerText = "IKOSA: Numero ntabwo yuzuye cyangwa ntabwo ihuye n'imirongo ya Rwanda (78, 79, 73)!";
@@ -373,7 +333,6 @@
                 sessionStorage.setItem('studentName', targetCleanedName);
                 sessionStorage.setItem('phoneNumber', '+250' + targetCleanedPhone);
                 sessionStorage.setItem('isExamAlreadyStarted', 'false');
-
                 window.location.href = 'exam.html';
             });
         });
