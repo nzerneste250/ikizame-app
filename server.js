@@ -30,12 +30,12 @@ let databaseCredentialsConfig = {};
 if (isLocalMachineHost) {
     // 💻 A. LOCAL WORKSPACE CREDENTIALS (XAMPP / WampServer standard)
     databaseCredentialsConfig = {
-        host: 'localhost',
-        user: 'root',
-        password: '', 
-        database: 'driving_db',
-        port: 3306
-    };
+    host: 'mysql-yourusername.alwaysdata.net', // Put your exact Alwaysdata host name here
+    user: 'izo_driving',
+    password: 'your_actual_real_alwaysdata_password', // Put your actual MySQL user password here
+    database: 'izo_driving_db',
+    port: 3306
+};
     console.log('ℹ️ Local environment detected. Initiating local MySQL handshake setup...');
 } else {
     // 🌐 B. PRODUCTION CLOUD CREDENTIALS (Alwaysdata Remote cluster parameters)
