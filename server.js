@@ -1,5 +1,5 @@
 // ==========================================================================
-// 🚀 IKIZAME HYBRID COUPLER PLATFORM SERVER ENGINE (LOCAL & PRODUCTION SINC)
+// 🚀 IKIZAME HYBRID COUPLER PLATFORM SERVER ENGINE (LOCAL & PRODUCTION SYNC)
 // ==========================================================================
 const express = require('express');
 const mysql = require('mysql2');
@@ -30,19 +30,19 @@ let databaseCredentialsConfig = {};
 if (isLocalMachineHost) {
     // 💻 A. LOCAL WORKSPACE CREDENTIALS (XAMPP / WampServer standard)
     databaseCredentialsConfig = {
-    host: 'mysql-yourusername.alwaysdata.net', // Put your exact Alwaysdata host name here
-    user: 'ikizame',
-    password: 'Kigali@1234', // Put your actual MySQL user password here
-    database: 'ikizame_driving_db',
-    port: 3306
-};
+        host: 'localhost',
+        user: 'root',
+        password: '', 
+        database: 'driving_db',
+        port: 3306
+    };
     console.log('ℹ️ Local environment detected. Initiating local MySQL handshake setup...');
 } else {
     // 🌐 B. PRODUCTION CLOUD CREDENTIALS (Alwaysdata Remote cluster parameters)
     databaseCredentialsConfig = {
         host: 'mysql-izo.alwaysdata.net',
         user: 'ikizame',
-        password: 'Kigali@1234', // Maps straight to your online database credentials password string
+        password: 'Kigali@1234', 
         database: 'ikizame_driving_db',
         port: 3306
     };
@@ -134,7 +134,7 @@ app.get('/api/exams', (req, res) => {
     });
 });
 
-// ➕ C. RECORD INS INSERTION: ADD NEW QUESTION RECORD WITH DISK OVERWRITE SAFETY
+// ➕ C. RECORD INSERTION: ADD NEW QUESTION RECORD WITH DISK OVERWRITE SAFETY
 app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
     const question = req.body.question || '';
     const correctOption = req.body.correctOption || '';
@@ -142,7 +142,7 @@ app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
     
     // Checks file pickers streams arrays or defaults straight back into textbox typed fallback references
     const mainQuestionImage = req.files && req.files['imageFile'] 
-        ? req.files['imageFile'][0].filename 
+        ? req.files['imageFile'].filename 
         : (req.body.imageFileTextFallback ? req.body.imageFileTextFallback.trim() : null);
 
     let finalOptionA = '';
@@ -151,10 +151,10 @@ app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
     let finalOptionD = '';
 
     if (optionsLayoutMode === 'image') {
-        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'][0].filename : (req.body.optionATextFallback ? req.body.optionATextFallback.trim() : '');
-        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'][0].filename : (req.body.optionBTextFallback ? req.body.optionBTextFallback.trim() : '');
-        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'][0].filename : (req.body.optionCTextFallback ? req.body.optionCTextFallback.trim() : '');
-        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'][0].filename : (req.body.optionDTextFallback ? req.body.optionDTextFallback.trim() : '');
+        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'].filename : (req.body.optionATextFallback ? req.body.optionATextFallback.trim() : '');
+        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'].filename : (req.body.optionBTextFallback ? req.body.optionBTextFallback.trim() : '');
+        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'].filename : (req.body.optionCTextFallback ? req.body.optionCTextFallback.trim() : '');
+        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'].filename : (req.body.optionDTextFallback ? req.body.optionDTextFallback.trim() : '');
     } else {
         finalOptionA = req.body.optionA ? req.body.optionA.trim() : '';
         finalOptionB = req.body.optionB ? req.body.optionB.trim() : '';
@@ -177,7 +177,7 @@ app.get('/api/exams/:id', (req, res) => {
     db.query('SELECT * FROM exams WHERE id = ?', [req.params.id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         if (results.length > 0) {
-            res.json(results[0]);
+            res.json(results[0]); // Returns single precise object instance mapping directly
         } else {
             res.status(404).json({ error: 'Record reference object mapping element targets not found.' });
         }
@@ -189,7 +189,7 @@ app.post('/api/exams/edit', examUploadFieldsConfig, (req, res) => {
     const { id, question, correctOption, optionsLayoutMode, existingImagePath, existingOptA, existingOptB, existingOptC, existingOptD, imageFileTextFallback, optionATextFallback, optionBTextFallback, optionCTextFallback, optionDTextFallback } = req.body;
     
     const imagePath = req.files && req.files['imageFile'] 
-        ? req.files['imageFile'][0].filename 
+        ? req.files['imageFile'].filename 
         : (imageFileTextFallback ? imageFileTextFallback.trim() : existingImagePath);
 
     let finalOptionA = '';
@@ -198,10 +198,10 @@ app.post('/api/exams/edit', examUploadFieldsConfig, (req, res) => {
     let finalOptionD = '';
 
     if (optionsLayoutMode === 'image') {
-        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'][0].filename : (optionATextFallback ? optionATextFallback.trim() : existingOptA);
-        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'][0].filename : (optionBTextFallback ? optionBTextFallback.trim() : existingOptB);
-        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'][0].filename : (optionCTextFallback ? optionCTextFallback.trim() : existingOptC);
-        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'][0].filename : (optionDTextFallback ? optionDTextFallback.trim() : existingOptD);
+        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'].filename : (optionATextFallback ? optionATextFallback.trim() : existingOptA);
+        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'].filename : (optionBTextFallback ? optionBTextFallback.trim() : existingOptB);
+        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'].filename : (optionCTextFallback ? optionCTextFallback.trim() : existingOptC);
+        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'].filename : (optionDTextFallback ? optionDTextFallback.trim() : existingOptD);
     } else {
         finalOptionA = req.body.optionA ? req.body.optionA.trim() : '';
         finalOptionB = req.body.optionB ? req.body.optionB.trim() : '';
