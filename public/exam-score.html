@@ -18,22 +18,20 @@
             flex-direction: column;
         }
 
-        /* ── HEADER ── */
+        /* ── HEADER — matches index page brand color ── */
         .header {
             height: 60px;
-            background: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
+            background: #0b698b;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
             flex-shrink: 0;
         }
         .header-brand {
             font-family: 'Black Han Sans', sans-serif;
             font-size: 1.5rem;
-            color: #0b698b;
-            letter-spacing: 1px;
+            color: #ffffff;
+            letter-spacing: 2px;
         }
 
         /* ── MAIN ── */
@@ -79,7 +77,7 @@
         .icon-circle svg { width: 44px; height: 44px; }
 
         .circle-pass { background: #16a34a; }
-        .circle-fail { background: #1a56db; }
+        .circle-fail { background: #ef4444; }
 
         /* ── SCORE TEXT ── */
         .score-line {
@@ -130,12 +128,12 @@
         .btn:active { transform: scale(0.97); }
 
         .btn-review {
-            background: #1a56db;
+            background: #0b698b;
             color: #ffffff;
             border: none;
-            box-shadow: 0 2px 8px rgba(26,86,219,0.25);
+            box-shadow: 0 2px 8px rgba(11,105,139,0.3);
         }
-        .btn-review:hover { background: #1240a8; }
+        .btn-review:hover { background: #08536e; }
 
         .btn-home {
             background: #ffffff;
@@ -144,19 +142,18 @@
         }
         .btn-home:hover { background: #f3f4f6; }
 
-        /* ── FOOTER ── */
+        /* ── FOOTER — matches header brand color ── */
         .footer {
             height: 44px;
-            background: #ffffff;
-            border-top: 1px solid #e5e7eb;
+            background: #0b698b;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.72rem;
-            color: #9ca3af;
+            color: rgba(255,255,255,0.65);
             flex-shrink: 0;
         }
-        .footer strong { color: #6b7280; }
+        .footer strong { color: rgba(255,255,255,0.9); }
 
         /* Confetti for pass */
         .confetti-piece {
@@ -191,13 +188,10 @@
 
             <!-- Icon -->
             <div class="icon-circle" id="iconCircle">
-                <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M12 4v9" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
-                    <circle cx="12" cy="17.5" r="1.4" fill="#fff"/>
-                </svg>
+                <!-- pass: checkmark / fail: X — set by JS -->
             </div>
 
-            <!-- Score -->
+            <!-- Score: always out of 20, skipped = 0 -->
             <div class="score-line" id="scoreLine">Wagerageje ku manota: 0/20</div>
 
             <!-- Verdict -->
@@ -222,31 +216,43 @@
     </footer>
 
 <script>
-    const score    = parseInt(sessionStorage.getItem('latestScore') ?? '0', 10);
-    const total    = parseInt(sessionStorage.getItem('latestTotal') ?? '20', 10);
+    /* ── Constants ── */
+    const TOTAL    = 20;   /* Always out of 20 — skipped questions count as 0 */
     const PASS_MIN = 12;
 
-    if (!sessionStorage.getItem('latestScore')) {
-        window.location.replace('/');
-    }
+    /* ── Read score; redirect if missing ── */
+    const raw   = sessionStorage.getItem('latestScore');
+    if (raw === null) { window.location.replace('/'); }
 
+    /* Clamp to valid range: 0–20. Skipped questions already give 0 from exam logic. */
+    const score  = Math.min(TOTAL, Math.max(0, parseInt(raw, 10) || 0));
     const passed = score >= PASS_MIN;
 
-    // Icon circle color: green for pass, blue for fail (matching screenshot style)
+    /* ── Icon circle ── */
     const circle = document.getElementById('iconCircle');
     circle.classList.add(passed ? 'circle-pass' : 'circle-fail');
+    circle.innerHTML = passed
+        ? `<svg viewBox="0 0 24 24" fill="none">
+               <path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="2.8"
+                     stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>`
+        : `<svg viewBox="0 0 24 24" fill="none">
+               <path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="2.8"
+                     stroke-linecap="round"/>
+           </svg>`;
 
-    // Score line
-    document.getElementById('scoreLine').textContent = `Wagerageje ku manota: ${score}/${total}`;
+    /* ── Score line — denominator always 20 ── */
+    document.getElementById('scoreLine').textContent =
+        `Wagerageje ku manota: ${score} / ${TOTAL}`;
 
-    // Verdict
+    /* ── Verdict ── */
     const verdict = document.getElementById('verdictText');
     verdict.textContent = passed ? 'WATSINZE' : 'WATSINZWE';
     verdict.classList.add(passed ? 'verdict-pass' : 'verdict-fail');
 
-    // Confetti for pass
+    /* ── Confetti on pass ── */
     if (passed) {
-        const colors = ['#16a34a','#4ade80','#1a56db','#60a5fa','#fbbf24','#f472b6','#a78bfa'];
+        const colors = ['#16a34a','#4ade80','#0b698b','#38bdf8','#fbbf24','#f472b6','#a78bfa'];
         for (let i = 0; i < 55; i++) {
             const el = document.createElement('div');
             el.className = 'confetti-piece';
@@ -256,12 +262,13 @@
             el.style.height            = (10 + Math.random() * 8) + 'px';
             el.style.animationDuration = (1.6 + Math.random() * 2) + 's';
             el.style.animationDelay    = (Math.random() * 1) + 's';
-            el.style.transform         = `rotate(${Math.random()*360}deg)`;
+            el.style.transform         = `rotate(${Math.random() * 360}deg)`;
             document.body.appendChild(el);
             el.addEventListener('animationend', () => el.remove());
         }
     }
 
+    /* ── Home button ── */
     function clearSessionAndGoHome() {
         fetch('/api/clear-session', { method: 'POST' })
             .finally(() => { window.location.replace('/'); });
