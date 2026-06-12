@@ -775,10 +775,20 @@
 
                 if (!valid) return;
 
+                // Save to sessionStorage for client-side use during exam
                 sessionStorage.setItem('studentName', name);
                 sessionStorage.setItem('phoneNumber', '+250' + phone);
                 sessionStorage.setItem('isExamAlreadyStarted', 'false');
-                window.location.href = 'exam';
+
+                // Register on server so /exam gate recognises this user
+                fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentName: name, phoneNumber: '+250' + phone })
+                })
+                .then(r => r.json())
+                .then(() => { window.location.href = '/exam'; })
+                .catch(() => { window.location.href = '/exam'; }); // fallback: still navigate
             });
         });
     </script>

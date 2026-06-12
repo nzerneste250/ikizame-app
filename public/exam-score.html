@@ -205,10 +205,10 @@
 
             <!-- Buttons -->
             <div class="btn-row">
-                <button class="btn btn-review" onclick="window.location.href='exam-result.html'">
+                <button class="btn btn-review" onclick="window.location.href='/exam-result'">
                     Reba ibisubizo
                 </button>
-                <button class="btn btn-home" onclick="window.location.href='index.html'">
+                <button class="btn btn-home" onclick="clearSessionAndGoHome()">
                     Jya Ahabanza
                 </button>
             </div>
@@ -227,7 +227,7 @@
     const PASS_MIN = 12;
 
     if (!sessionStorage.getItem('latestScore')) {
-        window.location.replace('index.html');
+        window.location.replace('/');
     }
 
     const passed = score >= PASS_MIN;
@@ -260,6 +260,11 @@
             document.body.appendChild(el);
             el.addEventListener('animationend', () => el.remove());
         }
+    }
+
+    function clearSessionAndGoHome() {
+        fetch('/api/clear-session', { method: 'POST' })
+            .finally(() => { window.location.replace('/'); });
     }
 </script>
 </body>

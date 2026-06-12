@@ -63,22 +63,37 @@ app.use(session({
 }));
 
 // ==========================================================================
-// 🛡️ CLEAN URLS MAPPING CONTROLLER & SYSTEM ACCESS SECURITY FILTERS
+// 🛡️ CLEAN URL ROUTING + HARDENED ACCESS CONTROL GATES
+// ==========================================================================
+// CRITICAL: All named .html pages are explicitly routed here with access
+// rules BEFORE express.static is mounted. express.static is configured to
+// NEVER serve .html files directly — it only serves assets (css, js, images).
+// This means typing /exam-result.html in the browser returns 403, not the page.
 // ==========================================================================
 
-// 1. Clean URL Route Mapping handlers (Completely hides the .html extensions)
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.get('/index', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.get('/exam', (req, res) => res.sendFile(path.join(__dirname, 'public', 'exam.html')));
-app.get('/admin-login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
+// ── Public pages (no auth needed) ──
+app.get('/',           (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/index',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/admin-login',(req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
 
+// ── Exam page: only accessible if the user registered (has studentName in session) ──
+app.get('/exam', (req, res) => {
+    // We trust the client sessionStorage check but also verify server session
+    // to block users who try to jump directly to /exam without registering.
+    if (req.session && req.session.examStudentName) {
+        return res.sendFile(path.join(__dirname, 'public', 'exam.html'));
+    }
+    // No registration — send them back to register first
+    res.redirect('/');
+});
+
+// ── Admin-protected pages ──
 app.get('/dashboard', (req, res) => {
     if (req.session && req.session.isAdminAuthenticated) {
         return res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
     }
     res.redirect('/admin-login');
 });
-
 app.get('/add-exam', (req, res) => {
     if (req.session && req.session.isAdminAuthenticated) {
         return res.sendFile(path.join(__dirname, 'public', 'add-exam.html'));
@@ -86,20 +101,40 @@ app.get('/add-exam', (req, res) => {
     res.redirect('/admin-login');
 });
 
-// 2. Strict Exam Result Access Integrity Lockout Gate
-app.get('/exam-result', (req, res) => {
-    // Blocks direct navigation or bookmarks unless an active completion token exists in the cookie session
+// ── Exam Score page: only accessible after submission ──
+// Token stays alive so the user can stay on the score page and navigate to review.
+app.get('/exam-score', (req, res) => {
     if (req.session && req.session.hasCompletedActiveExamToken === true) {
-        // Reset the token right away so the user can't bookmark or refresh the page later
-        req.session.hasCompletedActiveExamToken = false; 
-        return res.sendFile(path.join(__dirname, 'public', 'exam-result.html'));
+        return res.sendFile(path.join(__dirname, 'public', 'exam-score.html'));
     }
-    // Eject unauthorized direct link jumpers straight back to the landing page
-    res.redirect('/index');
+    res.redirect('/');
 });
 
-// Server static directory fallback for remaining styles/images assets files
-app.use(express.static(path.join(__dirname, 'public')));
+// ── Exam Result/Review page: only accessible after submission ──
+// We keep the same token alive for both /exam-score and /exam-result so the
+// user can bounce between score and review without getting ejected.
+// Token is cleared only when they go back to the home page.
+app.get('/exam-result', (req, res) => {
+    if (req.session && req.session.hasCompletedActiveExamToken === true) {
+        return res.sendFile(path.join(__dirname, 'public', 'exam-result.html'));
+    }
+    res.redirect('/');
+});
+
+// ── Hard block: .html extension URLs always return 403 ──
+// This fires BEFORE express.static so nobody can bypass the gates above
+// by appending .html to any page URL.
+app.get('*.html', (req, res) => {
+    res.status(403).send('Direct file access is not permitted. Please use the application navigation.');
+});
+
+// ── Static assets only (no .html) ──
+// extensions: false means express.static won't auto-resolve index.html;
+// we handle all HTML serving manually above.
+app.use(express.static(path.join(__dirname, 'public'), {
+    extensions: false,   // never auto-append .html
+    index: false         // never serve index.html automatically
+}));
 
 // --- 🗄️ 2. SMART HYBRID DATABASE CONNECTOR MATRIX ---
 const isLocalMachineHost = process.env.NODE_ENV !== 'production' && !process.env.RENDER;
@@ -197,6 +232,25 @@ app.post('/api/admin/auth', (req, res) => {
 
 app.get('/api/admin/logout', (req, res) => {
     req.session.destroy(() => { res.redirect('/admin-login'); });
+});
+
+// ==========================================================================
+// 📝 STUDENT REGISTRATION ENDPOINT
+// Called by index.html before redirecting to /exam.
+// Sets server-side session so /exam gate can verify the user registered.
+// ==========================================================================
+app.post('/api/register', (req, res) => {
+    const { studentName, phoneNumber } = req.body;
+    if (!studentName || !phoneNumber) {
+        return res.status(400).json({ error: 'Amazina na telefone birakenewe.' });
+    }
+    // Store in server session — this is what the /exam route checks
+    req.session.examStudentName  = studentName.trim();
+    req.session.examPhoneNumber  = phoneNumber.trim();
+    // Clear any leftover locked questions from a previous exam attempt
+    req.session.lockedExamQuestionIds = [];
+    req.session.hasCompletedActiveExamToken = false;
+    res.json({ ok: true });
 });
 
 // ==========================================================================
@@ -356,14 +410,28 @@ app.post('/api/exams/submit', (req, res) => {
 
         const finalTotalDisplayCount = evaluatedCount > 0 ? evaluatedCount : 20;
 
-        // 🎯 SECURITY TOKEN HANDSHAKE: Authorizes this specific user session to access /exam-result once
+        // 🎯 SECURITY TOKEN HANDSHAKE: Authorizes session to access /exam-score and /exam-result
+        // Token stays alive until the user explicitly goes back to home (/api/clear-session).
         req.session.hasCompletedActiveExamToken = true;
 
-        // 🔓 CLEAR LOCKED QUESTION SET: so next exam attempt gets a fresh random draw
+        // 🔓 CLEAR LOCKED QUESTION SET so next attempt gets a fresh random draw
         req.session.lockedExamQuestionIds = [];
 
         res.json({ score: score, total: finalTotalDisplayCount });
     });
+});
+
+// ==========================================================================
+// 🏠 SESSION CLEAR ENDPOINT — called when user returns to home page
+// Clears the exam completion token so /exam-score and /exam-result
+// become inaccessible again until a new exam is submitted.
+// ==========================================================================
+app.post('/api/clear-session', (req, res) => {
+    req.session.hasCompletedActiveExamToken = false;
+    req.session.examStudentName  = null;
+    req.session.examPhoneNumber  = null;
+    req.session.lockedExamQuestionIds = [];
+    res.json({ ok: true });
 });
 
 const PORT = process.env.PORT || 5000;

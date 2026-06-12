@@ -344,12 +344,12 @@ const isReloaded = performance.navigation && performance.navigation.type === per
 if (isReloaded || sessionStorage.getItem('isExamAlreadyStarted') === 'true') {
     sessionStorage.clear();
     alert("IKIZAME CYAHAGARIKWA! Ntabwo wemerewe gukora Refresh/Reload.");
-    window.location.replace('index.html');
+    window.location.replace('/');
 } else {
     sessionStorage.setItem('isExamAlreadyStarted', 'true');
 }
 if (!sessionStorage.getItem('studentName') || !sessionStorage.getItem('phoneNumber')) {
-    sessionStorage.clear(); window.location.replace('index.html');
+    sessionStorage.clear(); window.location.replace('/');
 }
 
 // Block F5, Ctrl+R, Cmd+R refresh
@@ -551,7 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('studentAnswerMapping', JSON.stringify(answers));
             sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questions));
             questions = [];
-            window.location.replace('exam-score.html');
+            window.location.replace('/exam-score');
         })
         .catch(e => console.error('Submit error:', e));
     }
