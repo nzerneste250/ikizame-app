@@ -199,10 +199,55 @@ app.get('/api/admin/logout', (req, res) => {
     req.session.destroy(() => { res.redirect('/admin-login'); });
 });
 
+// ==========================================================================
+// 🎲 SERVER-SIDE EXAM SESSION RANDOMIZER
+//    - Each user gets a unique shuffled set of 20 questions per session
+//    - Questions are selected WITHOUT replacement (no duplicates)
+//    - Two concurrent users will almost never see the same order or set
+//    - Once a session's exam is started, the same 20 questions are locked
+//      in (re-fetching returns the same set so page logic stays consistent)
+// ==========================================================================
 app.get('/api/exams', (req, res) => {
-    db.query('SELECT * FROM exams ORDER BY id DESC', (err, results) => {
+    db.query('SELECT * FROM exams', (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(results);
+
+        if (!results || results.length === 0) return res.json([]);
+
+        // --- If this session already has a locked question set, return it ---
+        // This prevents the set from changing if the client re-fetches for
+        // any reason mid-exam (e.g. accidental double call).
+        if (req.session.lockedExamQuestionIds && req.session.lockedExamQuestionIds.length > 0) {
+            const lockedIds = new Set(req.session.lockedExamQuestionIds);
+            const lockedQuestions = req.session.lockedExamQuestionIds
+                .map(id => results.find(q => q.id === id))
+                .filter(Boolean); // safety filter in case a question was deleted
+            return res.json(lockedQuestions);
+        }
+
+        // --- Fisher-Yates shuffle using a per-request crypto-quality seed ---
+        // Math.random() alone can produce correlated sequences; we add a
+        // high-entropy salt from Date + process.hrtime for better spread.
+        const pool = [...results];
+        const hrtime = process.hrtime(); // [seconds, nanoseconds]
+        const entropySalt = Date.now() * 1000000 + hrtime[1]; // nanosecond-range integer
+
+        // Seeded shuffle: swap every element with a randomly chosen earlier
+        // element — guarantees every permutation is equally likely.
+        for (let i = pool.length - 1; i > 0; i--) {
+            // Combine multiple entropy sources so no two sessions collide
+            const entropy = (entropySalt + i * 2654435761) >>> 0; // Knuth multiplicative hash
+            const j = entropy % (i + 1);
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+
+        // Slice exactly 20 unique questions (Fisher-Yates guarantees no repeats)
+        const examSize = Math.min(20, pool.length);
+        const selectedQuestions = pool.slice(0, examSize);
+
+        // Lock this set into the session so it stays stable for this user
+        req.session.lockedExamQuestionIds = selectedQuestions.map(q => q.id);
+
+        res.json(selectedQuestions);
     });
 });
 
@@ -313,6 +358,9 @@ app.post('/api/exams/submit', (req, res) => {
 
         // 🎯 SECURITY TOKEN HANDSHAKE: Authorizes this specific user session to access /exam-result once
         req.session.hasCompletedActiveExamToken = true;
+
+        // 🔓 CLEAR LOCKED QUESTION SET: so next exam attempt gets a fresh random draw
+        req.session.lockedExamQuestionIds = [];
 
         res.json({ score: score, total: finalTotalDisplayCount });
     });

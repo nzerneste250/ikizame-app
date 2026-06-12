@@ -551,7 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('studentAnswerMapping', JSON.stringify(answers));
             sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questions));
             questions = [];
-            window.location.replace('exam-score');
+            window.location.replace('exam-score.html');
         })
         .catch(e => console.error('Submit error:', e));
     }
@@ -559,11 +559,9 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/exams')
         .then(r => r.json())
         .then(data => {
-            for (let i = data.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [data[i], data[j]] = [data[j], data[i]];
-            }
-            questions = data.slice(0, 20);
+            // Server returns a unique shuffled set locked to this session.
+            // No client-side shuffle — no duplicates possible.
+            questions = data;
             if (!questions.length) {
                 document.querySelector('.question-card').innerHTML = '<p style="text-align:center;padding:40px;font-weight:700;">Nta bibazo biri mu bubiko.</p>';
                 clearInterval(timer); return;
