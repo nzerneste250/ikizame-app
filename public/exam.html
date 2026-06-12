@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IKIZAME - Isuzuma Bumenyi Nyabyo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>IKIZAME - Workspace</title>
+    <!-- Premium Geometric Typography Fonts Hierarchies -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* 🪐 EXACT WORKSPACE INTERFACE STYLE BALANCES */
         :root {
             --blue: #1a56db;
             --border: #e5e7eb;
@@ -16,11 +18,8 @@
             --green: #16a34a;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-
-        /* ══════════════════════════════
-           DESKTOP: fully contained, no page scroll
-        ══════════════════════════════ */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
         html, body {
             height: 100vh;
             height: -webkit-fill-available;
@@ -29,6 +28,15 @@
             display: flex;
             flex-direction: column;
         }
+
+        .navbar {
+            height: 44px; background-color: #131a2c; color: #ffffff; display: flex;
+            align-items: center; justify-content: space-between; padding: 0 4%; flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10;
+        }
+        .logo-txt { font-size: 1.1rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .lang-badge { font-size: 0.75rem; font-weight: 600; background-color: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; color: #ffffff; }
+        .lang-badge img { width: 18px; height: 12px; object-fit: cover; border-radius: 1px; }
 
         .page {
             flex: 1; min-height: 0;
@@ -44,7 +52,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.06);
         }
         .timer-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
-        .timer-val   { font-size: 1.75rem; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.2; }
+        .timer-val { font-size: 1.75rem; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.2; }
 
         /* ── QUESTION CARD ── */
         .question-card {
@@ -85,7 +93,7 @@
         .prog-dot.answered { background: var(--blue); border-color: var(--blue); }
         .prog-dot.answered svg { display: block; }
         .prog-dot.current:not(.answered) { border-color: var(--blue); border-width: 3px; }
-
+        
         .prog-mobile { display: none; flex-shrink: 0; flex-direction: column; gap: 5px; align-items: center; }
         .prog-mobile .prog-row { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 5px; }
         .prog-mobile .prog-dot { width: 30px; height: 30px; }
@@ -103,7 +111,7 @@
             display: grid; grid-template-columns: 1fr 1fr; gap: 16px; overflow: hidden;
         }
         .q-body.no-image { grid-template-columns: 1fr; }
-
+        
         .img-frame {
             border: 1px solid var(--border); border-radius: 10px; background: #fff;
             display: flex; align-items: center; justify-content: center;
@@ -155,9 +163,9 @@
         .q-counter { font-size: 0.9rem; font-weight: 700; color: var(--muted); }
         .nav-btns { display: flex; gap: 10px; }
         .btn { border: none; padding: 12px 28px; font-size: 0.95rem; font-weight: 700; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.1s; }
-        .btn-back   { background: #f1f5f9; color: #475569; border: 1px solid var(--border); }
+        .btn-back { background: #f1f5f9; color: #475569; border: 1px solid var(--border); }
         .btn-back:hover { background: #e2e8f0; }
-        .btn-next   { background: var(--blue); color: #fff; }
+        .btn-next { background: var(--blue); color: #fff; }
         .btn-next:hover { background: #1240a8; }
         .btn-submit { background: var(--green); color: #fff; }
         .btn-submit:hover { background: #15803d; }
@@ -165,79 +173,26 @@
         /* ── FOOTER ── */
         .footer { text-align: center; font-size: 0.7rem; color: #9ca3af; padding-bottom: 4px; flex-shrink: 0; }
         .footer strong { color: #6b7280; }
-
         .options-list::-webkit-scrollbar { width: 3px; }
         .options-list::-webkit-scrollbar-track { background: transparent; }
         .options-list::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 2px; }
 
         /* ══════════════════════════════
-           MOBILE ≤ 640px
-           Key change: page scrolls naturally, no overflow:hidden traps
+        MOBILE ≤ 640px
         ══════════════════════════════ */
         @media (max-width: 640px) {
-            /* Let the whole page scroll */
-            html, body {
-                height: auto !important;
-                overflow: auto !important;
-            }
-
-            .page {
-                overflow: visible !important;
-                height: auto !important;
-                padding: 10px 10px 16px;
-                gap: 10px;
-            }
-
-            /* Question card: no fixed height, grows with content */
-            .question-card {
-                flex: none !important;
-                height: auto !important;
-                min-height: 0 !important;
-                overflow: visible !important;
-                padding: 12px 14px 14px;
-                gap: 12px;
-            }
-
-            /* Progress: show mobile dots */
+            html, body { height: auto !important; overflow: auto !important; }
+            .page { overflow: visible !important; height: auto !important; padding: 10px 10px 16px; gap: 10px; }
+            .question-card { flex: none !important; height: auto !important; min-height: 0 !important; overflow: visible !important; padding: 12px 14px 14px; gap: 12px; }
             .prog-desktop { display: none !important; }
-            .prog-mobile  { display: flex !important; }
-
-            /* Question text */
+            .prog-mobile { display: flex !important; }
             .q-text { font-size: 0.95rem; padding: 10px 12px; }
-
-            /* Body: stack vertically, no fixed height */
-            .q-body {
-                grid-template-columns: 1fr !important;
-                gap: 10px;
-                overflow: visible !important;
-                height: auto !important;
-                min-height: 0 !important;
-                flex: none !important;
-            }
-
-            /* Image: only shown when question has one, compact height */
-            .img-frame {
-                height: 160px !important;
-                max-height: 160px !important;
-                padding: 6px;
-            }
-            /* When no image: collapse gap so options sit tight under question text */
-            .q-body.no-image {
-                gap: 0 !important;
-            }
-            .q-body.no-image .img-frame {
-                display: none !important;
-            }
-
-            /* Options: natural height, no scroll trap */
-            .options-list {
-                overflow: visible !important;
-                height: auto !important;
-                display: flex !important;
-                flex-direction: column !important;
-            }
-
-            /* Image-grid options: 2x2 but fixed reasonable height */
+            .q-body { grid-template-columns: 1fr !important; gap: 10px; overflow: visible !important; height: auto !important; min-height: 0 !important; flex: none !important; }
+            .img-frame { height: 160px !important; max-height: 160px !important; padding: 6px; }
+            .q-body.no-image { gap: 0 !important; }
+            .q-body.no-image .img-frame { display: none !important; }
+            .options-list { overflow: visible !important; height: auto !important; display: flex !important; flex-direction: column !important; }
+                        /* Image-grid options: 2x2 but fixed reasonable height */
             .options-list.img-grid {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr !important;
@@ -249,11 +204,9 @@
                 height: 130px !important;
                 overflow: hidden !important;
             }
-
             .opt-row { padding: 11px 10px; gap: 10px; }
             .opt-label { font-size: 0.93rem; }
             .timer-val { font-size: 1.45rem; }
-
             /* Nav bar: always visible at bottom of content */
             .nav-bar {
                 padding-top: 14px;
@@ -261,7 +214,6 @@
             }
             .btn { padding: 11px 18px; font-size: 0.88rem; }
         }
-
         @media (max-width: 360px) {
             .prog-mobile .prog-dot { width: 26px; height: 26px; }
             .prog-mobile .prog-row { gap: 3px; }
@@ -270,304 +222,313 @@
     </style>
 </head>
 <body>
-
-<div class="page">
-
-    <!-- Timer -->
-    <div class="timer-card">
-        <div class="timer-label">IGIHE MUSIGARANYE:</div>
-        <div class="timer-val" id="examCountdown">20:00</div>
+    <div class="page">
+        <!-- Timer -->
+        <div class="timer-card">
+            <div class="timer-label">IGIHE MUSIGARANYE:</div>
+            <div class="timer-val" id="examCountdown">20:00</div>
+        </div>
+        
+        <!-- Question Card -->
+        <div class="question-card">
+            <!-- DESKTOP progress -->
+            <div class="prog-desktop" id="progDesktop">
+                <div class="prog-row" id="progDesktopRow"></div>
+                <div class="prog-line"><div class="prog-line-fill" id="progFillD"></div></div>
+            </div>
+            
+            <!-- MOBILE progress: 2 rows of 10 -->
+            <div class="prog-mobile" id="progMobile">
+                <div class="prog-row" id="progMobileRow1"></div>
+                <div class="prog-row" id="progMobileRow2"></div>
+                <div class="prog-line" style="width:85%;margin-top:3px;"><div class="prog-line-fill" id="progFillM"></div></div>
+            </div>
+            
+            <!-- Question text -->
+            <div class="q-text" id="qText">Uraza kubona ikibazo hano...</div>
+            
+            <!-- Body -->
+            <div class="q-body no-image" id="qBody">
+                <div class="img-frame" id="imgFrame" style="display:none;"></div>
+                <div class="options-list" id="optsList"></div>
+            </div>
+            
+            <!-- Nav -->
+            <div class="nav-bar">
+                <div class="q-counter" id="qCounter">&lt; 1 / 20 &gt;</div>
+                <div class="nav-btns">
+                    <button class="btn btn-back" id="prevBtn">&#8592; Inyuma</button>
+                    <button class="btn btn-next" id="nextBtn">Komeza &#8594;</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">&copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>izo service quicky</strong></div>
     </div>
 
-    <!-- Question Card -->
-    <div class="question-card">
-
-        <!-- DESKTOP progress -->
-        <div class="prog-desktop" id="progDesktop">
-            <div class="prog-row" id="progDesktopRow"></div>
-            <div class="prog-line"><div class="prog-line-fill" id="progFillD"></div></div>
-        </div>
-
-        <!-- MOBILE progress: 2 rows of 10 -->
-        <div class="prog-mobile" id="progMobile">
-            <div class="prog-row" id="progMobileRow1"></div>
-            <div class="prog-row" id="progMobileRow2"></div>
-            <div class="prog-line" style="width:85%;margin-top:3px;"><div class="prog-line-fill" id="progFillM"></div></div>
-        </div>
-
-        <!-- Question text -->
-        <div class="q-text" id="qText">Uraza kubona ikibazo hano...</div>
-
-        <!-- Body -->
-        <div class="q-body no-image" id="qBody">
-            <div class="img-frame" id="imgFrame" style="display:none;"></div>
-            <div class="options-list" id="optsList"></div>
-        </div>
-
-        <!-- Nav -->
-        <div class="nav-bar">
-            <div class="q-counter" id="qCounter">&lt; 1 / 20 &gt;</div>
-            <div class="nav-btns">
-                <button class="btn btn-back" id="prevBtn">&#8592; Inyuma</button>
-                <button class="btn btn-next" id="nextBtn">Komeza &#8594;</button>
+    <!-- Custom submit confirm modal -->
+    <div id="submitModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;padding:20px;">
+        <div style="background:#fff;border-radius:12px;padding:24px 24px 20px;max-width:380px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+            <!-- Title row with warning icon -->
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;">
+                    <circle cx="12" cy="12" r="11" stroke="#f59e0b" stroke-width="2"/>
+                    <line x1="12" y1="7" x2="12" y2="13" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round"/>
+                    <circle cx="12" cy="16.5" r="1.1" fill="#f59e0b"/>
+                </svg>
+                <span style="font-size:1rem;font-weight:800;color:#111827;font-family:inherit;">Ese koko urashaka gusoza ikizamini?</span>
+            </div>
+            <!-- Subtitle -->
+            <p style="font-size:0.88rem;color:#6b7280;line-height:1.5;margin-bottom:22px;padding-left:34px;">Niba urangije kwemeza amahitamo yawe yose, kanda Yego ngo urebwemo amanota.</p>
+            <!-- Buttons -->
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+                <button id="modalCancel" style="padding:10px 22px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;color:#374151;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;">Oya</button>
+                <button id="modalConfirm" style="padding:10px 22px;border:none;border-radius:8px;background:#1a56db;color:#fff;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Yego, Soza</button>
             </div>
         </div>
     </div>
 
-    <div class="footer">&copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>izo service quicky</strong></div>
-</div>
-
-<!-- Custom submit confirm modal -->
-<div id="submitModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;padding:20px;">
-    <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:320px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,0.25);text-align:center;">
-        <div style="font-size:2rem;margin-bottom:10px;">📋</div>
-        <h3 style="font-size:1.05rem;font-weight:800;color:#111827;margin-bottom:8px;">Soza Ikizamini?</h3>
-        <p style="font-size:0.85rem;color:#6b7280;line-height:1.55;margin-bottom:22px;">Ese urihejeje neza ibibazo byose?<br>Nyuma yo kohereza ntabwo uzongera guhindura ibisubizo.</p>
-        <div style="display:flex;gap:10px;">
-            <button id="modalCancel" style="flex:1;padding:11px;border:1px solid #e5e7eb;border-radius:8px;background:#f1f5f9;color:#475569;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;">Subira Inyuma</button>
-            <button id="modalConfirm" style="flex:1;padding:11px;border:none;border-radius:8px;background:#16a34a;color:#fff;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;">Kohereza ✓</button>
-        </div>
-    </div>
-</div>
-
-<script>
-const isReloaded = performance.navigation && performance.navigation.type === performance.navigation.TYPE_RELOAD;
-if (isReloaded || sessionStorage.getItem('isExamAlreadyStarted') === 'true') {
-    sessionStorage.clear();
-    alert("IKIZAME CYAHAGARIKWA! Ntabwo wemerewe gukora Refresh/Reload.");
-    window.location.replace('index.html');
-} else {
-    sessionStorage.setItem('isExamAlreadyStarted', 'true');
-}
-if (!sessionStorage.getItem('studentName') || !sessionStorage.getItem('phoneNumber')) {
-    sessionStorage.clear(); window.location.replace('index.html');
-}
-
-// Block F5, Ctrl+R, Cmd+R refresh
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'F5' || ((e.ctrlKey || e.metaKey) && e.key === 'r') || ((e.ctrlKey || e.metaKey) && e.key === 'R')) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    }
-}, true);
-
-// Block browser refresh/close while exam is running
-window.addEventListener('beforeunload', function(e) {
-    if (sessionStorage.getItem('isExamAlreadyStarted') === 'true') {
-        e.preventDefault();
-        e.returnValue = '';
-        return '';
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    window.history.pushState(null, "", window.location.href);
-    window.onpopstate = () => {
-        window.history.pushState(null, "", window.location.href);
-        alert("Ntabwo wemerewe gusubira inyuma ikizamini kigikomeza!");
-    };
-
-    let questions = [], idx = 0;
-    const answers = {};
-
-    const countdownEl    = document.getElementById('examCountdown');
-    const qTextEl        = document.getElementById('qText');
-    const qBodyEl        = document.getElementById('qBody');
-    const imgFrameEl     = document.getElementById('imgFrame');
-    const optsEl         = document.getElementById('optsList');
-    const qCounterEl     = document.getElementById('qCounter');
-    const prevBtn        = document.getElementById('prevBtn');
-    const nextBtn        = document.getElementById('nextBtn');
-    const progDesktopRow = document.getElementById('progDesktopRow');
-    const progMobileRow1 = document.getElementById('progMobileRow1');
-    const progMobileRow2 = document.getElementById('progMobileRow2');
-    const progFillD      = document.getElementById('progFillD');
-    const progFillM      = document.getElementById('progFillM');
-
-    // Timer
-    let secs = 20 * 60;
-    const timer = setInterval(() => {
-        const m = Math.floor(secs / 60), s = secs % 60;
-        countdownEl.textContent = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
-        if (secs <= 0) { clearInterval(timer); sessionStorage.removeItem('isExamAlreadyStarted'); submit(); }
-        secs--;
-    }, 1000);
-
-    function makeDot(i) {
-        const q = questions[i];
-        const dot = document.createElement('div');
-        const isAns = !!answers[String(q.id)];
-        const isCur = i === idx;
-        dot.className = 'prog-dot' + (isAns ? ' answered' : '') + (isCur ? ' current' : '');
-        if (isAns) {
-            dot.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M2 7l3.5 3.5L12 3" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`;
-        }
-        return dot;
-    }
-
-    function updateLine(fillEl, total) {
-        const answered = Object.keys(answers).length;
-        const pct = total > 0 ? (answered / total) * 100 : 0;
-        fillEl.style.width = pct + '%';
-    }
-
-    function buildProgress() {
-        const total = questions.length;
-        progDesktopRow.innerHTML = '';
-        for (let i = 0; i < total; i++) progDesktopRow.appendChild(makeDot(i));
-        updateLine(progFillD, total);
-
-        progMobileRow1.innerHTML = '';
-        progMobileRow2.innerHTML = '';
-        for (let i = 0; i < Math.min(10, total); i++) progMobileRow1.appendChild(makeDot(i));
-        for (let i = 10; i < total; i++)               progMobileRow2.appendChild(makeDot(i));
-        updateLine(progFillM, total);
-    }
-
-    function render() {
-        const q = questions[idx];
-        qCounterEl.textContent = `< ${idx+1} / ${questions.length} >`;
-
-        const txt = q.question.replace(/\r?\n|\r/g, ' ');
-        qTextEl.textContent = txt;
-        qTextEl.style.fontSize = txt.length > 280 ? '0.92rem' : txt.length > 180 ? '1.0rem' : '1.12rem';
-
-        buildProgress();
-
-        // Scroll to top on mobile when navigating
-        if (window.innerWidth <= 640) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Image
-        if (q.image_path) {
-            imgFrameEl.style.display = 'flex';
-            qBodyEl.classList.remove('no-image');
-            imgFrameEl.innerHTML = `<img src="assets/uploads/${q.image_path}" alt="Ikimenyetso" decoding="async">`;
+    <script>
+        const isReloaded = performance.navigation && performance.navigation.type === performance.navigation.TYPE_RELOAD;
+        if (isReloaded || sessionStorage.getItem('isExamAlreadyStarted') === 'true') {
+            sessionStorage.clear();
+            alert("IKIZAME CYAHAGARIKWA! Ntabwo wemerewe gukora Refresh/Reload.");
+            window.location.replace('index');
         } else {
-            imgFrameEl.style.display = 'none';
-            qBodyEl.classList.add('no-image');
+            sessionStorage.setItem('isExamAlreadyStarted', 'true');
         }
 
-        const saved = answers[String(q.id)] || '';
-        const opts = [
-            { key: 'A', val: q.option_a },
-            { key: 'B', val: q.option_b },
-            { key: 'C', val: q.option_c },
-            { key: 'D', val: q.option_d }
-        ];
-
-        const isImgOpts = /\.(png|jpg|jpeg|gif|webp)$/i.test(q.option_a)
-                       || q.option_a.startsWith('optionA_File-')
-                       || q.option_b.startsWith('optionB_File-');
-
-        if (isImgOpts) {
-            optsEl.className = 'options-list img-grid';
-            optsEl.innerHTML = opts.map(o => `
-                <label class="opt-row${saved===o.key?' selected':''}">
-                    <div class="img-opt-head">
-                        <input type="radio" name="choice" value="${o.key}" ${saved===o.key?'checked':''}
-                            onchange="pick('${o.key}',${q.id},this)">
-                        <strong>${o.key.toLowerCase()})</strong>
-                    </div>
-                    <div class="img-opt-box">
-                        <img src="assets/uploads/${o.val}" alt="Option ${o.key}" decoding="async">
-                    </div>
-                </label>`).join('');
-        } else {
-            optsEl.className = 'options-list';
-            optsEl.innerHTML = opts.map(o => `
-                <label class="opt-row${saved===o.key?' selected':''}">
-                    <input class="opt-radio" type="radio" name="choice" value="${o.key}" ${saved===o.key?'checked':''}
-                        onchange="pick('${o.key}',${q.id},this)">
-                    <span class="opt-label"><strong>${o.key.toLowerCase()})</strong> ${o.val}</span>
-                </label>`).join('');
+        if (!sessionStorage.getItem('studentName') || !sessionStorage.getItem('phoneNumber')) {
+            sessionStorage.clear(); 
+            window.location.replace('index');
         }
 
-        prevBtn.style.visibility = idx === 0 ? 'hidden' : 'visible';
-        if (idx === questions.length - 1) {
-            nextBtn.innerHTML = 'Soza Ikizamini &#10003;';
-            nextBtn.className = 'btn btn-submit';
-        } else {
-            nextBtn.innerHTML = 'Komeza &#8594;';
-            nextBtn.className = 'btn btn-next';
-        }
-    }
-
-    window.pick = function(key, id, el) {
-        answers[String(id)] = key;
-        el.closest('.options-list').querySelectorAll('.opt-row').forEach(r => r.classList.remove('selected'));
-        el.closest('.opt-row').classList.add('selected');
-        buildProgress();
-    };
-
-    const submitModal   = document.getElementById('submitModal');
-    const modalCancel   = document.getElementById('modalCancel');
-    const modalConfirm  = document.getElementById('modalConfirm');
-
-    function showSubmitModal() {
-        submitModal.style.display = 'flex';
-    }
-    modalCancel.addEventListener('click', () => {
-        submitModal.style.display = 'none';
-    });
-    modalConfirm.addEventListener('click', () => {
-        submitModal.style.display = 'none';
-        sessionStorage.removeItem('isExamAlreadyStarted');
-        submit();
-    });
-
-    prevBtn.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
-    nextBtn.addEventListener('click', () => {
-        if (idx < questions.length - 1) { idx++; render(); }
-        else { showSubmitModal(); }
-    });
-
-    function submit() {
-        clearInterval(timer);
-        const payload = {};
-        for (const id in answers) payload[`question_${id}`] = answers[id];
-        fetch('/api/exams/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-        .then(r => r.json())
-        .then(res => {
-            sessionStorage.setItem('latestScore', res.score);
-            sessionStorage.setItem('latestTotal', res.total);
-            sessionStorage.setItem('studentAnswerMapping', JSON.stringify(answers));
-            sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questions));
-            questions = [];
-            window.location.replace('exam-score.html');
-        })
-        .catch(e => console.error('Submit error:', e));
-    }
-
-    fetch('/api/exams')
-        .then(r => r.json())
-        .then(data => {
-            for (let i = data.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [data[i], data[j]] = [data[j], data[i]];
+        // Block F5, Ctrl+R, Cmd+R refresh
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F5' || ((e.ctrlKey || e.metaKey) && e.key === 'r') || ((e.ctrlKey || e.metaKey) && e.key === 'R')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
             }
-            questions = data.slice(0, 20);
-            if (!questions.length) {
-                document.querySelector('.question-card').innerHTML = '<p style="text-align:center;padding:40px;font-weight:700;">Nta bibazo biri mu bubiko.</p>';
-                clearInterval(timer); return;
+        }, true);
+
+        // Block browser refresh/close while exam is running
+        window.addEventListener('beforeunload', function(e) {
+            if (sessionStorage.getItem('isExamAlreadyStarted') === 'true') {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
             }
-            questions.forEach(q => {
-                if (q.image_path) new Image().src = `assets/uploads/${q.image_path}`;
-                ['option_a','option_b','option_c','option_d'].forEach(k => {
-                    if (q[k] && /\.(png|jpg|jpeg|gif|webp)$/i.test(q[k])) new Image().src = `assets/uploads/${q[k]}`;
-                });
-            });
-            render();
         });
-});
-</script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = () => {
+                window.history.pushState(null, "", window.location.href);
+                alert("Ntabwo wemerewe gusubira inyuma ikizamini kigikomeza!");
+            };
+
+            let questions = [], idx = 0;
+            const answers = {};
+            const countdownEl = document.getElementById('examCountdown');
+            const qTextEl = document.getElementById('qText');
+            const qBodyEl = document.getElementById('qBody');
+            const imgFrameEl = document.getElementById('imgFrame');
+            const optsEl = document.getElementById('optsList');
+            const qCounterEl = document.getElementById('qCounter');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const progDesktopRow = document.getElementById('progDesktopRow');
+            const progMobileRow1 = document.getElementById('progMobileRow1');
+            const progMobileRow2 = document.getElementById('progMobileRow2');
+            const progFillD = document.getElementById('progFillD');
+            const progFillM = document.getElementById('progFillM');
+
+            // Timer
+            let secs = 20 * 60;
+            const timer = setInterval(() => {
+                const m = Math.floor(secs / 60), s = secs % 60;
+                countdownEl.textContent = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+                if (secs <= 0) { 
+                    clearInterval(timer); 
+                    sessionStorage.removeItem('isExamAlreadyStarted'); 
+                    submit(); 
+                }
+                secs--;
+            }, 1000);
+
+            function makeDot(i) {
+                const q = questions[i];
+                const dot = document.createElement('div');
+                const isAns = !!answers[String(q.id)];
+                const isCur = i === idx;
+                dot.className = 'prog-dot' + (isAns ? ' answered' : '') + (isCur ? ' current' : '');
+                if (isAns) {
+                    dot.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M2 7l3.5 3.5L12 3" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>`;
+                }
+                return dot;
+            }
+
+            function updateLine(fillEl, total) {
+                const answered = Object.keys(answers).length;
+                const pct = total > 0 ? (answered / total) * 100 : 0;
+                fillEl.style.width = pct + '%';
+            }
+
+            function buildProgress() {
+                const total = questions.length;
+                progDesktopRow.innerHTML = '';
+                for (let i = 0; i < total; i++) progDesktopRow.appendChild(makeDot(i));
+                updateLine(progFillD, total);
+
+                progMobileRow1.innerHTML = '';
+                progMobileRow2.innerHTML = '';
+                for (let i = 0; i < Math.min(10, total); i++) progMobileRow1.appendChild(makeDot(i));
+                for (let i = 10; i < total; i++) progMobileRow2.appendChild(makeDot(i));
+                updateLine(progFillM, total);
+            }
+
+            function render() {
+                const q = questions[idx];
+                qCounterEl.textContent = `< ${idx+1} / ${questions.length} >`;
+                const txt = q.question.replace(/\r?\n|\r/g, ' ');
+                qTextEl.textContent = txt;
+                qTextEl.style.fontSize = txt.length > 280 ? '0.92rem' : txt.length > 180 ? '1.0rem' : '1.12rem';
+                buildProgress();
+
+                // Scroll to top on mobile when navigating
+                if (window.innerWidth <= 640) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+
+                // Image
+                if (q.image_path) {
+                    imgFrameEl.style.display = 'flex';
+                    qBodyEl.classList.remove('no-image');
+                    imgFrameEl.innerHTML = `<img src="assets/uploads/${q.image_path}" alt="Ikimenyetso" decoding="async">`;
+                } else {
+                    imgFrameEl.style.display = 'none';
+                    qBodyEl.classList.add('no-image');
+                }
+
+                const saved = answers[String(q.id)] || '';
+                const opts = [
+                    { key: 'A', val: q.option_a },
+                    { key: 'B', val: q.option_b },
+                    { key: 'C', val: q.option_c },
+                    { key: 'D', val: q.option_d }
+                ];
+
+                const isImgOpts = /\.(png|jpg|jpeg|gif|webp)$/i.test(q.option_a)
+                    || q.option_a.startsWith('optionA_File-')
+                    || q.option_b.startsWith('optionB_File-');
+
+                if (isImgOpts) {
+                    optsEl.className = 'options-list img-grid';
+                    optsEl.innerHTML = opts.map(o => `
+                        <label class="opt-row${saved===o.key?' selected':''}">
+                            <div class="img-opt-head">
+                                <input type="radio" name="choice" value="${o.key}" ${saved===o.key?'checked':''} onchange="pick('${o.key}',${q.id},this)">
+                                <strong>${o.key.toLowerCase()})</strong>
+                            </div>
+                            <div class="img-opt-box">
+                                <img src="assets/uploads/${o.val}" alt="Option ${o.key}" decoding="async">
+                            </div>
+                        </label>`).join('');
+                } else {
+                    optsEl.className = 'options-list';
+                    optsEl.innerHTML = opts.map(o => `
+                        <label class="opt-row${saved===o.key?' selected':''}">
+                            <input class="opt-radio" type="radio" name="choice" value="${o.key}" ${saved===o.key?'checked':''} onchange="pick('${o.key}',${q.id},this)">
+                            <span class="opt-label"><strong>${o.key.toLowerCase()})</strong> ${o.val}</span>
+                        </label>`).join('');
+                }
+
+                prevBtn.style.visibility = idx === 0 ? 'hidden' : 'visible';
+                if (idx === questions.length - 1) {
+                    nextBtn.innerHTML = 'Soza Ikizamini &#10003;';
+                    nextBtn.className = 'btn btn-submit';
+                } else {
+                    nextBtn.innerHTML = 'Komeza &#8594;';
+                    nextBtn.className = 'btn btn-next';
+                }
+            }
+
+            window.pick = function(key, id, el) {
+                answers[String(id)] = key;
+                el.closest('.options-list').querySelectorAll('.opt-row').forEach(r => r.classList.remove('selected'));
+                el.closest('.opt-row').classList.add('selected');
+                buildProgress();
+            };
+
+            const submitModal = document.getElementById('submitModal');
+            const modalCancel = document.getElementById('modalCancel');
+            const modalConfirm = document.getElementById('modalConfirm');
+
+            function showSubmitModal() {
+                submitModal.style.display = 'flex';
+            }
+
+            modalCancel.addEventListener('click', () => {
+                submitModal.style.display = 'none';
+            });
+
+            modalConfirm.addEventListener('click', () => {
+                submitModal.style.display = 'none';
+                sessionStorage.removeItem('isExamAlreadyStarted');
+                submit();
+            });
+
+            prevBtn.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
+            nextBtn.addEventListener('click', () => {
+                if (idx < questions.length - 1) { idx++; render(); }
+                else { showSubmitModal(); }
+            });
+
+            function submit() {
+                clearInterval(timer);
+                const payload = {};
+                for (const id in answers) payload[`question_${id}`] = answers[id];
+                fetch('/api/exams/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(r => r.json())
+                .then(res => {
+                    sessionStorage.setItem('latestScore', res.score);
+                    sessionStorage.setItem('latestTotal', res.total);
+                    sessionStorage.setItem('studentAnswerMapping', JSON.stringify(answers));
+                    sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questions));
+                    questions = [];
+                    window.location.replace('exam-result');
+                })
+                .catch(e => console.error('Submit error:', e));
+            }
+
+            fetch('/api/exams')
+            .then(r => r.json())
+            .then(data => {
+                for (let i = data.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [data[i], data[j]] = [data[j], data[i]];
+                }
+                questions = data.slice(0, 20);
+                if (!questions.length) {
+                    document.querySelector('.question-card').innerHTML = '<p style="text-align:center;padding:40px;font-weight:700;">Nta bibazo biri mu bubiko.</p>';
+                    clearInterval(timer); return;
+                }
+                questions.forEach(q => {
+                    if (q.image_path) new Image().src = `assets/uploads/${q.image_path}`;
+                    ['option_a','option_b','option_c','option_d'].forEach(k => {
+                        if (q[k] && /\.(png|jpg|jpeg|gif|webp)$/i.test(q[k])) new Image().src = `assets/uploads/${q[k]}`;
+                    });
+                });
+                render();
+            });
+        });
+    </script>
 </body>
 </html>

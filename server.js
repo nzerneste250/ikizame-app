@@ -10,9 +10,9 @@ const fs = require('fs');
 
 const app = express();
 
-// --- 🔒 AUTHORIZATION GATE MIDDLEWARE (PRE-PUBLICATION LOCKDOWN) ---
+// --- 🔒 MIDDLEWARE 1: AUTHORIZATION GATE (PRE-PUBLICATION LOCKDOWN) ---
 function restrictAccessToAuthorizedUsers(req, res, next) {
-    // Allow inner submit transactions to pass without blockages if needed
+    // Allow internal API submissions to bypass the authentication popup
     if (req.path.startsWith('/api/exams/submit')) return next();
 
     const authHeader = req.headers.authorization;
@@ -21,7 +21,6 @@ function restrictAccessToAuthorizedUsers(req, res, next) {
         return res.status(401).send('Authentication Required to Access This Staging Site.');
     }
 
-    // Decode base64 credentials sent natively by browser windows popup shells
     const tokenParts = authHeader.split(' ');
     if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'basic') {
         res.setHeader('WWW-Authenticate', 'Basic realm="IKIZAME Secure Staging Portal"');
@@ -32,7 +31,7 @@ function restrictAccessToAuthorizedUsers(req, res, next) {
     const usernameInput = authCredentials[0];
     const passwordInput = authCredentials[1];
 
-    // 🎯 SPECIFIED ACCESS PROTECTION VALUES
+    // STAGING FIREWALL ACCESS CREDENTIALS
     const STAGING_USERNAME = 'admin';       
     const STAGING_PASSWORD = 'Kigali@1234'; 
 
@@ -46,7 +45,7 @@ function restrictAccessToAuthorizedUsers(req, res, next) {
 
 // Intercept frontend and routes entry requests safely
 app.use((req, res, next) => {
-    // Skip protection checks for assets directories layouts profiles to load style layouts safely
+    // Skip protection checks for static public assets to load styles safely
     if (req.path.startsWith('/assets/')) return next();
     return restrictAccessToAuthorizedUsers(req, res, next);
 });
@@ -54,16 +53,55 @@ app.use((req, res, next) => {
 // --- 🌐 Global Middleware Configuration Parsers ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 
+// Express Session Memory Configuration
 app.use(session({
     secret: 'izo_service_quicky_hybrid_secure_token_998844',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 4 * 60 * 60 * 1000 } // 4 Hours active admin session layout bounds
+    cookie: { maxAge: 4 * 60 * 60 * 1000 } // 4 Hours active session layout bounds
 }));
 
-// --- 🗄️ 1. SMART HYBRID DATABASE CONNECTOR MATRIX ---
+// ==========================================================================
+// 🛡️ CLEAN URLS MAPPING CONTROLLER & SYSTEM ACCESS SECURITY FILTERS
+// ==========================================================================
+
+// 1. Clean URL Route Mapping handlers (Completely hides the .html extensions)
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/index', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/exam', (req, res) => res.sendFile(path.join(__dirname, 'public', 'exam.html')));
+app.get('/admin-login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
+
+app.get('/dashboard', (req, res) => {
+    if (req.session && req.session.isAdminAuthenticated) {
+        return res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+    }
+    res.redirect('/admin-login');
+});
+
+app.get('/add-exam', (req, res) => {
+    if (req.session && req.session.isAdminAuthenticated) {
+        return res.sendFile(path.join(__dirname, 'public', 'add-exam.html'));
+    }
+    res.redirect('/admin-login');
+});
+
+// 2. Strict Exam Result Access Integrity Lockout Gate
+app.get('/exam-result', (req, res) => {
+    // Blocks direct navigation or bookmarks unless an active completion token exists in the cookie session
+    if (req.session && req.session.hasCompletedActiveExamToken === true) {
+        // Reset the token right away so the user can't bookmark or refresh the page later
+        req.session.hasCompletedActiveExamToken = false; 
+        return res.sendFile(path.join(__dirname, 'public', 'exam-result.html'));
+    }
+    // Eject unauthorized direct link jumpers straight back to the landing page
+    res.redirect('/index');
+});
+
+// Server static directory fallback for remaining styles/images assets files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// --- 🗄️ 2. SMART HYBRID DATABASE CONNECTOR MATRIX ---
 const isLocalMachineHost = process.env.NODE_ENV !== 'production' && !process.env.RENDER;
 let databaseCredentialsConfig = {};
 
@@ -99,7 +137,7 @@ db.connect((err) => {
     console.log(`🚀 Successfully linked to active database target: [${databaseCredentialsConfig.host}]!`);
 });
 
-// --- 📸 2. DEDUPLICATION STORAGE ENGINE MATRIX (LOCAL STORAGE SAFE) ---
+// --- 📸 3. DEDUPLICATION STORAGE ENGINE MATRIX (LOCAL STORAGE SAFE) ---
 const uploadDirectoryPath = path.resolve(__dirname, 'public', 'assets', 'uploads');
 
 if (!fs.existsSync(uploadDirectoryPath)) {
@@ -150,15 +188,15 @@ app.post('/api/admin/auth', (req, res) => {
         if (err) return res.status(500).send('Database Auth Error: ' + err.message);
         if (results && results.length > 0) {
             req.session.isAdminAuthenticated = true;
-            res.redirect('/dashboard.html');
+            res.redirect('/dashboard');
         } else {
-            res.send('<script>alert("Invalid Admin Credentials Layout!"); window.location.href="/admin-login.html";</script>');
+            res.send('<script>alert("Invalid Admin Credentials Layout!"); window.location.href="/admin-login";</script>');
         }
     });
 });
 
 app.get('/api/admin/logout', (req, res) => {
-    req.session.destroy(() => { res.redirect('/admin-login.html'); });
+    req.session.destroy(() => { res.redirect('/admin-login'); });
 });
 
 app.get('/api/exams', (req, res) => {
@@ -193,14 +231,13 @@ app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
         finalOptionC = req.body.optionC ? req.body.optionC.trim() : '';
         finalOptionD = req.body.optionD ? req.body.optionD.trim() : '';
     }
-
-    const sql = `INSERT INTO exams (question, option_a, option_b, option_c, option_d, correct_option, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO exams (question, option_a, option_b, option_c, option_d, correct_option, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, mainQuestionImage], (err, result) => {
         if (err) {
             console.error('❌ Insertion query failed:', err.message);
             return res.status(500).send('Database Core Query Insertion Failure Error: ' + err.message);
         }
-        res.redirect('/dashboard.html');
+        res.redirect('/dashboard');
     });
 });
 
@@ -208,7 +245,8 @@ app.get('/api/exams/:id', (req, res) => {
     db.query('SELECT * FROM exams WHERE id = ?', [req.params.id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         if (results.length > 0) {
-            res.json(results[0]); 
+            // Fixes array layout response object maps to return single raw object instance instead of index lists array
+            res.json(results[0]);
         } else {
             res.status(404).json({ error: 'Record reference object mapping element targets not found.' });
         }
@@ -218,8 +256,8 @@ app.get('/api/exams/:id', (req, res) => {
 app.post('/api/exams/edit', examUploadFieldsConfig, (req, res) => {
     const { id, question, correctOption, optionsLayoutMode, existingImagePath, existingOptA, existingOptB, existingOptC, existingOptD, imageFileTextFallback, optionATextFallback, optionBTextFallback, optionCTextFallback, optionDTextFallback } = req.body;
     
-    const imagePath = req.files && req.files['imageFile'] 
-        ? req.files['imageFile'].filename 
+    const imagePath = req.files && req.files['imageFile']
+        ? req.files['imageFile'].filename
         : (imageFileTextFallback ? imageFileTextFallback.trim() : existingImagePath);
 
     let finalOptionA = '';
@@ -229,9 +267,9 @@ app.post('/api/exams/edit', examUploadFieldsConfig, (req, res) => {
 
     if (optionsLayoutMode === 'image') {
         finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'].filename : (optionATextFallback ? optionATextFallback.trim() : existingOptA);
-                finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'][0].filename : (optionBTextFallback ? optionBTextFallback.trim() : existingOptB);
-        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'][0].filename : (optionCTextFallback ? optionCTextFallback.trim() : existingOptC);
-        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'][0].filename : (optionDTextFallback ? optionDTextFallback.trim() : existingOptD);
+        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'].filename : (optionBTextFallback ? optionBTextFallback.trim() : existingOptB);
+        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'].filename : (optionCTextFallback ? optionCTextFallback.trim() : existingOptC);
+        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'].filename : (optionDTextFallback ? optionDTextFallback.trim() : existingOptD);
     } else {
         finalOptionA = req.body.optionA ? req.body.optionA.trim() : '';
         finalOptionB = req.body.optionB ? req.body.optionB.trim() : '';
@@ -239,10 +277,10 @@ app.post('/api/exams/edit', examUploadFieldsConfig, (req, res) => {
         finalOptionD = req.body.optionD ? req.body.optionD.trim() : '';
     }
 
-    const sql = `UPDATE exams SET question=?, option_a=?, option_b=?, option_c=?, option_d=?, correct_option=?, image_path=? WHERE id=?`;
-    db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, imagePath, id], (err, result) => {
+    const updateSql = `UPDATE exams SET question=?, option_a=?, option_b=?, option_c=?, option_d=?, correct_option=?, image_path=? WHERE id=?`;
+    db.query(updateSql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, imagePath, id], (err, result) => {
         if (err) return res.status(500).send('Database Query Error Executing Modify Updates Chain: ' + err.message);
-        res.redirect('/dashboard.html');
+        res.redirect('/dashboard');
     });
 });
 
@@ -260,7 +298,7 @@ app.post('/api/exams/submit', (req, res) => {
         
         let score = 0;
         let evaluatedCount = 0;
-        
+
         exams.forEach(exam => {
             const answerKey = `question_${exam.id}`;
             if (studentAnswers.hasOwnProperty(answerKey)) {
@@ -270,8 +308,12 @@ app.post('/api/exams/submit', (req, res) => {
                 }
             }
         });
-        
+
         const finalTotalDisplayCount = evaluatedCount > 0 ? evaluatedCount : 20;
+
+        // 🎯 SECURITY TOKEN HANDSHAKE: Authorizes this specific user session to access /exam-result once
+        req.session.hasCompletedActiveExamToken = true;
+
         res.json({ score: score, total: finalTotalDisplayCount });
     });
 });
