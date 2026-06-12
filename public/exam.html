@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('studentAnswerMapping', JSON.stringify(answers));
             sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questions));
             questions = [];
-            window.location.replace('exam-result.html');
+            window.location.replace('exam-score.html');
         })
         .catch(e => console.error('Submit error:', e));
     }

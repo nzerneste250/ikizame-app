@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IKIZAME - Ibisubizo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+            overflow-x: hidden;
+            background: #0d1b2a;
+        }
+
+        /* ── Animated background ── */
+        .bg-orbs {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.18;
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+        .orb1 { width: 400px; height: 400px; background: #1a56db; top: -100px; left: -100px; animation-delay: 0s; }
+        .orb2 { width: 350px; height: 350px; background: #16a34a; bottom: -80px; right: -80px; animation-delay: 2s; }
+        .orb3 { width: 250px; height: 250px; background: #7c3aed; top: 40%; left: 60%; animation-delay: 4s; }
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50%       { transform: translateY(-30px) scale(1.05); }
+        }
+
+        /* ── Card ── */
+        .card {
+            position: relative; z-index: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px 32px 36px;
+            width: 100%; max-width: 420px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+            animation: cardIn 0.6s cubic-bezier(0.16,1,0.3,1) both;
+        }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(28px) scale(0.96); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* ── Trophy / fail icon ── */
+        .result-icon {
+            width: 90px; height: 90px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.6rem; margin: 0 auto 20px;
+            animation: iconPop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+        }
+        @keyframes iconPop {
+            from { transform: scale(0); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
+        .icon-pass { background: linear-gradient(135deg, #bbf7d0, #86efac); box-shadow: 0 0 0 12px rgba(22,163,74,0.12), 0 0 40px rgba(22,163,74,0.2); }
+        .icon-fail { background: linear-gradient(135deg, #fecaca, #fca5a5); box-shadow: 0 0 0 12px rgba(239,68,68,0.12), 0 0 40px rgba(239,68,68,0.2); }
+
+        /* ── Verdict ── */
+        .verdict {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2.4rem;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            animation: fadeUp 0.5s ease 0.45s both;
+        }
+        .verdict-pass { color: #4ade80; }
+        .verdict-fail { color: #f87171; }
+
+        .greeting {
+            font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.5);
+            margin-bottom: 28px;
+            animation: fadeUp 0.5s ease 0.5s both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* ── Score ring ── */
+        .score-ring-wrap {
+            position: relative; width: 150px; height: 150px;
+            margin: 0 auto 28px;
+            animation: fadeUp 0.5s ease 0.55s both;
+        }
+        .score-ring-wrap svg { transform: rotate(-90deg); }
+        .ring-bg   { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 10; }
+        .ring-fill { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); }
+        .ring-pass { stroke: #4ade80; }
+        .ring-fail { stroke: #f87171; }
+
+        .score-center {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .score-num {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2rem; color: #fff; line-height: 1;
+        }
+        .score-denom {
+            font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.45); margin-top: 2px;
+        }
+        .score-pct {
+            font-size: 0.75rem; font-weight: 800;
+            margin-top: 3px; letter-spacing: 0.5px;
+        }
+        .pct-pass { color: #4ade80; }
+        .pct-fail { color: #f87171; }
+
+        /* ── Stats row ── */
+        .stats-row {
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px; margin-bottom: 28px;
+            animation: fadeUp 0.5s ease 0.6s both;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 12px 8px;
+        }
+        .stat-val {
+            font-size: 1.3rem; font-weight: 900; color: #fff; display: block; line-height: 1;
+        }
+        .stat-val.green { color: #4ade80; }
+        .stat-val.red   { color: #f87171; }
+        .stat-label {
+            font-size: 0.68rem; font-weight: 600;
+            color: rgba(255,255,255,0.4); text-transform: uppercase;
+            letter-spacing: 0.5px; margin-top: 4px; display: block;
+        }
+
+        /* ── Pass threshold note ── */
+        .threshold-note {
+            font-size: 0.78rem; font-weight: 600;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 28px;
+            animation: fadeUp 0.5s ease 0.62s both;
+        }
+        .threshold-note span { color: rgba(255,255,255,0.6); }
+
+        /* ── Buttons ── */
+        .btn-row {
+            display: flex; flex-direction: column; gap: 12px;
+            animation: fadeUp 0.5s ease 0.68s both;
+        }
+        .btn {
+            width: 100%; padding: 15px 20px;
+            border-radius: 12px; border: none; cursor: pointer;
+            font-size: 0.95rem; font-weight: 700; font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+        }
+        .btn:active { transform: scale(0.97); }
+
+        .btn-review {
+            background: linear-gradient(135deg, #1a56db, #2563eb);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(26,86,219,0.35);
+        }
+        .btn-review:hover { box-shadow: 0 6px 24px rgba(26,86,219,0.5); transform: translateY(-1px); }
+
+        .btn-retry {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.85);
+        }
+        .btn-retry:hover { background: rgba(255,255,255,0.11); }
+
+        /* ── Footer ── */
+        .footer {
+            position: relative; z-index: 1;
+            margin-top: 24px;
+            font-size: 0.7rem; color: rgba(255,255,255,0.2);
+            text-align: center;
+        }
+        .footer strong { color: rgba(255,255,255,0.35); }
+
+        /* ── Confetti burst (pass only) ── */
+        .confetti-piece {
+            position: fixed; top: -10px;
+            width: 8px; height: 14px;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+            z-index: 2; pointer-events: none;
+        }
+        @keyframes confettiFall {
+            0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+            80%  { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+</div>
+
+<div class="card" id="card">
+    <!-- Icon -->
+    <div class="result-icon" id="resultIcon"></div>
+
+    <!-- Verdict -->
+    <div class="verdict" id="verdictText"></div>
+    <div class="greeting" id="greetingText"></div>
+
+    <!-- Score ring -->
+    <div class="score-ring-wrap">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle class="ring-bg" cx="75" cy="75" r="60"/>
+            <circle class="ring-fill" id="ringFill" cx="75" cy="75" r="60"
+                stroke-dasharray="377" stroke-dashoffset="377"/>
+        </svg>
+        <div class="score-center">
+            <span class="score-num" id="scoreNum">0</span>
+            <span class="score-denom" id="scoreDenom">/20</span>
+            <span class="score-pct" id="scorePct"></span>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow"></div>
+
+    <!-- Threshold note -->
+    <div class="threshold-note">Amanota yo gutsinda: <span>12 / 20</span> (60%)</div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+        <button class="btn btn-review" onclick="window.location.href='exam-result.html'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Reba Ibisubizo
+        </button>
+        <button class="btn btn-retry" onclick="window.location.href='index.html'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
+            Kora Ikindi Kizamini
+        </button>
+    </div>
+</div>
+
+<div class="footer">&copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>izo service quicky</strong></div>
+
+<script>
+    // Read from sessionStorage
+    const score    = parseInt(sessionStorage.getItem('latestScore') ?? '0', 10);
+    const total    = parseInt(sessionStorage.getItem('latestTotal') ?? '20', 10);
+    const name     = sessionStorage.getItem('studentName') || 'Umukandida';
+    const PASS_MIN = 12;
+
+    const passed  = score >= PASS_MIN;
+    const pct     = Math.round((score / total) * 100);
+    const wrong   = total - score;
+
+    // Redirect if no score data
+    if (!sessionStorage.getItem('latestScore')) {
+        window.location.replace('index.html');
+    }
+
+    // Icon
+    const icon = document.getElementById('resultIcon');
+    icon.className = 'result-icon ' + (passed ? 'icon-pass' : 'icon-fail');
+    icon.textContent = passed ? '🏆' : '😔';
+
+    // Verdict
+    const verdict = document.getElementById('verdictText');
+    verdict.className = 'verdict ' + (passed ? 'verdict-pass' : 'verdict-fail');
+    verdict.textContent = passed ? 'WATSINZE!' : 'WATSINZWE!';
+
+    // Greeting
+    document.getElementById('greetingText').textContent = passed
+        ? `Congratulations, ${name.split(' ')[0]}! Ikizamini cyawe ni cyo.`
+        : `Ntutinye, ${name.split(' ')[0]}. Komeza kwiga ugerageze!`;
+
+    // Score ring
+    const circumference = 2 * Math.PI * 60; // 377
+    const ringFill = document.getElementById('ringFill');
+    ringFill.className = 'ring-fill ' + (passed ? 'ring-pass' : 'ring-fail');
+    document.getElementById('scoreNum').textContent  = score;
+    document.getElementById('scoreDenom').textContent = `/${total}`;
+    const pctEl = document.getElementById('scorePct');
+    pctEl.textContent = pct + '%';
+    pctEl.className = 'score-pct ' + (passed ? 'pct-pass' : 'pct-fail');
+
+    // Animate ring after paint
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            const offset = circumference - (pct / 100) * circumference;
+            ringFill.style.strokeDashoffset = offset;
+        }, 150);
+    });
+
+    // Stats
+    const statsRow = document.getElementById('statsRow');
+    statsRow.innerHTML = `
+        <div class="stat-box">
+            <span class="stat-val green">${score}</span>
+            <span class="stat-label">Inzobere</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-val red">${wrong}</span>
+            <span class="stat-label">Ntizoye</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-val">${pct}%</span>
+            <span class="stat-label">Ikigero</span>
+        </div>
+    `;
+
+    // Confetti for pass
+    if (passed) {
+        const colors = ['#4ade80','#60a5fa','#fbbf24','#f472b6','#a78bfa','#34d399'];
+        for (let i = 0; i < 60; i++) {
+            const el = document.createElement('div');
+            el.className = 'confetti-piece';
+            el.style.left       = Math.random() * 100 + 'vw';
+            el.style.background = colors[Math.floor(Math.random() * colors.length)];
+            el.style.animationDuration  = (1.8 + Math.random() * 2) + 's';
+            el.style.animationDelay     = (Math.random() * 1.2) + 's';
+            el.style.width  = (6 + Math.random() * 6) + 'px';
+            el.style.height = (10 + Math.random() * 8) + 'px';
+            el.style.transform = `rotate(${Math.random()*360}deg)`;
+            document.body.appendChild(el);
+            el.addEventListener('animationend', () => el.remove());
+        }
+    }
+</script>
+</body>
+</html>
