@@ -215,12 +215,18 @@
                 flex: none !important;
             }
 
-            /* Image: compact but visible */
+            /* Image: only shown when question has one, compact height */
             .img-frame {
-                display: flex !important;
                 height: 160px !important;
                 max-height: 160px !important;
                 padding: 6px;
+            }
+            /* When no image: collapse gap so options sit tight under question text */
+            .q-body.no-image {
+                gap: 0 !important;
+            }
+            .q-body.no-image .img-frame {
+                display: none !important;
             }
 
             /* Options: natural height, no scroll trap */
