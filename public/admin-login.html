@@ -3,225 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - IKIZAME Admin Portal</title>
-    <!-- Google Fonts Hierarchy Inter -->
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <title>IKIZAME Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* 🪐 BRAND PLATFORM MOTION DESIGN SYSTEM */
         :root {
-            --bg-glass: rgba(255, 255, 255, 0.85);
-            --bg-backdrop: #f1f5f9;
+            --brand: #0b698b;
+            --brand-dark: #08536e;
+            --brand-glow: rgba(11,105,139,0.18);
             --text-dark: #0f172a;
             --text-muted: #64748b;
-            --accent-sky: #0b698b;
-            --accent-glow: rgba(11, 105, 139, 0.2);
-            --accent-hover: #08536e;
-            --border-line: #cbd5e1;
-            --valid-green: #10b981;
+            --border: #cbd5e1;
+            --valid: #10b981;
+            --error: #ef4444;
+            --bg: #f0f4f8;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        body { 
-            background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%); 
-            color: var(--text-dark); 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-            justify-content: center; 
-            align-items: center; 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            overflow-x: hidden;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* ✨ INTERACTIVE PARALLAX FLOATING CARD CONTAINER */
-        .interactive-auth-card {
+        /* Decorative blobs */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.12;
+        }
+        body::before {
+            width: 500px; height: 500px;
+            background: var(--brand);
+            top: -150px; left: -150px;
+        }
+        body::after {
+            width: 400px; height: 400px;
+            background: var(--brand);
+            bottom: -120px; right: -120px;
+        }
+
+        /* Top brand bar */
+        .top-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 56px;
+            background: var(--brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .top-bar-brand {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.3rem;
+            color: #fff;
+            letter-spacing: 3px;
+        }
+
+        /* Card */
+        .card {
             width: 100%;
-            max-width: 440px;
-            background: var(--bg-glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            max-width: 420px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 44px 36px 36px;
+            box-shadow: 0 24px 48px -12px rgba(0,0,0,0.12);
+            position: relative;
+            z-index: 5;
+            animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        .card-icon {
+            width: 64px; height: 64px;
+            background: var(--brand);
             border-radius: 16px;
-            padding: 45px 35px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.03);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 26px;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 20px var(--brand-glow);
+        }
+
+        .card h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-dark);
             text-align: center;
-            transform: translateY(0);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            margin-bottom: 6px;
         }
-        .interactive-auth-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 25px 30px -5px rgba(0,0,0,0.08), 0 12px 12px -5px rgba(0,0,0,0.04);
-        }
-
-        /* Animated Pulsing Icon Header Box */
-        .logo-pulse-box {
-            width: 60px; height: 60px; background-color: var(--accent-sky); color: #ffffff;
-            border-radius: 14px; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; margin: 0 auto 20px;
-            box-shadow: 0 8px 16px rgba(11, 105, 139, 0.25);
-            transition: transform 0.3s ease;
-        }
-        .interactive-auth-card:hover .logo-pulse-box {
-            transform: scale(1.05) rotate(5deg);
+        .card p {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 32px;
         }
 
-        .interactive-auth-card h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
-        .interactive-auth-card p { font-size: 13.5px; color: var(--text-muted); margin-bottom: 35px; line-height: 1.45; }
-
-        /* Dynamic Visual Input Row Bundling Elements */
-        .auth-form-flow { display: flex; flex-direction: column; gap: 22px; text-align: left; }
-        .input-floating-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
-        .input-floating-group label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.75px; transition: color 0.2s ease; }
-        
-        .field-input-wrapper { position: relative; width: 100%; }
-        .field-input-wrapper i.leading-ico { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; transition: color 0.2s ease; }
-        
-        /* 👁️ PASSWORD VISIBILITY EYE TOGGLE BUTTON */
-        .password-toggle-trigger {
-            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-            color: var(--text-muted); cursor: pointer; padding: 4px; font-size: 14px;
-            transition: color 0.15s ease; user-select: none;
+        /* Error alert */
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 8px;
         }
-        .password-toggle-trigger:hover { color: var(--accent-sky); }
+        .alert-error.show { display: flex; }
 
-        .auth-form-flow input {
-            width: 100%; padding: 14px 44px 14px 44px; background-color: rgba(255, 255, 255, 0.9);
-            border: 2px solid var(--border-line); border-radius: 10px; font-size: 14.5px; font-weight: 500;
-            color: var(--text-dark); outline: none; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Form */
+        .form { display: flex; flex-direction: column; gap: 18px; }
+
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            transition: color 0.2s;
         }
-        
-        /* Interactive Input Focus State Feedback Loops */
-        .auth-form-flow input:focus {
-            border-color: var(--accent-sky);
-            background-color: #ffffff;
-            box-shadow: 0 0 0 4px var(--accent-glow);
+        .field-wrap { position: relative; }
+        .field-wrap .ico-left {
+            position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: color 0.2s;
+            pointer-events: none;
         }
-        .input-floating-group:focus-within label { color: var(--accent-sky); }
-        .input-floating-group:focus-within i.leading-ico { color: var(--accent-sky); }
-
-        /* Real-time validation status loops classes */
-        .input-floating-group.is-valid input { border-color: var(--valid-green); }
-        .input-floating-group.is-valid label { color: var(--valid-green); }
-
-        .btn-submit-engine {
-            background-color: var(--accent-sky); color: #ffffff; border: none; padding: 14px 24px;
-            font-size: 14px; font-weight: 700; border-radius: 10px; cursor: pointer; width: 100%;
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            transition: all 0.2s ease; margin-top: 8px;
-            box-shadow: 0 4px 12px rgba(11, 105, 139, 0.2);
-            position: relative; overflow: hidden;
+        .field-wrap .ico-right {
+            position: absolute; right: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 4px;
         }
-        .btn-submit-engine:hover { background-color: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(11, 105, 139, 0.3); }
-        .btn-submit-engine:active { transform: translateY(0); }
+        .field-wrap .ico-right:hover { color: var(--brand); }
 
-        .back-to-portal-link { text-decoration: none; font-size: 13.5px; font-weight: 600; color: var(--text-muted); transition: color 0.15s ease; display: inline-flex; align-items: center; gap: 6px; margin-top: 30px; }
-        .back-to-portal-link:hover { color: var(--accent-sky); }
+        .field input {
+            width: 100%;
+            padding: 13px 44px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fafafa;
+        }
+        .field input:focus {
+            border-color: var(--brand);
+            background: #fff;
+            box-shadow: 0 0 0 4px var(--brand-glow);
+        }
+        .field:focus-within label { color: var(--brand); }
+        .field:focus-within .ico-left { color: var(--brand); }
 
-        @media screen and (max-width: 480px) {
-            body { padding: 12px; }
-            .interactive-auth-card { padding: 35px 20px; border-radius: 14px; }
-            .interactive-auth-card h1 { font-size: 20px; }
-            .auth-form-flow input { padding: 13px 40px; }
+        /* Valid state */
+        .field.valid input { border-color: var(--valid); }
+        .field.valid label { color: var(--valid); }
+        .field.valid .ico-left { color: var(--valid); }
+
+        /* Submit */
+        .btn-submit {
+            margin-top: 4px;
+            padding: 14px;
+            background: var(--brand);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px var(--brand-glow);
+        }
+        .btn-submit:hover { background: var(--brand-dark); transform: translateY(-1px); box-shadow: 0 8px 20px var(--brand-glow); }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+        /* Back link */
+        .back-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .back-link:hover { color: var(--brand); }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 42px;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11.5px;
+            color: #64748b;
+            z-index: 10;
+        }
+        .footer strong { color: #38bdf8; }
+
+        @media (max-width: 480px) {
+            .card { padding: 36px 20px 28px; border-radius: 16px; }
+            .card h1 { font-size: 18px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="interactive-auth-card" id="loginGlassCard">
-        <div class="logo-pulse-box">
+    <div class="top-bar">
+        <span class="top-bar-brand">IKIZAME</span>
+    </div>
+
+    <div class="card">
+        <div class="card-icon">
             <i class="fa-solid fa-graduation-cap"></i>
         </div>
-        <!-- 🇬🇧 TRANSLATED CONTAINER CONTENTS HEADER TEXTS -->
         <h1>Admin Control Panel</h1>
-        <p>Please log in using your authorized staff credentials to manage exam questions and review student scores.</p>
-        
-        <!-- 🎯 CONFIG: Submits securely to your custom authentication API path -->
-        <form action="/api/admin/auth" method="POST" class="auth-form-flow" id="portalAuthForm">
-            
-            <div class="input-floating-group" id="userGroupContainer">
+        <p>Log in with your authorized credentials to manage exam questions and review student scores.</p>
+
+        <div class="alert-error" id="alertBox">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <span id="alertMsg">Invalid username or password.</span>
+        </div>
+
+        <!-- Backend logic unchanged: same action/method -->
+        <form action="/api/admin/auth" method="POST" class="form" id="loginForm" novalidate>
+
+            <div class="field" id="fieldUser">
                 <label for="username">Username</label>
-                <div class="field-input-wrapper">
-                    <i class="fa-solid fa-user-shield leading-ico"></i>
-                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter your username...">
+                <div class="field-wrap">
+                    <i class="fa-solid fa-user-shield ico-left"></i>
+                    <input type="text" id="username" name="username"
+                           required autocomplete="username"
+                           placeholder="Enter your username">
                 </div>
             </div>
 
-            <div class="input-floating-group" id="passGroupContainer">
+            <div class="field" id="fieldPass">
                 <label for="password">Password</label>
-                <div class="field-input-wrapper">
-                    <i class="fa-solid fa-lock leading-ico"></i>
-                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your secret password...">
-                    <!-- 👁️ INTERACTIVE EYE VISIBILITY ICON TOGGLE -->
-                    <i class="fa-solid fa-eye password-toggle-trigger" id="passwordToggleTriggerBtn" title="Show password"></i>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-lock ico-left"></i>
+                    <input type="password" id="password" name="password"
+                           required autocomplete="current-password"
+                           placeholder="Enter your password">
+                    <i class="fa-solid fa-eye ico-right" id="eyeBtn" title="Show password"></i>
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit-engine" id="authSubmitBtn">
-                <span>Access Dashboard</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span id="submitLabel">Access Dashboard</span>
+                <i class="fa-solid fa-arrow-right-to-bracket" id="submitIcon"></i>
             </button>
-            
+
         </form>
 
-        <a href="index.html" class="back-to-portal-link">
-            <i class="fa-solid fa-arrow-left-long"></i> Back to Main Website
+        <a href="/" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Back to Main Website
         </a>
     </div>
 
-    <!-- Client Runtime UX Optimization Controller Scripts Engine -->
+    <footer class="footer">
+        &copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong>
+    </footer>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const passInput = document.getElementById('password');
-            const passToggleBtn = document.getElementById('passwordToggleTriggerBtn');
-            
-            const userInput = document.getElementById('username');
-            const userGroup = document.getElementById('userGroupContainer');
-            const passGroup = document.getElementById('passGroupContainer');
-            const authForm = document.getElementById('portalAuthForm');
-            const submitBtn = document.getElementById('authSubmitBtn');
+        const eyeBtn   = document.getElementById('eyeBtn');
+        const passInput = document.getElementById('password');
+        const userInput = document.getElementById('username');
+        const fieldUser = document.getElementById('fieldUser');
+        const fieldPass = document.getElementById('fieldPass');
+        const loginForm = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const alertBox  = document.getElementById('alertBox');
+        const alertMsg  = document.getElementById('alertMsg');
 
-            // 👁️ 1. ENGLISH VISIBILITY TOOLTIP LABEL SHIFTER
-            passToggleBtn.addEventListener('click', () => {
-                if (passInput.type === 'password') {
-                    passInput.type = 'text';
-                    passToggleBtn.classList.remove('fa-eye');
-                    passToggleBtn.classList.add('fa-eye-slash');
-                    passToggleBtn.title = "Hide password";
-                }else {
-                passInput.type = 'password';
-                passToggleBtn.classList.remove('fa-eye-slash');
-                passToggleBtn.classList.add('fa-eye');
-                passToggleBtn.title = "Show password";
-            }
+        /* Password visibility toggle */
+        eyeBtn.addEventListener('click', () => {
+            const show = passInput.type === 'password';
+            passInput.type = show ? 'text' : 'password';
+            eyeBtn.className = show ? 'fa-solid fa-eye-slash ico-right' : 'fa-solid fa-eye ico-right';
+            eyeBtn.title = show ? 'Hide password' : 'Show password';
         });
 
-        // ⚡ 2. REAL-TIME INTERACTIVE VALIDATION BINDINGS
+        /* Real-time field validation feedback */
         userInput.addEventListener('input', () => {
-            if (userInput.value.trim().length >= 3) {
-                userGroup.classList.add('is-valid');
-            } else {
-                userGroup.classList.remove('is-valid');
-            }
+            fieldUser.classList.toggle('valid', userInput.value.trim().length >= 3);
         });
-
         passInput.addEventListener('input', () => {
-            if (passInput.value.length >= 4) {
-                passGroup.classList.add('is-valid');
-            } else {
-                passGroup.classList.remove('is-valid');
-            }
+            fieldPass.classList.toggle('valid', passInput.value.length >= 4);
         });
 
-        // ⚡ 3. ENGLISH SUBMIT BUTTON SPINNING ACTION FRAME LOADING TEXT
-        authForm.addEventListener('submit', () => {
-            submitBtn.style.opacity = '0.85';
-            submitBtn.querySelector('span').innerText = "Authenticating...";
-            submitBtn.querySelector('i').className = "fa-solid fa-spinner fa-spin";
+        /* Show server-side error if redirected back with ?error=1 */
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('error')) {
+            alertBox.classList.add('show');
+            alertMsg.textContent = 'Invalid username or password. Please try again.';
+        }
+
+        /* Loading state on submit */
+        loginForm.addEventListener('submit', (e) => {
+            if (!userInput.value.trim() || !passInput.value) {
+                e.preventDefault();
+                alertBox.classList.add('show');
+                alertMsg.textContent = 'Please fill in all fields.';
+                return;
+            }
+            submitBtn.disabled = true;
+            document.getElementById('submitLabel').textContent = 'Authenticating...';
+            document.getElementById('submitIcon').className = 'fa-solid fa-spinner fa-spin';
         });
-    });
-</script>
+    </script>
 </body>
 </html>

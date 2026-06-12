@@ -12,7 +12,6 @@ const app = express();
 
 // --- 🔒 MIDDLEWARE 1: AUTHORIZATION GATE (PRE-PUBLICATION LOCKDOWN) ---
 function restrictAccessToAuthorizedUsers(req, res, next) {
-    // Allow internal API submissions to bypass the authentication popup
     if (req.path.startsWith('/api/exams/submit')) return next();
 
     const authHeader = req.headers.authorization;
@@ -31,78 +30,70 @@ function restrictAccessToAuthorizedUsers(req, res, next) {
     const usernameInput = authCredentials[0];
     const passwordInput = authCredentials[1];
 
-    // STAGING FIREWALL ACCESS CREDENTIALS
     const STAGING_USERNAME = 'admin';       
     const STAGING_PASSWORD = 'Kigali@1234'; 
 
     if (usernameInput === STAGING_USERNAME && passwordInput === STAGING_PASSWORD) {
-        return next(); // Credentials match, unlock full workspace access
+        return next(); 
     }
 
     res.setHeader('WWW-Authenticate', 'Basic realm="IKIZAME Secure Staging Portal"');
     return res.status(401).send('Invalid Authorization Credentials provided.');
 }
 
-// Intercept frontend and routes entry requests safely
 app.use((req, res, next) => {
-    // Skip protection checks for static public assets to load styles safely
     if (req.path.startsWith('/assets/')) return next();
     return restrictAccessToAuthorizedUsers(req, res, next);
 });
 
-// --- 🌐 Global Middleware Configuration Parsers ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Express Session Memory Configuration
 app.use(session({
     secret: 'izo_service_quicky_hybrid_secure_token_998844',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 4 * 60 * 60 * 1000 } // 4 Hours active session layout bounds
+    cookie: { maxAge: 4 * 60 * 60 * 1000 } 
 }));
 
 // ==========================================================================
 // 🛡️ CLEAN URL ROUTING + HARDENED ACCESS CONTROL GATES
 // ==========================================================================
-// CRITICAL: All named .html pages are explicitly routed here with access
-// rules BEFORE express.static is mounted. express.static is configured to
-// NEVER serve .html files directly — it only serves assets (css, js, images).
-// This means typing /exam-result.html in the browser returns 403, not the page.
-// ==========================================================================
-
-// ── Public pages (no auth needed) ──
 app.get('/',           (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/index',      (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/admin-login',(req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
 
-// ── Exam page: only accessible if the user registered (has studentName in session) ──
 app.get('/exam', (req, res) => {
-    // We trust the client sessionStorage check but also verify server session
-    // to block users who try to jump directly to /exam without registering.
     if (req.session && req.session.examStudentName) {
         return res.sendFile(path.join(__dirname, 'public', 'exam.html'));
     }
-    // No registration — send them back to register first
     res.redirect('/');
 });
 
-// ── Admin-protected pages ──
 app.get('/dashboard', (req, res) => {
     if (req.session && req.session.isAdminAuthenticated) {
         return res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
     }
     res.redirect('/admin-login');
 });
+
 app.get('/add-exam', (req, res) => {
     if (req.session && req.session.isAdminAuthenticated) {
         return res.sendFile(path.join(__dirname, 'public', 'add-exam.html'));
     }
     res.redirect('/admin-login');
 });
-
-// ── Exam Score page: only accessible after submission ──
-// Token stays alive so the user can stay on the score page and navigate to review.
+// ==========================================================================
+// ⚙️ SYSTEM PERFORMANCE SECURE EXTENSIONLESS NAVIGATION LINK AGENT
+// ==========================================================================
+app.get('/system-performance', (req, res) => {
+    // Restrict access so only authenticated administrators can open the file
+    if (req.session && req.session.isAdminAuthenticated) {
+        return res.sendFile(path.join(__dirname, 'public', 'system-performance.html'));
+    }
+    // Unauthorized visitors get sent straight back to the login terminal
+    res.redirect('/admin-login');
+});
 app.get('/exam-score', (req, res) => {
     if (req.session && req.session.hasCompletedActiveExamToken === true) {
         return res.sendFile(path.join(__dirname, 'public', 'exam-score.html'));
@@ -110,10 +101,6 @@ app.get('/exam-score', (req, res) => {
     res.redirect('/');
 });
 
-// ── Exam Result/Review page: only accessible after submission ──
-// We keep the same token alive for both /exam-score and /exam-result so the
-// user can bounce between score and review without getting ejected.
-// Token is cleared only when they go back to the home page.
 app.get('/exam-result', (req, res) => {
     if (req.session && req.session.hasCompletedActiveExamToken === true) {
         return res.sendFile(path.join(__dirname, 'public', 'exam-result.html'));
@@ -121,19 +108,13 @@ app.get('/exam-result', (req, res) => {
     res.redirect('/');
 });
 
-// ── Hard block: .html extension URLs always return 403 ──
-// This fires BEFORE express.static so nobody can bypass the gates above
-// by appending .html to any page URL.
 app.get('*.html', (req, res) => {
     res.status(403).send('Direct file access is not permitted. Please use the application navigation.');
 });
 
-// ── Static assets only (no .html) ──
-// extensions: false means express.static won't auto-resolve index.html;
-// we handle all HTML serving manually above.
 app.use(express.static(path.join(__dirname, 'public'), {
-    extensions: false,   // never auto-append .html
-    index: false         // never serve index.html automatically
+    extensions: false,   
+    index: false         
 }));
 
 // --- 🗄️ 2. SMART HYBRID DATABASE CONNECTOR MATRIX ---
@@ -141,7 +122,6 @@ const isLocalMachineHost = process.env.NODE_ENV !== 'production' && !process.env
 let databaseCredentialsConfig = {};
 
 if (isLocalMachineHost) {
-    // 💻 A. LOCAL WORKSPACE CREDENTIALS (XAMPP / WampServer standard)
     databaseCredentialsConfig = {
         host: 'localhost',
         user: 'root',
@@ -151,7 +131,6 @@ if (isLocalMachineHost) {
     };
     console.log('ℹ️ Local environment detected. Initiating local MySQL handshake setup...');
 } else {
-    // 🌐 B. PRODUCTION CLOUD CREDENTIALS (Alwaysdata Remote cluster parameters)
     databaseCredentialsConfig = {
         host: 'mysql-ikizame.alwaysdata.net',
         user: 'ikizame',
@@ -172,8 +151,11 @@ db.connect((err) => {
     console.log(`🚀 Successfully linked to active database target: [${databaseCredentialsConfig.host}]!`);
 });
 
-// --- 📸 3. DEDUPLICATION STORAGE ENGINE MATRIX (LOCAL STORAGE SAFE) ---
-const uploadDirectoryPath = path.resolve(__dirname, 'public', 'assets', 'uploads');
+// --- 📸 3. DEDUPLICATION STORAGE ENGINE MATRIX (LOCAL STORAGE PATH PROTECTION) ---
+// 🎯 CRITICAL PATH RECALIBRATION: Locks absolute local path on windows machine to avoid image drop errors
+const uploadDirectoryPath = isLocalMachineHost 
+    ? 'F:\\IKIZAME-NodeApp\\public\\assets\\uploads'
+    : path.resolve(__dirname, 'public', 'assets', 'uploads');
 
 if (!fs.existsSync(uploadDirectoryPath)) {
     fs.mkdirSync(uploadDirectoryPath, { recursive: true });
@@ -197,15 +179,13 @@ const storageEngine = multer.diskStorage({
 });
 
 const upload = multer({ storage: storageEngine });
-
 const examUploadFieldsConfig = upload.fields([
     { name: 'imageFile', maxCount: 1 },
-    { name: 'optionA_File', maxCount: 1 },
-    { name: 'optionB_File', maxCount: 1 },
-    { name: 'optionC_File', maxCount: 1 },
-    { name: 'optionD_File', maxCount: 1 }
+    { name: 'optiona_File', maxCount: 1 }, // Changed from optionA_File to optiona_File
+    { name: 'optionb_File', maxCount: 1 }, // Changed from optionB_File to optionb_File
+    { name: 'optionc_File', maxCount: 1 }, // Changed from optionC_File to optionc_File
+    { name: 'optiond_File', maxCount: 1 }  // Changed from optionD_File to optiond_File
 ]);
-
 function requireAdminLogin(req, res, next) {
     if (req.session && req.session.isAdminAuthenticated) {
         return next();
@@ -234,84 +214,69 @@ app.get('/api/admin/logout', (req, res) => {
     req.session.destroy(() => { res.redirect('/admin-login'); });
 });
 
-// ==========================================================================
-// 📝 STUDENT REGISTRATION ENDPOINT
-// Called by index.html before redirecting to /exam.
-// Sets server-side session so /exam gate can verify the user registered.
-// ==========================================================================
 app.post('/api/register', (req, res) => {
     const { studentName, phoneNumber } = req.body;
     if (!studentName || !phoneNumber) {
         return res.status(400).json({ error: 'Amazina na telefone birakenewe.' });
     }
-    // Store in server session — this is what the /exam route checks
     req.session.examStudentName  = studentName.trim();
     req.session.examPhoneNumber  = phoneNumber.trim();
-    // Clear any leftover locked questions from a previous exam attempt
     req.session.lockedExamQuestionIds = [];
     req.session.hasCompletedActiveExamToken = false;
     res.json({ ok: true });
 });
 
 // ==========================================================================
-// 🎲 SERVER-SIDE EXAM SESSION RANDOMIZER
-//    - Each user gets a unique shuffled set of 20 questions per session
-//    - Questions are selected WITHOUT replacement (no duplicates)
-//    - Two concurrent users will almost never see the same order or set
-//    - Once a session's exam is started, the same 20 questions are locked
-//      in (re-fetching returns the same set so page logic stays consistent)
+// 🎲 UNRESTRICTED ENDPOINT REFACTORING MATRIX
+//    - Handles clean multi-role response routing parameters
+//    - Returns ALL rows (70+) unconditionally if hit by an authenticated admin dashboard panel
+//    - Returns isolated 20 shuffled slice items if hit by an active candidate student session
 // ==========================================================================
 app.get('/api/exams', (req, res) => {
-    db.query('SELECT * FROM exams', (err, results) => {
+    db.query('SELECT * FROM exams ORDER BY id DESC', (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
-
         if (!results || results.length === 0) return res.json([]);
 
-        // --- If this session already has a locked question set, return it ---
-        // This prevents the set from changing if the client re-fetches for
-        // any reason mid-exam (e.g. accidental double call).
+        // 🚀 UNCONDITIONAL RETRIEVAL CONTROL: If it is an admin session, bypass shuffle filter and return all rows
+        if (req.session && req.session.isAdminAuthenticated) {
+            return res.json(results);
+        }
+
+        // --- Student Session Mode Loop (Locks exact isolated 20 shuffled slice) ---
         if (req.session.lockedExamQuestionIds && req.session.lockedExamQuestionIds.length > 0) {
-            const lockedIds = new Set(req.session.lockedExamQuestionIds);
             const lockedQuestions = req.session.lockedExamQuestionIds
                 .map(id => results.find(q => q.id === id))
-                .filter(Boolean); // safety filter in case a question was deleted
+                .filter(Boolean); 
             return res.json(lockedQuestions);
         }
 
-        // --- Fisher-Yates shuffle using a per-request crypto-quality seed ---
-        // Math.random() alone can produce correlated sequences; we add a
-        // high-entropy salt from Date + process.hrtime for better spread.
         const pool = [...results];
-        const hrtime = process.hrtime(); // [seconds, nanoseconds]
-        const entropySalt = Date.now() * 1000000 + hrtime[1]; // nanosecond-range integer
+        const hrtime = process.hrtime(); 
+        const entropySalt = Date.now() * 1000000 + hrtime[1]; 
 
-        // Seeded shuffle: swap every element with a randomly chosen earlier
-        // element — guarantees every permutation is equally likely.
         for (let i = pool.length - 1; i > 0; i--) {
-            // Combine multiple entropy sources so no two sessions collide
-            const entropy = (entropySalt + i * 2654435761) >>> 0; // Knuth multiplicative hash
+            const entropy = (entropySalt + i * 2654435761) >>> 0; 
             const j = entropy % (i + 1);
             [pool[i], pool[j]] = [pool[j], pool[i]];
         }
 
-        // Slice exactly 20 unique questions (Fisher-Yates guarantees no repeats)
         const examSize = Math.min(20, pool.length);
         const selectedQuestions = pool.slice(0, examSize);
-
-        // Lock this set into the session so it stays stable for this user
-        req.session.lockedExamQuestionIds = selectedQuestions.map(q => q.id);
-
+                req.session.lockedExamQuestionIds = selectedQuestions.map(q => q.id);
         res.json(selectedQuestions);
     });
 });
-
+// ==========================================================================
+// 📝 ADD QUESTION ENDPOINT (FIXED MULTIPART FIELD INDEX CASE BINDINGS)
+// ==========================================================================
 app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
     const question = req.body.question || '';
     const correctOption = req.body.correctOption || '';
     const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
     
-    const mainQuestionImage = req.files && req.files['imageFile'] 
-        ? req.files['imageFile'].filename 
+    // 🎯 FIX 1: Extracted outside the conditional blocks so it captures the main description image in BOTH text and image modes!
+    const mainQuestionImage = req.files && req.files['imageFile'] && req.files['imageFile'][0]
+        ? req.files['imageFile'][0].filename 
         : (req.body.imageFileTextFallback ? req.body.imageFileTextFallback.trim() : null);
 
     let finalOptionA = '';
@@ -320,17 +285,24 @@ app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
     let finalOptionD = '';
 
     if (optionsLayoutMode === 'image') {
-        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'].filename : (req.body.optionATextFallback ? req.body.optionATextFallback.trim() : '');
-        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'].filename : (req.body.optionBTextFallback ? req.body.optionBTextFallback.trim() : '');
-        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'].filename : (req.body.optionCTextFallback ? req.body.optionCTextFallback.trim() : '');
-        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'].filename : (req.body.optionDTextFallback ? req.body.optionDTextFallback.trim() : '');
+        // 🎯 FIX 2: Standardized file keys to match lowercase naming parameters from your dynamic frontend input wrappers!
+        finalOptionA = req.files && req.files['optiona_File'] && req.files['optiona_File'][0] ? req.files['optiona_File'][0].filename : (req.body.optionATextFallback ? req.body.optionATextFallback.trim() : '');
+        finalOptionB = req.files && req.files['optionb_File'] && req.files['optionb_File'][0] ? req.files['optionb_File'][0].filename : (req.body.optionBTextFallback ? req.body.optionBTextFallback.trim() : '');
+        finalOptionC = req.files && req.files['optionc_File'] && req.files['optionc_File'][0] ? req.files['optionc_File'][0].filename : (req.body.optionCTextFallback ? req.body.optionCTextFallback.trim() : '');
+        finalOptionD = req.files && req.files['optiond_File'] && req.files['optiond_File'][0] ? req.files['optiond_File'][0].filename : (req.body.optionDTextFallback ? req.body.optionDTextFallback.trim() : '');
     } else {
         finalOptionA = req.body.optionA ? req.body.optionA.trim() : '';
         finalOptionB = req.body.optionB ? req.body.optionB.trim() : '';
         finalOptionC = req.body.optionC ? req.body.optionC.trim() : '';
         finalOptionD = req.body.optionD ? req.body.optionD.trim() : '';
     }
-        const sql = `INSERT INTO exams (question, option_a, option_b, option_c, option_d, correct_option, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+    // Fallback protection check to prevent column constraint crashes
+    if (!finalOptionA || !finalOptionB || !finalOptionC || !finalOptionD) {
+        return res.status(400).send('Database Constraint Error: All four option variations must possess values or image targets.');
+    }
+
+    const sql = `INSERT INTO exams (question, option_a, option_b, option_c, option_d, correct_option, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     db.query(sql, [question, finalOptionA, finalOptionB, finalOptionC, finalOptionD, correctOption, mainQuestionImage], (err, result) => {
         if (err) {
             console.error('❌ Insertion query failed:', err.message);
@@ -339,19 +311,22 @@ app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
         res.redirect('/dashboard');
     });
 });
-
+// ==========================================================================
+// 🔍 RECALIBRATED SPECIFIC QUESTION FETCH ENDPOINT
+// ==========================================================================
 app.get('/api/exams/:id', (req, res) => {
     db.query('SELECT * FROM exams WHERE id = ?', [req.params.id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
+        
         if (results.length > 0) {
-            // Fixes array layout response object maps to return single raw object instance instead of index lists array
-            res.json(results[0]);
+            // 🎯 FIXED DATA FORMAT: Return the array container directly. 
+            // This allows the frontend's Array.isArray() check to parse it seamlessly.
+            res.json(results);
         } else {
             res.status(404).json({ error: 'Record reference object mapping element targets not found.' });
         }
     });
 });
-
 app.post('/api/exams/edit', examUploadFieldsConfig, (req, res) => {
     const { id, question, correctOption, optionsLayoutMode, existingImagePath, existingOptA, existingOptB, existingOptC, existingOptD, imageFileTextFallback, optionATextFallback, optionBTextFallback, optionCTextFallback, optionDTextFallback } = req.body;
     
@@ -410,22 +385,13 @@ app.post('/api/exams/submit', (req, res) => {
 
         const finalTotalDisplayCount = evaluatedCount > 0 ? evaluatedCount : 20;
 
-        // 🎯 SECURITY TOKEN HANDSHAKE: Authorizes session to access /exam-score and /exam-result
-        // Token stays alive until the user explicitly goes back to home (/api/clear-session).
         req.session.hasCompletedActiveExamToken = true;
-
-        // 🔓 CLEAR LOCKED QUESTION SET so next attempt gets a fresh random draw
         req.session.lockedExamQuestionIds = [];
 
         res.json({ score: score, total: finalTotalDisplayCount });
     });
 });
 
-// ==========================================================================
-// 🏠 SESSION CLEAR ENDPOINT — called when user returns to home page
-// Clears the exam completion token so /exam-score and /exam-result
-// become inaccessible again until a new exam is submitted.
-// ==========================================================================
 app.post('/api/clear-session', (req, res) => {
     req.session.hasCompletedActiveExamToken = false;
     req.session.examStudentName  = null;
@@ -434,7 +400,20 @@ app.post('/api/clear-session', (req, res) => {
     res.json({ ok: true });
 });
 
-const PORT = process.env.PORT || 5000;
+// ==========================================================================
+// ⚡ ANTI-SLEEP COUPLER ENGINE: Keeps Free Tiers Awake 24/7
+// ==========================================================================
+const RENDER_EXTERNAL_APP_URL = 'https://onrender.com';
+setInterval(() => {
+    if (!isLocalMachineHost) {
+        const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+        fetch(RENDER_EXTERNAL_APP_URL)
+            .then(() => console.log('⚡ Self-Handshake KeepAlive Ping Transmitted Successfully.'))
+            .catch((err) => console.log('⚠️ KeepAlive Ping Blocked/Offline: ', err.message));
+    }
+}, 14 * 60 * 1000);
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`\n==================================================================`);
     console.log(`✨ IKIZAME Hybrid Node Engine active on: http://localhost:${PORT}`);

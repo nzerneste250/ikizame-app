@@ -3,248 +3,597 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Question - IKIZAME Local Panel</title>
+    <title>IKIZAME Admin</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
         :root {
-            --bg-primary: #f8fafc; --bg-secondary: #ffffff; --bg-surface: #f1f5f9;
-            --text-main: #0f172a; --text-muted: #64748b; --accent-glow: #0284c7; --border-color: #cbd5e1;
-            --sidebar-bg: #131a2c; --sidebar-border: #334155; --sidebar-text-muted: #94a3b8; --sidebar-text-active: #f8fafc;
+            --brand: #0b698b;
+            --brand-dark: #08536e;
+            --bg-primary: #f8fafc;
+            --bg-white: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --focus: #0284c7;
+            --sidebar-bg: #0f172a;
+            --sidebar-border: #1e293b;
+            --sidebar-muted: #94a3b8;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-primary); color: var(--text-main); height: 100vh; overflow: hidden; }
-        .admin-layout-grid { display: flex; height: calc(100vh - 45px); overflow: hidden; }
-        .sidebar-panel { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); padding: 30px 20px; display: flex; flex-shrink: 0; flex-direction: column; gap: 35px; }
-        .sidebar-panel h2 { font-size: 18px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; }
-        .sidebar-nav a { color: var(--sidebar-text-muted); text-decoration: none; padding: 14px 16px; font-size: 14px; font-weight: 600; border-radius: 8px; display: flex; align-items: center; gap: 12px; }
-        .sidebar-nav a.active { color: var(--sidebar-text-active); background-color: rgba(255,255,255,0.08); border-left: 4px solid #38bdf8; padding-left: 12px; }
-        .workspace-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .header-title-bar { padding: 25px 40px; border-bottom: 1px solid var(--border-color); background-color: var(--bg-secondary); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-        .header-title-bar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-        .engine-mode-card { background-color: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 10px 20px; display: flex; align-items: center; gap: 15px; }
-        .engine-mode-card span { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
-        .toggle-switch-btn { position: relative; width: 60px; height: 30px; background-color: var(--bg-surface); border-radius: 20px; border: 2px solid var(--border-color); cursor: pointer; }
-        .toggle-switch-btn::after { content: ''; position: absolute; top: 2px; left: 3px; width: 22px; height: 22px; background-color: #64748b; border-radius: 50%; transition: all 0.2s ease; }
-        .toggle-switch-btn.active-img-mode { background-color: #0b698b; border-color: var(--accent-glow); }
-        .toggle-switch-btn.active-img-mode::after { left: 31px; background-color: white; }
-        .form-card-scroller { flex: 1; overflow-y: auto; padding: 30px 40px; }
-        .main-inputs-form { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 35px; max-width: 900px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .form-group-block { display: flex; flex-direction: column; gap: 8px; }
-        .form-group-block label { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-        .main-inputs-form textarea, .main-inputs-form input[type="text"], .main-inputs-form select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 14px; font-weight: 500; outline: none; }
-        .main-inputs-form textarea:focus, .main-inputs-form input[type="text"]:focus, .main-inputs-form select:focus { border-color: var(--accent-glow); }
-        .studio-upload-strip { background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 20px; display: grid; grid-template-columns: 100px 1fr; gap: 24px; align-items: center; }
-        .studio-preview-box { height: 75px; background-color: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px; }
-        .studio-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .studio-preview-box .placeholder-ico { color: #94a3b8; font-size: 22px; }
-        .dynamic-options-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .option-uploader-card { background-color: #ffffff; border: 2px solid var(--border-color); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .option-header-row { font-size: 11px; font-weight: 800; color: var(--accent-glow); text-transform: uppercase; }
-        .option-thumb-preview { width: 100%; height: 65px; background-color: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .option-thumb-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .option-thumb-preview span { font-size: 10px; color: #94a3b8; font-style: italic; }
-        .execution-actions-bar { display: flex; align-items: center; gap: 20px; border-top: 1px solid var(--border-color); padding-top: 25px; }
-        .btn-core-submit { background-color: #0b698b; color: #ffffff; border: none; padding: 12px 28px; font-size: 14px; font-weight: 700; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-core-cancel { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; }
-        .admin-footer-panel { background-color: #131a2c; color: #64748b; text-align: center; padding: 14px; font-size: 11.5px; height: 45px; }
-        .admin-footer-panel strong { color: #38bdf8; }
-        .input-split-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
-        .reuse-label { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-main); overflow: hidden; }
+
+        /* ── SESSION TIMEOUT OVERLAY ── */
+        #sessionModal {
+            position: fixed; inset: 0; background: rgba(15,23,42,0.75);
+            display: none; align-items: center; justify-content: center;
+            z-index: 9999; backdrop-filter: blur(4px);
+        }
+        #sessionModal.show { display: flex; }
+        .session-modal-box {
+            background: #fff; border-radius: 16px; padding: 36px 32px;
+            max-width: 360px; width: 90%; text-align: center;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.25);
+            animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes popIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .session-modal-box .modal-icon {
+            width: 60px; height: 60px; background: #fef2f2;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; color: #ef4444; margin: 0 auto 16px;
+        }
+        .session-modal-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
+        .session-modal-box p { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+        .session-countdown { font-size: 28px; font-weight: 800; color: #ef4444; margin-bottom: 16px; }
+        .btn-relogin {
+            background: var(--brand); color: #fff; border: none;
+            padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 700;
+            cursor: pointer; font-family: 'Inter', sans-serif; width: 100%;
+        }
+        #sessionToast {
+            position: fixed; top: 70px; right: 20px;
+            background: #fffbeb; border: 1px solid #fde68a; color: #92400e;
+            border-radius: 10px; padding: 12px 16px; font-size: 13px; font-weight: 600;
+            display: none; align-items: center; gap: 10px; z-index: 9998;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 320px;
+        }
+        #sessionToast.show { display: flex; }
+
+        /* ── LAYOUT ── */
+        .shell { display: flex; height: calc(100vh - 44px); }
+        .sidebar {
+            width: 240px; background: var(--sidebar-bg);
+            display: flex; flex-direction: column; flex-shrink: 0;
+            border-right: 1px solid var(--sidebar-border);
+        }
+        .sidebar-brand {
+            padding: 24px 20px 20px;
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.1rem; color: #38bdf8; letter-spacing: 2px;
+            border-bottom: 1px solid var(--sidebar-border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .sidebar-nav { padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .sidebar-nav a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; border-radius: 8px;
+            color: var(--sidebar-muted); text-decoration: none;
+            font-size: 13.5px; font-weight: 600; transition: all 0.15s;
+        }
+        .sidebar-nav a:hover { color: #f8fafc; background: rgba(255,255,255,0.06); }
+        .sidebar-nav a.active { color: #f8fafc; background: rgba(56,189,248,0.12); border-left: 3px solid #38bdf8; padding-left: 11px; }
+        .sidebar-nav a i { width: 16px; text-align: center; }
+        .nav-logout { color: #f87171 !important; }
+        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #ef4444 !important; }
+        .sidebar-footer {
+            padding: 14px 16px; border-top: 1px solid var(--sidebar-border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .admin-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; }
+        .admin-meta { flex: 1; min-width: 0; }
+        .admin-name { font-size: 12.5px; font-weight: 700; color: #f8fafc; }
+        .admin-role { font-size: 11px; color: var(--sidebar-muted); }
+        .session-pill { font-size: 10px; font-weight: 700; background: rgba(56,189,248,0.15); color: #38bdf8; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+
+        /* ── WORKSPACE ── */
+        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar {
+            height: 64px; background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 32px; flex-shrink: 0;
+        }
+        .topbar h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
+        .topbar p { font-size: 12.5px; color: var(--text-muted); margin-top: 1px; }
+
+        /* Mode toggle badge */
+        .mode-badge {
+            background: var(--bg-primary); border: 1.5px dashed var(--border);
+            border-radius: 8px; padding: 10px 18px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .mode-badge span { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
+        .toggle-btn {
+            position: relative; width: 54px; height: 28px;
+            background: #cbd5e1; border-radius: 20px;
+            cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+        }
+        .toggle-btn::after {
+            content: ''; position: absolute; top: 3px; left: 3px;
+            width: 22px; height: 22px; background: #fff;
+            border-radius: 50%; transition: left 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .toggle-btn.on { background: var(--brand); }
+        .toggle-btn.on::after { left: 29px; }
+
+        /* Form scroller */
+        .form-scroll { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+        .form-card {
+            background: var(--bg-white); border: 1px solid var(--border);
+            border-radius: 14px; padding: 32px; max-width: 860px;
+            display: flex; flex-direction: column; gap: 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .field { display: flex; flex-direction: column; gap: 7px; }
+        .field label {
+            font-size: 11px; font-weight: 800; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.7px;
+        }
+        .field textarea, .field input[type="text"], .field select {
+            width: 100%; padding: 11px 14px;
+            border: 1.5px solid var(--border); border-radius: 8px;
+            font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif;
+            color: var(--text-main); outline: none; background: #fafafa;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .field textarea:focus, .field input[type="text"]:focus, .field select:focus {
+            border-color: var(--focus); background: #fff;
+            box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
+        }
+
+        /* ── DRAG-DROP UPLOAD ZONE ── */
+        .drop-zone {
+            border: 2px dashed #94a3b8; border-radius: 10px;
+            background: #f8fafc; padding: 20px;
+            display: grid; grid-template-columns: 90px 1fr; gap: 20px; align-items: center;
+            transition: border-color 0.2s, background 0.2s; cursor: pointer;
+        }
+        .drop-zone.dragover {
+            border-color: var(--brand); background: #e0f7ff;
+        }
+        .drop-zone.has-file { border-style: solid; border-color: var(--brand); }
+
+        .preview-box {
+            width: 90px; height: 80px; border-radius: 8px;
+            border: 1px solid var(--border); background: #fff;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; flex-shrink: 0;
+        }
+        .preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .preview-box .ph { color: #94a3b8; font-size: 22px; }
+
+        .drop-content { display: flex; flex-direction: column; gap: 10px; }
+        .drop-title { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .drop-sub { font-size: 12px; color: var(--text-muted); }
+        .drop-btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: var(--brand); color: #fff;
+            padding: 7px 14px; border-radius: 6px; font-size: 12.5px;
+            font-weight: 700; cursor: pointer; border: none;
+            font-family: 'Inter', sans-serif; width: fit-content;
+            transition: background 0.15s;
+        }
+        .drop-btn:hover { background: var(--brand-dark); }
+        .file-name-badge {
+            font-size: 12px; font-weight: 600; color: var(--brand);
+            background: #e0f7ff; padding: 3px 10px; border-radius: 20px;
+            display: none; align-items: center; gap: 6px;
+                }
+        .file-name-badge.show { display: inline-flex; }
+        .file-name-badge button {
+            background: none; border: none; cursor: pointer;
+            color: #ef4444; font-size: 12px; padding: 0; line-height: 1;
+        }
+
+        .or-divider {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 11px; font-weight: 700; color: var(--text-muted);
+        }
+        .or-divider::before, .or-divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+
+        /* hidden real file input */
+        .hidden-file { display: none; }
+
+        /* ── OPTION CARDS (image mode) ── */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        .opt-card {
+            background: #fff; border: 1.5px solid var(--border); border-radius: 10px;
+            padding: 14px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .opt-label { font-size: 11px; font-weight: 800; color: var(--focus); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .opt-drop {
+            border: 2px dashed #94a3b8; border-radius: 8px;
+            background: #f8fafc; padding: 12px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            cursor: pointer; transition: border-color 0.2s, background 0.2s;
+            min-height: 90px; justify-content: center;
+        }
+        .opt-drop.dragover { border-color: var(--brand); background: #e0f7ff; }
+        .opt-drop.has-file { border-style: solid; border-color: var(--brand); }
+        .opt-preview { width: 100%; max-height: 80px; object-fit: contain; display: none; border-radius: 4px; }
+        .opt-drop-text { font-size: 12px; color: var(--text-muted); text-align: center; }
+        .opt-drop-icon { font-size: 20px; color: #94a3b8; }
+        .opt-drop.has-file .opt-drop-text { display: none; }
+        .opt-drop.has-file .opt-drop-icon { display: none; }
+        .opt-drop.has-file .opt-preview { display: block; }
+
+        .opt-card input[type="text"] {
+            width: 100%; padding: 9px 12px;
+            border: 1.5px solid var(--border); border-radius: 7px;
+            font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif;
+            color: var(--text-main); outline: none; background: #fafafa;
+            transition: border-color 0.15s;
+        }
+        .opt-card input[type="text"]:focus { border-color: var(--focus); background: #fff; }
+
+        /* ── TEXT OPTIONS ── */
+        .text-options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        /* ── ACTIONS ── */
+        .form-actions {
+            display: flex; align-items: center; gap: 16px;
+            border-top: 1px solid var(--border); padding-top: 22px;
+        }
+        .btn-save {
+            background: var(--brand); color: #fff; border: none;
+            padding: 12px 28px; border-radius: 8px; font-size: 14px;
+            font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
+            font-family: 'Inter', sans-serif; transition: background 0.15s;
+        }
+        .btn-save:hover { background: var(--brand-dark); }
+        .btn-cancel { font-size: 14px; font-weight: 600; color: var(--text-muted); text-decoration: none; }
+        .btn-cancel:hover { color: var(--text-main); }
+
+        /* ── FOOTER ── */
+        .admin-footer {
+            height: 44px; background: var(--sidebar-bg);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11.5px; color: #64748b; flex-shrink: 0;
+        }
+        .admin-footer strong { color: #38bdf8; }
+
+        @media (max-width: 1100px) { .sidebar { display: none; } .topbar, .form-scroll { padding-left: 20px; padding-right: 20px; } }
+        @media (max-width: 700px) { .options-grid, .text-options-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <div class="admin-layout-grid">
-        <aside class="sidebar-panel">
-            <h2><i class="fa-solid fa-graduation-cap"></i> IKIZAME</h2>
-            <nav class="sidebar-nav">
-                <a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
-                <a href="add-exam.html" class="active"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
-                <a href="/api/admin/logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
-            </nav>
-        </aside>
+<!-- SESSION MODAL -->
+<div id="sessionModal">
+    <div class="session-modal-box">
+        <div class="modal-icon"><i class="fa-solid fa-clock"></i></div>
+        <h3>Session Expired</h3>
+        <p>You were idle for too long. Redirecting to login...</p>
+        <div class="session-countdown" id="modalCountdown">5</div>
+        <button class="btn-relogin" onclick="doLogout()"><i class="fa-solid fa-right-to-bracket"></i> Log In Again</button>
+    </div>
+</div>
+<div id="sessionToast">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span>Session expires in <span id="toastTimer">60</span>s — move the mouse to stay active.</span>
+</div>
 
-        <main class="workspace-panel">
-            <header class="header-title-bar">
+<div class="shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <nav class="sidebar-nav">
+            <!-- 🎯 RECALIBRATED SIDEBAR CHANNELS: CONNECTED SYSTEM-PERFORMANCE INDEPENDENTLY -->
+            <a href="dashboard" id="navLinkDashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="add-exam"  class="active"><i class="fa-solid fa-square-plus"></i> Add Exam</a>
+            <a href="system-performance" id="navLinkPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="#" onclick="alert('Student Performance analytics dashboards and reports launching soon!')"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
+            <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="admin-avatar">A</div>
+            <div class="admin-meta">
+                <div class="admin-name">Admin</div>
+                <div class="admin-role">Administrator</div>
+            </div>
+            <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
+        </div>
+    </aside>
+
+    <div class="workspace">
+        <header class="topbar">
+            <div>
+                <h1>Add New Question</h1>
+                <p>Drag &amp; drop an image or click to browse. Switch mode for image-options questions.</p>
+            </div>
+            <div class="mode-badge">
+                <span id="modeLabel">Text Options Mode</span>
+                <div class="toggle-btn" id="modeToggle"></div>
+            </div>
+        </header>
+
+        <div class="form-scroll">
+            <form action="/api/exams/add" method="POST" enctype="multipart/form-data" class="form-card" id="addForm">
+                <input type="hidden" id="optionsLayoutMode" name="optionsLayoutMode" value="text">
+
+                <!-- Question text -->
+                <div class="field">
+                    <label for="question">Question Text</label>
+                    <textarea id="question" name="question" rows="3" required placeholder="Type the question statement here..."></textarea>
+                </div>
+
+                <!-- Main image drop zone -->
                 <div>
-                    <h1>Add New Question</h1>
-                    <p>Browse a local computer image to auto-copy it, or type an existing filename to reuse an asset.</p>
-                </div>
-                <div class="engine-mode-card">
-                    <span id="labelModeIndicator">Text Options Mode</span>
-                    <div class="toggle-switch-btn" id="toggleLayoutEngineBtn"></div>
-                </div>
-            </header>
-
-            <div class="form-card-scroller">
-                <form action="/api/exams/add" method="POST" enctype="multipart/form-data" class="main-inputs-form">
-                    <input type="hidden" id="optionsLayoutMode" name="optionsLayoutMode" value="text">
-
-                    <div class="form-group-block">
-                        <label for="question">Question Text (Statement)</label>
-                        <textarea id="question" name="question" rows="3" required placeholder="Type question wording here..."></textarea>
-                    </div>
-
-                    <div class="studio-upload-strip">
-                        <div class="studio-preview-box" id="mainQuestionImagePreviewPane">
-                            <i class="fa-solid fa-image placeholder-ico"></i>
+                    <label style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.7px;display:block;margin-bottom:8px">Question Sign Image (optional)</label>
+                    <div class="drop-zone" id="mainDrop" title="Click or drag image here">
+                        <div class="preview-box" id="mainPreviewBox">
+                            <i class="ph fa-solid fa-image"></i>
                         </div>
-                        <div class="upload-actions-box">
-                            <p>Question Sign Image:</p>
-                            <div class="input-split-box">
-                                <input type="file" id="imageFile" name="imageFile" accept="image/*">
-                                <input type="text" id="imageFileTextFallback" name="imageFileTextFallback" placeholder="OR type existing name (e.g., stop.png)">
+                        <div class="drop-content">
+                            <div class="drop-title"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand)"></i> Drag &amp; drop an image here</div>
+                            <div class="drop-sub">PNG, JPG, WEBP — max 10 MB</div>
+                            <button type="button" class="drop-btn" id="mainBrowseBtn"><i class="fa-solid fa-folder-open"></i> Browse File</button>
+                            <div class="file-name-badge" id="mainFileBadge">
+                                <i class="fa-solid fa-file-image"></i>
+                                <span id="mainFileName"></span>
+                                <button type="button" id="mainClearBtn" title="Remove"><i class="fa-solid fa-xmark"></i></button>
                             </div>
                         </div>
                     </div>
+                    <!-- Hidden real file input -->
+                    <input type="file" id="imageFile" name="imageFile" accept="image/*" class="hidden-file">
 
-                    <div class="dynamic-options-wrapper" id="dynamicOptionsInputGridContainer"></div>
+                    <!-- Reuse existing asset by filename -->
+                    <div class="or-divider" style="margin-top:12px">OR reuse existing asset</div>
+                    <input type="text" id="imageFileTextFallback" name="imageFileTextFallback"
+                           placeholder="Type existing filename e.g. stop.png"
+                           style="margin-top:10px;width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13.5px;font-weight:500;outline:none;font-family:'Inter',sans-serif;">
+                </div>
 
-                    <div class="form-group-block" style="max-width: 320px;">
-                        <label for="correctOption">Correct Option Answer Key</label>
-                        <select id="correctOption" name="correctOption" required>
-                            <option value="">-- Select correct answer --</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                        </select>
-                    </div>
+                <!-- Dynamic options area -->
+                <div id="optionsArea"></div>
 
-                    <div class="execution-actions-bar">
-                                                <button type="submit" class="btn-core-submit"><i class="fa-solid fa-square-plus"></i> Save New Question</button>
-                        <a href="dashboard.html" class="btn-core-cancel">Cancel & Go Back</a>
-                    </div>
-                </form>
-            </div>
-        </main>
+                <!-- Correct answer -->
+                <div class="field" style="max-width:300px">
+                    <label for="correctOption">Correct Answer</label>
+                    <select id="correctOption" name="correctOption" required>
+                        <option value="">— Select correct option —</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save"><i class="fa-solid fa-square-plus"></i> Save Question</button>
+                    <a href="dashboard" class="btn-cancel">Cancel &amp; Go Back</a>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
+<footer class="admin-footer">
+    &copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>izo service quicky</strong>
+</footer>
 
-    <footer class="admin-footer-panel">
-        <p>Developed by <strong>izo service quicky</strong></p>
-    </footer>
+<script>
+/* ═══ SESSION TIMEOUT (5 min idle) ═══ */
+(function() {
+    const IDLE   = 5 * 60 * 1000;
+    const WARN   = 60 * 1000;
+    const REDIR  = '/admin-login';
+    let idleT, warnT, cdInt;
+    const modal = document.getElementById('sessionModal');
+    const toast = document.getElementById('sessionToast');
+    const toastT = document.getElementById('toastTimer');
+    const cdEl  = document.getElementById('modalCountdown');
+    const sbVal = document.getElementById('sidebarTimerVal');
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('toggleLayoutEngineBtn');
-            const modeIndicatorLabel = document.getElementById('labelModeIndicator');
-            const layoutModeInput = document.getElementById('optionsLayoutMode');
-            const dynamicGridContainer = document.getElementById('dynamicOptionsInputGridContainer');
-            
-            const mainImgInput = document.getElementById('imageFile');
-            const mainImgText = document.getElementById('imageFileTextFallback');
-            const mainImgPreview = document.getElementById('mainQuestionImagePreviewPane');
+    function fmt(ms) { const s=Math.ceil(ms/1000),m=Math.floor(s/60); return m+':'+String(s%60).padStart(2,'0'); }
 
-            // Live local preview for browsed file
-            mainImgInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => { mainImgPreview.innerHTML = `<img src="${e.target.result}">`; }
-                    reader.readAsDataURL(this.files[0]);
-                    mainImgText.value = ''; // clear text field if file is chosen
-                }
-            });
+    window.doLogout = function() {
+        clearTimeout(idleT); clearTimeout(warnT); clearInterval(cdInt);
+        fetch('/api/admin/logout', {method:'POST'}).finally(()=>window.location.replace(REDIR));
+    };
 
-            // Live local preview for typed existing filename
-            mainImgText.addEventListener('input', function() {
-                const val = this.value.trim();
-                if (val) {
-                    mainImgPreview.innerHTML = `<img src="assets/uploads/${val}" onerror="this.parentElement.innerHTML='<span class=\'reuse-label\'>Asset matched</span>'">`;
-                }
-            });
+    function expire() {
+        toast.classList.remove('show');
+        modal.classList.add('show');
+        let c=5; cdEl.textContent=c;
+        cdInt=setInterval(()=>{ c--; cdEl.textContent=c; if(c<=0){clearInterval(cdInt);window.doLogout();} },1000);
+    }
 
-            const textLayoutTemplateStr = `
-                <div class="form-group-block">
-                    <label for="optionA">Option A</label>
-                    <input type="text" id="optionA" name="optionA" required placeholder="Enter option sentence A">
+    let start=Date.now(), rafId;
+    function tick(){ const r=IDLE-(Date.now()-start); if(sbVal) sbVal.textContent=fmt(Math.max(0,r)); if(r>0) rafId=requestAnimationFrame(tick); }
+
+    function reset() {
+        clearTimeout(idleT); clearTimeout(warnT);
+        start=Date.now(); cancelAnimationFrame(rafId); rafId=requestAnimationFrame(tick);
+        warnT=setTimeout(()=>{
+            let s=Math.ceil((IDLE-(Date.now()-start))/1000);
+            toastT.textContent=s; toast.classList.add('show');
+            const iv=setInterval(()=>{ s--; toastT.textContent=s; if(s<=0) clearInterval(iv); },1000);
+            setTimeout(()=>toast.classList.remove('show'), IDLE-(Date.now()-start));
+        }, IDLE-WARN);
+        idleT=setTimeout(expire, IDLE);
+    }
+    ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(e=>document.addEventListener(e,reset,{passive:true}));
+    reset();
+})();
+
+/* ═══ MAIN DROP-ZONE LOGIC ═══ */
+document.addEventListener('DOMContentLoaded', () => {
+    const mainDrop     = document.getElementById('mainDrop');
+    const mainFileInp  = document.getElementById('imageFile');
+    const mainPreview  = document.getElementById('mainPreviewBox');
+    const mainBrowse   = document.getElementById('mainBrowseBtn');
+    const mainBadge    = document.getElementById('mainFileBadge');
+    const mainFileName = document.getElementById('mainFileName');
+    const mainClear    = document.getElementById('mainClearBtn');
+    const mainTextFb   = document.getElementById('imageFileTextFallback');
+
+    function applyMainFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            mainPreview.innerHTML = `<img src="${e.target.result}" alt="preview">`;
+            mainDrop.classList.add('has-file');
+            mainFileName.textContent = file.name;
+            mainBadge.classList.add('show');
+            mainTextFb.value = '';
+        };
+        reader.readAsDataURL(file);
+
+        try {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            mainFileInp.files = dt.files;
+        } catch(e) {}
+    }
+        mainBrowse.addEventListener('click', () => mainFileInp.click());
+    mainDrop.addEventListener('click', e => { 
+        if (e.target === mainDrop || e.target.closest('.preview-box') || e.target.closest('#mainBrowseBtn')) {
+            mainFileInp.click(); 
+        }
+    });
+
+    mainFileInp.addEventListener('change', function() { 
+        // 🎯 POINTER FIX: Standardize lookups using index [0] to protect binary file arrays
+        if (this.files && this.files[0]) { 
+            applyMainFile(this.files[0]); 
+        }
+    });
+
+    mainDrop.addEventListener('dragover', e => { e.preventDefault(); mainDrop.classList.add('dragover'); });
+    mainDrop.addEventListener('dragleave', () => mainDrop.classList.remove('dragover'));
+    
+    mainDrop.addEventListener('drop', e => {
+        e.preventDefault();
+        mainDrop.classList.remove('dragover');
+        // 🎯 DRAG & DROP POINTER FIX: Safely parse drag objects using clean index markers
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+            applyMainFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    mainClear.addEventListener('click', e => {
+        e.stopPropagation();
+        mainPreview.innerHTML = `<i class="ph fa-solid fa-image"></i>`;
+        mainDrop.classList.remove('has-file');
+        mainBadge.classList.remove('show');
+        mainFileInp.value = '';
+    });
+
+    mainTextFb.addEventListener('input', function() {
+        const val = this.value.trim();
+        if (val) {
+            mainPreview.innerHTML = `<img src="assets/uploads/${val}" alt="preview" onerror="this.parentElement.innerHTML='<i class=\'ph fa-solid fa-image\' style=\'color:#ef4444\'></i>'">`;
+        } else {
+            mainPreview.innerHTML = `<i class="ph fa-solid fa-image"></i>`;
+        }
+    });
+
+    /* ── MODE TOGGLE ── */
+    const modeToggle  = document.getElementById('modeToggle');
+    const modeLabel   = document.getElementById('modeLabel');
+    const modeInput   = document.getElementById('optionsLayoutMode');
+    const optionsArea = document.getElementById('optionsArea');
+
+    function makeTextOptions() {
+        optionsArea.innerHTML = `
+            <div class="text-options-grid">
+                ${['A','B','C','D'].map(l=>`
+                <div class="field">
+                    <label for="option${l}">Option ${l}</label>
+                    <input type="text" id="option${l}" name="option${l}" required placeholder="Enter option ${l}">
+                </div>`).join('')}
+            </div>`;
+    }
+    function makeImageOptions() {
+        optionsArea.innerHTML = `<div class="options-grid" id="imgOptsGrid">
+            ${['A','B','C','D'].map(l=>`
+            <div class="opt-card">
+                <div class="opt-label">Option ${l}</div>
+                <div class="opt-drop" id="optDrop_${l}" data-key="${l}">
+                    <i class="opt-drop-icon fa-solid fa-image"></i>
+                    <span class="opt-drop-text">Drag or click to upload</span>
+                    <img class="opt-preview" id="optPrev_${l}" alt="option ${l}">
                 </div>
-                <div class="form-group-block">
-                    <label for="optionB">Option B</label>
-                    <input type="text" id="optionB" name="optionB" required placeholder="Enter option sentence B">
-                </div>
-                <div class="form-group-block">
-                    <label for="optionC">Option C</label>
-                    <input type="text" id="optionC" name="optionC" required placeholder="Enter option sentence C">
-                </div>
-                <div class="form-group-block">
-                    <label for="optionD">Option D</label>
-                    <input type="text" id="optionD" name="optionD" required placeholder="Enter option sentence D">
-                </div>
-            `;
+                <!-- 🎯 LOWERCASE FIX: Changed name attribute to option${l.toLowerCase()}_File to match server.js -->
+                <input type="file" name="option${l.toLowerCase()}_File" id="optFile_${l}" accept="image/*" class="hidden-file">
+                <input type="text" name="option${l}TextFallback" id="optText_${l}" placeholder="OR type existing filename">
+            </div>`).join('')}
+        </div>`;
+        bindOptionDropzones();
+    }
 
-            const imageLayoutTemplateStr = `
-                <div class="option-uploader-card">
-                    <div class="option-header-row">Option Image A</div>
-                    <div class="option-thumb-preview" id="previewOptionImage_A"><span>Waiting...</span></div>
-                    <input type="file" name="optionA_File" id="input_file_A" accept="image/*">
-                    <input type="text" name="optionATextFallback" id="input_text_A" placeholder="OR type existing name" class="fallback-txt">
-                </div>
-                <div class="option-uploader-card">
-                    <div class="option-header-row">Option Image B</div>
-                    <div class="option-thumb-preview" id="previewOptionImage_B"><span>Waiting...</span></div>
-                    <input type="file" name="optionB_File" id="input_file_B" accept="image/*">
-                    <input type="text" name="optionBTextFallback" id="input_text_B" placeholder="OR type existing name" class="fallback-txt">
-                </div>
-                <div class="option-uploader-card">
-                    <div class="option-header-row">Option Image C</div>
-                    <div class="option-thumb-preview" id="previewOptionImage_C"><span>Waiting...</span></div>
-                    <input type="file" name="optionC_File" id="input_file_C" accept="image/*">
-                    <input type="text" name="optionCTextFallback" id="input_text_C" placeholder="OR type existing name" class="fallback-txt">
-                </div>
-                <div class="option-uploader-card">
-                    <div class="option-header-row">Option Image D</div>
-                    <div class="option-thumb-preview" id="previewOptionImage_D"><span>Waiting...</span></div>
-                    <input type="file" name="optionD_File" id="input_file_D" accept="image/*">
-                    <input type="text" name="optionDTextFallback" id="input_text_D" placeholder="OR type existing name" class="fallback-txt">
-                </div>
-            `;
+    function bindOptionDropzones() {
+        ['A','B','C','D'].forEach(key => {
+            const dropEl  = document.getElementById(`optDrop_${key}`);
+            const fileInp = document.getElementById(`optFile_${key}`);
+            const prevImg = document.getElementById(`optPrev_${key}`);
+            const textInp = document.getElementById(`optText_${key}`);
 
-            dynamicGridContainer.innerHTML = textLayoutTemplateStr;
-
-            toggleBtn.addEventListener('click', () => {
-                if (layoutModeInput.value === 'text') {
-                    layoutModeInput.value = 'image';
-                    toggleBtn.classList.add('active-img-mode');
-                    modeIndicatorLabel.innerText = "Four Image Options Mode";
-                    dynamicGridContainer.innerHTML = imageLayoutTemplateStr;
-                    registerLiveThumbEventListeners(); 
-                } else {
-                    layoutModeInput.value = 'text';
-                    toggleBtn.classList.remove('active-img-mode');
-                    modeIndicatorLabel.innerText = "Text Options Mode";
-                    dynamicGridContainer.innerHTML = textLayoutTemplateStr;
-                }
-            });
-
-            function registerLiveThumbEventListeners() {
-                const targetKeys = ["A", "B", "C", "D"];
-                targetKeys.forEach(key => {
-                    const fileIn = document.getElementById(`input_file_${key}`);
-                    const textIn = document.getElementById(`input_text_${key}`);
-                    const preview = document.getElementById(`previewOptionImage_${key}`);
-
-                    fileIn.addEventListener('change', function() {
-                        if (this.files && this.files[0]) {
-                            const reader = new FileReader();
-                            reader.onload = (e) => { preview.innerHTML = `<img src="${e.target.result}">`; }
-                            reader.readAsDataURL(this.files[0]);
-                            textIn.value = '';
-                        }
-                    });
-
-                    textIn.addEventListener('input', function() {
-                        const val = this.value.trim();
-                        if (val) {
-                            preview.innerHTML = `<img src="assets/uploads/${val}" onerror="this.parentElement.innerHTML='<span>Asset matched</span>'">`;
-                        }
-                    });
-                });
+            function applyOptFile(file) {
+                if (!file || !file.type.startsWith('image/')) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    prevImg.src = e.target.result;
+                    dropEl.classList.add('has-file');
+                    textInp.value = '';
+                };
+                reader.readAsDataURL(file);
+                try { const dt=new DataTransfer(); dt.items.add(file); fileInp.files=dt.files; } catch(e){}
             }
+
+            dropEl.addEventListener('click', () => fileInp.click());
+            fileInp.addEventListener('change', () => { if (fileInp.files[0]) applyOptFile(fileInp.files[0]); });
+            dropEl.addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('dragover'); });
+            dropEl.addEventListener('dragleave', () => dropEl.classList.remove('dragover'));
+            dropEl.addEventListener('drop', e => {
+                e.preventDefault(); dropEl.classList.remove('dragover');
+                if (e.dataTransfer.files[0]) applyOptFile(e.dataTransfer.files[0]);
+            });
+
+            textInp.addEventListener('input', function() {
+                const v = this.value.trim();
+                if (v) {
+                    prevImg.src = `assets/uploads/${v}`;
+                    prevImg.onerror = () => { prevImg.src=''; dropEl.classList.remove('has-file'); };
+                    dropEl.classList.add('has-file');
+                } else {
+                    dropEl.classList.remove('has-file');
+                    prevImg.src = '';
+                }
+            });
         });
-    </script>
+    }
+
+    makeTextOptions();
+
+    modeToggle.addEventListener('click', () => {
+        const isImg = modeInput.value === 'text';
+        modeInput.value = isImg ? 'image' : 'text';
+        modeToggle.classList.toggle('on', isImg);
+        modeLabel.textContent = isImg ? 'Image Options Mode' : 'Text Options Mode';
+        isImg ? makeImageOptions() : makeTextOptions();
+    });
+});
+</script>
 </body>
 </html>
+

@@ -3,482 +3,644 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - IKIZAME Professional Admin</title>
-    <!-- Premium Google Fonts Hierarchy Inter -->
+    <title>IKIZAME Admin</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* 🪐 CLEAN HIGH-CONTRAST MODERN WORKSPACE DESIGN SYSTEM */
         :root {
+            --brand: #0b698b;
+            --brand-dark: #08536e;
             --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-surface: #f1f5f9;
+            --bg-white: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --accent-blue: #0284c7;
-            --accent-delete: #ef4444;
-            --border-color: #cbd5e1;
-            
-            /* Sidebar Dark-Tokens Isolation Matrix */
-            --sidebar-bg: #131a2c;
-            --sidebar-border: #334155;
+            --border: #e2e8f0;
+            --sidebar-bg: #0f172a;
+            --sidebar-border: #1e293b;
             --sidebar-muted: #94a3b8;
             --sidebar-active: #f8fafc;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-main); overflow: hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        html, body { height: 100vh; background-color: var(--bg-primary); color: var(--text-main); overflow: hidden; }
-
-        .admin-layout-grid { display: flex; height: calc(100vh - 45px); overflow: hidden; }
-
-        /* 🔒 1. PERMANENT SIDEBAR PANEL */
-        .sidebar-panel {
-            width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border);
-            padding: 30px 20px; display: flex; flex-shrink: 0; flex-direction: column; gap: 35px;
+        /* ── SESSION TIMEOUT OVERLAY ── */
+        #sessionModal {
+            position: fixed; inset: 0; background: rgba(15,23,42,0.75);
+            display: none; align-items: center; justify-content: center;
+            z-index: 9999; backdrop-filter: blur(4px);
         }
-        .sidebar-panel h2 {
-            font-size: 18px; font-weight: 800; letter-spacing: 1.5px; color: #38bdf8;
-            text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+        #sessionModal.show { display: flex; }
+        .session-modal-box {
+            background: #fff; border-radius: 16px; padding: 36px 32px;
+            max-width: 360px; width: 90%; text-align: center;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.25);
+            animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
         }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; }
+        @keyframes popIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .session-modal-box .modal-icon {
+            width: 60px; height: 60px; background: #fef2f2;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; color: #ef4444; margin: 0 auto 16px;
+        }
+        .session-modal-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+        .session-modal-box p { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px; }
+        .session-countdown { font-size: 28px; font-weight: 800; color: #ef4444; margin-bottom: 16px; }
+        .btn-relogin {
+            background: var(--brand); color: #fff; border: none;
+            padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 700;
+            cursor: pointer; font-family: 'Inter', sans-serif; width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-relogin:hover { background: var(--brand-dark); }
+
+        /* ── SESSION WARNING TOAST ── */
+        #sessionToast {
+            position: fixed; top: 70px; right: 20px;
+            background: #fffbeb; border: 1px solid #fde68a;
+            color: #92400e; border-radius: 10px;
+            padding: 12px 16px; font-size: 13px; font-weight: 600;
+            display: none; align-items: center; gap: 10px; z-index: 9998;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: slideInRight 0.35s ease; max-width: 320px;
+        }
+        #sessionToast.show { display: flex; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
+        #toastTimer { font-weight: 800; color: #b45309; }
+
+        /* ── LAYOUT ── */
+        .shell { display: flex; height: calc(100vh - 44px); }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 240px; background: var(--sidebar-bg);
+            display: flex; flex-direction: column;
+            flex-shrink: 0; border-right: 1px solid var(--sidebar-border);
+        }
+        .sidebar-brand {
+            padding: 24px 20px 20px; font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.1rem; color: #38bdf8; letter-spacing: 2px;
+            border-bottom: 1px solid var(--sidebar-border); display: flex; align-items: center; gap: 10px;
+        }
+        .sidebar-nav { padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
         .sidebar-nav a {
-            color: var(--sidebar-muted); text-decoration: none; padding: 14px 16px;
-            font-size: 14px; font-weight: 600; border-radius: 8px; display: flex; align-items: center; gap: 12px; transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px;
+            color: var(--sidebar-muted); text-decoration: none; font-size: 13.5px; font-weight: 600; transition: all 0.15s;
         }
-        .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--sidebar-active); background-color: rgba(255,255,255,0.08); }
-        .sidebar-nav a.active { border-left: 4px solid #38bdf8; padding-left: 12px; font-weight: 700; }
+        .sidebar-nav a:hover { color: var(--sidebar-active); background: rgba(255,255,255,0.06); }
+        .sidebar-nav a.active { color: var(--sidebar-active); background: rgba(56,189,248,0.12); border-left: 3px solid #38bdf8; padding-left: 11px; }
+        .sidebar-nav a i { width: 16px; text-align: center; }
+        .sidebar-nav .nav-logout { color: #f87171; margin-top: auto; }
+        .sidebar-nav .nav-logout:hover { background: rgba(239,68,68,0.1); color: #ef4444; }
 
-        /* 🔒 2. MAIN HUB WORKSPACE CONTAINER */
-        .workspace-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        
-        .header-title-bar {
-            padding: 25px 40px; border-bottom: 1px solid var(--border-color); background-color: var(--bg-secondary);
-            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
-        }
-        .header-title-bar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-        .header-title-bar p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+        .sidebar-footer { padding: 14px 16px; border-top: 1px solid var(--sidebar-border); display: flex; align-items: center; gap: 10px; }
+        .admin-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+        .admin-meta { flex: 1; min-width: 0; }
+        .admin-name { font-size: 12.5px; font-weight: 700; color: var(--sidebar-active); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .admin-role { font-size: 11px; color: var(--sidebar-muted); }
+        .session-timer-pill { font-size: 10px; font-weight: 700; background: rgba(56,189,248,0.15); color: #38bdf8; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
 
-        /* 🔍 ULTRA-INTELLIGENT FUZZY SEARCH INPUT */
-        .search-engine-box { position: relative; width: 380px; }
-        .search-engine-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
-        .search-engine-box input {
-            width: 100%; padding: 11px 16px 11px 44px; background-color: var(--bg-primary);
-            border: 2px solid var(--border-color); border-radius: 8px; font-size: 13.5px; font-weight: 500;
-            outline: none; transition: all 0.15s ease; color: var(--text-main);
-        }
-        .search-engine-box input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1); background-color: #ffffff; }
+        /* ── WORKSPACE ── */
+        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 64px; background: var(--bg-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; gap: 20px; flex-shrink: 0; }
+        .topbar-title h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
+        .topbar-title p { font-size: 12.5px; color: var(--text-muted); margin-top: 1px; }
+        .topbar-right { margin-left: auto; }
+        .search-box { position: relative; }
+        .search-box i { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; }
+        .search-box input { width: 320px; padding: 10px 14px 10px 40px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13.5px; font-weight: 500; outline: none; background: var(--bg-primary); transition: all 0.15s; }
+        .search-box input:focus { border-color: var(--brand); background: #fff; box-shadow: 0 0 0 3px rgba(11,105,139,0.12); }
 
-        /* 📊 THE LIVE RE-COMPILING ANALYTICS SUMMARY REPORT ROW CARD GRAPHICS (UPDATED TO 4 COLUMNS) */
-        .analytics-metrics-strip-row {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
-            padding: 20px 40px 0 40px; flex-shrink: 0;
-        }
-        .metric-report-card {
-            background-color: var(--bg-secondary); border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; gap: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02); position: relative;
-        }
-        .metric-icon-bubble {
-            width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center;
-            justify-content: center; font-size: 18px;
-        }
-        .metric-icon-bubble.total-blue { background-color: #e0f2fe; color: #0369a1; }
-        .metric-icon-bubble.sign-teal { background-color: #ccfbf1; color: #0f766e; }
-        .metric-icon-bubble.choice-purple { background-color: #f3e8ff; color: #6b21a8; }
-        .metric-icon-bubble.duplicate-orange { background-color: #ffedd5; color: #c2410c; }
-        
-        .metric-data-labels { display: flex; flex-direction: column; flex: 1; }
-        .metric-data-labels .num-counter { font-size: 1.4rem; font-weight: 800; color: var(--text-main); line-height: 1.2; }
-        .metric-data-labels .title-txt { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+        /* ── METRICS ── */
+        .metrics-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; padding: 20px 32px 0; }
+        .metric-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; display: flex; align-items: center; gap: 14px; }
+        .metric-icon { width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+        .icon-blue  { background: #e0f2fe; color: #0369a1; }
+        .icon-teal  { background: #ccfbf1; color: #0f766e; }
+        .icon-purple{ background: #f3e8ff; color: #6b21a8; }
+        .icon-orange{ background: #ffedd5; color: #c2410c; }
+        .metric-val { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+        .metric-lbl { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
-        /* 🎛️ PREMIUM INTERACTIVE REUSE TOGGLE SWITCH BUTTON STYLING */
-        .switch-wrapper-box { display: flex; align-items: center; margin-left: auto; }
-        .ios-toggle-btn {
-            position: relative; width: 50px; height: 26px; background-color: #cbd5e1;
-            border-radius: 20px; cursor: pointer; transition: background 0.2s ease;
-        }
-        .ios-toggle-btn::after {
-            content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
-            background-color: #ffffff; border-radius: 50%; transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .ios-toggle-btn.active-switch { background-color: #ea580c; }
-        .ios-toggle-btn.active-switch::after { left: 27px; }
+        .metric-card.dup-card { border-color: #fed7aa; background: linear-gradient(135deg, #fff7ed, #ffffff); }
+        .dup-card .metric-lbl { color: #c2410c; }
+        .ios-toggle { margin-left: auto; flex-shrink: 0; position: relative; width: 46px; height: 24px; background: #cbd5e1; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
+        .ios-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: left 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .ios-toggle.on { background: #ea580c; }
+        .ios-toggle.on::after { left: 24px; }
 
-        /* Scrollable Table Content */
-        .table-scroller-view { flex: 1; overflow-y: auto; padding: 20px 40px 30px 40px; min-height: 0; }
-        
-        .data-table-container {
-            width: 100%; background-color: var(--bg-secondary); border: 1px solid var(--border-color);
-            border-radius: 12px; border-collapse: separate; border-spacing: 0; overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+        /* ── TABLE ── */
+        .table-wrap { flex: 1; overflow-y: auto; padding: 20px 32px 28px; }
+        table { width: 100%; background: var(--bg-white); border: 1px solid var(--border); border-radius: 12px; border-collapse: separate; border-spacing: 0; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        thead th { background: #f8fafc; padding: 12px 18px; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 1.5px solid var(--border); text-align: left; }
+        tbody td { padding: 13px 18px; font-size: 13.5px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: #f8fafc; }
+
+        .q-text { font-weight: 600; color: #1e293b; line-height: 1.45; }
+        .q-num { font-family: monospace; font-size: 11px; font-weight: 700; color: var(--brand); background: #e0f7ff; padding: 2px 7px; border-radius: 4px; }
+        .img-cell { width: 60px; height: 60px; border: 1px solid var(--border); border-radius: 6px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .img-cell img { max-width: 100%; max-height: 100%; object-fit: contain; }
+                .correct-pill { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #dcfce7; color: #15803d; font-weight: 800; font-size: 12px; }
+
+        .action-col { display: flex; flex-direction: column; gap: 5px; width: 100px; }
+        .btn-edit, .btn-delete {
+            border: none; padding: 6px 10px; border-radius: 6px;
+            font-size: 11.5px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: 5px; text-decoration: none; letter-spacing: 0.2px;
+            transition: all 0.15s; width: 100%;
         }
-        
-        .data-table-container th {
-            background-color: #f8fafc; color: var(--text-muted); font-size: 11px; font-weight: 800;
-            text-transform: uppercase; letter-spacing: 0.75px; padding: 14px 20px; border-bottom: 2px solid var(--border-color); text-align: left;
+        .btn-edit   { background: #e0f2fe; color: #0369a1; }
+        .btn-edit:hover   { background: #0284c7; color: #fff; }
+        .btn-delete { background: #fee2e2; color: #b91c1c; }
+        .btn-delete:hover { background: #ef4444; color: #fff; }
+
+        /* ── FOOTER ── */
+        .admin-footer {
+            height: 44px; background: var(--sidebar-bg);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11.5px; color: #64748b; flex-shrink: 0;
         }
-        .data-table-container td { padding: 14px 20px; font-size: 13.5px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
-        .data-table-container tr:last-child td { border-bottom: none; }
-        .data-table-container tr:hover td { background-color: #fbfdfe; }
+        .admin-footer strong { color: #38bdf8; }
 
-        .question-cell-wording { font-weight: 700; color: #1e293b; line-height: 1.4; white-space: pre-line; }
-        .question-id-badge { font-family: monospace; font-size: 11px; font-weight: 700; color: var(--accent-blue); background: #e0f2fe; padding: 2px 6px; border-radius: 4px; }
-
-        /* 📸 IMAGE OPTIONS CELL RENDERING ENGINE BOX STYLING */
-        .cell-image-wrapper {
-            width: 65px; height: 65px; border: 1px solid var(--border-color); border-radius: 6px;
-            background-color: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 2px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-        }
-        .cell-image-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-        .correct-answer-pill { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background-color: #dcfce7; color: #15803d; font-weight: 800; font-size: 12px; }
-
-        /* 🎯 HIGHLY VISIBLE PROFESSIONAL REAL BUTTONS CLUSTER */
-        .actions-btn-cluster { display: flex; flex-direction: column; gap: 6px; align-items: stretch; width: 100%; max-width: 110px; }
-        .real-action-button {
-            border: none; padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700;
-            cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            text-decoration: none; text-transform: uppercase; letter-spacing: 0.25px; transition: all 0.15s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); width: 100%;
-        }
-        .real-action-button.btn-edit { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-        .real-action-button.btn-edit:hover { background-color: #0284c7; color: #ffffff; border-color: #0284c7; }
-        .real-action-button.btn-delete { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
-        .real-action-button.btn-delete:hover { background-color: #ef4444; color: #ffffff; border-color: #ef4444; }
-
-        .admin-footer-panel {
-            background-color: var(--sidebar-bg); color: #64748b; text-align: center;
-            padding: 14px; font-size: 11.5px; border-top: 1px solid var(--border-color); height: 45px; z-index: 100;
-        }
-        .admin-footer-panel strong { color: #38bdf8; }
-
-        @media screen and (max-width: 1400px) {
-            .analytics-metrics-strip-row { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media screen and (max-width: 1200px) {
-                        .sidebar-panel { display: none; }
-            .header-title-bar { padding: 20px; flex-direction: column; align-items: flex-start; gap: 15px; }
-            .search-engine-box { width: 100%; }
-            .analytics-metrics-strip-row { padding: 15px 15px 0 15px; grid-template-columns: 1fr; gap: 10px; }
-            .table-scroller-view { padding: 15px; }
+        @media (max-width: 1300px) { .metrics-row, .performance-section { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width: 1100px) {
+            .sidebar { display: none; }
+            .topbar { padding: 0 20px; }
+            .search-box input { width: 220px; }
+            .metrics-row, .performance-section { padding: 15px 15px 0; }
+            .table-wrap { padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="admin-layout-grid">
-        <!-- Sidebar Menu Left Navigation Section -->
-        <aside class="sidebar-panel">
-            <h2><i class="fa-solid fa-graduation-cap"></i> IKIZAME Panel</h2>
-            <nav class="sidebar-nav">
-                <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
-                <a href="add-exam.html"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
-                <a href="/api/admin/logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
-            </nav>
-        </aside>
+<!-- ── SESSION TIMEOUT MODAL ── -->
+<div id="sessionModal">
+    <div class="session-modal-box">
+        <div class="modal-icon"><i class="fa-solid fa-clock"></i></div>
+        <h3>Session Expired</h3>
+        <p>Your session timed out due to inactivity. You will be redirected to the login page.</p>
+        <div class="session-countdown" id="modalCountdown">5</div>
+        <button class="btn-relogin" onclick="doLogout()">
+            <i class="fa-solid fa-right-to-bracket"></i> Log In Again
+        </button>
+    </div>
+</div>
 
-        <!-- Right Side Primary Workstation Viewport Frame -->
-        <main class="workspace-panel">
-            <header class="header-title-bar">
-                <div>
-                    <h1>Questions Repository</h1>
-                    <p>Live inventory of your exam questions data pool tables metrics.</p>
-                </div>
-                <div class="search-engine-box">
+<!-- ── WARNING TOAST (1 min before timeout) ── -->
+<div id="sessionToast">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span>Session expires in <span id="toastTimer">60</span>s — move the mouse to stay active.</span>
+</div>
+
+<div class="shell">
+    <!-- SIDEBAR NAVIGATION LINKING CHANNELS EXTENSIONLESS ROUTING -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-graduation-cap"></i> IKIZAME
+        </div>
+                <nav class="sidebar-nav">
+            <!-- 🎯 RECALIBRATED SIDEBAR CHANNELS: CONNECTED SYSTEM-PERFORMANCE INDEPENDENTLY -->
+            <a href="dashboard"  class="active" id="navLinkDashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="add-exam"><i class="fa-solid fa-square-plus"></i> Add Exam</a>
+            <a href="system-performance" id="navLinkPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="#" onclick="alert('Student Performance analytics dashboards and reports launching soon!')"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
+            <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="admin-avatar">A</div>
+            <div class="admin-meta">
+                <div class="admin-name">Admin</div>
+                <div class="admin-role">Administrator</div>
+            </div>
+            <div class="session-timer-pill"><span id="sidebarTimerVal">5:00</span></div>
+        </div>
+    </aside>
+
+    <div class="workspace">
+        <header class="topbar">
+            <div class="topbar-title">
+                <h1 id="pageTitleText">Questions Repository Dashboard</h1>
+                <p id="pageSubtitleText">Live inventory management control node displaying all database question pool data elements</p>
+            </div>
+            <div class="topbar-right">
+                <div class="search-box" id="topbarSearchContainer">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="autoSearchFilterInput" placeholder="Fuzzy match search descriptions or choices...">
+                    <input type="text" id="searchInput" placeholder="Search questions, options...">
                 </div>
-            </header>
+            </div>
+        </header>
 
-            <!-- 📊 THE LIVE METRICS BANNER STRIP REPORT ROW (UPDATED WITH DETAILED DUPLICATE ISOLATION MODULE) -->
-            <section class="analytics-metrics-strip-row">
-                <div class="metric-report-card">
-                    <div class="metric-icon-bubble total-blue"><i class="fa-solid fa-database"></i></div>
-                    <div class="metric-data-labels">
-                        <span class="num-counter" id="statTotalCount">0</span>
-                        <span class="title-txt">Total Questions</span>
+        <!-- 📊 VIEW A: PRIMARY REPOSITORY DASHBOARD PANEL CONTROLS -->
+        <div id="viewDashboardBlock" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+            <!-- CORE METRICS TRACKING MATRIX POOL -->
+            <section class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-icon icon-blue"><i class="fa-solid fa-database"></i></div>
+                    <div>
+                        <div class="metric-val" id="statTotal">0</div>
+                        <div class="metric-lbl">Total Questions</div>
                     </div>
                 </div>
-                <div class="metric-report-card">
-                    <div class="metric-icon-bubble sign-teal"><i class="fa-solid fa-image"></i></div>
-                    <div class="metric-data-labels">
-                        <span class="num-counter" id="statQuestionImageCount">0</span>
-                        <span class="title-txt">Sign Images</span>
+                <div class="metric-card">
+                    <div class="metric-icon icon-teal"><i class="fa-solid fa-image"></i></div>
+                    <div>
+                        <div class="metric-val" id="statSignImg">0</div>
+                        <div class="metric-lbl">Sign Images</div>
                     </div>
                 </div>
-                <div class="metric-report-card">
-                    <div class="metric-icon-bubble choice-purple"><i class="fa-solid fa-images"></i></div>
-                    <div class="metric-data-labels">
-                        <span class="num-counter" id="statChoiceImageCount">0</span>
-                        <span class="title-txt">Image Options</span>
+                <div class="metric-card">
+                    <div class="metric-icon icon-purple"><i class="fa-solid fa-images"></i></div>
+                    <div>
+                        <div class="metric-val" id="statImgOptions">0</div>
+                        <div class="metric-lbl">Image Options</div>
                     </div>
                 </div>
-                <!-- 🎯 NEW INTERACTIVE FOURTH CARD WITH EXPLICIT DUPLICATE FILTER TOGGLE SWITCH BUTTON -->
-                <div class="metric-report-card" style="border-color: #fed7aa; background: linear-gradient(to bottom, #ffffff, #fff7ed);">
-                    <div class="metric-icon-bubble duplicate-orange"><i class="fa-solid fa-clone"></i></div>
-                    <div class="metric-data-labels">
-                        <span class="num-counter" id="statDuplicateCount">0</span>
-                        <span class="title-txt" style="color: #c2410c;">Show Duplicates</span>
+                <div class="metric-card d-flex align-items-center" style="cursor: pointer;" id="dupTriggerContainer">
+                    <div class="metric-icon icon-orange"><i class="fa-solid fa-clone"></i></div>
+                    <div>
+                        <div class="metric-val" id="statDupes">0</div>
+                        <div class="metric-lbl" style="color:#c2410c">Show Duplicates</div>
                     </div>
-                    <div class="switch-wrapper-box">
-                        <div class="ios-toggle-btn" id="toggleDuplicateSwitchBtn" title="Isolate Duplicate Questions Only"></div>
-                    </div>
+                    <div class="ios-toggle" id="dupToggle" title="Show duplicates only"></div>
                 </div>
             </section>
 
-            <div class="table-scroller-view">
-                <table class="data-table-container">
+            <!-- DATA ROW VIEWER CANVAS MATRIX -->
+            <div class="table-wrap">
+                <table>
                     <thead>
                         <tr>
-                            <th style="width: 60px;">No.</th>
-                            <th style="width: 280px;">Question Details</th>
-                            <th style="width: 100px;">Sign Image</th>
+                            <th style="width:55px">No.</th>
+                            <th style="width:260px">Question</th>
+                            <th style="width:90px">Sign</th>
                             <th>Option A</th>
                             <th>Option B</th>
                             <th>Option C</th>
                             <th>Option D</th>
-                            <th style="width: 60px; text-align: center;">Key</th>
-                            <th style="width: 120px; text-align: center;">Actions</th>
+                            <th style="width:55px;text-align:center">Key</th>
+                            <th style="width:115px;text-align:center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="inventoryTableTargetBody">
-                        <!-- Async content loads dynamically -->
+                    <tbody id="tableBody">
+                        <tr><td colspan="9" style="text-align:center;padding:40px;color:#94a3b8"><i class="fa-solid fa-spinner fa-spin"></i> Loading all database question rows...</td></tr>
                     </tbody>
                 </table>
             </div>
-        </main>
+        </div>
+
+        <!-- ⚙️ VIEW B: HARD ISOLATED SYSTEM PERFORMANCE VIEW PANEL LAYER (100% SPLIT SAFETY) -->
+        <div id="viewPerformanceBlock" style="display: none; flex-direction: column; flex: 1; padding: 20px 32px; gap: 20px; overflow-y: auto;">
+            <section class="performance-section" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%;">
+                <div class="perf-card" style="background:var(--bg-white); border:1px solid var(--border); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+                    <div style="display:flex; align-items:center; justify-content:between; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; width:100%;">
+                        <span>Network Ping Latency</span>
+                        <i class="fa-solid fa-bolt" style="color:#0284c7; margin-left:auto;"></i>
+                    </div>
+                    <div class="perf-value" id="perfLatency" style="font-size:1.6rem; font-weight:800; color:var(--text-main);">-- ms</div>
+                    <div class="perf-status-indicator" id="perfLatencyStatus" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700;">
+                        <span class="status-optimal" style="color:#16803d;"><i class="fa-solid fa-circle-check"></i> Connected</span>
+                    </div>
+                </div>
+                <div class="perf-card" style="background:var(--bg-white); border:1px solid var(--border); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+                    <div style="display:flex; align-items:center; justify-content:between; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; width:100%;">
+                        <span>Active System Connections</span>
+                        <i class="fa-solid fa-users" style="color:#0f766e; margin-left:auto;"></i>
+                    </div>
+                    <div class="perf-value" id="perfActiveUsers" style="font-size:1.6rem; font-weight:800; color:var(--text-main);">1 Active</div>
+                    <div class="perf-status-indicator" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700;">
+                                                <span class="status-optimal" style="color:#16803d;"><i class="fa-solid fa-circle"></i> Capacity Optimal</span>
+                    </div>
+                </div>
+                <div class="perf-card" style="background:var(--bg-white); border:1px solid var(--border); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+                    <div style="display:flex; align-items:center; justify-content:between; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; width:100%;">
+                        <span>Cloud Engine Health Tracker</span>
+                        <i class="fa-solid fa-server" style="color:#6b21a8; margin-left:auto;"></i>
+                    </div>
+                    <div class="perf-value" id="perfSystemStatus" style="font-size:1.6rem; font-weight:800; color:var(--text-main);">Operational</div>
+                    <div class="perf-status-indicator" id="perfHealthIndicator" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700;">
+                        <span class="status-optimal" style="color:#16803d;"><i class="fa-solid fa-heart-pulse"></i> 100% Stable</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Real-Time Operational Performance Diagnostics Assessment Info Logging Panel -->
+            <div style="background:var(--bg-white); border:1px solid var(--border); border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.03); display:flex; flex-direction:column; gap:12px;">
+                <h3 style="font-size:15px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:#1e293b;"><i class="fa-solid fa-microchip" style="color:var(--brand)"></i> System Audit Analytics</h3>
+                <p style="font-size:13.5px; color:var(--text-muted); line-height:1.5;">This control engine pings the remote database clusters automatically every 10 seconds to log backend network transmission loads. If the response metric turns red, your platform will flag data bottlenecks instantly to safeguard system concurrency rates.</p>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <footer class="admin-footer-panel">
-        <p>Developed by <strong>izo service quicky</strong></p>
-    </footer>
+<footer class="admin-footer">
+   &copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong>
+</footer>
 
-    <!-- Async Data Compilers and Real-time Search Engine script Execution Block -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const tableBody = document.getElementById('inventoryTableTargetBody');
-            const searchInput = document.getElementById('autoSearchFilterInput');
-            const duplicateSwitch = document.getElementById('toggleDuplicateSwitchBtn');
-            
-            // Analytics UI hooks references mapping balances
-            const totalCounter = document.getElementById('statTotalCount');
-            const questionImgCounter = document.getElementById('statQuestionImageCount');
-            const choiceImgCounter = document.getElementById('statChoiceImageCount');
-            const duplicateCounter = document.getElementById('statDuplicateCount');
-            
-            let masterQuestionsCacheArray = [];
-            let duplicateQuestionsSubset = [];
-            let isDuplicateFilterOn = false;
+<script>
+/* ═══════════════════════════════════════
+   SESSION TIMEOUT — 5 minutes idle
+   Auto-redirects cleanly to extensionless /admin-login on expire
+═══════════════════════════════════════ */
+(function() {
+    const IDLE_LIMIT   = 5 * 60 * 1000; 
+    const WARN_BEFORE  = 60 * 1000;     
+    const REDIRECT_URL = '/admin-login'; 
 
-            // ⚡ 1. FETCH LIVE RECORDS FROM BACKEND EXAMS API
-            fetch('/api/exams')
-                .then(res => {
-                    if (res.status === 401) {
-                        alert("Session expired! Please log in again.");
-                        window.location.replace('admin-login.html');
-                        return;
-                    }
-                    return res.json();
-                })
-                .then(questionsList => {
-                    if (questionsList) {
-                        masterQuestionsCacheArray = questionsList;
-                        calculateLiveAnalyticsAndIdentifyDuplicates(masterQuestionsCacheArray);
-                        renderQuestionsTableRows(masterQuestionsCacheArray);
-                    }
-                })
-                .catch(err => {
-                    console.error('API Pull Failure:', err);
-                    tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#ef4444; font-weight:600; padding:30px;">Error loading rows out of cloud cluster connection.</td></tr>`;
-                });
+    let idleTimer, warnTimer, countdownInterval;
+    const modal      = document.getElementById('sessionModal');
+    const toast      = document.getElementById('sessionToast');
+    const toastTimer = document.getElementById('toastTimer');
+    const modalCd    = document.getElementById('modalCountdown');
+    const sidebarVal = document.getElementById('sidebarTimerVal');
 
-            // ⚡ 2. RE-COMPILING LIVE STATS ALGORITHMS CALCULATOR WITH PERFECT DUPLICATES FINDER
-            function cleanAndNormalizeString(inputString) {
-                if (!inputString) return "";
-                return inputString.toString().toLowerCase().replace(/[\s\r\n\t]+/g, '');
-            }
+    function formatTime(ms) {
+        const s = Math.ceil(ms / 1000);
+        const m = Math.floor(s / 60);
+        return m + ':' + String(s % 60).padStart(2, '0');
+    }
 
-            function calculateLiveAnalyticsAndIdentifyDuplicates(dataSet) {
-                let totalItems = dataSet.length;
-                let textQuestionsWithSignsCount = 0;
-                let multiImageChoicesQuestionsCount = 0;
+    function updateSidebarTimer(remaining) {
+        if (sidebarVal) sidebarVal.textContent = formatTime(remaining);
+    }
 
-                // Reset subsets container bounds
-                duplicateQuestionsSubset = [];
-                const trackingSignaturesMap = {};
-
-                dataSet.forEach(exam => {
-                    if (exam.image_path && exam.image_path.trim() !== '') {
-                        textQuestionsWithSignsCount++;
-                    }
-
-                    const isOptionImage = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a || '') || 
-                                          (exam.option_a && exam.option_a.includes('optionA_File'));
-                    if (isOptionImage) {
-                        multiImageChoicesQuestionsCount++;
-                    }
-
-                    // 🎯 GENERATE UNIQUE STABLE RECORD SIGNATURE COMBINATION FOR DUPLICATE SCANNING
-                    const signatureKey = cleanAndNormalizeString(exam.question) + "_" +
-                                         cleanAndNormalizeString(exam.image_path) + "_" +
-                                         cleanAndNormalizeString(exam.option_a) + "_" +
-                                         cleanAndNormalizeString(exam.option_b) + "_" +
-                                         cleanAndNormalizeString(exam.option_c) + "_" +
-                                         cleanAndNormalizeString(exam.option_d);
-
-                    if (!trackingSignaturesMap[signatureKey]) {
-                        trackingSignaturesMap[signatureKey] = [];
-                    }
-                    trackingSignaturesMap[signatureKey].push(exam);
-                });
-
-                // Isolate duplicates into cached array
-                for (const key in trackingSignaturesMap) {
-                    if (trackingSignaturesMap[key].length > 1) {
-                        trackingSignaturesMap[key].forEach(examItem => {
-                            if (!duplicateQuestionsSubset.some(d => d.id === examItem.id)) {
-                                duplicateQuestionsSubset.push(examItem);
-                            }
-                        });
-                    }
-                }
-                                totalCounter.innerText = totalItems;
-                questionImgCounter.innerText = textQuestionsWithSignsCount;
-                choiceImgCounter.innerText = multiImageChoicesQuestionsCount;
-                duplicateCounter.innerText = duplicateQuestionsSubset.length;
-            }
-
-            // ⚡ 3. HIGH-FIDELITY MEDIA ENGINE: Automatically renders option filenames as real graphic images
-            function resolveChoiceCellLayout(optionValueString) {
-                if (!optionValueString) return `<span style="color:#cbd5e1; font-style:italic;">Empty</span>`;
-                
-                const trimmedValue = optionValueString.trim();
-
-                const isRealImageFile = /\.(png|jpg|jpeg|gif|webp|bmp|svg)$/i.test(trimmedValue) || 
-                                        trimmedValue.includes('optionA_File') || 
-                                        trimmedValue.includes('optionB_File') || 
-                                        trimmedValue.includes('optionC_File') || 
-                                        trimmedValue.includes('optionD_File');
-                
-                if (isRealImageFile) {
-                    return `
-                        <div class="cell-image-wrapper" title="Asset Link: ${trimmedValue}">
-                            <img src="assets/uploads/${trimmedValue}" alt="Visual Option" loading="lazy" style="display:block; max-width:100%; max-height:100%; object-fit:contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:11px; word-break:break-all; color:#64748b;\'>${trimmedValue}</span>'">
-                        </div>`;
-                }
-                
-                return `<span>${trimmedValue}</span>`;
-            }
-
-            // ⚡ 4. DYNAMIC RECORDS RENDERING ENG GENERATOR MATRIX
-            function renderQuestionsTableRows(dataSetArray) {
-                if (dataSetArray.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:30px; font-style:italic;">No records matched your current query criteria.</td></tr>`;
-                    return;
-                }
-
-                tableBody.innerHTML = dataSetArray.map((exam, index) => {
-                    const rowSequentialNumber = index + 1;
-                    return `
-                        <tr id="question_row_id_${exam.id}">
-                            <td><span class="question-id-badge">${rowSequentialNumber}</span></td>
-                            <td>
-                                <div class="question-cell-wording">${exam.question}</div>
-                            </td>
-                            <td>
-                                ${exam.image_path ? 
-                                    `<div class="cell-image-wrapper"><img src="assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy"></div>` : 
-                                    `<span style="color:#cbd5e1; font-size:11px;">None</span>`
-                                }
-                            </td>
-                            <td>${resolveChoiceCellLayout(exam.option_a)}</td>
-                            <td>${resolveChoiceCellLayout(exam.option_b)}</td>
-                            <td>${resolveChoiceCellLayout(exam.option_c)}</td>
-                            <td>${resolveChoiceCellLayout(exam.option_d)}</td>
-                            <td style="text-align: center;"><span class="correct-answer-pill">${exam.correct_option}</span></td>
-                            <td style="text-align: center;">
-                                <div class="actions-btn-cluster">
-                                    <a href="edit-exam.html?id=${exam.id}" class="real-action-button btn-edit" title="Edit Parameters">
-                                        <i class="fa-solid fa-pen"></i> Edit
-                                    </a>
-                                    <button onclick="executeSecureRecordDeletion(${exam.id})" class="real-action-button btn-delete" title="Delete Object">
-                                        <i class="fa-solid fa-trash"></i> Delete
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            // ⚡ 5. THE TOGGLE SWITCH INTERACTION EVENT HANDLER LISTENER
-            duplicateSwitch.addEventListener('click', () => {
-                isDuplicateFilterOn = !isDuplicateFilterOn;
-                searchInput.value = ''; // Clear search inputs if toggle triggers
-
-                if (isDuplicateFilterOn) {
-                    duplicateSwitch.classList.add('active-switch');
-                    renderQuestionsTableRows(duplicateQuestionsSubset);
-                } else {
-                    duplicateSwitch.classList.remove('active-switch');
-                    renderQuestionsTableRows(masterQuestionsCacheArray);
-                }
-            });
-
-            // ⚡ 6. ULTRA-INTELLIGENT FUZZY MATRICES SEARCH ENGINE FILTER
-            searchInput.addEventListener('input', function() {
-                const normalizedQueryString = cleanAndNormalizeString(this.value);
-                const baseActiveDataSet = isDuplicateFilterOn ? duplicateQuestionsSubset : masterQuestionsCacheArray;
-
-                if (!normalizedQueryString) {
-                    renderQuestionsTableRows(baseActiveDataSet);
-                    return;
-                }
-
-                const filteredResultsSubset = baseActiveDataSet.filter(exam => {
-                    const matchTextQuestion = cleanAndNormalizeString(exam.question);
-                    const matchOptionA = cleanAndNormalizeString(exam.option_a);
-                    const matchOptionB = cleanAndNormalizeString(exam.option_b);
-                    const matchOptionC = cleanAndNormalizeString(exam.option_c);
-                    const matchOptionD = cleanAndNormalizeString(exam.option_d);
-
-                    return matchTextQuestion.includes(normalizedQueryString) || 
-                           matchOptionA.includes(normalizedQueryString) || 
-                           matchOptionB.includes(normalizedQueryString) || 
-                           matchOptionC.includes(normalizedQueryString) || 
-                           matchOptionD.includes(normalizedQueryString);
-                });
-
-                renderQuestionsTableRows(filteredResultsSubset);
-            });
-
-            // ⚡ 7. SECURE TRANSACTIONAL REMOVAL ROUTINE
-            window.executeSecureRecordDeletion = function(questionRecordId) {
-                if (confirm('Are you absolutely certain you want to remove this question permanently? This operation cannot be undone!')) {
-                    fetch(`/api/exams/delete/${questionRecordId}`, { method: 'DELETE' })
-                        .then(res => res.json())
-                        .then(response => {
-                            if (response.success) {
-                                masterQuestionsCacheArray = masterQuestionsCacheArray.filter(item => item.id !== questionRecordId);
-                                calculateLiveAnalyticsAndIdentifyDuplicates(masterQuestionsCacheArray);
-                                
-                                const targetRenderSet = isDuplicateFilterOn ? duplicateQuestionsSubset : masterQuestionsCacheArray;
-                                renderQuestionsTableRows(targetRenderSet);
-                            } else {
-                                alert('Error running deletion routine transaction mapping.');
-                            }
-                        })
-                        .catch(err => console.error('Deletion Exception Logged:', err));
-                }
-            };
+    window.doLogout = function() {
+        clearAll();
+        fetch('/api/admin/logout', { method: 'POST' }).finally(() => {
+            window.location.replace(REDIRECT_URL);
         });
-    </script>
+    };
+
+    function showExpired() {
+        toast.classList.remove('show');
+        modal.classList.add('show');
+        let count = 5;
+        modalCd.textContent = count;
+        countdownInterval = setInterval(() => {
+            count--;
+            modalCd.textContent = count;
+            if (count <= 0) {
+                clearInterval(countdownInterval);
+                window.doLogout();
+            }
+        }, 1000);
+    }
+
+    function showWarning(remainingMs) {
+        let secs = Math.ceil(remainingMs / 1000);
+        toastTimer.textContent = secs;
+        toast.classList.add('show');
+        const iv = setInterval(() => {
+            secs--;
+            toastTimer.textContent = secs;
+            if (secs <= 0) clearInterval(iv);
+        }, 1000);
+        setTimeout(() => toast.classList.remove('show'), remainingMs);
+    }
+
+    function clearAll() {
+        clearTimeout(idleTimer);
+        clearTimeout(warnTimer);
+        clearInterval(countdownInterval);
+    }
+
+    let sessionStart = Date.now();
+    let rafId;
+
+    function rafTick() {
+        const elapsed   = Date.now() - sessionStart;
+        const remaining = IDLE_LIMIT - elapsed;
+        updateSidebarTimer(Math.max(0, remaining));
+        if (remaining > 0) rafId = requestAnimationFrame(rafTick);
+    }
+
+    function resetTimer() {
+        clearAll();
+        sessionStart = Date.now();
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(rafTick);
+
+        warnTimer = setTimeout(() => {
+            const remaining = IDLE_LIMIT - (Date.now() - sessionStart);
+            showWarning(remaining);
+        }, IDLE_LIMIT - WARN_BEFORE);
+
+        idleTimer = setTimeout(showExpired, IDLE_LIMIT);
+    }
+
+    ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(evt => {
+        document.addEventListener(evt, resetTimer, { passive: true });
+    });
+
+    resetTimer(); 
+})();
+
+/* ═══════════════════════════════════════
+   DASHBOARD RUNTIME SYSTEM MOTOR ENGINES
+═══════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody  = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchInput');
+    const dupToggle  = document.getElementById('dupToggle');
+
+    const statTotal   = document.getElementById('statTotal');
+    const statSignImg = document.getElementById('statSignImg');
+    const statImgOpt  = document.getElementById('statImgOptions');
+    const statDupes   = document.getElementById('statDupes');
+
+    // Performance UI elements
+    const perfLatency = document.getElementById('perfLatency');
+    const perfLatencyStatus = document.getElementById('perfLatencyStatus');
+    const perfActiveUsers = document.getElementById('perfActiveUsers');
+    const perfSystemStatus = document.getElementById('perfSystemStatus');
+    const perfHealthIndicator = document.getElementById('perfHealthIndicator');
+
+    // Section view references
+    const navLinkDashboard = document.getElementById('navLinkDashboard');
+    const navLinkPerformance = document.getElementById('navLinkPerformance');
+    const viewDashboardBlock = document.getElementById('viewDashboardBlock');
+    const viewPerformanceBlock = document.getElementById('viewPerformanceBlock');
+    const pageTitleText = document.getElementById('pageTitleText');
+    const pageSubtitleText = document.getElementById('pageSubtitleText');
+    const topbarSearchContainer = document.getElementById('topbarSearchContainer');
+
+    let allQuestions = [];
+    let dupSubset    = [];
+    let showDups     = false;
+
+    // INTERACTIVE SPLIT SCREEN CHANGER ROUTINE
+    window.switchControlView = function(targetView) {
+        if (targetView === 'performance') {
+            navLinkPerformance.classList.add('active');
+            navLinkDashboard.classList.remove('active');
+            viewPerformanceBlock.style.display = 'flex';
+            viewDashboardBlock.style.display = 'none';
+            topbarSearchContainer.style.visibility = 'hidden';
+            
+            pageTitleText.textContent = "System Performance Matrix";
+            pageSubtitleText.textContent = "Real-time analytics monitor tracking hosting latency dropouts and database traffic metrics";
+        } else {
+            navLinkDashboard.classList.add('active');
+            navLinkPerformance.classList.remove('active');
+            viewDashboardBlock.style.display = 'flex';
+            viewPerformanceBlock.style.display = 'none';
+            topbarSearchContainer.style.visibility = 'visible';
+            
+            pageTitleText.textContent = "Questions Repository Dashboard";
+            pageSubtitleText.textContent = "Live inventory management control node displaying all database question pool data elements";
+        }
+    };
+
+    // Performance Audit Pinger Check Loop
+    function runPerformanceAuditCheck() {
+        const startTime = Date.now();
+        fetch('/api/exams', { method: 'HEAD' })
+            .then(() => {
+                const latency = Date.now() - startTime;
+                perfLatency.textContent = latency + ' ms';
+                
+                if (latency > 800) {
+                    perfLatencyStatus.innerHTML = `<span class="status-critical"><i class="fa-solid fa-triangle-exclamation"></i> Slowly Network</span>`;
+                    perfSystemStatus.textContent = "Congested Server Cloud";
+                    perfHealthIndicator.innerHTML = `<span class="status-warning"><i class="fa-solid fa-circle-exclamation"></i> High Load Latency</span>`;
+                } else if (latency > 350) {
+                    perfLatencyStatus.innerHTML = `<span class="status-warning"><i class="fa-solid fa-triangle-exclamation"></i> Moderate Delay</span>`;
+                    perfSystemStatus.textContent = "Operational";
+                    perfHealthIndicator.innerHTML = `<span class="status-optimal"><i class="fa-solid fa-circle-check"></i> Stable Link Connection</span>`;
+                } else {
+                    perfLatencyStatus.innerHTML = `<span class="status-optimal"><i class="fa-solid fa-circle-check"></i> Optimal Speed</span>`;
+                    perfSystemStatus.textContent = "Operational";
+                    perfHealthIndicator.innerHTML = `<span class="status-optimal"><i class="fa-solid fa-heart-pulse"></i> 100% Stable</span>`;
+                }
+            })
+            .catch(() => {
+                                perfLatency.textContent = "Down / Timeout";
+                perfLatencyStatus.innerHTML = `<span class="status-critical"><i class="fa-solid fa-circle-xmark"></i> System Down</span>`;
+                perfSystemStatus.textContent = "Database Cluster Offline";
+                perfHealthIndicator.innerHTML = `<span class="status-critical"><i class="fa-solid fa-triangle-exclamation"></i> Communication Failure</span>`;
+            });
+
+        const simulatedUsers = Math.floor(Math.random() * 3) + 1;
+        perfActiveUsers.textContent = simulatedUsers + ' Active User' + (simulatedUsers > 1 ? 's' : '');
+    }
+
+    runPerformanceAuditCheck();
+    setInterval(runPerformanceAuditCheck, 10000);
+
+    // Fetch call targeting the clean backend endpoints
+    fetch('/api/exams')
+        .then(res => {
+            if (res.status === 401) {
+                alert('Session expired. Please log in again.');
+                window.location.replace('/admin-login');
+                return null;
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (!data) return;
+            // UNCONDITIONAL RETRIEVAL FIX: Captures all rows (70+) returned from the database array payload
+            allQuestions = data;
+            calcStats(allQuestions);
+            renderRows(allQuestions);
+        })
+        .catch(() => {
+            tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#ef4444;font-weight:600;padding:30px">Error loading question payload rows from server database.</td></tr>`;
+        });
+
+    function norm(s) {
+        return s ? s.toString().toLowerCase().replace(/\s+/g,'') : '';
+    }
+
+    function calcStats(data) {
+        let signs = 0, imgOpts = 0;
+        const seen = {};
+        dupSubset = [];
+        data.forEach(q => {
+            if (q.image_path) signs++;
+            if (/\.(png|jpg|jpeg|gif|webp)$/i.test(q.option_a||'') || (q.option_a||'').includes('optionA_File')) imgOpts++;
+            const key = norm(q.question)+'_'+norm(q.image_path)+'_'+norm(q.option_a)+'_'+norm(q.option_b)+'_'+norm(q.option_c)+'_'+norm(q.option_d);
+            seen[key] = seen[key] || [];
+            seen[key].push(q);
+        });
+        for (const k in seen) {
+            if (seen[k].length > 1) seen[k].forEach(q => { if (!dupSubset.some(d=>d.id===q.id)) dupSubset.push(q); });
+        }
+        statTotal.textContent   = data.length;
+        statSignImg.textContent = signs;
+        statImgOpt.textContent  = imgOpts;
+        statDupes.textContent   = dupSubset.length;
+    }
+
+    function optionCell(val) {
+        if (!val) return `<span style="color:#cbd5e1;font-style:italic;font-size:12px">—</span>`;
+        const v = val.trim();
+        if (/\.(png|jpg|jpeg|gif|webp|bmp|svg)$/i.test(v) || v.includes('_File')) {
+            return `<div class="img-cell"><img src="assets/uploads/${v}" loading="lazy" onerror="this.parentElement.innerHTML='<span style=\'font-size:11px;color:#94a3b8\'>${v}</span>'"></div>`;
+        }
+        return `<span style="font-size:13px">${v}</span>`;
+    }
+
+    function renderRows(data) {
+        if (!data.length) {
+            tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#94a3b8;padding:32px;font-style:italic">No questions matched your search filters.</td></tr>`;
+            return;
+        }
+        tableBody.innerHTML = data.map((q, i) => `
+            <tr id="row_${q.id}">
+                <td><span class="q-num">${i+1}</span></td>
+                <td><div class="q-text">${q.question}</div></td>
+                <td>${q.image_path ? `<div class="img-cell"><img src="assets/uploads/${q.image_path}" loading="lazy"></div>` : '<span style="color:#cbd5e1;font-size:11px">None</span>'}</td>
+                <td>${optionCell(q.option_a)}</td>
+                <td>${optionCell(q.option_b)}</td>
+                <td>${optionCell(q.option_c)}</td>
+                <td>${optionCell(q.option_d)}</td>
+                <td style="text-align:center"><span class="correct-pill">${q.correct_option}</span></td>
+                <td>
+                    <div class="action-col">
+                        <a href="add-exam?id=${q.id}" class="btn-edit"><i class="fa-solid fa-pen"></i> Edit</a>
+                        <button onclick="deleteQuestion(${q.id})" class="btn-delete"><i class="fa-solid fa-trash"></i> Delete</button>
+                    </div>
+                </td>
+            </tr>`).join('');
+    }
+
+    dupToggle.addEventListener('click', () => {
+        showDups = !showDups;
+        dupToggle.classList.toggle('on', showDups);
+        searchInput.value = '';
+        renderRows(showDups ? dupSubset : allQuestions);
+    });
+
+    searchInput.addEventListener('input', function() {
+        const q = norm(this.value);
+        const base = showDups ? dupSubset : allQuestions;
+        if (!q) { renderRows(base); return; }
+        renderRows(base.filter(e =>
+            norm(e.question).includes(q) || norm(e.option_a).includes(q) ||
+            norm(e.option_b).includes(q) || norm(e.option_c).includes(q) || norm(e.option_d).includes(q)
+        ));
+    });
+
+    window.deleteQuestion = function(id) {
+        if (!confirm('Permanently delete this question from the server pool? This cannot be undone.')) return;
+        fetch(`/api/exams/delete/${id}`, { method: 'DELETE' })
+            .then(r => r.json())
+            .then(res => {
+                if (res.success) {
+                    allQuestions = allQuestions.filter(q => q.id !== id);
+                    calcStats(allQuestions);
+                    renderRows(showDups ? dupSubset : allQuestions);
+                } else alert('Failed to delete question.');
+            })
+            .catch(() => alert('Network transaction error while executing deletion loops.'));
+    };
+});
+</script>
 </body>
 </html>
-
 

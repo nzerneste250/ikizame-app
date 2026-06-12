@@ -3,389 +3,377 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Question - IKIZAME Local Panel</title>
-    <!-- Premium Google Fonts Hierarchy Inter -->
+    <title>Edit Question — IKIZAME Admin</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* 🪐 CLEAN PROFESSIONAL DESIGN SYSTEM VARIABLE BALANCES */
         :root {
+            --brand: #0b698b;
+            --brand-dark: #08536e;
             --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-surface: #f1f5f9;
+            --bg-white: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --accent-glow: #0284c7;
-            --border-color: #cbd5e1;
-            
-            --sidebar-bg: #131a2c;
-            --sidebar-border: #334155;
-            --sidebar-text-muted: #94a3b8;
-            --sidebar-text-active: #f8fafc;
+            --border: #e2e8f0;
+            --focus: #0284c7;
+            --sidebar-bg: #0f172a;
+            --sidebar-border: #1e293b;
+            --sidebar-muted: #94a3b8;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-main); overflow: hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        html, body { height: 100vh; background-color: var(--bg-primary); color: var(--text-main); overflow: hidden; }
-
-        .admin-layout-grid { display: flex; height: calc(100vh - 45px); overflow: hidden; }
-
-        /* 🔒 1. FIXED SIDEBAR PANEL */
-        .sidebar-panel {
-            width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border);
-            padding: 30px 20px; display: flex; flex-shrink: 0; flex-direction: column; gap: 35px;
+        /* ── LAYOUT ── */
+        .shell { display: flex; height: calc(100vh - 44px); }
+        .sidebar {
+            width: 240px; background: var(--sidebar-bg);
+            display: flex; flex-direction: column; flex-shrink: 0;
+            border-right: 1px solid var(--sidebar-border);
         }
-        .sidebar-panel h2 {
-            font-size: 18px; font-weight: 800; letter-spacing: 1.5px; color: #38bdf8;
-            text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+        .sidebar-brand {
+            padding: 24px 20px 20px; font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.1rem; color: #38bdf8; letter-spacing: 2px;
+            border-bottom: 1px solid var(--sidebar-border); display: flex; align-items: center; gap: 10px;
         }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-nav { padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
         .sidebar-nav a {
-            color: var(--sidebar-text-muted); text-decoration: none; padding: 14px 16px;
-            font-size: 14px; font-weight: 600; border-radius: 8px; display: flex; align-items: center; gap: 12px; transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px;
+            color: var(--sidebar-muted); text-decoration: none; font-size: 13.5px; font-weight: 600; transition: all 0.15s;
         }
-        .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--sidebar-text-active); background-color: rgba(255,255,255,0.08); }
-
-        /* 🔒 2. MAIN HUB WORKSPACE WRAPPER */
-        .workspace-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .sidebar-nav a:hover { color: #f8fafc; background: rgba(255,255,255,0.06); }
+        .sidebar-nav a.active { color: #f8fafc; background: rgba(56,189,248,0.12); border-left: 3px solid #38bdf8; padding-left: 11px; }
+        .sidebar-nav a i { width: 16px; text-align: center; }
+        .nav-logout { color: #f87171 !important; }
+        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #ef4444 !important; }
         
-        .header-title-bar {
-            padding: 25px 40px; border-bottom: 1px solid var(--border-color); background-color: var(--bg-secondary);
-            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
-        }
-        .header-title-bar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-        .header-title-bar p { font-size: 13px; color: var(--text-muted); }
+        .sidebar-footer { padding: 14px 16px; border-top: 1px solid var(--sidebar-border); display: flex; align-items: center; gap: 10px; }
+        .admin-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; }
+        .admin-meta { flex: 1; min-width: 0; }
+        .admin-name { font-size: 12.5px; font-weight: 700; color: #f8fafc; }
+        .admin-role { font-size: 11px; color: var(--sidebar-muted); }
 
-        /* 🎛️ AUTOMATED VISUAL DETECTION ENGINE BADGE */
-        .layout-badge-card {
-            background-color: var(--bg-secondary); border: 1px dashed var(--border-color);
-            border-radius: 8px; padding: 10px 20px; display: flex; align-items: center; gap: 10px;
+        /* ── WORKSPACE ── */
+        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar {
+            height: 64px; background: var(--bg-white); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 32px; flex-shrink: 0;
         }
-        .layout-badge-card i { color: var(--accent-glow); }
-        .layout-badge-card span { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+        .topbar h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
+        .topbar p { font-size: 12.5px; color: var(--text-muted); margin-top: 1px; }
+        .layout-badge { background: var(--bg-primary); border: 1.5px dashed var(--border); border-radius: 8px; padding: 10px 18px; display: flex; align-items: center; gap: 10px; }
+        .layout-badge i { color: var(--focus); }
+        .layout-badge span { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
 
-        /* Scroll Box Card Frame */
-        .form-card-scroller { flex: 1; overflow-y: auto; padding: 30px 40px; }
+        .form-scroll { flex: 1; overflow-y: auto; padding: 28px 32px; }
+        .form-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: 14px; padding: 32px; max-width: 860px; display: flex; flex-direction: column; gap: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+
+        .field { display: flex; flex-direction: column; gap: 7px; }
+        .field label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.7px; }
+        .field textarea, .field input[type="text"], .field select { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; color: var(--text-main); outline: none; background: #fafafa; transition: border-color 0.15s, box-shadow 0.15s; }
+        .field textarea:focus, .field input[type="text"]:focus, .field select:focus { border-color: var(--focus); background: #fff; box-shadow: 0 0 0 3px rgba(2,132,199,0.1); }
+
+        /* ── DRAG-DROP ZONES ── */
+        .drop-zone { border: 2px dashed #94a3b8; border-radius: 10px; background: #f8fafc; padding: 20px; display: grid; grid-template-columns: 90px 1fr; gap: 20px; align-items: center; transition: border-color 0.2s, background 0.2s; cursor: pointer; }
+        .drop-zone.dragover { border-color: var(--brand); background: #e0f7ff; }
+        .drop-zone.has-file { border-style: solid; border-color: var(--brand); }
+        .preview-box { width: 90px; height: 80px; border-radius: 8px; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        .preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .preview-box .ph { color: #94a3b8; font-size: 22px; }
+        .drop-content { display: flex; flex-direction: column; gap: 10px; }
+        .drop-title { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .drop-sub { font-size: 12px; color: var(--text-muted); }
+        .drop-btn { display: inline-flex; align-items: center; gap: 7px; background: var(--brand); color: #fff; padding: 7px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; font-family: 'Inter', sans-serif; width: fit-content; transition: background 0.15s; }
+        .file-name-badge { font-size: 12px; font-weight: 600; color: var(--brand); background: #e0f7ff; padding: 3px 10px; border-radius: 20px; display: none; align-items: center; gap: 6px; }
+        .file-name-badge.show { display: inline-flex; }
+        .file-name-badge button { background: none; border: none; cursor: pointer; color: #ef4444; font-size: 12px; padding: 0; }
+        .or-divider { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; color: var(--text-muted); margin: 10px 0 8px; }
+        .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .hidden-file { display: none; }
+        .current-img-note { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+        .current-img-note span { font-weight: 700; color: var(--brand); }
+
+        /* Options layout grids */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .opt-card { background: #fff; border: 1.5px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .opt-label { font-size: 11px; font-weight: 800; color: var(--focus); text-transform: uppercase; }
+        .opt-drop { border: 2px dashed #94a3b8; border-radius: 8px; background: #f8fafc; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: border-color 0.2s, background 0.2s; min-height: 100px; justify-content: center; }
+        .opt-drop.dragover { border-color: var(--brand); background: #e0f7ff; }
+        .opt-drop.has-file { border-style: solid; border-color: var(--brand); }
+        .opt-preview { width: 100%; max-height: 80px; object-fit: contain; display: none; border-radius: 4px; }
+        .opt-drop-text { font-size: 12px; color: var(--text-muted); text-align: center; }
+        .opt-drop-icon { font-size: 20px; color: #94a3b8; }
+        .opt-drop.has-file .opt-drop-text, .opt-drop.has-file .opt-drop-icon { display: none !important; }
+        .opt-drop.has-file .opt-preview { display: block !important; }
         
-        .main-inputs-form {
-            background-color: var(--bg-secondary); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 35px; max-width: 900px; display: flex; flex-direction: column; gap: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-
-        .form-group-block { display: flex; flex-direction: column; gap: 8px; }
-        .form-group-block label { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .main-inputs-form textarea,
-        .main-inputs-form input[type="text"],
-        .main-inputs-form select {
-            width: 100%; padding: 12px 16px; background-color: #ffffff;
-            border: 2px solid var(--border-color); border-radius: 8px; font-size: 14px; font-weight: 500;
-            color: var(--text-main); outline: none; transition: border-color 0.15s ease;
-        }
-        .main-inputs-form textarea:focus,
-        .main-inputs-form input[type="text"]:focus,
-        .main-inputs-form select:focus { border-color: var(--accent-glow); }
-
-        /* 📸 SIGN PREVIEW STRIP CARD WITH LIVE MEDIA COUPLER */
-        .studio-upload-strip {
-            background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px;
-            padding: 20px; display: grid; grid-template-columns: 100px 1fr; gap: 24px; align-items: center;
-        }
-        .studio-preview-box {
-            height: 75px; background-color: #ffffff; border: 1px solid var(--border-color);
-            border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;
-        }
-        .studio-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .studio-preview-box .placeholder-ico { color: #94a3b8; font-size: 22px; }
-        .upload-actions-box p { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
-
-        /* 🎯 OPTIONS GRID CONTAINERS */
-        .dynamic-options-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .text-options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .form-actions { display: flex; align-items: center; gap: 16px; border-top: 1px solid var(--border); padding-top: 22px; }
+        .btn-save { background: var(--brand); color: #fff; border: none; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; transition: background 0.15s; }
+        .btn-save:hover { background: var(--brand-dark); }
+        .btn-cancel { font-size: 14px; font-weight: 600; color: var(--text-muted); text-decoration: none; }
         
-        .option-uploader-card {
-            background-color: #ffffff; border: 2px solid var(--border-color);
-            border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 8px;
-        }
-        .option-header-row { font-size: 11px; font-weight: 800; color: var(--accent-glow); text-transform: uppercase; }
-        
-        .option-thumb-preview {
-            width: 100%; height: 65px; background-color: var(--bg-primary); border: 1px dashed var(--border-color);
-            border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        .option-thumb-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .option-thumb-preview span { font-size: 10px; color: #94a3b8; font-style: italic; }
-
-        /* Action Buttons Row */
-        .execution-actions-bar {
-            display: flex; align-items: center; gap: 20px; border-top: 1px solid var(--border-color);
-            padding-top: 25px; margin-top: 5px;
-        }
-        .btn-core-submit {
-            background-color: #0b698b; color: #ffffff; border: none; padding: 12px 28px;
-            font-size: 14px; font-weight: 700; border-radius: 6px; cursor: pointer; display: inline-flex;
-            align-items: center; gap: 8px; transition: background 0.15s ease;
-        }
-        .btn-core-submit:hover { background-color: #08536e; }
-        .btn-core-cancel { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; }
-        .btn-core-cancel:hover { color: var(--text-main); }
-
-        .admin-footer-panel {
-            background-color: #131a2c; color: #64748b; text-align: center;
-            padding: 14px; font-size: 11.5px; border-top: 1px solid #334155; height: 45px; z-index: 100;
-        }
-        .admin-footer-panel strong { color: #38bdf8; }
-        .input-split-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
-        .reuse-label { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+        .admin-footer { height: 44px; background: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; font-size: 11.5px; color: #64748b; }
+        .admin-footer strong { color: #38bdf8; }
+        @media (max-width: 1100px) { .sidebar { display: none; } .topbar, .form-scroll { padding-left: 20px; padding-right: 20px; } }
+        @media (max-width: 700px) { .options-grid, .text-options-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <div class="admin-layout-grid">
-        <aside class="sidebar-panel">
-            <h2><i class="fa-solid fa-graduation-cap"></i> IKIZAME</h2>
-            <nav class="sidebar-nav">
-                <a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
-                <a href="add-exam.html"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
-                <a href="/api/admin/logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
-            </nav>
-        </aside>
-
-        <main class="workspace-panel">
-            <header class="header-title-bar">
-                <div>
-                    <h1>Modify Question Parameters</h1>
-                    <p>Browse a new local file to upload, or type any pre-existing filename to deduplicate and reuse resources.</p>
-                </div>
-                <!-- AUTOMATED LAYOUT MODE INDICATOR BADGE -->
-                <div class="layout-badge-card">
-                    <i class="fa-solid fa-microchip"></i>
-                    <span id="activeLayoutModeBadge">Detecting Mode...</span>
-                </div>
-            </header>
-
-            <div class="form-card-scroller">
-                <form action="/api/exams/edit" method="POST" enctype="multipart/form-data" class="main-inputs-form">
-                    
-                    <!-- Hidden reference state mapping parameters -->
-                    <input type="hidden" id="targetRecordId" name="id">
-                    <input type="hidden" id="optionsLayoutMode" name="optionsLayoutMode" value="text">
-                    <input type="hidden" id="existingImagePath" name="existingImagePath">
-
-                    <!-- Default fallback hooks to retain files if fields stay unreplaced -->
-                    <input type="hidden" id="existingOptA" name="existingOptA">
-                    <input type="hidden" id="existingOptB" name="existingOptB">
-                    <input type="hidden" id="existingOptC" name="existingOptC">
-                    <input type="hidden" id="existingOptD" name="existingOptD">
-
-                    <div class="form-group-block">
-                                                <label for="question">Question Text (Statement)</label>
-                        <textarea id="question" name="question" rows="3" required></textarea>
-                    </div>
-
-                    <div class="studio-upload-strip">
-                        <div class="studio-preview-box" id="mainQuestionImagePreviewPane">
-                            <i class="fa-solid fa-image placeholder-ico"></i>
-                        </div>
-                        <div class="upload-actions-box">
-                            <p>Current Road Sign Image:</p>
-                            <div class="input-split-box">
-                                <input type="file" id="imageFile" name="imageFile" accept="image/*">
-                                <input type="text" id="imageFileTextFallback" name="imageFileTextFallback" placeholder="OR reuse existing filename">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 🎯 INTERACTIVE CONFIG HOUSING GRID FOR OPTIONS FIELDS -->
-                    <div class="dynamic-options-wrapper" id="dynamicOptionsInputGridContainer"></div>
-
-                    <div class="form-group-block" style="max-width: 320px;">
-                        <label for="correctOption">Correct Option Answer Key</label>
-                        <select id="correctOption" name="correctOption" required>
-                            <option value="">-- Choose correct letter --</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                        </select>
-                    </div>
-
-                    <!-- THE TARGET ACTIONS CONTAINER BLOCK -->
-                    <div class="execution-actions-bar">
-                        <button type="submit" class="btn-core-submit"><i class="fa-solid fa-square-check"></i> Save Updated Parameters</button>
-                        <a href="dashboard.html" class="btn-core-cancel">Cancel & Go Back</a>
-                    </div>
-                </form>
+<div class="shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <nav class="sidebar-nav">
+            <!-- 🎯 RECALIBRATED SIDEBAR CHANNELS: CONNECTED SYSTEM-PERFORMANCE INDEPENDENTLY -->
+            <a href="dashboard" id="navLinkDashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="add-exam"  class="active" ><i class="fa-solid fa-square-plus"></i> Add Exam</a>
+            <a href="system-performance" id="navLinkPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="#" onclick="alert('Student Performance analytics dashboards and reports launching soon!')"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
+            <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="admin-avatar">A</div>
+            <div class="admin-meta">
+                <div class="admin-name">Admin</div>
+                <div class="admin-role">Administrator</div>
             </div>
-        </main>
+        </div>
+    </aside>
+
+    <div class="workspace">
+        <header class="topbar">
+            <div>
+                <h1>Edit Existing Question</h1>
+                <p>Modify textual contents, select keys, or drop fresh graphic option configurations safely.</p>
+            </div>
+            <div class="layout-badge">
+                <i class="fa-solid fa-microchip"></i>
+                <span id="layoutBadge">Loading Question Details...</span>
+            </div>
+        </header>
+
+        <div class="form-scroll" id="formScroll">
+            <div style="text-align:center; padding:50px; color:var(--text-muted);">
+                <i class="fa-solid fa-spinner fa-spin fa-2xl"></i><br><br>Retrieving rows entries from server...
+            </div>
+        </div>
     </div>
+</div>
 
-    <footer class="admin-footer-panel">
-        <p>Developed by <strong>izo service quicky</strong></p>
-    </footer>
+<footer class="admin-footer">
+    &copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>izo service quicky</strong>
+</footer>
 
-    <!-- Client Runtime Core Execution Script Engine Block -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const queryParamsString = window.location.search;
-            const urlParametersParser = new URLSearchParams(queryParamsString);
-            const questionTargetId = urlParametersParser.get('id');
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const qId = params.get('id');
+    if (!qId) { alert('Missing question ID parameter.'); window.location.replace('dashboard'); return; }
 
-            if (!questionTargetId) {
-                alert('Broken reference key context! Redirecting back to management table view.');
-                window.location.replace('dashboard.html');
-                return;
+    const formScroll = document.getElementById('formScroll');
+    const layoutBadge = document.getElementById('layoutBadge');
+
+    function dropZoneHTML(fileInputName, textInputName, existingPath) {
+        const hasExisting = existingPath && existingPath.trim();
+        return `
+        <div>
+            <div class="drop-zone ${hasExisting ? 'has-file' : ''}" id="mainDrop">
+                <div class="preview-box" id="mainPreviewBox">
+                    ${hasExisting ? `<img src="assets/uploads/${existingPath}" alt="preview">` : `<i class="ph fa-solid fa-image"></i>`}
+                </div>
+                <div class="drop-content">
+                    <div class="drop-title"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand)"></i> Drag &amp; drop a new image</div>
+                    <div class="drop-sub">PNG, JPG, WEBP — max 10 MB</div>
+                    <button type="button" class="drop-btn" id="mainBrowseBtn"><i class="fa-solid fa-folder-open"></i> Browse File</button>
+                    <div class="file-name-badge" id="mainFileBadge">
+                        <i class="fa-solid fa-file-image"></i> <span id="mainFileName"></span>
+                        <button type="button" id="mainClearBtn"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    ${hasExisting ? `<div class="current-img-note"><i class="fa-solid fa-circle-check" style="color:#10b981"></i> Current: <span>${existingPath}</span></div>` : ''}
+                </div>
+            </div>
+            <input type="file" id="imageFile" name="${fileInputName}" accept="image/*" class="hidden-file">
+            <div class="or-divider">OR reuse existing asset</div>
+            <input type="text" id="imageFileTextFallback" name="${textInputName}" value="${hasExisting ? existingPath : ''}" placeholder="Type existing filename e.g. stop.png" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13.5px;font-weight:500;outline:none;">
+        </div>`;
+    }
+
+    function optionDropHTML(key, existingVal) {
+        const hasImg = existingVal && /\.(png|jpg|jpeg|gif|webp)$/i.test(existingVal.trim());
+        return `
+        <div class="opt-card">
+            <div class="opt-label">Option ${key}</div>
+            <div class="opt-drop ${hasImg ? 'has-file' : ''}" id="optDrop_${key}" data-key="${key}">
+                <i class="opt-drop-icon fa-solid fa-image"></i>
+                <span class="opt-drop-text">Drag or click to upload</span>
+                <img class="opt-preview" id="optPrev_${key}" ${hasImg ? `src="assets/uploads/${existingVal.trim()}" style="display:block;"` : ''} alt="option ${key}">
+            </div>
+            <input type="file" name="option${key.toLowerCase()}_File" id="optFile_${key}" accept="image/*" class="hidden-file">
+            <input type="text" name="option${key}TextFallback" id="optText_${key}" value="${hasImg ? '' : (existingVal || '')}" placeholder="OR type existing filename">
+        </div>`;
+    }
+
+    // Fetch the single row cleanly from backend
+    fetch(`/api/exams/${qId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data) return;
+            
+            let exam = Array.isArray(data) ? data[0] : data;
+            if (!exam) { alert('Question not found.'); window.location.replace('dashboard'); return; }
+
+            const questionStatement = exam.question || '';
+            const correctOptionKey = exam.correct_option || exam.correctOption || '';
+            const questionSignImage = exam.image_path || exam.imagePath || '';
+
+            const optA = exam.option_a !== undefined ? exam.option_a : (exam.optiona || '');
+            const optB = exam.option_b !== undefined ? exam.option_b : (exam.optionb || '');
+            const optC = exam.option_c !== undefined ? exam.option_c : (exam.optionc || '');
+            const optD = exam.option_d !== undefined ? exam.option_d : (exam.optiond || '');
+
+            const isImgLayout = /\.(png|jpg|jpeg|gif|webp)$/i.test(optA.trim()) || optA.includes('_File') || optA.includes('optionA_File');
+            layoutBadge.textContent = isImgLayout ? 'Image Options Mode' : 'Text Options Mode';
+
+            let optionsHTML = '';
+            if (isImgLayout) {
+                optionsHTML = `<div class="options-grid">
+                    ${optionDropHTML('A', optA)}
+                    ${optionDropHTML('B', optB)}
+                    ${optionDropHTML('C', optC)}
+                    ${optionDropHTML('D', optD)}
+                </div>`;
+            } else {
+                optionsHTML = `<div class="text-options-grid">
+                    <div class="field"><label>Option A</label><input type="text" name="optionA" required value="${optA}"></div>
+                    <div class="field"><label>Option B</label><input type="text" name="optionB" required value="${optB}"></div>
+                    <div class="field"><label>Option C</label><input type="text" name="optionC" required value="${optC}"></div>
+                    <div class="field"><label>Option D</label><input type="text" name="optionD" required value="${optD}"></div>
+                </div>`;
             }
 
-            const modeBadge = document.getElementById('activeLayoutModeBadge');
-            const layoutModeInput = document.getElementById('optionsLayoutMode');
-            const dynamicGridContainer = document.getElementById('dynamicOptionsInputGridContainer');
-            
-            const mainImgInput = document.getElementById('imageFile');
-            const mainImgText = document.getElementById('imageFileTextFallback');
-            const mainImgPreview = document.getElementById('mainQuestionImagePreviewPane');
+            const correctSel = ['A','B','C','D'].map(v => `<option value="${v}" ${correctOptionKey===v?'selected':''}>${v}</option>`).join('');
 
-            // Local live reader preview for new browsed file selection
-            mainImgInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => { mainImgPreview.innerHTML = `<img src="${e.target.result}">`; }
-                    reader.readAsDataURL(this.files[0]);
-                    mainImgText.value = ''; 
-                }
-            });
+            formScroll.innerHTML = `
+            <form action="/api/exams/edit" method="POST" enctype="multipart/form-data" class="form-card">
+                <input type="hidden" name="id" value="${exam.id}">
+                <input type="hidden" name="optionsLayoutMode" value="${isImgLayout?'image':'text'}">
+                <input type="hidden" name="existingImagePath" value="${questionSignImage}">
+                <input type="hidden" name="existingOptA" value="${optA}">
+                <input type="hidden" name="existingOptB" value="${optB}">
+                <input type="hidden" name="existingOptC" value="${optC}">
+                <input type="hidden" name="existingOptD" value="${optD}">
 
-            // Local live reader preview for typed reusable filename tracking
-            mainImgText.addEventListener('input', function() {
-                const val = this.value.trim();
-                if (val) {
-                    mainImgPreview.innerHTML = `<img src="assets/uploads/${val}" onerror="this.parentElement.innerHTML='<span class=\'reuse-label\'>Asset matched</span>'">`;
-                }
-            });
+                <div class="field">
+                    <label for="question">Question Text</label>
+                    <textarea id="question" name="question" rows="3" required>${questionStatement}</textarea>
+                </div>
 
-            // Fetch the question metadata out of database pool channels
-            fetch(`/api/exams/${questionTargetId}`)
-                .then(res => res.json())
-                .then(questionPayloadBox => {
-                    const exam = Array.isArray(questionPayloadBox) ? questionPayloadBox[0] : questionPayloadBox;
-                    
-                    if (!exam) {
-                        alert('Record item data context entity not found.');
-                        window.location.replace('dashboard.html');
-                        return;
-                    }
+                <div class="field">
+                    <label>Question Sign Image (optional)</label>
+                    ${dropZoneHTML('imageFile', 'imageFileTextFallback', questionSignImage)}
+                </div>
 
-                    document.getElementById('targetRecordId').value = exam.id;
-                    document.getElementById('question').value = exam.question;
-                    document.getElementById('correctOption').value = exam.correct_option;
-                    document.getElementById('existingImagePath').value = exam.image_path || '';
+                <div class="field">
+                    <label style="margin-bottom:4px; display:block;">Question Options Pool Variations</label>
+                    ${optionsHTML}
+                </div>
 
-                    document.getElementById('existingOptA').value = exam.option_a || '';
-                    document.getElementById('existingOptB').value = exam.option_b || '';
-                    document.getElementById('existingOptC').value = exam.option_c || '';
-                    document.getElementById('existingOptD').value = exam.option_d || '';
+                <div class="field" style="max-width:300px">
+                    <label for="correctOption">Correct Answer Key</label>
+                    <select id="correctOption" name="correctOption" required>
+                        <option value="">— Select correct option —</option>
+                        ${correctSel}
+                    </select>
+                </div>
 
-                    if (exam.image_path) {
-                        mainImgPreview.innerHTML = `<img src="assets/uploads/${exam.image_path}" alt="Main Sign">`;
-                        mainImgText.value = exam.image_path;
-                    }
+                <div class="form-actions">
+                    <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+                    <a href="dashboard" class="btn-cancel">Cancel &amp; Go Back</a>
+                </div>
+            </form>`;
 
-                    const isImageOptionsLayout = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a) || (exam.option_a && exam.option_a.includes('optionA_File-'));
+            const mainDrop = document.getElementById('mainDrop');
+            const mainFileInp = document.getElementById('imageFile');
+            const mainPreview = document.getElementById('mainPreviewBox');
+            const mainBrowse = document.getElementById('mainBrowseBtn');
+            const badge = document.getElementById('mainFileBadge');
+            const fnameEl = document.getElementById('mainFileName');
+            const clearBtn = document.getElementById('mainClearBtn');
+            const textFb = document.getElementById('imageFileTextFallback');
 
-                    if (isImageOptionsLayout) {
-                        layoutModeInput.value = 'image';
-                        modeBadge.innerText = "Four Image Options Mode";
-                        modeBadge.parentElement.style.borderColor = "#0284c7";
+            function applyMainFile(file) {
+                if (!file || !file.type.startsWith('image/')) return;
+                const r = new FileReader();
+                r.onload = e => {
+                    mainPreview.innerHTML = `<img src="${e.target.result}" alt="preview">`;
+                                        mainDrop.classList.add('has-file');
+                    fnameEl.textContent = file.name;
+                    badge.classList.add('show');
+                    textFb.value = '';
+                };
+                r.readAsDataURL(file);
+                try { const dt = new DataTransfer(); dt.items.add(file); mainFileInp.files = dt.files; } catch(err){}
+            }
 
-                        dynamicGridContainer.innerHTML = `
-                            <div class="option-uploader-card">
-                                <div class="option-header-row">Option Image A</div>
-                                <div class="option-thumb-preview" id="previewOptionImage_A">
-                                    <img src="assets/uploads/${exam.option_a}">
-                                </div>
-                                <input type="file" name="optionA_File" id="input_file_A" accept="image/*">
-                                <input type="text" name="optionATextFallback" id="input_text_A" value="${exam.option_a}" class="fallback-txt">
-                            </div>
-                            <div class="option-uploader-card">
-                                <div class="option-header-row">Option Image B</div>
-                                <div class="option-thumb-preview" id="previewOptionImage_B">
-                                    <img src="assets/uploads/${exam.option_b}">
-                                </div>
-                                <input type="file" name="optionB_File" id="input_file_B" accept="image/*">
-                                <input type="text" name="optionBTextFallback" id="input_text_B" value="${exam.option_b}" class="fallback-txt">
-                            </div>
-                            <div class="option-uploader-card">
-                                <div class="option-header-row">Option Image C</div>
-                                <div class="option-thumb-preview" id="previewOptionImage_C">
-                                    <img src="assets/uploads/${exam.option_c}">
-                                </div>
-                                <input type="file" name="optionC_File" id="input_file_C" accept="image/*">
-                                <input type="text" name="optionCTextFallback" id="input_text_C" value="${exam.option_c}" class="fallback-txt">
-                            </div>
-                            <div class="option-uploader-card">
-                                <div class="option-header-row">Option Image D</div>
-                                <div class="option-thumb-preview" id="previewOptionImage_D">
-                                    <img src="assets/uploads/${exam.option_d}">
-                                </div>
-                                <input type="file" name="optionD_File" id="input_file_D" accept="image/*">
-                                <input type="text" name="optionDTextFallback" id="input_text_D" value="${exam.option_d}" class="fallback-txt">
-                            </div>
-                        `;
-                        registerLiveThumbEventListeners();
-                    } else {
-                        layoutModeInput.value = 'text';
-                        modeBadge.innerText = "Text Options Mode";
-
-                        dynamicGridContainer.innerHTML = `
-                            <div class="form-group-block">
-                                <label for="optionA">Option A</label>
-                                <input type="text" id="optionA" name="optionA" required value="${exam.option_a}">
-                            </div>
-                            <div class="form-group-block">
-                                <label for="optionB">Option B</label>
-                                <input type="text" id="optionB" name="optionB" required value="${exam.option_b}">
-                            </div>
-                                                        <div class="form-group-block">
-                                <label for="optionC">Option C</label>
-                                <input type="text" id="optionC" name="optionC" required value="${exam.option_c}">
-                            </div>
-                            <div class="form-group-block">
-                                <label for="optionD">Option D</label>
-                                <input type="text" id="optionD" name="optionD" required value="${exam.option_d}">
-                            </div>
-                        `;
-                    }
-                })
-                .catch(err => console.error('Local data handshake extraction compile error:', err));
-
-            function registerLiveThumbEventListeners() {
-                const targetKeys = ["A", "B", "C", "D"];
-                targetKeys.forEach(key => {
-                    const fileIn = document.getElementById(`input_file_${key}`);
-                    const textIn = document.getElementById(`input_text_${key}`);
-                    const preview = document.getElementById(`previewOptionImage_${key}`);
-
-                    fileIn.addEventListener('change', function() {
-                        if (this.files && this.files) {
-                            const reader = new FileReader();
-                            reader.onload = (e) => { preview.innerHTML = `<img src="${e.target.result}">`; }
-                            reader.readAsDataURL(this.files);
-                            textIn.value = ''; 
-                        }
-                    });
-
-                    textIn.addEventListener('input', function() {
-                        const val = this.value.trim();
-                        if (val) {
-                            preview.innerHTML = `<img src="assets/uploads/${val}" onerror="this.parentElement.innerHTML='<span>Asset matched</span>'">`;
-                        }
-                    });
+            if(mainBrowse) mainBrowse.addEventListener('click', () => mainFileInp.click());
+            if(mainDrop) {
+                mainDrop.addEventListener('click', e => { if (e.target===mainDrop || e.target.closest('.preview-box') || e.target.closest('#mainBrowseBtn')) mainFileInp.click(); });
+                mainDrop.addEventListener('dragover', e => { e.preventDefault(); mainDrop.classList.add('dragover'); });
+                mainDrop.addEventListener('dragleave', () => mainDrop.classList.remove('dragover'));
+                mainDrop.addEventListener('drop', e => { e.preventDefault(); mainDrop.classList.remove('dragover'); if (e.dataTransfer.files) applyMainFile(e.dataTransfer.files[0]); });
+            }
+            if(clearBtn) {
+                clearBtn.addEventListener('click', e => {
+                    e.stopPropagation(); mainPreview.innerHTML = `<i class="ph fa-solid fa-image"></i>`;
+                    mainDrop.classList.remove('has-file'); badge.classList.remove('show'); mainFileInp.value = ''; textFb.value = '';
                 });
             }
+            if(textFb) {
+                textFb.addEventListener('input', function() {
+                    const v = this.value.trim();
+                    if (v) { mainPreview.innerHTML = `<img src="assets/uploads/${v}" alt="preview" onerror="this.parentElement.innerHTML='<i class=\'ph fa-solid fa-image\' style=\'color:#ef4444\'></i>'">`; mainDrop.classList.add('has-file'); }
+                    else { mainPreview.innerHTML = `<i class="ph fa-solid fa-image"></i>`; mainDrop.classList.remove('has-file'); }
+                });
+            }
+
+            if (isImgLayout) {
+                ['A','B','C','D'].forEach(key => {
+                    const dropEl = document.getElementById(`optDrop_${key}`);
+                    const fileInp = document.getElementById(`optFile_${key}`);
+                    const prevImg = document.getElementById(`optPrev_${key}`);
+                    const textInp = document.getElementById(`optText_${key}`);
+
+                    function applyOptFile(file) {
+                        if (!file || !file.type.startsWith('image/')) return;
+                        const r = new FileReader();
+                        r.onload = e => { prevImg.src=e.target.result; prevImg.style.display='block'; dropEl.classList.add('has-file'); textInp.value=''; };
+                        r.readAsDataURL(file);
+                        try { const dt=new DataTransfer(); dt.items.add(file); fileInp.files = dt.files; } catch(err){}
+                    }
+
+                    if(dropEl) {
+                        dropEl.addEventListener('click', () => fileInp.click());
+                        dropEl.addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('dragover'); });
+                        dropEl.addEventListener('dragleave', () => dropEl.classList.remove('dragover'));
+                        dropEl.addEventListener('drop', e => { e.preventDefault(); dropEl.classList.remove('dragover'); if (e.dataTransfer.files) applyOptFile(e.dataTransfer.files[0]); });
+                    }
+                    if(fileInp) fileInp.addEventListener('change', function() { if (this.files && this.files[0]) applyOptFile(this.files[0]); });
+                    if(textInp) {
+                        textInp.addEventListener('input', function() {
+                            const v = this.value.trim();
+                            if (v) { prevImg.src=`assets/uploads/${v}`; prevImg.style.display='block'; dropEl.classList.add('has-file'); }
+                            else { dropEl.classList.remove('has-file'); prevImg.style.display='none'; prevImg.src=''; }
+                        });
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            formScroll.innerHTML = `<div style="text-align:center; padding:40px; color:#ef4444; font-weight:700;"><i class="fa-solid fa-circle-exclamation"></i> Error loading records from Alwaysdata.</div>`;
         });
-    </script>
+});
+</script>
 </body>
 </html>
-
-
