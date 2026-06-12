@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function makeDot(i) {
         const q = questions[i];
         const dot = document.createElement('div');
-        const isAns = !!answers[q.id];
+        const isAns = !!answers[String(q.id)];
         const isCur = i === idx;
         dot.className = 'prog-dot' + (isAns ? ' answered' : '') + (isCur ? ' current' : '');
         if (isAns) {
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
             qBodyEl.classList.add('no-image');
         }
 
-        const saved = answers[q.id] || '';
+        const saved = answers[String(q.id)] || '';
         const opts = [
             { key: 'A', val: q.option_a },
             { key: 'B', val: q.option_b },
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
             optsEl.innerHTML = opts.map(o => `
                 <label class="opt-row${saved===o.key?' selected':''}">
                     <input class="opt-radio" type="radio" name="choice" value="${o.key}" ${saved===o.key?'checked':''}
-                        onchange="pick('${o.key}',${o.id},this)">
+                        onchange="pick('${o.key}',${q.id},this)">
                     <span class="opt-label"><strong>${o.key.toLowerCase()})</strong> ${o.val}</span>
                 </label>`).join('');
         }
@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.pick = function(key, id, el) {
-        answers[id] = key;
+        answers[String(id)] = key;
         el.closest('.options-list').querySelectorAll('.opt-row').forEach(r => r.classList.remove('selected'));
         el.closest('.opt-row').classList.add('selected');
         buildProgress();
