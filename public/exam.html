@@ -18,6 +18,9 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
 
+        /* ══════════════════════════════
+           DESKTOP: fully contained, no page scroll
+        ══════════════════════════════ */
         html, body {
             height: 100vh;
             height: -webkit-fill-available;
@@ -54,7 +57,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.06);
         }
 
-        /* ── PROGRESS: dots (no click) + thin progress line ── */
+        /* ── PROGRESS ── */
         .prog-desktop {
             flex-shrink: 0;
             display: flex; flex-direction: column; gap: 10px;
@@ -63,29 +66,19 @@
             display: flex; flex-wrap: nowrap;
             justify-content: center; align-items: center; gap: 8px;
         }
-
-        /* thin line — shows answered percentage */
         .prog-line {
             width: 100%; height: 3px;
-            background: #e5e7eb; border-radius: 2px;
-            position: relative;
+            background: #e5e7eb; border-radius: 2px; position: relative;
         }
         .prog-line-fill {
             height: 100%; background: var(--blue); border-radius: 2px;
-            position: absolute; left: 0; top: 0;
-            transition: width 0.25s;
+            position: absolute; left: 0; top: 0; transition: width 0.25s;
         }
-
-        /* dots — display only, no pointer */
         .prog-dot {
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            border: 2px solid #d1d5db;
-            background: #fff;
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 2px solid #d1d5db; background: #fff;
             display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-            cursor: default;
-            pointer-events: none;
+            flex-shrink: 0; cursor: default; pointer-events: none;
             transition: border-color 0.12s, background 0.12s;
         }
         .prog-dot svg { display: none; }
@@ -93,23 +86,18 @@
         .prog-dot.answered svg { display: block; }
         .prog-dot.current:not(.answered) { border-color: var(--blue); border-width: 3px; }
 
-        /* MOBILE progress: 2 rows of 10 */
         .prog-mobile { display: none; flex-shrink: 0; flex-direction: column; gap: 5px; align-items: center; }
-        .prog-mobile .prog-row {
-            display: flex; flex-direction: row;
-            justify-content: center; align-items: center; gap: 5px;
-        }
+        .prog-mobile .prog-row { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 5px; }
         .prog-mobile .prog-dot { width: 30px; height: 30px; }
 
         /* ── QUESTION TEXT ── */
         .q-text {
             font-size: 1.12rem; font-weight: 600; color: var(--text); line-height: 1.6;
             flex-shrink: 0;
-            background: rgba(0,0,0,0.03);
-            border-radius: 8px; padding: 14px 16px;
+            background: rgba(0,0,0,0.03); border-radius: 8px; padding: 14px 16px;
         }
 
-        /* ── BODY ── */
+        /* ── BODY (DESKTOP) ── */
         .q-body {
             flex: 1; min-height: 0;
             display: grid; grid-template-columns: 1fr 1fr; gap: 16px; overflow: hidden;
@@ -123,7 +111,7 @@
         }
         .img-frame img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
 
-        /* ── OPTIONS: NO borders, plain radio + text ── */
+        /* ── OPTIONS (DESKTOP) ── */
         .options-list {
             display: flex; flex-direction: column;
             overflow-y: auto; height: 100%;
@@ -131,7 +119,6 @@
         .opt-row {
             display: flex; align-items: center; gap: 14px;
             padding: 14px 12px;
-            border: none;
             border-bottom: 1px solid #f3f4f6;
             border-radius: 8px;
             cursor: pointer; background: transparent;
@@ -144,7 +131,7 @@
         .opt-label { font-size: 1.02rem; font-weight: 500; color: var(--text); line-height: 1.5; }
         .opt-label strong { font-weight: 700; }
 
-        /* ── IMAGE OPTIONS 2×2 ── */
+        /* ── IMAGE OPTIONS 2×2 (DESKTOP) ── */
         .options-list.img-grid {
             display: grid !important;
             grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
@@ -183,26 +170,96 @@
         .options-list::-webkit-scrollbar-track { background: transparent; }
         .options-list::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 2px; }
 
-        /* ══ MOBILE ≤ 640px ══ */
+        /* ══════════════════════════════
+           MOBILE ≤ 640px
+           Key change: page scrolls naturally, no overflow:hidden traps
+        ══════════════════════════════ */
         @media (max-width: 640px) {
+            /* Let the whole page scroll */
+            html, body {
+                height: auto !important;
+                overflow: auto !important;
+            }
+
+            .page {
+                overflow: visible !important;
+                height: auto !important;
+                padding: 10px 10px 16px;
+                gap: 10px;
+            }
+
+            /* Question card: no fixed height, grows with content */
+            .question-card {
+                flex: none !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                padding: 12px 14px 14px;
+                gap: 12px;
+            }
+
+            /* Progress: show mobile dots */
             .prog-desktop { display: none !important; }
             .prog-mobile  { display: flex !important; }
 
-            .q-body { grid-template-columns: 1fr !important; gap: 6px; }
-            .img-frame { max-height: 130px !important; padding: 4px; }
-
+            /* Question text */
             .q-text { font-size: 0.95rem; padding: 10px 12px; }
-            .timer-val { font-size: 1.4rem; }
-            .question-card { padding: 12px 14px 10px; gap: 10px; }
-            .page { padding: 8px 10px 4px; gap: 8px; }
-            .btn { padding: 10px 16px; font-size: 0.88rem; }
-            .opt-row { padding: 10px 8px; gap: 10px; }
-            .opt-label { font-size: 0.92rem; }
+
+            /* Body: stack vertically, no fixed height */
+            .q-body {
+                grid-template-columns: 1fr !important;
+                gap: 10px;
+                overflow: visible !important;
+                height: auto !important;
+                min-height: 0 !important;
+                flex: none !important;
+            }
+
+            /* Image: compact but visible */
+            .img-frame {
+                display: flex !important;
+                height: 160px !important;
+                max-height: 160px !important;
+                padding: 6px;
+            }
+
+            /* Options: natural height, no scroll trap */
+            .options-list {
+                overflow: visible !important;
+                height: auto !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+
+            /* Image-grid options: 2x2 but fixed reasonable height */
+            .options-list.img-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                grid-template-rows: 130px 130px !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+            .options-list.img-grid .opt-row {
+                height: 130px !important;
+                overflow: hidden !important;
+            }
+
+            .opt-row { padding: 11px 10px; gap: 10px; }
+            .opt-label { font-size: 0.93rem; }
+            .timer-val { font-size: 1.45rem; }
+
+            /* Nav bar: always visible at bottom of content */
+            .nav-bar {
+                padding-top: 14px;
+                margin-top: 4px;
+            }
+            .btn { padding: 11px 18px; font-size: 0.88rem; }
         }
 
         @media (max-width: 360px) {
             .prog-mobile .prog-dot { width: 26px; height: 26px; }
             .prog-mobile .prog-row { gap: 3px; }
+            .btn { padding: 10px 14px; font-size: 0.82rem; }
         }
     </style>
 </head>
@@ -219,13 +276,13 @@
     <!-- Question Card -->
     <div class="question-card">
 
-        <!-- DESKTOP progress: dots (no click) + thin line -->
+        <!-- DESKTOP progress -->
         <div class="prog-desktop" id="progDesktop">
             <div class="prog-row" id="progDesktopRow"></div>
             <div class="prog-line"><div class="prog-line-fill" id="progFillD"></div></div>
         </div>
 
-        <!-- MOBILE progress: 2 rows of 10 + thin line -->
+        <!-- MOBILE progress: 2 rows of 10 -->
         <div class="prog-mobile" id="progMobile">
             <div class="prog-row" id="progMobileRow1"></div>
             <div class="prog-row" id="progMobileRow2"></div>
@@ -311,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <path d="M2 7l3.5 3.5L12 3" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>`;
         }
-        // NO click handler — dots are display only
         return dot;
     }
 
@@ -340,10 +396,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const txt = q.question.replace(/\r?\n|\r/g, ' ');
         qTextEl.textContent = txt;
-        // scale font for very long questions only
         qTextEl.style.fontSize = txt.length > 280 ? '0.92rem' : txt.length > 180 ? '1.0rem' : '1.12rem';
 
         buildProgress();
+
+        // Scroll to top on mobile when navigating
+        if (window.innerWidth <= 640) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         // Image
         if (q.image_path) {
@@ -385,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
             optsEl.innerHTML = opts.map(o => `
                 <label class="opt-row${saved===o.key?' selected':''}">
                     <input class="opt-radio" type="radio" name="choice" value="${o.key}" ${saved===o.key?'checked':''}
-                        onchange="pick('${o.key}',${q.id},this)">
+                        onchange="pick('${o.key}',${o.id},this)">
                     <span class="opt-label"><strong>${o.key.toLowerCase()})</strong> ${o.val}</span>
                 </label>`).join('');
         }
@@ -399,8 +459,6 @@ document.addEventListener('DOMContentLoaded', () => {
             nextBtn.className = 'btn btn-next';
         }
     }
-
-    window.addEventListener('resize', () => render());
 
     window.pick = function(key, id, el) {
         answers[id] = key;
