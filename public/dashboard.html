@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- 🎯 BRANDING HEADER: LINKS DIRECTLY TO YOUR LOGO IN THE UPLOADS FOLDER -->
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>IKIZAME Admin</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
@@ -17,66 +19,24 @@
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
+            --focus: #0284c7;
             --sidebar-bg: #0f172a;
             --sidebar-border: #1e293b;
             --sidebar-muted: #94a3b8;
-            --sidebar-active: #f8fafc;
+            
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-main); overflow: hidden; }
 
-        /* ── SESSION TIMEOUT OVERLAY ── */
-        #sessionModal {
-            position: fixed; inset: 0; background: rgba(15,23,42,0.75);
-            display: none; align-items: center; justify-content: center;
-            z-index: 9999; backdrop-filter: blur(4px);
-        }
-        #sessionModal.show { display: flex; }
-        .session-modal-box {
-            background: #fff; border-radius: 16px; padding: 36px 32px;
-            max-width: 360px; width: 90%; text-align: center;
-            box-shadow: 0 24px 48px rgba(0,0,0,0.25);
-            animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        @keyframes popIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .session-modal-box .modal-icon {
-            width: 60px; height: 60px; background: #fef2f2;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; color: #ef4444; margin: 0 auto 16px;
-        }
-        .session-modal-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
-        .session-modal-box p { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px; }
-        .session-countdown { font-size: 28px; font-weight: 800; color: #ef4444; margin-bottom: 16px; }
-        .btn-relogin {
-            background: var(--brand); color: #fff; border: none;
-            padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 700;
-            cursor: pointer; font-family: 'Inter', sans-serif; width: 100%;
-            transition: background 0.2s;
-        }
-        .btn-relogin:hover { background: var(--brand-dark); }
-
-        /* ── SESSION WARNING TOAST ── */
-        #sessionToast {
-            position: fixed; top: 70px; right: 20px;
-            background: #fffbeb; border: 1px solid #fde68a;
-            color: #92400e; border-radius: 10px;
-            padding: 12px 16px; font-size: 13px; font-weight: 600;
-            display: none; align-items: center; gap: 10px; z-index: 9998;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            animation: slideInRight 0.35s ease; max-width: 320px;
-        }
-        #sessionToast.show { display: flex; }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
-        #toastTimer { font-weight: 800; color: #b45309; }
-
         /* ── LAYOUT ── */
         .shell { display: flex; height: calc(100vh - 44px); }
-
-        /* ── SIDEBAR ── */
         .sidebar {
             width: 240px; background: var(--sidebar-bg);
-            display: flex; flex-direction: column;
-            flex-shrink: 0; border-right: 1px solid var(--sidebar-border);
+            display: flex; flex-direction: column; flex-shrink: 0;
+            border-right: 1px solid var(--sidebar-border);
         }
         .sidebar-brand {
             padding: 24px 20px 20px; font-family: 'Black Han Sans', sans-serif;
@@ -88,126 +48,156 @@
             display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px;
             color: var(--sidebar-muted); text-decoration: none; font-size: 13.5px; font-weight: 600; transition: all 0.15s;
         }
-        .sidebar-nav a:hover { color: var(--sidebar-active); background: rgba(255,255,255,0.06); }
-        .sidebar-nav a.active { color: var(--sidebar-active); background: rgba(56,189,248,0.12); border-left: 3px solid #38bdf8; padding-left: 11px; }
+        .sidebar-nav a:hover { color: #f8fafc; background: rgba(255,255,255,0.06); }
+        .sidebar-nav a.active { color: #f8fafc; background: rgba(56,189,248,0.12); border-left: 3px solid #38bdf8; padding-left: 11px; }
         .sidebar-nav a i { width: 16px; text-align: center; }
-        .sidebar-nav .nav-logout { color: #f87171; margin-top: auto; }
-        .sidebar-nav .nav-logout:hover { background: rgba(239,68,68,0.1); color: #ef4444; }
-
+        .nav-logout { color: #f87171 !important; }
+        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #ef4444 !important; }
+        
         .sidebar-footer { padding: 14px 16px; border-top: 1px solid var(--sidebar-border); display: flex; align-items: center; gap: 10px; }
-        .admin-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+        .admin-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; }
         .admin-meta { flex: 1; min-width: 0; }
-        .admin-name { font-size: 12.5px; font-weight: 700; color: var(--sidebar-active); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .admin-name { font-size: 12.5px; font-weight: 700; color: #f8fafc; }
         .admin-role { font-size: 11px; color: var(--sidebar-muted); }
-        .session-timer-pill { font-size: 10px; font-weight: 700; background: rgba(56,189,248,0.15); color: #38bdf8; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
 
         /* ── WORKSPACE ── */
-        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .topbar { height: 64px; background: var(--bg-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; gap: 20px; flex-shrink: 0; }
-        .topbar-title h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
-        .topbar-title p { font-size: 12.5px; color: var(--text-muted); margin-top: 1px; }
-        .topbar-right { margin-left: auto; }
-        .search-box { position: relative; }
-        .search-box i { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; }
-        .search-box input { width: 320px; padding: 10px 14px 10px 40px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13.5px; font-weight: 500; outline: none; background: var(--bg-primary); transition: all 0.15s; }
-        .search-box input:focus { border-color: var(--brand); background: #fff; box-shadow: 0 0 0 3px rgba(11,105,139,0.12); }
-
-        /* ── METRICS ── */
-        .metrics-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; padding: 20px 32px 0; }
-        .metric-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; display: flex; align-items: center; gap: 14px; }
-        .metric-icon { width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
-        .icon-blue  { background: #e0f2fe; color: #0369a1; }
-        .icon-teal  { background: #ccfbf1; color: #0f766e; }
-        .icon-purple{ background: #f3e8ff; color: #6b21a8; }
-        .icon-orange{ background: #ffedd5; color: #c2410c; }
-        .metric-val { font-size: 1.5rem; font-weight: 800; line-height: 1; }
-        .metric-lbl { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-
-        .metric-card.dup-card { border-color: #fed7aa; background: linear-gradient(135deg, #fff7ed, #ffffff); }
-        .dup-card .metric-lbl { color: #c2410c; }
-        .ios-toggle { margin-left: auto; flex-shrink: 0; position: relative; width: 46px; height: 24px; background: #cbd5e1; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
-        .ios-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: left 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .ios-toggle.on { background: #ea580c; }
-        .ios-toggle.on::after { left: 24px; }
-
-        /* ── TABLE ── */
-        .table-wrap { flex: 1; overflow-y: auto; padding: 20px 32px 28px; }
-        table { width: 100%; background: var(--bg-white); border: 1px solid var(--border); border-radius: 12px; border-collapse: separate; border-spacing: 0; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        thead th { background: #f8fafc; padding: 12px 18px; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 1.5px solid var(--border); text-align: left; }
-        tbody td { padding: 13px 18px; font-size: 13.5px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover td { background: #f8fafc; }
-
-        .q-text { font-weight: 600; color: #1e293b; line-height: 1.45; }
-        .q-num { font-family: monospace; font-size: 11px; font-weight: 700; color: var(--brand); background: #e0f7ff; padding: 2px 7px; border-radius: 4px; }
-        .img-cell { width: 60px; height: 60px; border: 1px solid var(--border); border-radius: 6px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .img-cell img { max-width: 100%; max-height: 100%; object-fit: contain; }
-                .correct-pill { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #dcfce7; color: #15803d; font-weight: 800; font-size: 12px; }
-
-        .action-col { display: flex; flex-direction: column; gap: 5px; width: 100px; }
-        .btn-edit, .btn-delete {
-            border: none; padding: 6px 10px; border-radius: 6px;
-            font-size: 11.5px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            gap: 5px; text-decoration: none; letter-spacing: 0.2px;
-            transition: all 0.15s; width: 100%;
+        .workspace { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+        
+        .topbar {
+            height: 74px; background: var(--bg-white); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 32px; flex-shrink: 0;
         }
-        .btn-edit   { background: #e0f2fe; color: #0369a1; }
-        .btn-edit:hover   { background: #0284c7; color: #fff; }
-        .btn-delete { background: #fee2e2; color: #b91c1c; }
-        .btn-delete:hover { background: #ef4444; color: #fff; }
-
-        /* ── FOOTER ── */
-        .admin-footer {
-            height: 44px; background: var(--sidebar-bg);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 11.5px; color: #64748b; flex-shrink: 0;
+        .topbar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #0d1b2a; }
+        .topbar p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+        
+        .search-box-wrap { position: relative; width: 320px; }
+        .search-box-wrap input {
+            width: 100%; padding: 10px 18px; border: 1px solid #cbd5e1; border-radius: 30px;
+            font-size: 13px; color: var(--text-main); outline: none; background: #f8fafc;
         }
+
+        /* 🎯 ABSOLUTE OUTER VIEWPORT LOCKDOWN */
+        .form-scroll { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 24px; 
+            padding: 24px 32px;
+            overflow: hidden; 
+            height: calc(100vh - 74px - 44px); 
+        }
+
+        /* Summary Cards Grid container */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 20px; 
+            flex-shrink: 0; 
+        }
+        .summary-card {
+            background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px;
+            display: flex; align-items: center; gap: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.01);
+        }
+        .badge-square { width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0; }
+        .bg-blue { background: #e0f2fe; }
+        .bg-green { background: #dcfce7; }
+        .bg-purple { background: #f3e8ff; }
+        .bg-orange { background: #ffedd5; }
+        
+        .summary-card div p { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1.1; }
+        .summary-card div h3 { font-size: 10.5px; font-weight: 700; color: #b91c1c; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+        .summary-card div h3.lbl-muted { color: var(--text-muted); }
+
+        /* Toggle switch components design layout */
+        .switch-toggle { position: relative; display: inline-block; width: 44px; height: 24px; margin-left: auto; flex-shrink: 0; }
+        .switch-toggle input { opacity: 0; width: 0; height: 0; }
+        .slider-toggle { position: absolute; cursor: pointer; inset: 0; background-color: #cbd5e1; transition: .3s; border-radius: 24px; }
+        .slider-toggle:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider-toggle { background-color: var(--brand); }
+        input:checked + .slider-toggle:before { transform: translateX(20px); }
+
+        /* 🎯 ULTRA-ISOLATED INTERIOR SCROLL COMPARTMENT */
+        .table-container {
+            background: #fff; 
+            border: 1px solid var(--border); 
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); 
+            overflow-y: auto; 
+            overflow-x: auto;
+            flex: 1; 
+            position: relative;
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            text-align: left; 
+            font-size: 13.5px; 
+        }
+
+        /* 🎯 ABSOLUTE SCROLL-LOCKED STICKY METADATA HEADERS CONTAINER */
+        thead th {
+            position: sticky; 
+            top: 0; 
+            background: #f8fafc !important; 
+            color: var(--text-muted);
+            font-weight: 700; 
+            padding: 14px 16px; 
+            border-bottom: 2px solid var(--border);
+            z-index: 120; 
+            white-space: nowrap; 
+            box-shadow: inset 0 -1px 0 var(--border); 
+        }
+
+        tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.15s; }
+        tbody tr:hover { background: #f8fafc; }
+        tbody td { padding: 12px 16px; color: var(--text-main); vertical-align: middle; }
+
+        .cell-img { width: 40px; height: 40px; border-radius: 6px; border: 1px solid var(--border); object-fit: contain; background: #fafafa; display: block; }
+        .cell-badge { font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .cell-badge.correct { background: #dcfce7; color: #15803d; }
+                /* ── 🎯 ACTION CELL CONTROLS ── */
+                .btn-text-action.btn-edit,
+.btn-text-action.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 90px;        /* same fixed width */
+    height: 30px;       /* same fixed height */
+    border: none;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.btn-text-action.btn-edit  { background: #e0f2fe; color: #0369a1; }
+.btn-text-action.btn-edit:hover  { background: #bae6fd; color: #0c4a6e; }
+.btn-text-action.btn-delete  { background: #fee2e2; color: #b91c1c; }
+.btn-text-action.btn-delete:hover { background: #fecaca; color: #7f1d1d; }
+.actions-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 6px 0; }
+         #analyticsWorkspaceViewSection { overflow-y: auto; flex: 1; padding-right: 4px; }
+
+        .admin-footer { height: 44px; background: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; font-size: 11.5px; color: #64748b; flex-shrink: 0; }
         .admin-footer strong { color: #38bdf8; }
-
-        @media (max-width: 1300px) { .metrics-row, .performance-section { grid-template-columns: repeat(2,1fr); } }
-        @media (max-width: 1100px) {
-            .sidebar { display: none; }
-            .topbar { padding: 0 20px; }
-            .search-box input { width: 220px; }
-            .metrics-row, .performance-section { padding: 15px 15px 0; }
-            .table-wrap { padding: 15px; }
-        }
     </style>
 </head>
 <body>
 
-<!-- ── SESSION TIMEOUT MODAL ── -->
-<div id="sessionModal">
-    <div class="session-modal-box">
-        <div class="modal-icon"><i class="fa-solid fa-clock"></i></div>
-        <h3>Session Expired</h3>
-        <p>Your session timed out due to inactivity. You will be redirected to the login page.</p>
-        <div class="session-countdown" id="modalCountdown">5</div>
-        <button class="btn-relogin" onclick="doLogout()">
-            <i class="fa-solid fa-right-to-bracket"></i> Log In Again
-        </button>
-    </div>
-</div>
-
-<!-- ── WARNING TOAST (1 min before timeout) ── -->
-<div id="sessionToast">
-    <i class="fa-solid fa-triangle-exclamation"></i>
-    <span>Session expires in <span id="toastTimer">60</span>s — move the mouse to stay active.</span>
-</div>
-
 <div class="shell">
-    <!-- SIDEBAR NAVIGATION LINKING CHANNELS EXTENSIONLESS ROUTING -->
+    <!-- RECALIBRATED NAVIGATION SIDEBAR -->
     <aside class="sidebar">
-        <div class="sidebar-brand">
-            <i class="fa-solid fa-graduation-cap"></i> IKIZAME
-        </div>
-                <nav class="sidebar-nav">
-            <!-- 🎯 RECALIBRATED SIDEBAR CHANNELS: CONNECTED SYSTEM-PERFORMANCE INDEPENDENTLY -->
-            <a href="dashboard"  class="active" id="navLinkDashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-            <a href="add-exam"><i class="fa-solid fa-square-plus"></i> Add Exam</a>
-            <a href="system-performance" id="navLinkPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
-            <a href="#" onclick="alert('Student Performance analytics dashboards and reports launching soon!')"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
+        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <nav class="sidebar-nav">
+            <a href="#" class="active" id="navLinkDashboard" onclick="switchAdminControlView('table-view'); document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+                        <a href="add-exam" id="navLinkAddQuestion" onclick="document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
+            <a href="system-performance" id="navLinkSysPerformance" onclick="document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="#" id="navLinkPerformance" onclick="switchAdminControlView('analytics-view'); document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
             <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
         <div class="sidebar-footer">
@@ -216,431 +206,405 @@
                 <div class="admin-name">Admin</div>
                 <div class="admin-role">Administrator</div>
             </div>
-            <div class="session-timer-pill"><span id="sidebarTimerVal">5:00</span></div>
         </div>
     </aside>
 
     <div class="workspace">
         <header class="topbar">
-            <div class="topbar-title">
-                <h1 id="pageTitleText">Questions Repository Dashboard</h1>
-                <p id="pageSubtitleText">Live inventory management control node displaying all database question pool data elements</p>
+            <div>
+                <h1 id="workspaceMainTitle">Questions Repository Dashboard</h1>
+                <p id="workspaceMainSub">Live inventory management control node displaying all database question pool data elements</p>
             </div>
-            <div class="topbar-right">
-                <div class="search-box" id="topbarSearchContainer">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="searchInput" placeholder="Search questions, options...">
-                </div>
+            <div class="search-box-wrap">
+                <input type="text" id="dashboardSearchInput" placeholder="Search questions, options...">
             </div>
         </header>
 
-        <!-- 📊 VIEW A: PRIMARY REPOSITORY DASHBOARD PANEL CONTROLS -->
-        <div id="viewDashboardBlock" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
-            <!-- CORE METRICS TRACKING MATRIX POOL -->
-            <section class="metrics-row">
-                <div class="metric-card">
-                    <div class="metric-icon icon-blue"><i class="fa-solid fa-database"></i></div>
+        <div class="form-scroll">
+            <!-- SUMMARY METRICS CARDS ROW MATRICES (EXACT DESIGN MATCH) -->
+            <div class="grid" id="countsSummaryCardsRowViewSection">
+                <div class="summary-card">
+                    <div class="badge-square bg-blue"></div>
                     <div>
-                        <div class="metric-val" id="statTotal">0</div>
-                        <div class="metric-lbl">Total Questions</div>
+                        <p id="cardTotalQuestions">0</p>
+                        <h3 class="lbl-muted">Total Questions</h3>
                     </div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-icon icon-teal"><i class="fa-solid fa-image"></i></div>
+                <div class="summary-card">
+                    <div class="badge-square bg-green"></div>
                     <div>
-                        <div class="metric-val" id="statSignImg">0</div>
-                        <div class="metric-lbl">Sign Images</div>
+                        <p id="cardTotalSigns">0</p>
+                        <h3 class="lbl-muted">Sign Images</h3>
                     </div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-icon icon-purple"><i class="fa-solid fa-images"></i></div>
+                <div class="summary-card">
+                    <div class="badge-square bg-purple"></div>
                     <div>
-                        <div class="metric-val" id="statImgOptions">0</div>
-                        <div class="metric-lbl">Image Options</div>
+                        <p id="cardImageCount">0</p>
+                        <h3 class="lbl-muted">Image Options</h3>
                     </div>
                 </div>
-                <div class="metric-card d-flex align-items-center" style="cursor: pointer;" id="dupTriggerContainer">
-                    <div class="metric-icon icon-orange"><i class="fa-solid fa-clone"></i></div>
-                    <div>
-                        <div class="metric-val" id="statDupes">0</div>
-                        <div class="metric-lbl" style="color:#c2410c">Show Duplicates</div>
+                <div class="summary-card">
+                    <div class="badge-square bg-orange"></div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <p id="cardDuplicateCount" style="color: #c2410c;">0</p>
+                            <h3 style="color: #c2410c;">Show Duplicates</h3>
+                        </div>
+                        <label class="switch-toggle">
+                            <input type="checkbox" id="duplicateToggleSwitch">
+                            <span class="slider-toggle"></span>
+                        </label>
                     </div>
-                    <div class="ios-toggle" id="dupToggle" title="Show duplicates only"></div>
                 </div>
-            </section>
+            </div>
 
-            <!-- DATA ROW VIEWER CANVAS MATRIX -->
-            <div class="table-wrap">
+            <!-- EXCLUSIVELY SECURED SCROLL-LOCKED STICKY TABLE COMPONENT -->
+            <div class="table-container" id="questionsTableContainerViewSection">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:55px">No.</th>
-                            <th style="width:260px">Question</th>
-                            <th style="width:90px">Sign</th>
-                            <th>Option A</th>
-                            <th>Option B</th>
-                            <th>Option C</th>
-                            <th>Option D</th>
-                            <th style="width:55px;text-align:center">Key</th>
-                            <th style="width:115px;text-align:center">Actions</th>
+                            <th style="width: 55px; text-align: center;">NO.</th>
+                            <th style="width: 290px;">QUESTION</th>
+                            <th style="width: 90px; text-align: center;">SIGN</th>
+                            <th>OPTION A</th>
+                            <th>OPTION B</th>
+                            <th>OPTION C</th>
+                            <th>OPTION D</th>
+                            <th style="width: 65px; text-align: center;">KEY</th>
+                            <th style="width: 100px; text-align: center;">ACTIONS</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody">
-                        <tr><td colspan="9" style="text-align:center;padding:40px;color:#94a3b8"><i class="fa-solid fa-spinner fa-spin"></i> Loading all database question rows...</td></tr>
+                    <tbody id="questionsMasterTableBody">
+                        <tr>
+                            <td colspan="9" style="text-align: center; padding: 40px; color: #64748b; font-style: italic;">
+                                <i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i> Loading pool records...
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
 
-        <!-- ⚙️ VIEW B: HARD ISOLATED SYSTEM PERFORMANCE VIEW PANEL LAYER (100% SPLIT SAFETY) -->
-        <div id="viewPerformanceBlock" style="display: none; flex-direction: column; flex: 1; padding: 20px 32px; gap: 20px; overflow-y: auto;">
-            <section class="performance-section" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%;">
-                <div class="perf-card" style="background:var(--bg-white); border:1px solid var(--border); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
-                    <div style="display:flex; align-items:center; justify-content:between; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; width:100%;">
-                        <span>Network Ping Latency</span>
-                        <i class="fa-solid fa-bolt" style="color:#0284c7; margin-left:auto;"></i>
+            <!-- ==========================================================================
+                 📊 DYNAMIC STUDENT PERFORMANCE ANALYTICS PANEL (GLASSMORPHIC VIEW SHEETS)
+                 ========================================================================== -->
+            <div id="analyticsWorkspaceViewSection" style="display: none; flex-direction: column; gap: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #10b981;">
+                        <div style="background: #dcfce7; color: #15803d; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Average Passing Rate</div><div style="font-size: 1.8rem; font-weight: 800;" id="statPassRate">--%</div></div>
                     </div>
-                    <div class="perf-value" id="perfLatency" style="font-size:1.6rem; font-weight:800; color:var(--text-main);">-- ms</div>
-                    <div class="perf-status-indicator" id="perfLatencyStatus" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700;">
-                        <span class="status-optimal" style="color:#16803d;"><i class="fa-solid fa-circle-check"></i> Connected</span>
+                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #0284c7;">
+                        <div style="background: #e0f2fe; color: #0369a1; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-user-clock"></i></div>
+                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Total Active Attempts</div><div style="font-size: 1.8rem; font-weight: 800;" id="statTotalAttempts">--</div></div>
                     </div>
-                </div>
-                <div class="perf-card" style="background:var(--bg-white); border:1px solid var(--border); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
-                    <div style="display:flex; align-items:center; justify-content:between; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; width:100%;">
-                        <span>Active System Connections</span>
-                        <i class="fa-solid fa-users" style="color:#0f766e; margin-left:auto;"></i>
-                    </div>
-                    <div class="perf-value" id="perfActiveUsers" style="font-size:1.6rem; font-weight:800; color:var(--text-main);">1 Active</div>
-                    <div class="perf-status-indicator" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700;">
-                                                <span class="status-optimal" style="color:#16803d;"><i class="fa-solid fa-circle"></i> Capacity Optimal</span>
+                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #6b21a8;">
+                        <div style="background: #f3e8ff; color: #6b21a8; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-star"></i></div>
+                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Average Class Score</div><div style="font-size: 1.8rem; font-weight: 800;" id="statAvgScore">--/20</div></div>
                     </div>
                 </div>
-                <div class="perf-card" style="background:var(--bg-white); border:1px solid var(--border); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:8px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
-                    <div style="display:flex; align-items:center; justify-content:between; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; width:100%;">
-                        <span>Cloud Engine Health Tracker</span>
-                        <i class="fa-solid fa-server" style="color:#6b21a8; margin-left:auto;"></i>
+
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start;">
+                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-trophy" style="color: #f59e0b;"></i> Top 10 Student Leaderboard</h3>
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 700;">
+                                    <th style="padding: 10px 8px;">Umunyeshuri (Student)</th>
+                                    <th style="padding: 10px 8px; text-align: center;">Amanota (Score)</th>
+                                    <th style="padding: 10px 8px; text-align: right;">Itariki (Date)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardTableBodyTarget"></tbody>
+                        </table>
                     </div>
-                    <div class="perf-value" id="perfSystemStatus" style="font-size:1.6rem; font-weight:800; color:var(--text-main);">Operational</div>
-                    <div class="perf-status-indicator" id="perfHealthIndicator" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700;">
-                        <span class="status-optimal" style="color:#16803d;"><i class="fa-solid fa-heart-pulse"></i> 100% Stable</span>
+
+                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Top 5 Tricky Failed Questions</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Questions that students fail most frequently on tests.</p>
+                        <div style="display: flex; flex-direction: column; gap: 12px;" id="trickyQuestionsListTarget"></div>
                     </div>
                 </div>
-            </section>
-            
-            <!-- Real-Time Operational Performance Diagnostics Assessment Info Logging Panel -->
-            <div style="background:var(--bg-white); border:1px solid var(--border); border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.03); display:flex; flex-direction:column; gap:12px;">
-                <h3 style="font-size:15px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:#1e293b;"><i class="fa-solid fa-microchip" style="color:var(--brand)"></i> System Audit Analytics</h3>
-                <p style="font-size:13.5px; color:var(--text-muted); line-height:1.5;">This control engine pings the remote database clusters automatically every 10 seconds to log backend network transmission loads. If the response metric turns red, your platform will flag data bottlenecks instantly to safeguard system concurrency rates.</p>
             </div>
-        </div>
 
+        </div>
     </div>
 </div>
 
 <footer class="admin-footer">
-   &copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong>
+    &copy; 2026 IKIZAME &nbsp;<strong> Developed by Dotado Stationery Store Ltd</strong>
 </footer>
 
 <script>
-/* ═══════════════════════════════════════
-   SESSION TIMEOUT — 5 minutes idle
-   Auto-redirects cleanly to extensionless /admin-login on expire
-═══════════════════════════════════════ */
-(function() {
-    const IDLE_LIMIT   = 5 * 60 * 1000; 
-    const WARN_BEFORE  = 60 * 1000;     
-    const REDIRECT_URL = '/admin-login'; 
-
-    let idleTimer, warnTimer, countdownInterval;
-    const modal      = document.getElementById('sessionModal');
-    const toast      = document.getElementById('sessionToast');
-    const toastTimer = document.getElementById('toastTimer');
-    const modalCd    = document.getElementById('modalCountdown');
-    const sidebarVal = document.getElementById('sidebarTimerVal');
-
-    function formatTime(ms) {
-        const s = Math.ceil(ms / 1000);
-        const m = Math.floor(s / 60);
-        return m + ':' + String(s % 60).padStart(2, '0');
-    }
-
-    function updateSidebarTimer(remaining) {
-        if (sidebarVal) sidebarVal.textContent = formatTime(remaining);
-    }
-
-    window.doLogout = function() {
-        clearAll();
-        fetch('/api/admin/logout', { method: 'POST' }).finally(() => {
-            window.location.replace(REDIRECT_URL);
-        });
-    };
-
-    function showExpired() {
-        toast.classList.remove('show');
-        modal.classList.add('show');
-        let count = 5;
-        modalCd.textContent = count;
-        countdownInterval = setInterval(() => {
-            count--;
-            modalCd.textContent = count;
-            if (count <= 0) {
-                clearInterval(countdownInterval);
-                window.doLogout();
-            }
-        }, 1000);
-    }
-
-    function showWarning(remainingMs) {
-        let secs = Math.ceil(remainingMs / 1000);
-        toastTimer.textContent = secs;
-        toast.classList.add('show');
-        const iv = setInterval(() => {
-            secs--;
-            toastTimer.textContent = secs;
-            if (secs <= 0) clearInterval(iv);
-        }, 1000);
-        setTimeout(() => toast.classList.remove('show'), remainingMs);
-    }
-
-    function clearAll() {
-        clearTimeout(idleTimer);
-        clearTimeout(warnTimer);
-        clearInterval(countdownInterval);
-    }
-
-    let sessionStart = Date.now();
-    let rafId;
-
-    function rafTick() {
-        const elapsed   = Date.now() - sessionStart;
-        const remaining = IDLE_LIMIT - elapsed;
-        updateSidebarTimer(Math.max(0, remaining));
-        if (remaining > 0) rafId = requestAnimationFrame(rafTick);
-    }
-
-    function resetTimer() {
-        clearAll();
-        sessionStart = Date.now();
-        cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(rafTick);
-
-        warnTimer = setTimeout(() => {
-            const remaining = IDLE_LIMIT - (Date.now() - sessionStart);
-            showWarning(remaining);
-        }, IDLE_LIMIT - WARN_BEFORE);
-
-        idleTimer = setTimeout(showExpired, IDLE_LIMIT);
-    }
-
-    ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(evt => {
-        document.addEventListener(evt, resetTimer, { passive: true });
-    });
-
-    resetTimer(); 
-})();
-
-/* ═══════════════════════════════════════
-   DASHBOARD RUNTIME SYSTEM MOTOR ENGINES
-═══════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-    const tableBody  = document.getElementById('tableBody');
-    const searchInput = document.getElementById('searchInput');
-    const dupToggle  = document.getElementById('dupToggle');
+    const tableBody = document.getElementById('questionsMasterTableBody');
+    const searchInp = document.getElementById('dashboardSearchInput');
+        const duplicateToggle = document.getElementById('duplicateToggleSwitch');
+    
+    const cardTotalQuestions = document.getElementById('cardTotalQuestions');
+    const cardTotalSigns = document.getElementById('cardTotalSigns');
+    const cardImageCount = document.getElementById('cardImageCount');
+    const cardDuplicateCount = document.getElementById('cardDuplicateCount');
 
-    const statTotal   = document.getElementById('statTotal');
-    const statSignImg = document.getElementById('statSignImg');
-    const statImgOpt  = document.getElementById('statImgOptions');
-    const statDupes   = document.getElementById('statDupes');
+    let allQuestionsCachedArray = [];
 
-    // Performance UI elements
-    const perfLatency = document.getElementById('perfLatency');
-    const perfLatencyStatus = document.getElementById('perfLatencyStatus');
-    const perfActiveUsers = document.getElementById('perfActiveUsers');
-    const perfSystemStatus = document.getElementById('perfSystemStatus');
-    const perfHealthIndicator = document.getElementById('perfHealthIndicator');
+    // 🎯 SMART NORMALIZER ENGINE: Discards casing, spaces, breaklines, tabs completely for strict checks
+    function normalizeStringContentForComparison(str) {
+        if (!str) return '';
+        return str.toString()
+                  .toLowerCase()
+                  .replace(/[\r\n\t\s]+/g, '')
+                  .trim();
+    }
 
-    // Section view references
-    const navLinkDashboard = document.getElementById('navLinkDashboard');
-    const navLinkPerformance = document.getElementById('navLinkPerformance');
-    const viewDashboardBlock = document.getElementById('viewDashboardBlock');
-    const viewPerformanceBlock = document.getElementById('viewPerformanceBlock');
-    const pageTitleText = document.getElementById('pageTitleText');
-    const pageSubtitleText = document.getElementById('pageSubtitleText');
-    const topbarSearchContainer = document.getElementById('topbarSearchContainer');
+    function checkIsGraphicAssetString(str) {
+        if (!str) return false;
+        return /\.(png|jpg|jpeg|gif|webp)$/i.test(str.trim()) || str.includes('_File-') || str.includes('optiona_File-') || str.includes('optionA_File-');
+    }
 
-    let allQuestions = [];
-    let dupSubset    = [];
-    let showDups     = false;
-
-    // INTERACTIVE SPLIT SCREEN CHANGER ROUTINE
-    window.switchControlView = function(targetView) {
-        if (targetView === 'performance') {
-            navLinkPerformance.classList.add('active');
-            navLinkDashboard.classList.remove('active');
-            viewPerformanceBlock.style.display = 'flex';
-            viewDashboardBlock.style.display = 'none';
-            topbarSearchContainer.style.visibility = 'hidden';
-            
-            pageTitleText.textContent = "System Performance Matrix";
-            pageSubtitleText.textContent = "Real-time analytics monitor tracking hosting latency dropouts and database traffic metrics";
-        } else {
-            navLinkDashboard.classList.add('active');
-            navLinkPerformance.classList.remove('active');
-            viewDashboardBlock.style.display = 'flex';
-            viewPerformanceBlock.style.display = 'none';
-            topbarSearchContainer.style.visibility = 'visible';
-            
-            pageTitleText.textContent = "Questions Repository Dashboard";
-            pageSubtitleText.textContent = "Live inventory management control node displaying all database question pool data elements";
+    function renderCellContentHTML(val) {
+        if (!val || !val.trim()) return `<span style="color:#94a3b8; font-style:italic;">None</span>`;
+        if (checkIsGraphicAssetString(val)) {
+            return `<img src="assets/uploads/${val.trim()}" class="cell-img" alt="Option image" onerror="this.outerHTML='<span class=\'fallback-filename-txt\'>${val}</span>'">`;
         }
-    };
-
-    // Performance Audit Pinger Check Loop
-    function runPerformanceAuditCheck() {
-        const startTime = Date.now();
-        fetch('/api/exams', { method: 'HEAD' })
-            .then(() => {
-                const latency = Date.now() - startTime;
-                perfLatency.textContent = latency + ' ms';
-                
-                if (latency > 800) {
-                    perfLatencyStatus.innerHTML = `<span class="status-critical"><i class="fa-solid fa-triangle-exclamation"></i> Slowly Network</span>`;
-                    perfSystemStatus.textContent = "Congested Server Cloud";
-                    perfHealthIndicator.innerHTML = `<span class="status-warning"><i class="fa-solid fa-circle-exclamation"></i> High Load Latency</span>`;
-                } else if (latency > 350) {
-                    perfLatencyStatus.innerHTML = `<span class="status-warning"><i class="fa-solid fa-triangle-exclamation"></i> Moderate Delay</span>`;
-                    perfSystemStatus.textContent = "Operational";
-                    perfHealthIndicator.innerHTML = `<span class="status-optimal"><i class="fa-solid fa-circle-check"></i> Stable Link Connection</span>`;
-                } else {
-                    perfLatencyStatus.innerHTML = `<span class="status-optimal"><i class="fa-solid fa-circle-check"></i> Optimal Speed</span>`;
-                    perfSystemStatus.textContent = "Operational";
-                    perfHealthIndicator.innerHTML = `<span class="status-optimal"><i class="fa-solid fa-heart-pulse"></i> 100% Stable</span>`;
-                }
-            })
-            .catch(() => {
-                                perfLatency.textContent = "Down / Timeout";
-                perfLatencyStatus.innerHTML = `<span class="status-critical"><i class="fa-solid fa-circle-xmark"></i> System Down</span>`;
-                perfSystemStatus.textContent = "Database Cluster Offline";
-                perfHealthIndicator.innerHTML = `<span class="status-critical"><i class="fa-solid fa-triangle-exclamation"></i> Communication Failure</span>`;
-            });
-
-        const simulatedUsers = Math.floor(Math.random() * 3) + 1;
-        perfActiveUsers.textContent = simulatedUsers + ' Active User' + (simulatedUsers > 1 ? 's' : '');
+        return `<span>${val}</span>`;
     }
-
-    runPerformanceAuditCheck();
-    setInterval(runPerformanceAuditCheck, 10000);
-
-    // Fetch call targeting the clean backend endpoints
-    fetch('/api/exams')
-        .then(res => {
-            if (res.status === 401) {
-                alert('Session expired. Please log in again.');
-                window.location.replace('/admin-login');
-                return null;
-            }
-            return res.json();
-        })
-        .then(data => {
-            if (!data) return;
-            // UNCONDITIONAL RETRIEVAL FIX: Captures all rows (70+) returned from the database array payload
-            allQuestions = data;
-            calcStats(allQuestions);
-            renderRows(allQuestions);
-        })
-        .catch(() => {
-            tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#ef4444;font-weight:600;padding:30px">Error loading question payload rows from server database.</td></tr>`;
-        });
-
-    function norm(s) {
-        return s ? s.toString().toLowerCase().replace(/\s+/g,'') : '';
-    }
-
-    function calcStats(data) {
-        let signs = 0, imgOpts = 0;
-        const seen = {};
-        dupSubset = [];
-        data.forEach(q => {
-            if (q.image_path) signs++;
-            if (/\.(png|jpg|jpeg|gif|webp)$/i.test(q.option_a||'') || (q.option_a||'').includes('optionA_File')) imgOpts++;
-            const key = norm(q.question)+'_'+norm(q.image_path)+'_'+norm(q.option_a)+'_'+norm(q.option_b)+'_'+norm(q.option_c)+'_'+norm(q.option_d);
-            seen[key] = seen[key] || [];
-            seen[key].push(q);
-        });
-        for (const k in seen) {
-            if (seen[k].length > 1) seen[k].forEach(q => { if (!dupSubset.some(d=>d.id===q.id)) dupSubset.push(q); });
-        }
-        statTotal.textContent   = data.length;
-        statSignImg.textContent = signs;
-        statImgOpt.textContent  = imgOpts;
-        statDupes.textContent   = dupSubset.length;
-    }
-
-    function optionCell(val) {
-        if (!val) return `<span style="color:#cbd5e1;font-style:italic;font-size:12px">—</span>`;
-        const v = val.trim();
-        if (/\.(png|jpg|jpeg|gif|webp|bmp|svg)$/i.test(v) || v.includes('_File')) {
-            return `<div class="img-cell"><img src="assets/uploads/${v}" loading="lazy" onerror="this.parentElement.innerHTML='<span style=\'font-size:11px;color:#94a3b8\'>${v}</span>'"></div>`;
-        }
-        return `<span style="font-size:13px">${v}</span>`;
-    }
-
-    function renderRows(data) {
-        if (!data.length) {
-            tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#94a3b8;padding:32px;font-style:italic">No questions matched your search filters.</td></tr>`;
+        function executeTableRenderPipeline(filteredArray) {
+        if (!filteredArray || filteredArray.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#64748b;">No matching data records found inside database repository.</td></tr>`;
             return;
         }
-        tableBody.innerHTML = data.map((q, i) => `
-            <tr id="row_${q.id}">
-                <td><span class="q-num">${i+1}</span></td>
-                <td><div class="q-text">${q.question}</div></td>
-                <td>${q.image_path ? `<div class="img-cell"><img src="assets/uploads/${q.image_path}" loading="lazy"></div>` : '<span style="color:#cbd5e1;font-size:11px">None</span>'}</td>
-                <td>${optionCell(q.option_a)}</td>
-                <td>${optionCell(q.option_b)}</td>
-                <td>${optionCell(q.option_c)}</td>
-                <td>${optionCell(q.option_d)}</td>
-                <td style="text-align:center"><span class="correct-pill">${q.correct_option}</span></td>
-                <td>
-                    <div class="action-col">
-                        <a href="add-exam?id=${q.id}" class="btn-edit"><i class="fa-solid fa-pen"></i> Edit</a>
-                        <button onclick="deleteQuestion(${q.id})" class="btn-delete"><i class="fa-solid fa-trash"></i> Delete</button>
-                    </div>
-                </td>
-            </tr>`).join('');
+
+        tableBody.innerHTML = filteredArray.map((q, i) => {
+            return `
+                <tr>
+                    <td style="text-align:center; font-weight:700; color:var(--brand);">${i + 1}</td>
+                    <td style="font-weight:600; line-height:1.45; min-width:220px; color:#0f172a; white-space:normal; overflow:visible;">${q.question}</td>
+                    <td style="text-align:center;">
+                        ${q.image_path ? `<img src="assets/uploads/${q.image_path}" class="cell-img" style="margin:0 auto;" alt="Sign">` : `<span style="color:#cbd5e1; font-weight:600; font-size:12px;">None</span>`}
+                    </td>
+                    <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_a)}</td>
+                    <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_b)}</td>
+                    <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_c)}</td>
+                    <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_d)}</td>
+                    <td style="text-align:center;"><span class="cell-badge correct">${q.correct_option}</span></td>
+                    <td style="text-align:center;">
+                        <!-- 🎯 FIXED CLASS NAMES: Now perfectly wired to the retro screenshot look -->
+                        <div class="actions-cell">
+                            <a href="edit-exam?id=${q.id}" class="btn-text-action btn-edit">
+    <i class="fa-solid fa-pencil" style="font-size:12px;"></i> Edit
+</a>
+<button onclick="triggerQuestionDeletionCycle(${q.id}, this)" class="btn-text-action btn-delete">
+    <i class="fa-solid fa-trash" style="font-size:12px;"></i> Delete
+</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
     }
 
-    dupToggle.addEventListener('click', () => {
-        showDups = !showDups;
-        dupToggle.classList.toggle('on', showDups);
-        searchInput.value = '';
-        renderRows(showDups ? dupSubset : allQuestions);
-    });
+    function applyFiltersSearchAndDuplicateLogic() {
+        let pool = [...allQuestionsCachedArray];
+        const searchVal = normalizeStringContentForComparison(searchInp.value);
 
-    searchInput.addEventListener('input', function() {
-        const q = norm(this.value);
-        const base = showDups ? dupSubset : allQuestions;
-        if (!q) { renderRows(base); return; }
-        renderRows(base.filter(e =>
-            norm(e.question).includes(q) || norm(e.option_a).includes(q) ||
-            norm(e.option_b).includes(q) || norm(e.option_c).includes(q) || norm(e.option_d).includes(q)
-        ));
-    });
+        if (searchVal) {
+            pool = pool.filter(q => {
+                const normQ = normalizeStringContentForComparison(q.question);
+                const normA = normalizeStringContentForComparison(q.option_a);
+                const normB = normalizeStringContentForComparison(q.option_b);
+                const normC = normalizeStringContentForComparison(q.option_c);
+                const normD = normalizeStringContentForComparison(q.option_d);
+                
+                return normQ.includes(searchVal) || 
+                       normA.includes(searchVal) || 
+                       normB.includes(searchVal) || 
+                       normC.includes(searchVal) || 
+                       normD.includes(searchVal);
+            });
+        }
 
-    window.deleteQuestion = function(id) {
-        if (!confirm('Permanently delete this question from the server pool? This cannot be undone.')) return;
-        fetch(`/api/exams/delete/${id}`, { method: 'DELETE' })
-            .then(r => r.json())
+        if (duplicateToggle && duplicateToggle.checked) {
+            const masterFingerprintSignatureMap = {};
+            allQuestionsCachedArray.forEach(q => {
+                const pureQ = normalizeStringContentForComparison(q.question);
+                const pureA = normalizeStringContentForComparison(q.option_a);
+                const pureB = normalizeStringContentForComparison(q.option_b);
+                const pureC = normalizeStringContentForComparison(q.option_c);
+                const pureD = normalizeStringContentForComparison(q.option_d);
+                const pureK = normalizeStringContentForComparison(q.correct_option);
+                const pureI = normalizeStringContentForComparison(q.image_path);
+
+                const fingerprint = `${pureQ}||${pureA}||${pureB}||${pureC}||${pureD}||${pureK}||${pureI}`;
+                masterFingerprintSignatureMap[fingerprint] = (masterFingerprintSignatureMap[fingerprint] || 0) + 1;
+            });
+
+            pool = pool.filter(q => {
+                const pureQ = normalizeStringContentForComparison(q.question);
+                const pureA = normalizeStringContentForComparison(q.option_a);
+                const pureB = normalizeStringContentForComparison(q.option_b);
+                const pureC = normalizeStringContentForComparison(q.option_c);
+                const pureD = normalizeStringContentForComparison(q.option_d);
+                const pureK = normalizeStringContentForComparison(q.correct_option);
+                const pureI = normalizeStringContentForComparison(q.image_path);
+
+                const fingerprint = `${pureQ}||${pureA}||${pureB}||${pureC}||${pureD}||${pureK}||${pureI}`;
+                return masterFingerprintSignatureMap[fingerprint] > 1;
+            });
+        }
+
+        executeTableRenderPipeline(pool);
+    }
+
+    if(searchInp) searchInp.addEventListener('input', applyFiltersSearchAndDuplicateLogic);
+    if(duplicateToggle) duplicateToggle.addEventListener('change', applyFiltersSearchAndDuplicateLogic);
+
+    function loadRepositoryQuestionsPool() {
+        fetch('/api/exams')
+            .then(res => res.json())
+            .then(data => {
+                allQuestionsCachedArray = data || [];
+                
+                let textSum = 0;
+                let imageSum = 0;
+                let signSum = 0;
+
+                const signatureCounter = {};
+                allQuestionsCachedArray.forEach(q => {
+                    if (q.image_path) signSum++;
+                    checkIsGraphicAssetString(q.option_a) ? imageSum++ : textSum++;
+
+                    const pureQ = normalizeStringContentForComparison(q.question);
+                    const pureA = normalizeStringContentForComparison(q.option_a);
+                    const pureB = normalizeStringContentForComparison(q.option_b);
+                    const pureC = normalizeStringContentForComparison(q.option_c);
+                    const pureD = normalizeStringContentForComparison(q.option_d);
+                    const pureK = normalizeStringContentForComparison(q.correct_option);
+                    const pureI = normalizeStringContentForComparison(q.image_path);
+
+                    const fingerprint = `${pureQ}||${pureA}||${pureB}||${pureC}||${pureD}||${pureK}||${pureI}`;
+                    signatureCounter[fingerprint] = (signatureCounter[fingerprint] || 0) + 1;
+                });
+
+                let duplicateTotalCount = 0;
+                Object.values(signatureCounter).forEach(count => {
+                    if (count > 1) duplicateTotalCount += count;
+                });
+
+                cardTotalQuestions.textContent = allQuestionsCachedArray.length;
+                cardTotalSigns.textContent = signSum;
+                cardImageCount.textContent = imageSum;
+                cardDuplicateCount.textContent = duplicateTotalCount;
+
+                applyFiltersSearchAndDuplicateLogic();
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('view') === 'analytics') {
+                    const navPerformance = document.getElementById('navLinkPerformance');
+                    if(navPerformance) navPerformance.click();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--danger); font-weight:700;">Connection timeout. Unable to communicate with remote database architecture engine nodes.</td></tr>`;
+            });
+    }
+
+    window.triggerQuestionDeletionCycle = function(targetId, buttonEl) {
+        if (!confirm("Urareba neza ko ushaka gusiba iki kibazo burundu muri sisitemu?")) return;
+        
+        fetch(`/api/exams/delete/${targetId}`, { method: 'DELETE' })
+            .then(res => res.json())
             .then(res => {
                 if (res.success) {
-                    allQuestions = allQuestions.filter(q => q.id !== id);
-                    calcStats(allQuestions);
-                    renderRows(showDups ? dupSubset : allQuestions);
-                } else alert('Failed to delete question.');
+                    allQuestionsCachedArray = allQuestionsCachedArray.filter(q => q.id !== targetId);
+                    loadRepositoryQuestionsPool();
+                } else {
+                    alert('Gusiba byanze, biba sisitemu ihagaze.');
+                }
             })
-            .catch(() => alert('Network transaction error while executing deletion loops.'));
+            .catch(() => alert('Gusiba byanze, biba internet ihagaze.'));
     };
+
+    window.switchAdminControlView = function(targetSectionName) {
+        const questionsTableContainer = document.getElementById('questionsTableContainerViewSection');
+        const countsSummaryCardsRow   = document.getElementById('countsSummaryCardsRowViewSection');
+                const analyticsWorkspaceView  = document.getElementById('analyticsWorkspaceViewSection');
+        const topbarSearchField       = document.querySelector('.search-box-wrap');
+        
+        const navLinkDashboard   = document.getElementById('navLinkDashboard');
+        const navLinkPerformance = document.getElementById('navLinkPerformance');
+        
+        const mainTitle = document.getElementById('workspaceMainTitle');
+        const mainSub = document.getElementById('workspaceMainSub');
+
+        if (targetSectionName === 'analytics-view') {
+            questionsTableContainer.style.display = 'none';
+            countsSummaryCardsRow.style.display = 'none';
+            if(topbarSearchField) topbarSearchField.style.display = 'none';
+            analyticsWorkspaceView.style.display = 'flex';
+            
+            mainTitle.textContent = "Student Performance Analytics";
+            mainSub.textContent = "Real-time educational metrics logs tracking pass-rates and tricky failure parameters trends";
+
+            fetch('/api/admin/performance-stats')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('statPassRate').textContent = data.passRate + '%';
+                    document.getElementById('statTotalAttempts').textContent = data.totalAttempts;
+                    document.getElementById('statAvgScore').textContent = data.averageScore + '/20';
+
+                    const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
+                    if (data.leaderboard.length === 0) {
+                        leaderboardTarget.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:20px; color:#64748b; font-style:italic;">No exam history recorded yet.</td></tr>`;
+                    } else {
+                        leaderboardTarget.innerHTML = data.leaderboard.map(row => {
+                            const passStatusColor = row.score >= 12 ? '#166534' : '#991b1b';
+                            const passStatusBg = row.score >= 12 ? '#dcfce7' : '#fee2e2';
+                            const formattedDate = new Date(row.created_at).toLocaleDateString('rw-RW', { month: 'short', day: 'numeric' });
+                            
+                            return `
+                                <tr style="border-bottom: 1px solid #f1f5f9;">
+                                    <td style="padding:12px 8px; font-weight:600; color:#0f172a;">${row.student_name}<br><span style="font-size:11px; color:#64748b; font-weight:400;">${row.phone_number}</span></td>
+                                    <td style="padding:12px 8px; text-align:center;"><span style="background:${passStatusBg}; color:${passStatusColor}; font-weight:800; padding:2px 8px; border-radius:4px;">${row.score}/${row.total_questions}</span></td>
+                                    <td style="padding:12px 8px; text-align:right; color:#64748b;">${formattedDate}</td>
+                                </tr>
+                            `;
+                        }).join('');
+                    }
+
+                    const trickyTarget = document.getElementById('trickyQuestionsListTarget');
+                    if (data.trickyQuestions.length === 0) {
+                        trickyTarget.innerHTML = `<p style="text-align:center; padding:15px; font-style:italic; color:#64748b; font-size:13px;">No data trends captured yet.</p>`;
+                    } else {
+                        trickyTarget.innerHTML = data.trickyQuestions.map((q, idx) => {
+                            return `
+                                <div style="background:#fef2f2; border:1px solid #fee2e2; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:6px;">
+                                    <div style="display:flex; justify-content:between; align-items:center; width:100%; justify-content:space-between;">
+                                        <span style="font-size:11px; background:#ef4444; color:#fff; font-weight:800; padding:1px 6px; border-radius:4px;">Rank #${idx+1} Tricky</span>
+                                        <span style="font-size:11px; color:#b91c1c; font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Failed ${q.failCount} times</span>
+                                    </div>
+                                    <div style="font-size:12.5px; font-weight:600; color:#0f172a; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${q.question}</div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                })
+                .catch(err => console.error(err));
+
+        } else {
+            analyticsWorkspaceView.style.display = 'none';
+            questionsTableContainer.style.display = 'block';
+            countsSummaryCardsRow.style.display = 'grid';
+            if(topbarSearchField) topbarSearchField.style.display = 'block';
+            
+            mainTitle.textContent = "Questions Repository Dashboard";
+            mainSub.textContent = "Live inventory management control node displaying all database question pool data elements";
+        }
+    };
+
+    loadRepositoryQuestionsPool();
 });
 </script>
 </body>
 </html>
-

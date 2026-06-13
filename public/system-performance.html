@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- 🎯 BRANDING HEADER: LINKS DIRECTLY TO YOUR LOGO IN THE UPLOADS FOLDER -->
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>System Performance — IKIZAME Admin</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
@@ -170,10 +172,11 @@
     <aside class="sidebar">
         <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
         <nav class="sidebar-nav">
-            <a href="dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-            <a href="add-exam"><i class="fa-solid fa-square-plus"></i> Add Exam</a>
-            <a href="system-performance" class="active"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
-            <a href="#" onclick="alert('Student Performance statistics dashboards launching soon!')"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
+            <!-- 🎯 RECALIBRATED STATE FOR ADD-EXAM WORKSPACE PAGE -->
+            <a href="dashboard" id="navLinkDashboard"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+            <a href="add-exam" id="navLinkAddQuestion"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
+            <a href="system-performance"  class="active" id="navLinkSysPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="dashboard?view=analytics" id="navLinkPerformance"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
             <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
         <div class="sidebar-footer">
@@ -286,7 +289,7 @@
 </div>
 
 <footer class="admin-footer">
-    &copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>izo service quicky</strong>
+    &copy; 2026 IKIZAME &nbsp;<strong> Developed by Dotado Stationery Store Ltd</strong>
 </footer>
 
 <script>

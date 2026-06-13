@@ -84,16 +84,27 @@ app.get('/add-exam', (req, res) => {
     res.redirect('/admin-login');
 });
 // ==========================================================================
+// 🛡️ SECURE GATE FOR EDIT QUESTION PORTAL
+// ==========================================================================
+app.get('/edit-exam', (req, res) => {
+    // Verifies the user has a valid active admin session
+    if (req.session && req.session.isAdminAuthenticated) {
+        return res.sendFile(path.join(__dirname, 'public', 'edit-exam.html'));
+    }
+    // Sends unauthorized visitors straight back to login terminal
+    res.redirect('/admin-login');
+});
+
+// ==========================================================================
 // ⚙️ SYSTEM PERFORMANCE SECURE EXTENSIONLESS NAVIGATION LINK AGENT
 // ==========================================================================
 app.get('/system-performance', (req, res) => {
-    // Restrict access so only authenticated administrators can open the file
     if (req.session && req.session.isAdminAuthenticated) {
         return res.sendFile(path.join(__dirname, 'public', 'system-performance.html'));
     }
-    // Unauthorized visitors get sent straight back to the login terminal
     res.redirect('/admin-login');
 });
+
 app.get('/exam-score', (req, res) => {
     if (req.session && req.session.hasCompletedActiveExamToken === true) {
         return res.sendFile(path.join(__dirname, 'public', 'exam-score.html'));
@@ -152,7 +163,6 @@ db.connect((err) => {
 });
 
 // --- 📸 3. DEDUPLICATION STORAGE ENGINE MATRIX (LOCAL STORAGE PATH PROTECTION) ---
-// 🎯 CRITICAL PATH RECALIBRATION: Locks absolute local path on windows machine to avoid image drop errors
 const uploadDirectoryPath = isLocalMachineHost 
     ? 'F:\\IKIZAME-NodeApp\\public\\assets\\uploads'
     : path.resolve(__dirname, 'public', 'assets', 'uploads');
@@ -181,11 +191,12 @@ const storageEngine = multer.diskStorage({
 const upload = multer({ storage: storageEngine });
 const examUploadFieldsConfig = upload.fields([
     { name: 'imageFile', maxCount: 1 },
-    { name: 'optiona_File', maxCount: 1 }, // Changed from optionA_File to optiona_File
-    { name: 'optionb_File', maxCount: 1 }, // Changed from optionB_File to optionb_File
-    { name: 'optionc_File', maxCount: 1 }, // Changed from optionC_File to optionc_File
-    { name: 'optiond_File', maxCount: 1 }  // Changed from optionD_File to optiond_File
+    { name: 'optiona_File', maxCount: 1 }, 
+    { name: 'optionb_File', maxCount: 1 }, 
+    { name: 'optionc_File', maxCount: 1 }, 
+    { name: 'optiond_File', maxCount: 1 }  
 ]);
+
 function requireAdminLogin(req, res, next) {
     if (req.session && req.session.isAdminAuthenticated) {
         return next();
@@ -227,17 +238,14 @@ app.post('/api/register', (req, res) => {
 });
 
 // ==========================================================================
-// 🎲 UNRESTRICTED ENDPOINT REFACTORING MATRIX
-//    - Handles clean multi-role response routing parameters
-//    - Returns ALL rows (70+) unconditionally if hit by an authenticated admin dashboard panel
-//    - Returns isolated 20 shuffled slice items if hit by an active candidate student session
+// 🎲 RESOLVED SHUFFLED QUESTION ENGINE ROUTE
 // ==========================================================================
 app.get('/api/exams', (req, res) => {
     db.query('SELECT * FROM exams ORDER BY id DESC', (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         if (!results || results.length === 0) return res.json([]);
 
-        // 🚀 UNCONDITIONAL RETRIEVAL CONTROL: If it is an admin session, bypass shuffle filter and return all rows
+        // 🚀 UNCONDITIONAL RETRIEVAL CONTROL: If admin session, bypass shuffle filter and return all rows
         if (req.session && req.session.isAdminAuthenticated) {
             return res.json(results);
         }
@@ -250,22 +258,20 @@ app.get('/api/exams', (req, res) => {
             return res.json(lockedQuestions);
         }
 
+        // 🎯 FIXED HIGH-ENTROPY PERMUTATION MOTOR: Avoids undefined hrtime calculation errors
         const pool = [...results];
-        const hrtime = process.hrtime(); 
-        const entropySalt = Date.now() * 1000000 + hrtime[1]; 
-
         for (let i = pool.length - 1; i > 0; i--) {
-            const entropy = (entropySalt + i * 2654435761) >>> 0; 
-            const j = entropy % (i + 1);
+            const j = Math.floor(Math.random() * (i + 1));
             [pool[i], pool[j]] = [pool[j], pool[i]];
         }
 
         const examSize = Math.min(20, pool.length);
-        const selectedQuestions = pool.slice(0, examSize);
-                req.session.lockedExamQuestionIds = selectedQuestions.map(q => q.id);
+                const selectedQuestions = pool.slice(0, examSize);
+        req.session.lockedExamQuestionIds = selectedQuestions.map(q => q.id);
         res.json(selectedQuestions);
     });
 });
+
 // ==========================================================================
 // 📝 ADD QUESTION ENDPOINT (FIXED MULTIPART FIELD INDEX CASE BINDINGS)
 // ==========================================================================
@@ -274,7 +280,6 @@ app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
     const correctOption = req.body.correctOption || '';
     const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
     
-    // 🎯 FIX 1: Extracted outside the conditional blocks so it captures the main description image in BOTH text and image modes!
     const mainQuestionImage = req.files && req.files['imageFile'] && req.files['imageFile'][0]
         ? req.files['imageFile'][0].filename 
         : (req.body.imageFileTextFallback ? req.body.imageFileTextFallback.trim() : null);
@@ -285,7 +290,6 @@ app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
     let finalOptionD = '';
 
     if (optionsLayoutMode === 'image') {
-        // 🎯 FIX 2: Standardized file keys to match lowercase naming parameters from your dynamic frontend input wrappers!
         finalOptionA = req.files && req.files['optiona_File'] && req.files['optiona_File'][0] ? req.files['optiona_File'][0].filename : (req.body.optionATextFallback ? req.body.optionATextFallback.trim() : '');
         finalOptionB = req.files && req.files['optionb_File'] && req.files['optionb_File'][0] ? req.files['optionb_File'][0].filename : (req.body.optionBTextFallback ? req.body.optionBTextFallback.trim() : '');
         finalOptionC = req.files && req.files['optionc_File'] && req.files['optionc_File'][0] ? req.files['optionc_File'][0].filename : (req.body.optionCTextFallback ? req.body.optionCTextFallback.trim() : '');
@@ -297,7 +301,6 @@ app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
         finalOptionD = req.body.optionD ? req.body.optionD.trim() : '';
     }
 
-    // Fallback protection check to prevent column constraint crashes
     if (!finalOptionA || !finalOptionB || !finalOptionC || !finalOptionD) {
         return res.status(400).send('Database Constraint Error: All four option variations must possess values or image targets.');
     }
@@ -311,6 +314,7 @@ app.post('/api/exams/add', examUploadFieldsConfig, (req, res) => {
         res.redirect('/dashboard');
     });
 });
+
 // ==========================================================================
 // 🔍 RECALIBRATED SPECIFIC QUESTION FETCH ENDPOINT
 // ==========================================================================
@@ -319,19 +323,18 @@ app.get('/api/exams/:id', (req, res) => {
         if (err) return res.status(500).json({ error: err.message });
         
         if (results.length > 0) {
-            // 🎯 FIXED DATA FORMAT: Return the array container directly. 
-            // This allows the frontend's Array.isArray() check to parse it seamlessly.
             res.json(results);
         } else {
             res.status(404).json({ error: 'Record reference object mapping element targets not found.' });
         }
     });
 });
+
 app.post('/api/exams/edit', examUploadFieldsConfig, (req, res) => {
     const { id, question, correctOption, optionsLayoutMode, existingImagePath, existingOptA, existingOptB, existingOptC, existingOptD, imageFileTextFallback, optionATextFallback, optionBTextFallback, optionCTextFallback, optionDTextFallback } = req.body;
     
-    const imagePath = req.files && req.files['imageFile']
-        ? req.files['imageFile'].filename
+    const imagePath = req.files && req.files['imageFile'] && req.files['imageFile'][0]
+        ? req.files['imageFile'][0].filename
         : (imageFileTextFallback ? imageFileTextFallback.trim() : existingImagePath);
 
     let finalOptionA = '';
@@ -340,10 +343,10 @@ app.post('/api/exams/edit', examUploadFieldsConfig, (req, res) => {
     let finalOptionD = '';
 
     if (optionsLayoutMode === 'image') {
-        finalOptionA = req.files && req.files['optionA_File'] ? req.files['optionA_File'].filename : (optionATextFallback ? optionATextFallback.trim() : existingOptA);
-        finalOptionB = req.files && req.files['optionB_File'] ? req.files['optionB_File'].filename : (optionBTextFallback ? optionBTextFallback.trim() : existingOptB);
-        finalOptionC = req.files && req.files['optionC_File'] ? req.files['optionC_File'].filename : (optionCTextFallback ? optionCTextFallback.trim() : existingOptC);
-        finalOptionD = req.files && req.files['optionD_File'] ? req.files['optionD_File'].filename : (optionDTextFallback ? optionDTextFallback.trim() : existingOptD);
+        finalOptionA = req.files && req.files['optiona_File'] && req.files['optiona_File'][0] ? req.files['optiona_File'][0].filename : (optionATextFallback ? optionATextFallback.trim() : existingOptA);
+        finalOptionB = req.files && req.files['optionb_File'] && req.files['optionb_File'][0] ? req.files['optionb_File'][0].filename : (optionBTextFallback ? optionBTextFallback.trim() : existingOptB);
+        finalOptionC = req.files && req.files['optionc_File'] && req.files['optionc_File'][0] ? req.files['optionc_File'][0].filename : (optionCTextFallback ? optionCTextFallback.trim() : existingOptC);
+        finalOptionD = req.files && req.files['optiond_File'] && req.files['optiond_File'][0] ? req.files['optiond_File'][0].filename : (optionDTextFallback ? optionDTextFallback.trim() : existingOptD);
     } else {
         finalOptionA = req.body.optionA ? req.body.optionA.trim() : '';
         finalOptionB = req.body.optionB ? req.body.optionB.trim() : '';
@@ -367,11 +370,15 @@ app.delete('/api/exams/delete/:id', (req, res) => {
 
 app.post('/api/exams/submit', (req, res) => {
     const studentAnswers = req.body;
-    db.query('SELECT id, correct_option FROM exams', (err, exams) => {
+    const sessionName = req.session.examStudentName || 'Unknown Student';
+    const sessionPhone = req.session.examPhoneNumber || '0780000000';
+    
+    db.query('SELECT id, correct_option, question, option_a, option_b, option_c, option_d, image_path FROM exams', (err, exams) => {
         if (err) return res.status(500).json({ error: err.message });
         
         let score = 0;
         let evaluatedCount = 0;
+        let originalQuestionsSnapshot = [];
 
         exams.forEach(exam => {
             const answerKey = `question_${exam.id}`;
@@ -381,14 +388,22 @@ app.post('/api/exams/submit', (req, res) => {
                     score++;
                 }
             }
+            originalQuestionsSnapshot.push(exam);
         });
 
         const finalTotalDisplayCount = evaluatedCount > 0 ? evaluatedCount : 20;
 
-        req.session.hasCompletedActiveExamToken = true;
-        req.session.lockedExamQuestionIds = [];
+        const insertSql = `INSERT INTO exam_attempts (student_name, phone_number, score, total_questions, student_answers, exam_questions_snapshot) VALUES (?, ?, ?, ?, ?, ?)`;
+        const payloadAnswersJson = JSON.stringify(studentAnswers);
+        const payloadSnapshotJson = JSON.stringify(originalQuestionsSnapshot);
 
-        res.json({ score: score, total: finalTotalDisplayCount });
+        db.query(insertSql, [sessionName, sessionPhone, score, finalTotalDisplayCount, payloadAnswersJson, payloadSnapshotJson], (insertErr) => {
+            if (insertErr) console.error('⚠️ Failed to save metrics snapshot trace logs:', insertErr.message);
+            
+            req.session.hasCompletedActiveExamToken = true;
+            req.session.lockedExamQuestionIds = [];
+            res.json({ score: score, total: finalTotalDisplayCount });
+        });
     });
 });
 
@@ -413,10 +428,152 @@ setInterval(() => {
     }
 }, 14 * 60 * 1000);
 
-const PORT = process.env.PORT || 3000;
+// 🔍 AMANOTA ENGINE: Fetch attempts matching a phone number
+app.get('/api/amanota/lookup/:phone', (req, res) => {
+    let searchPhone = req.params.phone.trim();
+    if (!searchPhone.startsWith('+250') && searchPhone.startsWith('7')) searchPhone = '+250' + searchPhone;
+
+    const sql = `SELECT id, student_name, score, total_questions, created_at FROM exam_attempts WHERE phone_number = ? ORDER BY id DESC`;
+    db.query(sql, [searchPhone], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+// ==========================================================================
+// 🔍 FIXED AMANOTA ENGINE: Reconstruct a specific historical exam review session
+// ==========================================================================
+app.get('/api/amanota/review/:id', (req, res) => {
+    const sql = `SELECT student_name, phone_number, score, total_questions, student_answers, exam_questions_snapshot FROM exam_attempts WHERE id = ?`;
+    db.query(sql, [req.params.id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (results.length === 0) return res.status(404).json({ error: 'Exam review logs snapshot data not found.' });
+        
+        const attempt = results[0];
+        
+        // Authorize session to bypass secure page gates
+        req.session.hasCompletedActiveExamToken = true;
+        
+        const historicalQuestionsPool = JSON.parse(attempt.exam_questions_snapshot);
+        const historicalAnswersMap = JSON.parse(attempt.student_answers);
+
+        // 🎯 FIX: Extract ONLY the 20 questions that the user actually answered during this attempt!
+        const filteredAttemptQuestions = historicalQuestionsPool.filter(q => {
+            return historicalAnswersMap.hasOwnProperty(`question_${q.id}`);
+        });
+
+        res.json({
+            studentName: attempt.student_name,
+            phoneNumber: attempt.phone_number,
+            score: attempt.score,
+            total: attempt.total_questions,
+            answers: historicalAnswersMap,
+            // If the filtered array is empty fallback safely to the raw pool
+            questions: filteredAttemptQuestions.length > 0 ? filteredAttemptQuestions : historicalQuestionsPool.slice(0, 20)
+        });
+    });
+});
+// ==========================================================================
+// 📊 STUDENT PERFORMANCE METRICS ENGINE API (100% FREE ANALYTICS)
+// ==========================================================================
+app.get('/api/admin/performance-stats', requireAdminLogin, (req, res) => {
+    // Query 1: Fetch overview metrics logs
+    const overviewSql = `
+        SELECT 
+            COUNT(*) as totalAttempts,
+            SUM(CASE WHEN score >= 12 THEN 1 ELSE 0 END) as passedCount,
+            AVG(score) as averageScore
+        FROM exam_attempts
+    `;
+
+    db.query(overviewSql, (err, overviewResults) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        const stats = overviewResults[0] || { totalAttempts: 0, passedCount: 0, averageScore: 0 };
+        const total = stats.totalAttempts || 0;
+        const passed = stats.passedCount || 0;
+        const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+        const avgScore = stats.averageScore ? parseFloat(stats.averageScore).toFixed(1) : '0.0';
+
+        // Query 2: Fetch Top 10 Leaderboard records
+        const leaderboardSql = `
+            SELECT student_name, phone_number, score, total_questions, created_at 
+            FROM exam_attempts 
+            ORDER BY score DESC, id DESC 
+            LIMIT 10
+        `;
+
+        db.query(leaderboardSql, (err, leaderboardResults) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            // Query 3: Fetch all raw data dumps to parse the trickiest questions
+            db.query('SELECT id, student_answers, exam_questions_snapshot FROM exam_attempts', (err, rawAttempts) => {
+                if (err) return res.status(500).json({ error: err.message });
+
+                const failureCounterMap = {};
+                const questionTextMap = {};
+
+                rawAttempts.forEach(attempt => {
+                    try {
+                        const answers = JSON.parse(attempt.student_answers);
+                        const questionsSnapshot = JSON.parse(attempt.exam_questions_snapshot);
+
+                        questionsSnapshot.forEach(q => {
+                            questionTextMap[q.id] = q.question;
+                            const answerKey = `question_${q.id}`;
+                            const studentChoice = answers[q.id] || answers[answerKey] || null;
+                            
+                            // If user choice exists but doesn't match the correct option, increment failure counter
+                            if (studentChoice && studentChoice !== q.correct_option) {
+                                failureCounterMap[q.id] = (failureCounterMap[q.id] || 0) + 1;
+                            }
+                        });
+                    } catch (e) { /* Skip corrupted JSON strings rows safely */ }
+                });
+
+                // Sort questions from highest failure count to lowest
+                const trickyQuestionsArray = Object.keys(failureCounterMap).map(qId => {
+                    return {
+                        id: qId,
+                        question: questionTextMap[qId] || 'Unknown Question Statement',
+                        failCount: failureCounterMap[qId]
+                    };
+                }).sort((a, b) => b.failCount - a.failCount).slice(0, 5); // Isolate Top 5 hardest entries
+
+                // Send the compiled metrics payload back to the admin controller
+                res.json({
+                    totalAttempts: total,
+                    passRate: passRate,
+                    averageScore: avgScore,
+                    leaderboard: leaderboardResults,
+                    trickyQuestions: trickyQuestionsArray
+                });
+            });
+        });
+    });
+});
+// ==========================================================================
+// ⏱️ AUTOMATED DATA PRUNER ENGINE: Cleans attempts older than 3 weeks (21 days)
+// ==========================================================================
+function executeDatabaseGarbageCollection() {
+    const pruneQuerySql = `DELETE FROM exam_attempts WHERE created_at < NOW() - INTERVAL 3 WEEK`;
+    db.query(pruneQuerySql, (err, result) => {
+        if (err) {
+            console.error('❌ Data pruner garbage collection cycle failed:', err.message);
+        } else if (result.affectedRows > 0) {
+            console.log(`🧹 Data Pruner Active: Cleared ${result.affectedRows} expired exam records from storage.`);
+        }
+    });
+}
+
+executeDatabaseGarbageCollection();
+setInterval(executeDatabaseGarbageCollection, 6 * 60 * 60 * 1000);
+
+// 🚨 LEAVE PORT LISTENER CODE AT THE ABSOLUTE BOTTOM OF THE FILE
+const PORT = process.env.PORT || 8080; 
 app.listen(PORT, () => {
     console.log(`\n==================================================================`);
     console.log(`✨ IKIZAME Hybrid Node Engine active on: http://localhost:${PORT}`);
     console.log(`   Running Environment Host Profile Mode: [${isLocalMachineHost ? 'LOCAL DISK DEV' : 'LIVE REMOTING BUNDLE'}]`);
     console.log(`==================================================================`);
 });
+

@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IKIZAME - Ibyavuye mu Suzuma</title>
+        <!-- 🎯 BRANDING HEADER: LINKS DIRECTLY TO YOUR LOGO IN THE UPLOADS FOLDER -->
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>IKIZAME</title>
     <!-- Premium Google Fonts Hierarchy Inter -->
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
@@ -178,12 +180,12 @@
         <section class="corrections-master-feed" id="correctionsMasterContainerFeed"></section>
 
         <footer class="brand-attribution-footer">
-            <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong>izo service quicky</strong></p>
+            <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong> Dotado Stationery Store Ltd</strong></p>
         </footer>
     </main>
 
     <!-- Async Controller Data Mapping Logic Core Engine -->
-    <script>
+     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const studentName = sessionStorage.getItem('studentName') || "Umunyeshuri";
             let rawPhone = sessionStorage.getItem('phoneNumber') || "";
@@ -241,7 +243,9 @@
             // ⚡ MAIN RUNTIME FEED REPOSITORY MATRIX GENERATOR LOOP
             feedContainer.innerHTML = questionsList.map((exam, index) => {
                 const questionNumber = index + 1;
-                const studentSelectionKey = studentAnswers[exam.id]; 
+                
+                // 🎯 RECALIBRATION: Dynamically extracts user choices using both straight numeric ids or mapped question strings to be 100% crash-proof
+                const studentSelectionKey = studentAnswers[exam.id] || studentAnswers[`question_${exam.id}`] || null; 
                 const systemCorrectKey = exam.correct_option;
                 
                 const isQuestionSkipped = !studentSelectionKey; 
@@ -256,6 +260,10 @@
                     if (letterKey === studentSelectionKey && letterKey === systemCorrectKey) customStyleClass = "choice-strip-item both-matched";
 
                     const isChoiceGraphicImage = /\.(png|jpg|jpeg|gif|webp)$/i.test(textValue) || 
+                                                 textValue.startsWith('optiona_File-') || 
+                                                 textValue.startsWith('optionb_File-') || 
+                                                 textValue.startsWith('optionc_File-') || 
+                                                 textValue.startsWith('optiond_File-') ||
                                                  textValue.startsWith('optionA_File-') || 
                                                  textValue.startsWith('optionB_File-') || 
                                                  textValue.startsWith('optionC_File-') || 
@@ -279,7 +287,7 @@
                     `;
                 }
 
-                const isOptionCollectionImageBased = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a) || (exam.option_a && exam.option_a.includes('optionA_File-'));
+                const isOptionCollectionImageBased = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a) || (exam.option_a && (exam.option_a.includes('optionA_File-') || exam.option_a.includes('optiona_File-')));
 
                 let verdictBadgeMarkup = "";
                 if (isQuestionSkipped) {
