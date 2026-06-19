@@ -203,7 +203,105 @@ function requireAdminLogin(req, res, next) {
     }
     res.status(401).send('Unauthorized entry setup. Please access portals with valid admin login actions loops.');
 }
+// ==========================================================================
+// 📄 LEARNING RESOURCES (IFASHANYIGISHO) DOCUMENT CARRIER ENGINE
+// ==========================================================================
+const resourceStorageEngine = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDirectoryPath); // Saves securely into public/assets/uploads folder
+    },
+    filename: (req, file, cb) => {
+        const cleanName = 'resource_' + Date.now() + '_' + file.originalname.replace(/\s+/g, '_');
+        cb(null, cleanName);
+    }
+});
+const resourceUpload = multer({ 
+    storage: resourceStorageEngine,
+    limits: { fileSize: 20 * 1024 * 1024 } // 20 Megabytes fallback limit protection
+});
+// ==========================================================================
+// 📄 LEARNING RESOURCES (IFASHANYIGISHO) DYNAMIC CONTROLLER PIPELINE BUNDLE
+// ==========================================================================
 
+// A. Secure Extensionless Navigation Gate for Upload Resource View
+app.get('/upload-resource', (req, res) => {
+    if (req.session && req.session.isAdminAuthenticated) {
+        return res.sendFile(path.join(__dirname, 'public', 'upload-resource.html'));
+    }
+    res.redirect('/admin-login');
+});
+
+// B. Secure Extensionless Navigation Gate for Student Material Library View
+app.get('/ifashanyigisho', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'ifashanyigisho.html'));
+});
+// C. API: Admin Submit New Learning Document (Aligned with allow_read/allow_download)
+app.post('/api/resources/add', requireAdminLogin, resourceUpload.single('resourceFile'), (req, res) => {
+    const { title, description, canRead, canDownload } = req.body;
+    if (!req.file || !title) {
+        return res.status(400).send('Database Constraint Failure: Title and file upload are required parameters.');
+    }
+    
+    const fileName = req.file.filename;
+    const fileType = path.extname(req.file.originalname).toLowerCase().replace('.', '');
+    
+    // Checkbox value evaluation fallbacks
+    const allowRead = canRead === 'on' ? 1 : 0;
+    const allowDownload = canDownload === 'on' ? 1 : 0;
+
+    // 🎯 FIXED: Columns mapped exactly to your database: allow_read & allow_download
+    const sql = `INSERT INTO learning_resources (title, description, file_name, file_type, allow_read, allow_download) VALUES (?, ?, ?, ?, ?, ?)`;
+    db.query(sql, [title.trim(), description ? description.trim() : '', fileName, fileType, allowRead, allowDownload], (err) => {
+        if (err) return res.status(500).send('Database Query Failure: ' + err.message);
+        res.redirect('/upload-resource');
+    });
+});
+// D. API: Fetch All Available Resources (Public Access for Students & Admins)
+app.get('/api/resources', (req, res) => {
+    db.query('SELECT * FROM learning_resources ORDER BY id DESC', (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// E. API: Admin Delete Specific Learning Document
+app.delete('/api/resources/delete/:id', requireAdminLogin, (req, res) => {
+    db.query('DELETE FROM learning_resources WHERE id = ?', [req.params.id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+// F. NEW API: Fetch Single Resource Metadata Details for Edit Pre-population
+app.get('/api/resources/:id', requireAdminLogin, (req, res) => {
+    db.query('SELECT * FROM learning_resources WHERE id = ?', [req.params.id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (results.length > 0) res.json(results[0]);
+        else res.status(404).send('Resource metadata log entry point not found.');
+    });
+});
+// G. API: Admin Modify Existing Learning Document Fields
+app.post('/api/resources/edit', requireAdminLogin, resourceUpload.single('resourceFile'), (req, res) => {
+    const { id, title, description, existingFileName, existingFileType, canRead, canDownload } = req.body;
+    
+    let finalFileName = existingFileName;
+    let finalFileType = existingFileType;
+
+    if (req.file) {
+        finalFileName = req.file.filename;
+        finalFileType = path.extname(req.file.originalname).toLowerCase().replace('.', '');
+    }
+
+    const allowRead = canRead === 'on' ? 1 : 0;
+    const allowDownload = canDownload === 'on' ? 1 : 0;
+
+    // 🎯 FIXED: Columns mapped exactly to your database: allow_read & allow_download
+    const sql = `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=? WHERE id=?`;
+    db.query(sql, [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, id], (err) => {
+        if (err) return res.status(500).send('Database Modification Query Error: ' + err.message);
+        res.redirect('/upload-resource');
+    });
+});
 // ==========================================================================
 // 🛣️ CONTROLLER ROUTING ENDPOINTS CHANNEL ARCHITECTURE
 // ==========================================================================

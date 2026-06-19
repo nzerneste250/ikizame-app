@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Upload Resources — IKIZAME Admin</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root { 
+            --brand: #0b698b; 
+            --brand-dark: #08536e; 
+            --bg-primary: #f8fafc; 
+            --bg-white: #ffffff; 
+            --text-main: #0f172a; 
+            --text-muted: #64748b; 
+            --border: #e2e8f0; 
+            --sidebar-bg: #0f172a; 
+            --sidebar-border: #1e293b; 
+            --sidebar-muted: #94a3b8; 
+            --danger: #b91c1c; 
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-main); overflow: hidden; }
+        
+        .shell { display: flex; height: calc(100vh - 44px); }
+        .sidebar { width: 240px; background: var(--sidebar-bg); display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--sidebar-border); }
+        .sidebar-brand { padding: 24px 20px 20px; font-family: 'Black Han Sans', sans-serif; font-size: 1.1rem; color: #38bdf8; letter-spacing: 2px; border-bottom: 1px solid var(--sidebar-border); display: flex; align-items: center; gap: 10px; }
+        .sidebar-nav { padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; color: var(--sidebar-muted); text-decoration: none; font-size: 13.5px; font-weight: 600; transition: all 0.15s; }
+        .sidebar-nav a:hover { color: #f8fafc; background: rgba(255,255,255,0.06); }
+        .sidebar-nav a.active { color: #f8fafc; background: rgba(56,189,248,0.12); border-left: 3px solid #38bdf8; padding-left: 11px; }
+        .nav-logout { color: #f87171 !important; }
+        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #ef4444 !important; }
+        
+        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 74px; background: var(--bg-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; flex-shrink: 0; }
+        .topbar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #0d1b2a; }
+        
+        .form-container { flex: 1; overflow-y: auto; padding: 32px; display: grid; grid-template-columns: 1fr 1.3fr; gap: 32px; align-items: start; padding-bottom: 60px; }
+        .card-panel { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.01); }
+        .card-panel h2 { font-size: 16px; font-weight: 800; margin-bottom: 16px; color: #0f172a; }
+        
+        .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-field label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-field input, .form-field textarea { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; outline: none; background: #f8fafc; font-family: inherit; }
+        .form-field input:focus, .form-field textarea:focus { border-color: var(--brand); background: #fff; }
+        
+        .checkbox-row { display: flex; gap: 20px; margin: 8px 0 20px; }
+        .checkbox-label { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--text-main); cursor: pointer; user-select: none; }
+        .checkbox-label input { width: 16px; height: 16px; accent-color: var(--brand); cursor: pointer; }
+        
+        .btn-submit { background: var(--brand); color: #fff; border: none; padding: 12px; border-radius: 8px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; width: 100%; }
+        .btn-submit:hover { background: var(--brand-dark); }
+        
+        .resource-deck-list { display: flex; flex-direction: column; gap: 12px; }
+        .resource-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; border: 1px solid var(--border); border-radius: 8px; background: #fafafa; gap: 16px; }
+        .resource-meta { flex: 1; min-width: 0; }
+        .resource-meta h4 { font-size: 13.5px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .resource-meta p { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+        .policy-tag { font-size: 10px; font-weight: 700; background: #e2e8f0; color: #475569; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; margin-right: 4px; }
+        .policy-tag.allowed { background: #dcfce7; color: #15803d; }
+        .policy-tag.blocked { background: #fee2e2; color: #b91c1c; }
+        
+        .actions-cell { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+        .btn-text-action { background: none; border: none; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: inherit; }
+        .btn-edit-link { color: #0369a1; }
+        .btn-delete-link { color: var(--danger); }
+        
+        .admin-footer { height: 44px; background: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; font-size: 11.5px; color: #64748b; flex-shrink: 0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; }
+        .admin-footer strong { color: #38bdf8; }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <nav class="sidebar-nav">
+            <a href="dashboard" id="navLinkDashboard"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+            <a href="add-exam" id="navLinkAddQuestion"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
+            <a href="system-performance" id="navLinkSysPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="dashboard?view=analytics" id="navLinkPerformance"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
+            <a href="upload-resource" class="active" id="navLinkResources"><i class="fa-solid fa-book-bookmark"></i> Upload Resources</a>
+            <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+        </nav>
+    </aside>
+    
+    <div class="workspace">
+        <header class="topbar"><h1>Instructional Learning Materials</h1></header>
+        <div class="form-container">
+            <!-- Left Side Upload Panel Form -->
+            <div class="card-panel">
+                <h2 id="formPanelMainTitle">Upload New Resource</h2>
+                <form action="/api/resources/add" method="POST" enctype="multipart/form-data" id="resourcesManagementForm">
+                    <div class="form-field">
+                        <label>Resource Title</label>
+                        <input type="text" name="title" id="resourceTitleInput" required placeholder="e.g., Amategeko y'Umuhanda PDF">
+                    </div>
+                    <div class="form-field">
+                        <label>Description</label>
+                        <textarea name="description" id="resourceDescriptionInput" rows="3" placeholder="Brief note about this guide..."></textarea>
+                    </div>
+                    
+                    <!-- 🎯 NEW: ACCESS SECURITY POLICY BINDINGS -->
+                    <div class="checkbox-row">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="canRead" id="resourceCanReadCheck" checked> Allow View
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="canDownload" id="resourceCanDownloadCheck" checked> Allow Download
+                        </label>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label id="fileInputCustomLabel">Select Document (PDF, Word, Image)</label>
+                        <input type="file" name="resourceFile" id="resourceFileInput" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                    </div>
+                    <button type="submit" class="btn-submit" id="resourceSubmitButton"><i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Document</button>
+                </form>
+            </div>
+            
+            <!-- Right Side Library Deck List -->
+            <div class="card-panel">
+                <h2>Active Learning Materials Deck</h2>
+                <div class="resource-deck-list" id="resourcesListTarget">
+                    <p style="font-style:italic; font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Loading uploaded library nodes...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="admin-footer">&copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>izo service quicky</strong></footer>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const listTarget = document.getElementById('resourcesListTarget');
+    const resourceForm = document.getElementById('resourcesManagementForm');
+    const formTitle = document.getElementById('formPanelMainTitle');
+    const submitBtn = document.getElementById('resourceSubmitButton');
+    const fileLabel = document.getElementById('fileInputCustomLabel');
+    const fileInput = document.getElementById('resourceFileInput');
+
+    let cachedResourcesArray = [];
+    
+    function loadResources() {
+        fetch('/api/resources')
+            .then(r => r.json())
+            .then(data => {
+                cachedResourcesArray = data || [];
+                if(cachedResourcesArray.length === 0) { 
+                    listTarget.innerHTML = `<p style="font-style:italic; font-size:13px; color:var(--text-muted); padding:10px;">No learning materials published yet.</p>`; 
+                    return; 
+                }
+                
+                listTarget.innerHTML = cachedResourcesArray.map(res => {
+                    // 🎯 RECALIBRATED: Reads allow_read and allow_download keys from the database payload record
+                    const readTag = res.allow_read === 1 ? '<span class="policy-tag allowed">View: OK</span>' : '<span class="policy-tag blocked">View: Locked</span>';
+                    const downTag = res.allow_download === 1 ? '<span class="policy-tag allowed">Download: OK</span>' : '<span class="policy-tag blocked">Download: Locked</span>';
+                    
+                    return `
+                        <div class="resource-item">
+                            <div class="resource-meta">
+                                <h4>${res.title}</h4>
+                                <p style="margin-bottom:4px;">${res.description || 'No description notes added'}</p>
+                                <div>${readTag}${downTag}<span class="policy-tag" style="background:#f1f5f9;color:#334155;">${res.file_type}</span></div>
+                            </div>
+                            <div class="actions-cell">
+                                <button onclick="triggerResourceEditWorkflow(${res.id})" class="btn-text-action btn-edit-link">Edit</button>
+                                <span style="color:#cbd5e1; font-size:11px; user-select:none;">|</span>
+                                <button onclick="deleteResource(${res.id})" class="btn-text-action btn-delete-link">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+    }
+
+    // 🎯 REACTIVE DATA PRE-POPULATION FORM MUTATOR LOOP
+    window.triggerResourceEditWorkflow = function(resourceId) {
+        const res = cachedResourcesArray.find(item => item.id === resourceId);
+        if(!res) return;
+
+        // Mutate Form Action to Route into Edit Endpoint
+        resourceForm.action = '/api/resources/edit';
+        formTitle.textContent = "Modify Active Resource Content";
+        submitBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Update & Save Material`;
+        fileLabel.textContent = "Replace Document (Leave blank to keep current file)";
+        fileInput.removeAttribute('required');
+
+        // Inject dynamic tracker fields if missing
+        let hiddenIdField = document.getElementById('editResourceIdHiddenField');
+        let hiddenFileField = document.getElementById('editResourceFileHiddenField');
+        let hiddenTypeField = document.getElementById('editResourceTypeHiddenField');
+        
+        if(!hiddenIdField) {
+            resourceForm.insertAdjacentHTML('beforeend', `
+                <input type="hidden" id="editResourceIdHiddenField" name="id">
+                <input type="hidden" id="editResourceFileHiddenField" name="existingFileName">
+                <input type="hidden" id="editResourceTypeHiddenField" name="existingFileType">
+            `);
+            hiddenIdField = document.getElementById('editResourceIdHiddenField');
+            hiddenFileField = document.getElementById('editResourceFileHiddenField');
+            hiddenTypeField = document.getElementById('editResourceTypeHiddenField');
+        }
+
+        // Pre-populate structural values
+        hiddenIdField.value = res.id;
+        hiddenFileField.value = res.file_name;
+        hiddenTypeField.value = res.file_type;
+
+        document.getElementById('resourceTitleInput').value = res.title;
+        document.getElementById('resourceDescriptionInput').value = res.description || '';
+        
+        // 🎯 FIXED DATA MATCH: Correctly targets database fields allow_read & allow_download
+        document.getElementById('resourceCanReadCheck').checked = res.allow_read === 1;
+        document.getElementById('resourceCanDownloadCheck').checked = res.allow_download === 1;
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.deleteResource = function(id) {
+        if(!confirm("Urareba neza ko ushaka gusiba iyi mfashanyigisho burundu muri sisitemu?")) return;
+        fetch(`/api/resources/delete/${id}`, { method: 'DELETE' })
+            .then(r => r.json())
+            .then(res => {
+                if(res.success) loadResources();
+                else alert('Gusiba byanze, biba sisitemu ihagaze.');
+            })
+            .catch(() => alert('Network error occurred during execution loop.'));
+    };
+
+    loadResources();
+});
+</script>
+</body>
+</html>

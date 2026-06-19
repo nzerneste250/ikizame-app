@@ -633,7 +633,7 @@
             <ul class="navbar-links">
                 <li><a href="#" class="active">Ahabanza</a></li>
                 <li><a href="#" onclick="alert('Ubufasha bugiye kuboneka vuba!')">Ubufasha</a></li>
-                <li><a href="#" onclick="alert('Ifashanyigisho iri gateganywa!')">Ifashanyigisho</a></li>
+                <li><a href="ifashanyigisho">Ifashanyigisho</a></li>
                 <li><a href="#" onclick="alert('Ibiciro bishya biri kuvugururwa!')">Ibiciro</a></li>
                 <!-- 🎯 INTERACTIVE NAVBAR LINK TRIGGER FOR AMANOTA MODAL OVERLAY -->
                 <li><a href="#" id="navAmanotaLink">Amanota</a></li>
@@ -998,6 +998,19 @@
                     lookupPhoneHint.className = "hint error";
                 });
             });
+           // ==========================================================================
+            // 📈 AUTOMATIC OUTSIDE ROUTING LISTENER FOR AMANOTA MODAL LAUNCHES
+            // ==========================================================================
+            const homepageUrlParams = new URLSearchParams(window.location.search);
+            if (homepageUrlParams.get('open') === 'amanota') {
+                const targetHomeAmanotaTrigger = document.getElementById('navAmanotaLink');
+                if (targetHomeAmanotaTrigger) {
+                    // Delays trigger slightly for 300ms to allow your full-screen splash loader to clear out smoothly first!
+                    setTimeout(() => { 
+                        targetHomeAmanotaTrigger.click(); 
+                    }, 300);
+                }
+            }
             // 🎯 FIXED DATA OVERLAY INJECTION FOR HISTORICAL TRACKING PREVIEWS
             window.triggerHistoricalReviewSession = function(attemptId) {
                 fetch(`/api/amanota/review/${attemptId}`)

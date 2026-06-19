@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 🎯 BRANDING HEADER ICON BINDING -->
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Ifashanyigisho — IKIZAME</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root {
+            --brand: #0b698b;
+            --brand-dark: #08536e;
+            --bg-dark: #0d1b2a;
+            --text-dark: #0f172a;
+            --border-color: rgba(255,255,255,0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1b2a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ── 🎯 PIXEL-PERFECT NAVBAR: EXACT MATCH TO YOUR INDEX HEADER SCREENSHOT ── */
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 18px 10px 14px; 
+            position: fixed; 
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            gap: 12px;
+            width: 100%;
+        }
+        
+        .navbar-brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .navbar-brand {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800; 
+            color: #0b698b;   
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+
+        .navbar-links {
+            display: flex;
+            list-style: none;
+            gap: 14px; 
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .navbar-links a {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #64748b; 
+            text-decoration: none;
+            transition: color 0.1s;
+            white-space: nowrap;
+            padding-bottom: 4px;
+        }
+        
+        .navbar-links a:hover { color: #0f172a; }
+        .navbar-links a.active {
+            color: #0b698b; 
+            border-bottom: 3px solid #0b698b;
+            padding-bottom: 4px;
+        }
+
+        .lang-badge {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 6px 14px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #0f172a;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .rw-flag-svg { width: 16px; height: auto; border-radius: 1px; }
+
+        @media (min-width: 768px) {
+            .navbar { flex-direction: row; height: 72px; padding: 0 6%; justify-content: space-between; gap: 0; }
+            .navbar-links { width: auto; gap: 28px; }
+            .navbar-links a { font-size: 0.92rem; }
+            .workspace-scroll-container { margin-top: 72px !important; }
+        }
+
+        /* ── CANVAS CONTENT FIELDS ── */
+        .workspace-scroll-container {
+            flex: 1;
+            margin-top: 154px; 
+            overflow-y: auto;
+            padding: 24px 16px 80px;
+            width: 100%;
+        }
+        
+        .workspace-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .section-header-meta .pill {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #38bdf8;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .section-header-meta h2 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; line-height: 1.2; }
+        .section-header-meta p { font-size: 0.92rem; color: #94a3b8; line-height: 1.4; }
+
+        .catalog-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+        @media (min-width: 640px) { .catalog-grid-layout { grid-template-columns: repeat(2, 1fr); } }
+
+        .resource-glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .resource-card-body h3 { font-size: 1.15rem; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
+        .resource-card-body p { font-size: 0.85rem; color: #94a3b8; line-height: 1.4; margin-bottom: 12px; }
+        .file-type-pill { font-size: 9px; font-weight: 800; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+
+        .actions-button-group { display: flex; gap: 10px; margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 14px; }
+        .btn-action-trigger {
+            flex: 1; text-decoration: none; font-size: 0.82rem; font-weight: 700; padding: 10px 14px; border-radius: 6px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; transition: background 0.1s; cursor: pointer;
+        }
+        .btn-preview-link { background: rgba(255,255,255,0.05); color: #ffffff; border: 1px solid rgba(255,255,255,0.12); }
+        .btn-preview-link:hover { background: rgba(255,255,255,0.12); }
+        .btn-download-link { background: var(--brand); color: #ffffff; border: none; }
+        .btn-download-link:hover { background: var(--brand-dark); }
+
+        /* ── 🎯 POPUP MODAL WINDOW PROFILES ── */
+        .custom-popup-window-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .popup-window-container {
+            width: 100%;
+            max-width: 900px;
+            height: 85vh;
+            background: #ffffff;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+
+        .popup-window-header {
+            height: 56px;
+            background: #f1f5f9;
+            border-bottom: 1px solid #cbd5e1;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #0f172a;
+        }
+        .popup-window-header h3 { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .btn-close-popup {
+            background: #ef4444; color: #ffffff; border: none; padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer;
+        }
+
+        .popup-window-body-viewport {
+            flex: 1;
+            width: 100%;
+            background: #475569;
+            position: relative;
+            overflow-y: auto;
+        }
+        .popup-embed-frame { width: 100%; height: 100%; border: none; display: block; }
+        .popup-image-renderer { width: 100%; height: auto; max-width: 100%; display: block; margin: 0 auto; padding: 10px; object-fit: contain; }
+
+        .footer { height: 40px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; }
+        .footer strong { color: #38bdf8; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== PIXEL-PERFECT NAVBAR HEADER ===== -->
+    <header class="navbar">
+        <a href="/" class="navbar-brand-wrap">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: contain;">
+            <div class="navbar-brand">IKIZAME</div>
+        </a>
+        <nav style="width: 100%;">
+            <ul class="navbar-links">
+                <li><a href="/">Ahabanza</a></li>
+                <li><a href="#" onclick="alert('Ubufasha bugiye kuboneka vuba!')">Ubufasha</a></li>
+                <li><a href="ifashanyigisho" class="active">Ifashanyigisho</a></li>
+                <li><a href="#" onclick="alert('Ibiciro bishya biri kuvugururwa!')">Ibiciro</a></li>
+                <li><a href="/?open=amanota">Amanota</a></li>
+            </ul>
+        </nav>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3">
+                <rect width="4" height="1.1" y="0" fill="#1EB5E5"/>
+                <rect width="4" height="0.9" y="1.1" fill="#FAD201"/>
+                <rect width="4" height="0.9" y="2" fill="#20603D"/>
+                <circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/>
+                            </svg>
+            <span>Kinyarwanda</span>
+        </div>
+    </header>
+
+    <!-- ===== WORKSPACE CANVAS SCROLL CHAMBER ===== -->
+    <div class="workspace-scroll-container">
+        <main class="workspace-inner">
+            <section class="section-header-meta">
+                <span class="pill">Ifashanyigisho 2026</span>
+                <h2>Imfashanyigisho n'Ibitabo</h2>
+                <p>Soma, download, kandi usubiremo amategeko n'ibyapa by'umuhanda ukolesheje inyandiko zateguwe n'ababizobereye.</p>
+            </section>
+
+            <!-- Cards Catalog Grid Feed -->
+            <section class="catalog-grid-layout" id="studentResourcesLibraryFeedGrid">
+                <div style="text-align: center; padding: 40px; color: #94a3b8; font-style: italic;">
+                    <i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px; color: var(--brand);"></i> Gushakisha amadosiye...
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ===== 🎯 IN-PAGE MODAL POPUP WINDOW PANE ===== -->
+    <div class="custom-popup-window-modal" id="inPageResourcePopupModal">
+        <div class="popup-window-container">
+            <div class="popup-window-header">
+                <h3 id="popupModalDocTitleLabel"><i class="fa-solid fa-book-open"></i> Reading Guide</h3>
+                <button class="btn-close-popup" onclick="closeInPagePopupModalWindow()">Funga (Close)</button>
+            </div>
+            <div class="popup-window-body-viewport" id="popupModalViewportBodyTarget">
+                <!-- Content injected dynamically via file type detector -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        &copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong>
+    </footer>
+
+    <!-- ===== CORE SCRIPT AUTOMATION LOADER ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const feedContainer = document.getElementById('studentResourcesLibraryFeedGrid');
+
+            fetch('/api/resources')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        feedContainer.innerHTML = `<p style="font-style:italic; color:#94a3b8; text-align:center; padding:20px; width:100%;">Nta mfashanyigisho n'imwe irashyirwa ku rubuga mu kanya.</p>`;
+                        return;
+                    }
+
+                    feedContainer.innerHTML = data.map(resource => {
+                        const noteDesc = resource.description && resource.description.trim() ? resource.description.trim() : "Nta bisobanuro byongewe kuri iyi mfashanyigisho.";
+                        const isReadable = resource.allow_read === 1;
+                        const isDownloadable = resource.allow_download === 1;
+
+                        // 🎯 REPAIRED WRAPPER: Synchronized with window.openDocumentUniversally handler parameters
+                        const previewBtnHTML = isReadable 
+                            ? `<button class="btn-action-trigger btn-preview-link" onclick="openDocumentUniversally('${resource.file_name}', '${resource.title.replace(/'/g, "\\'")}')"><i class="fa-solid fa-eye"></i> Fungura</button>`
+                            : `<button class="btn-action-trigger btn-preview-link" style="opacity:0.3; cursor:not-allowed;" disabled><i class="fa-solid fa-lock"></i> Locked</button>`;
+
+                        const downloadBtnHTML = isDownloadable 
+                            ? `<a href="assets/uploads/${resource.file_name}" download="${resource.title}" class="btn-action-trigger btn-download-link"><i class="fa-solid fa-cloud-arrow-down"></i> Kuramo</a>`
+                            : ``;
+
+                        return `
+                            <div class="resource-glass-card">
+                                <div class="resource-card-body">
+                                    <span class="file-type-pill">${resource.file_type} Document</span>
+                                    <h3 style="margin-top:10px;">${resource.title}</h3>
+                                    <p>${noteDesc}</p>
+                                </div>
+                                <div class="actions-button-group">
+                                    ${previewBtnHTML}
+                                    ${downloadBtnHTML}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                });
+        });
+
+        // ── 🎯 UNBLOCKABLE ADAPTIVE BLOB STREAM & NATIVE REDIRECT COMBINED ROUTER ──
+        window.openDocumentUniversally = function(fileName, docTitle) {
+            const modal = document.getElementById('inPageResourcePopupModal');
+            const titleLabel = document.getElementById('popupModalDocTitleLabel');
+            const viewportBody = document.getElementById('popupModalViewportBodyTarget');
+            
+            const targetFilePath = `/assets/uploads/${fileName}`;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            const isMobileDeviceScreen = window.innerWidth <= 991 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            // Images look beautiful and run flawlessly everywhere inline inside our popup panel
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExtension)) {
+                titleLabel.innerHTML = `<i class="fa-solid fa-image" style="color:var(--brand);"></i> Reba: ${docTitle}`;
+                viewportBody.innerHTML = `<img src="${targetFilePath}" class="popup-image-renderer" alt="Document Sheet">`;
+                document.body.style.overflow = "hidden";
+                modal.style.display = "flex";
+                return;
+            }
+
+            // For heavy PDFs, execute smart hardware routing to dodge popup blockers and sandbox locks
+            if (isMobileDeviceScreen) {
+                window.location.assign(targetFilePath); // Bypasses mobile blockers completely and loads instantly
+            } else {
+                titleLabel.innerHTML = `<i class="fa-solid fa-file-invoice" style="color:var(--brand);"></i> Soma: ${docTitle}`;
+                viewportBody.innerHTML = `
+                    <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#ffffff; background:#1e293b; gap:12px; z-index:1;">
+                        <i class="fa-solid fa-circle-notch fa-spin" style="font-size:32px; color:var(--brand);"></i>
+                        <p style="font-size:13px; font-style:italic; opacity:0.8;">Iri gufungura inyandiko neza...</p>
+                    </div>
+                `;
+                document.body.style.overflow = "hidden";
+                modal.style.display = "flex";
+
+                fetch(targetFilePath)
+                    .then(r => { if (!r.ok) throw new Error(); return r.blob(); })
+                    .then(fileBlob => {
+                        const localMemoryBlobPathUrl = URL.createObjectURL(fileBlob);
+                        viewportBody.innerHTML = `
+                            <iframe src="${localMemoryBlobPathUrl}#toolbar=0&navpanes=0" class="popup-embed-frame" style="width:100%; height:100%; border:none; display:block;"></iframe>
+                        `;
+                    })
+                    .catch(() => {
+                        viewportBody.innerHTML = `
+                            <iframe src="${targetFilePath}#toolbar=0" class="popup-embed-frame" style="width:100%; height:100%; border:none; display:block;"></iframe>
+                        `;
+                    });
+            }
+        };
+
+        window.closeInPagePopupModalWindow = function() {
+            document.getElementById('inPageResourcePopupModal').style.display = "none";
+            document.getElementById('popupModalViewportBodyTarget').innerHTML = "";
+            document.body.style.overflow = "auto";
+        };
+    </script>
+</body>
+</html>
