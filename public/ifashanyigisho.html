@@ -312,10 +312,16 @@
 
                     feedContainer.innerHTML = data.map(resource => {
                         const noteDesc = resource.description && resource.description.trim() ? resource.description.trim() : "Nta bisobanuro byongewe kuri iyi mfashanyigisho.";
-                        const isReadable = resource.allow_read === 1;
-                        const isDownloadable = resource.allow_download === 1;
 
-                        // 🎯 REPAIRED WRAPPER: Synchronized with window.openDocumentUniversally handler parameters
+                        // 🎯 ROBUST TRUTHY CHECK: MySQL can return TINYINT(1) flags as a JS
+                        // number (1/0), a string ("1"/"0"), or a boolean depending on driver
+                        // config. A strict `=== 1` check silently fails for the other shapes,
+                        // which made "Fungura" look broken/locked even when it should work.
+                        const toBool = (val) => val === true || val === 1 || val === '1';
+
+                        const isReadable = toBool(resource.allow_read);
+                        const isDownloadable = toBool(resource.allow_download);
+
                         const previewBtnHTML = isReadable 
                             ? `<button class="btn-action-trigger btn-preview-link" onclick="openDocumentUniversally('${resource.file_name}', '${resource.title.replace(/'/g, "\\'")}')"><i class="fa-solid fa-eye"></i> Fungura</button>`
                             : `<button class="btn-action-trigger btn-preview-link" style="opacity:0.3; cursor:not-allowed;" disabled><i class="fa-solid fa-lock"></i> Locked</button>`;
@@ -341,53 +347,65 @@
                 });
         });
 
-        // ── 🎯 UNBLOCKABLE ADAPTIVE BLOB STREAM & NATIVE REDIRECT COMBINED ROUTER ──
+        // ── 🎯 IN-PAGE DOCUMENT VIEWER: everything opens inside the modal, never navigates away ──
         window.openDocumentUniversally = function(fileName, docTitle) {
             const modal = document.getElementById('inPageResourcePopupModal');
             const titleLabel = document.getElementById('popupModalDocTitleLabel');
             const viewportBody = document.getElementById('popupModalViewportBodyTarget');
-            
+
+            if (!fileName) {
+                console.error('openDocumentUniversally called with empty fileName');
+                alert('Iyi nyandiko ifite ikibazo (missing file). Menyesha admin.');
+                return;
+            }
+
             const targetFilePath = `/assets/uploads/${fileName}`;
             const fileExtension = fileName.split('.').pop().toLowerCase();
-            const isMobileDeviceScreen = window.innerWidth <= 991 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-            // Images look beautiful and run flawlessly everywhere inline inside our popup panel
+            // Images render directly inline inside the popup panel
             if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExtension)) {
                 titleLabel.innerHTML = `<i class="fa-solid fa-image" style="color:var(--brand);"></i> Reba: ${docTitle}`;
-                viewportBody.innerHTML = `<img src="${targetFilePath}" class="popup-image-renderer" alt="Document Sheet">`;
+                viewportBody.innerHTML = `<img src="${targetFilePath}" class="popup-image-renderer" alt="Document Sheet"
+                    onerror="this.replaceWith(Object.assign(document.createElement('p'),{textContent:'Ifoto ntiyabonetse (404). Reba ko dosiye ${fileName} ihari muri assets/uploads.',style:'color:#fca5a5;text-align:center;padding:30px;'}))">`;
                 document.body.style.overflow = "hidden";
                 modal.style.display = "flex";
                 return;
             }
 
-            // For heavy PDFs, execute smart hardware routing to dodge popup blockers and sandbox locks
-            if (isMobileDeviceScreen) {
-                window.location.assign(targetFilePath); // Bypasses mobile blockers completely and loads instantly
-            } else {
-                titleLabel.innerHTML = `<i class="fa-solid fa-file-invoice" style="color:var(--brand);"></i> Soma: ${docTitle}`;
-                viewportBody.innerHTML = `
-                    <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#ffffff; background:#1e293b; gap:12px; z-index:1;">
-                        <i class="fa-solid fa-circle-notch fa-spin" style="font-size:32px; color:var(--brand);"></i>
-                        <p style="font-size:13px; font-style:italic; opacity:0.8;">Iri gufungura inyandiko neza...</p>
-                    </div>
-                `;
-                document.body.style.overflow = "hidden";
-                modal.style.display = "flex";
+            // For PDFs and other documents: always render inside the in-page modal
+            // on every screen size — desktop, tablet, and mobile alike. We never
+            // navigate the browser away from this page (no window.location.assign).
+            titleLabel.innerHTML = `<i class="fa-solid fa-file-invoice" style="color:var(--brand);"></i> Soma: ${docTitle}`;
+            viewportBody.innerHTML = `
+                <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#ffffff; background:#1e293b; gap:12px; z-index:1;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size:32px; color:var(--brand);"></i>
+                    <p style="font-size:13px; font-style:italic; opacity:0.8;">Iri gufungura inyandiko neza...</p>
+                </div>
+            `;
+            document.body.style.overflow = "hidden";
+            modal.style.display = "flex";
 
-                fetch(targetFilePath)
-                    .then(r => { if (!r.ok) throw new Error(); return r.blob(); })
-                    .then(fileBlob => {
-                        const localMemoryBlobPathUrl = URL.createObjectURL(fileBlob);
-                        viewportBody.innerHTML = `
-                            <iframe src="${localMemoryBlobPathUrl}#toolbar=0&navpanes=0" class="popup-embed-frame" style="width:100%; height:100%; border:none; display:block;"></iframe>
-                        `;
-                    })
-                    .catch(() => {
-                        viewportBody.innerHTML = `
-                            <iframe src="${targetFilePath}#toolbar=0" class="popup-embed-frame" style="width:100%; height:100%; border:none; display:block;"></iframe>
-                        `;
-                    });
-            }
+            fetch(targetFilePath)
+                .then(r => {
+                    if (!r.ok) throw new Error(`HTTP ${r.status} fetching ${targetFilePath}`);
+                    return r.blob();
+                })
+                .then(fileBlob => {
+                    const localMemoryBlobPathUrl = URL.createObjectURL(fileBlob);
+                    viewportBody.innerHTML = `
+                        <iframe src="${localMemoryBlobPathUrl}#toolbar=0&navpanes=0" class="popup-embed-frame" style="width:100%; height:100%; border:none; display:block;"></iframe>
+                    `;
+                })
+                .catch((err) => {
+                    // Log the real reason to the console so it's debuggable instead of silent
+                    console.error('Document open failed:', err);
+                    viewportBody.innerHTML = `
+                        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fca5a5; gap:10px; padding:24px; text-align:center;">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size:28px;"></i>
+                            <p style="font-size:13px;">Inyandiko ntiyashoboye gufungurwa (${err.message}).<br>Reba ko dosiye iri muri public/assets/uploads/.</p>
+                        </div>
+                    `;
+                });
         };
 
         window.closeInPagePopupModalWindow = function() {

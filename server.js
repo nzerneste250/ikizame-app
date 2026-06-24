@@ -571,6 +571,56 @@ app.get('/api/amanota/review/:id', (req, res) => {
     });
 });
 // ==========================================================================
+// 👥 GROUPED STUDENT PERFORMANCE LIST: one row per student (by phone number)
+//    Shows: name, total exams taken, average score across all attempts
+// ==========================================================================
+app.get('/api/admin/students', requireAdminLogin, (req, res) => {
+    const sql = `
+        SELECT
+            phone_number,
+            -- Use the most recent name on record in case a student's name was typed differently across attempts
+            (SELECT student_name FROM exam_attempts ea2
+                WHERE ea2.phone_number = ea.phone_number
+                ORDER BY ea2.id DESC LIMIT 1) AS student_name,
+            COUNT(*) AS totalExams,
+            AVG(score) AS averageScore,
+            MAX(created_at) AS lastAttemptDate
+        FROM exam_attempts ea
+        GROUP BY phone_number
+        ORDER BY lastAttemptDate DESC
+    `;
+    db.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        const formatted = results.map(r => ({
+            phoneNumber: r.phone_number,
+            studentName: r.student_name,
+            totalExams: r.totalExams,
+            averageScore: r.averageScore ? parseFloat(r.averageScore).toFixed(1) : '0.0',
+            lastAttemptDate: r.lastAttemptDate
+        }));
+        res.json(formatted);
+    });
+});
+
+// ==========================================================================
+// 📋 PER-STUDENT ATTEMPT HISTORY: all exams a single student has taken
+//    Returns id, score, total, date for each — used to open the answer sheet
+// ==========================================================================
+app.get('/api/admin/student-attempts/:phone', requireAdminLogin, (req, res) => {
+    const phone = req.params.phone;
+    const sql = `
+        SELECT id, score, total_questions, created_at
+        FROM exam_attempts
+        WHERE phone_number = ?
+        ORDER BY created_at DESC
+    `;
+    db.query(sql, [phone], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// ==========================================================================
 // 📊 STUDENT PERFORMANCE METRICS ENGINE API (100% FREE ANALYTICS)
 // ==========================================================================
 app.get('/api/admin/performance-stats', requireAdminLogin, (req, res) => {

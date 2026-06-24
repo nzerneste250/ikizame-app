@@ -218,7 +218,7 @@
                 <p id="workspaceMainSub">Live inventory management control node displaying all database question pool data elements</p>
             </div>
             <div class="search-box-wrap">
-                <input type="text" id="dashboardSearchInput" placeholder="Search questions, options...">
+                <input type="text" id="dashboardSearchInput" name="dashboardSearchInput" placeholder="Search questions, options..." autocomplete="off">
             </div>
         </header>
 
@@ -254,7 +254,7 @@
                             <h3 style="color: #c2410c;">Show Duplicates</h3>
                         </div>
                         <label class="switch-toggle">
-                            <input type="checkbox" id="duplicateToggleSwitch">
+                            <input type="checkbox" id="duplicateToggleSwitch" name="duplicateToggleSwitch">
                             <span class="slider-toggle"></span>
                         </label>
                     </div>
@@ -308,13 +308,15 @@
 
                 <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start;">
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-trophy" style="color: #f59e0b;"></i> Top 10 Student Leaderboard</h3>
+                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Student Performance</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Click a student to view all their exam attempts and review their answers.</p>
                         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
                             <thead>
                                 <tr style="border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 700;">
                                     <th style="padding: 10px 8px;">Umunyeshuri (Student)</th>
-                                    <th style="padding: 10px 8px; text-align: center;">Amanota (Score)</th>
-                                    <th style="padding: 10px 8px; text-align: right;">Itariki (Date)</th>
+                                    <th style="padding: 10px 8px; text-align: center;">Ibizamini (Exams)</th>
+                                    <th style="padding: 10px 8px; text-align: center;">Impuzandengo (Average)</th>
+                                    <th style="padding: 10px 8px; text-align: right;">Itariki ya nyuma (Last)</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboardTableBodyTarget"></tbody>
@@ -556,25 +558,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('statTotalAttempts').textContent = data.totalAttempts;
                     document.getElementById('statAvgScore').textContent = data.averageScore + '/20';
 
-                    const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
-                    if (data.leaderboard.length === 0) {
-                        leaderboardTarget.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:20px; color:#64748b; font-style:italic;">No exam history recorded yet.</td></tr>`;
-                    } else {
-                        leaderboardTarget.innerHTML = data.leaderboard.map(row => {
-                            const passStatusColor = row.score >= 12 ? '#166534' : '#991b1b';
-                            const passStatusBg = row.score >= 12 ? '#dcfce7' : '#fee2e2';
-                            const formattedDate = new Date(row.created_at).toLocaleDateString('rw-RW', { month: 'short', day: 'numeric' });
-                            
-                            return `
-                                <tr style="border-bottom: 1px solid #f1f5f9;">
-                                    <td style="padding:12px 8px; font-weight:600; color:#0f172a;">${row.student_name}<br><span style="font-size:11px; color:#64748b; font-weight:400;">${row.phone_number}</span></td>
-                                    <td style="padding:12px 8px; text-align:center;"><span style="background:${passStatusBg}; color:${passStatusColor}; font-weight:800; padding:2px 8px; border-radius:4px;">${row.score}/${row.total_questions}</span></td>
-                                    <td style="padding:12px 8px; text-align:right; color:#64748b;">${formattedDate}</td>
-                                </tr>
-                            `;
-                        }).join('');
-                    }
-
                     const trickyTarget = document.getElementById('trickyQuestionsListTarget');
                     if (data.trickyQuestions.length === 0) {
                         trickyTarget.innerHTML = `<p style="text-align:center; padding:15px; font-style:italic; color:#64748b; font-size:13px;">No data trends captured yet.</p>`;
@@ -594,6 +577,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(err => console.error(err));
 
+            // 👥 GROUPED STUDENT PERFORMANCE TABLE — name, total exams, average score
+            fetch('/api/admin/students')
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return res.json();
+                })
+                .then(students => {
+                    const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
+                    if (!students || students.length === 0) {
+                        leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#64748b; font-style:italic;">No exam history recorded yet.</td></tr>`;
+                        return;
+                    }
+
+                    leaderboardTarget.innerHTML = students.map(s => {
+                        const avgNum = parseFloat(s.averageScore);
+                        const passColor = avgNum >= 12 ? '#166534' : '#991b1b';
+                        const passBg    = avgNum >= 12 ? '#dcfce7' : '#fee2e2';
+                        const formattedDate = new Date(s.lastAttemptDate).toLocaleDateString('rw-RW', { month: 'short', day: 'numeric' });
+                        const safePhone = s.phoneNumber.replace(/'/g, "\\'");
+                        const safeName  = (s.studentName || 'Unknown').replace(/'/g, "\\'");
+
+                        return `
+                            <tr style="border-bottom: 1px solid #f1f5f9; cursor:pointer;"
+                                onclick="openStudentAttemptsModal('${safePhone}', '${safeName}')"
+                                onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                                <td style="padding:12px 8px; font-weight:600; color:#0f172a;">${s.studentName || 'Unknown'}<br><span style="font-size:11px; color:#64748b; font-weight:400;">${s.phoneNumber}</span></td>
+                                <td style="padding:12px 8px; text-align:center; font-weight:700; color:#0b698b;">${s.totalExams}</td>
+                                <td style="padding:12px 8px; text-align:center;"><span style="background:${passBg}; color:${passColor}; font-weight:800; padding:2px 8px; border-radius:4px;">${s.averageScore}/20</span></td>
+                                <td style="padding:12px 8px; text-align:right; color:#64748b;">${formattedDate}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                })
+                .catch(err => {
+                    console.error('Failed to load student performance:', err);
+                    const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
+                    leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#ef4444;">Gushaka byanze (${err.message}). Reba console kugira ngo umenye impamvu.</td></tr>`;
+                });
+
         } else {
             analyticsWorkspaceView.style.display = 'none';
             questionsTableContainer.style.display = 'block';
@@ -608,5 +630,50 @@ document.addEventListener('DOMContentLoaded', () => {
     loadRepositoryQuestionsPool();
 });
 </script>
+<!-- ==========================================================================
+     🗂️ MODAL 1: STUDENT EXAM HISTORY — all attempts for one student
+     ========================================================================== -->
+<div id="studentAttemptsModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:9000; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:16px; width:92%; max-width:560px; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 24px 48px rgba(0,0,0,0.3);">
+        <div style="padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+            <div>
+                <h3 id="studentModalName" style="font-size:16px; font-weight:800; color:#0f172a;">Student Name</h3>
+                <p id="studentModalPhone" style="font-size:12px; color:var(--text-muted); margin-top:2px;">+250...</p>
+            </div>
+            <button onclick="closeStudentAttemptsModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:14px; color:#64748b;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="flex:1; overflow-y:auto; padding:12px 24px 20px;">
+            <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+                <thead>
+                    <tr style="border-bottom:2px solid var(--border); color:var(--text-muted); font-weight:700;">
+                        <th style="padding:10px 6px;">Itariki (Date)</th>
+                        <th style="padding:10px 6px; text-align:center;">Amanota (Score)</th>
+                        <th style="padding:10px 6px; text-align:right;">Ibikorwa (Action)</th>
+                    </tr>
+                </thead>
+                <tbody id="studentAttemptsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     📝 MODAL 2: ANSWER SHEET — what the student answered for one attempt
+     ========================================================================== -->
+<div id="answerSheetModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:9100; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:16px; width:94%; max-width:780px; max-height:86vh; display:flex; flex-direction:column; box-shadow:0 24px 48px rgba(0,0,0,0.3);">
+        <div style="padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+            <div>
+                <h3 style="font-size:16px; font-weight:800; color:#0f172a;">Ibisubizo by'Ikizamini (Answer Sheet)</h3>
+                <p id="answerSheetMeta" style="font-size:12px; color:var(--text-muted); margin-top:2px;"></p>
+            </div>
+            <button onclick="closeAnswerSheetModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:14px; color:#64748b;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="flex:1; overflow-y:auto; padding:16px 24px 24px; display:flex; flex-direction:column; gap:14px;" id="answerSheetBody">
+            <p style="text-align:center; padding:30px; color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Gufungura ibisubizo...</p>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
