@@ -829,26 +829,25 @@
     <footer class="footer">
         &copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong>
     </footer>
-
-    <!-- ===== RUNTIME SYSTEM LOGIC ENGINE SCRIPT ===== -->
-    <script>
+        <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Preserve splash state
+            // Clean up old storage instances to prevent token pollution
             sessionStorage.removeItem('studentName');
             sessionStorage.removeItem('phoneNumber');
             sessionStorage.removeItem('isExamAlreadyStarted');
             fetch('/api/clear-session', { method: 'POST' }).catch(() => {});
 
+            // DOM Selectors
             const registrationForm = document.getElementById('candidateRegistrationInteractiveForm');
             const nameField = document.getElementById('studentNameInput');
             const phoneField = document.getElementById('studentPhoneInput');
             const nameHint = document.getElementById('nameValidationHint');
             const phoneHint = document.getElementById('phoneValidationHint');
 
-            // WhatsApp popup toggling functions
             const waFloat = document.getElementById('waFloat');
             const waPopup = document.getElementById('waPopup');
 
+            // Floating WhatsApp Toggle Box
             if(waFloat && waPopup) {
                 waFloat.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -858,341 +857,263 @@
                 document.addEventListener('click', () => { waPopup.style.display = 'none'; });
             }
 
-            // Enforce integer value parameters on phone inputs across fields
-            [phoneField, document.getElementById('lookupPhoneNumber')].forEach(input => {
+            // 🎯 FIXED: SMART INPUT FILTER (Strips letters AND drops accidental leading zeros instantly)
+            const inputElementsToFilter = [phoneField, document.getElementById('lookupPhoneNumber')];
+            inputElementsToFilter.forEach(input => {
                 if (input) {
-                    input.addEventListener('input', function () { this.value = this.value.replace(/\D/g, ''); });
+                    input.addEventListener('input', function () { 
+                        let cleanValue = this.value.replace(/\D/g, ''); 
+                        if (cleanValue.startsWith('0')) {
+                            cleanValue = cleanValue.substring(1); // Drops leading zero
+                        }
+                        this.value = cleanValue;
+                    });
                 }
             });
-                        // 🎯 FULL-SCREEN SPLASH LOGO DISMISSER INTERCEPTOR
-            // Waite until backend API sessions and templates elements are ready, then slide curtain away cleanly
+
+            // 🎯 DISMISS LAUNCHER SPLASH SCREEN SCRIPT
             window.addEventListener('load', () => {
                 const splashCurtain = document.getElementById('fullScreenAppLauncherSplashCurtain');
                 if (splashCurtain) {
                     setTimeout(() => {
                         splashCurtain.style.opacity = '0';
-                        splashCurtain.style.transform = 'translateY(-100vh)'; // Smoothly slides completely up out of the view track!
-                        setTimeout(() => { splashCurtain.remove(); }, 600); // Discard from DOM completely to save processing speed memory 
-                    }, 1400); // Keeps splash active for 1.4 seconds for maximum high-tech premium feel
+                        splashCurtain.style.transform = 'translateY(-100vh)'; 
+                        setTimeout(() => { splashCurtain.remove(); }, 600); 
+                    }, 1400); 
                 }
             });
 
-            // Live Phone validation check loops
-            phoneField.addEventListener('input', function () {
-                const v = this.value;
-                if (v.length > 0 && !v.startsWith('7')) {
-                    phoneHint.textContent = "IKOSA: Numero ya telefone igomba gutangirana n'umubare 7 gusa!";
-                    phoneHint.className = "hint error";
-                } else if (v.length >= 2 && !['8','9','3'].includes(v.charAt(1))) {
-                    phoneHint.textContent = "IKOSA: Umubare wa kabiri ugomba kuba 8, 9, cyangwa 3 (MTN / Airtel)!";
-                    phoneHint.className = "hint error";
-                } else if (v.length > 0 && v.length < 9) {
-                    phoneHint.textContent = `Haracyabura imibare (${v.length} / 9)`;
-                    phoneHint.className = "hint error";
-                } else if (v.length === 9) {
-                    phoneHint.textContent = "✓ Numero yuzuye neza kandi iremewe mu Rwanda!";
-                    phoneHint.className = "hint ok";
-                } else {
-                    phoneHint.textContent = "Igomba gutangizwa na 7 (Inimero 9 gusa)";
-                    phoneHint.className = "hint";
-                }
-            });
-
-            // Live Name validation check loops
-            nameField.addEventListener('input', function () {
-                if (this.value.trim().length >= 3) {
-                    nameHint.textContent = "✓ Amazina aremewe!";
-                    nameHint.className = "hint ok";
-                } else {
-                    nameHint.textContent = "Andika amazina yanyu yose";
-                    nameHint.className = "hint";
-                }
-            });
-
-            // Handle student exam registration routing submission
-            registrationForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const name = nameField.value.trim();
-                const phone = phoneField.value.trim();
-                let valid = true;
-
-                if (name.length < 3) {
-                    nameHint.textContent = "IKOSA: Cyinjize amazina yanyu neza (Atari munsi y'inyuguti 3)!";
-                    nameHint.className = "hint error";
-                    nameField.focus();
-                    valid = false;
-                }
-
-                const okSecond = phone.length >= 2 && ['8','9','3'].includes(phone.charAt(1));
-                if (phone.length !== 9 || !phone.startsWith('7') || !okSecond) {
-                    phoneHint.textContent = "IKOSA: Numero ntabwo yuzuye cyangwa ntabwo ihuye n'imirongo ya Rwanda (78, 79, 73)!";
-                    phoneHint.className = "hint error";
-                    if (valid) phoneField.focus();
-                    valid = false;
-                }
-
-                if (!valid) return;
-
-                const fullFormattedPhone = '+250' + phone;
-
-                sessionStorage.setItem('studentName', name);
-                sessionStorage.setItem('phoneNumber', fullFormattedPhone);
-                sessionStorage.setItem('isExamAlreadyStarted', 'false');
-
-                fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ studentName: name, phoneNumber: fullFormattedPhone })
-                })
-                .then(r => r.json())
-                .then(() => { window.location.href = '/exam'; })
-                .catch(() => { window.location.href = '/exam'; }); 
-            });
-            // ==========================================================================
-// 📈 AMANOTA LOOKUP OVERLAY MODAL SCRIPT ENGINE
-// ==========================================================================
-
-const amanotaModal = document.getElementById('amanotaModal');
-const lookupFormView = document.getElementById('amanotaLookupFormView');
-const resultsListView = document.getElementById('amanotaResultsListView');
-const resultsScrollTarget = document.getElementById('resultsListScrollTarget');
-const lookupPhoneInp = document.getElementById('lookupPhoneNumber');
-const lookupPhoneHint = document.getElementById('lookupPhoneHint');
-const navAmanotaLink = document.getElementById('navAmanotaLink');
-
-function openAmanotaModal() {
-    if (!amanotaModal) return;
-
-    lookupPhoneInp.value = '';
-    lookupPhoneHint.textContent = 'Injiza numero yawe hano';
-    lookupPhoneHint.className = 'hint';
-
-    lookupFormView.style.display = 'block';
-    resultsListView.style.display = 'none';
-
-    amanotaModal.style.display = 'flex';
-}
-
-function closeAmanotaModal() {
-    if (!amanotaModal) return;
-    amanotaModal.style.display = 'none';
-}
-
-// Open modal from navbar
-if (navAmanotaLink) {
-    navAmanotaLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        openAmanotaModal();
-    });
-}
-
-// Close button
-const closeBtn = document.getElementById('closeAmanotaModalBtn');
-if (closeBtn) {
-    closeBtn.addEventListener('click', closeAmanotaModal);
-}
-
-// Close when clicking outside popup
-if (amanotaModal) {
-    amanotaModal.addEventListener('click', (e) => {
-        if (e.target === amanotaModal) {
-            closeAmanotaModal();
-        }
-    });
-}
-
-// Back button
-const backBtn = document.getElementById('backToLookupBtn');
-if (backBtn) {
-    backBtn.addEventListener('click', () => {
-        lookupFormView.style.display = 'block';
-        resultsListView.style.display = 'none';
-    });
-}
-
-// Search button
-const submitLookupBtn = document.getElementById('submitLookupBtn');
-
-if (submitLookupBtn) {
-    submitLookupBtn.addEventListener('click', async () => {
-
-        const phoneVal = lookupPhoneInp.value.trim();
-
-        if (phoneVal.length !== 9 || !phoneVal.startsWith('7')) {
-            lookupPhoneHint.textContent =
-                "IKOSA: Injiza numero y'inyuguti 9 itangizwa na 7!";
-            lookupPhoneHint.className = "hint error";
-            return;
-        }
-
-        lookupPhoneHint.className = "hint";
-        lookupPhoneHint.textContent = "Iri gushakisha amanota yawe...";
-
-        submitLookupBtn.disabled = true;
-        submitLookupBtn.textContent = "Birimo gushakisha...";
-
-        try {
-
-            const response = await fetch(`/api/amanota/lookup/${phoneVal}`);
-
-            if (!response.ok) {
-                throw new Error('Server Error');
+            // Live Phone validation checking
+            if (phoneField) {
+                phoneField.addEventListener('input', function () {
+                    const v = this.value;
+                    if (v.length > 0 && !v.startsWith('7')) {
+                        phoneHint.textContent = "IKOSA: Numero ya telefone igomba gutangirana n'umubare 7 gusa!";
+                        phoneHint.className = "hint error";
+                    } else if (v.length >= 2 && !['8','9','3'].includes(v.charAt(1))) {
+                        phoneHint.textContent = "IKOSA: Umubare wa kabiri ugomba kuba 8, 9, cyangwa 3 (MTN / Airtel)!";
+                        phoneHint.className = "hint error";
+                    } else if (v.length > 0 && v.length < 9) {
+                        phoneHint.textContent = `Haracyabura imibare (${v.length} / 9)`;
+                        phoneHint.className = "hint error";
+                    } else if (v.length === 9) {
+                        phoneHint.textContent = "✓ Numero yuzuye neza kandi iremewe mu Rwanda!";
+                        phoneHint.className = "hint ok";
+                    } else {
+                        phoneHint.textContent = "Igomba gutangizwa na 7 (Inimero 9 gusa)";
+                        phoneHint.className = "hint";
+                    }
+                });
             }
 
-            const attempts = await response.json();
-
-            if (!attempts || attempts.length === 0) {
-                lookupPhoneHint.textContent =
-                    "Nta kizamini na kimwe cyabonetse kuri iyi numero!";
-                lookupPhoneHint.className = "hint error";
-                return;
+            // Live Name validation checking
+            if (nameField) {
+                nameField.addEventListener('input', function () {
+                    if (this.value.trim().length >= 3) {
+                        nameHint.textContent = "✓ Amazina aremewe!";
+                        nameHint.className = "hint ok";
+                    } else {
+                        nameHint.textContent = "Andika amazina yanyu yose";
+                        nameHint.className = "hint";
+                    }
+                });
             }
 
-            resultsScrollTarget.innerHTML = attempts.map((att, i) => {
+            // 🎯 FIXED: ROBUST EXAM REGISTRATION HANDLER (Guarantees zero reloads)
+            if (registrationForm) {
+                registrationForm.addEventListener('submit', function (e) {
+                    e.preventDefault(); // Securely blocks browser form refreshes
+                    
+                    const name = nameField.value.trim();
+                    const phone = phoneField.value.trim();
+                    let valid = true;
 
-                const dateFormatted = new Date(att.created_at)
-                    .toLocaleDateString('rw-RW', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                    });
+                    if (name.length < 3) {
+                        nameHint.textContent = "IKOSA: Cyinjize amazina yanyu neza (Atari munsi y'inyuguti 3)!";
+                        nameHint.className = "hint error";
+                        nameField.focus();
+                        valid = false;
+                    }
 
-                const isPassed = Number(att.score) >= 12;
+                    const okSecond = phone.length >= 2 && ['8','9','3'].includes(phone.charAt(1));
+                    if (phone.length !== 9 || !phone.startsWith('7') || !okSecond) {
+                        phoneHint.textContent = "IKOSA: Numero ntabwo yuzuye cyangwa ntabwo ihuye n'imirongo ya Rwanda (78, 79, 73)!";
+                        phoneHint.className = "hint error";
+                        if (valid) phoneField.focus();
+                        valid = false;
+                    }
 
-                return `
-                <div style="
-                    display:flex;
-                    align-items:center;
-                    justify-content:space-between;
-                    padding:12px 14px;
-                    border-bottom:1px solid #e2e8f0;
-                    background:${i % 2 === 0 ? '#ffffff' : '#f8fafc'};
-                    gap:10px;
-                ">
-                    <div style="display:flex;flex-direction:column;gap:3px;min-width:0;">
-                        <span style="
-                            font-size:0.84rem;
-                            font-weight:700;
-                            color:var(--text-dark);
-                        ">
-                            ${att.student_name}
-                        </span>
+                    if (!valid) return;
 
-                        <span style="
-                            font-size:0.72rem;
-                            color:var(--text-muted);
-                        ">
-                            ${dateFormatted}
-                        </span>
-                    </div>
+                    const fullFormattedPhone = '+250' + phone;
 
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <span style="
-                            font-size:0.95rem;
-                            font-weight:800;
-                            color:${isPassed ? '#166534' : '#991b1b'};
-                            background:${isPassed ? '#dcfce7' : '#fee2e2'};
-                            padding:3px 9px;
-                            border-radius:5px;
-                        ">
-                            ${att.score}/${att.total_questions}
-                        </span>
+                    sessionStorage.setItem('studentName', name);
+                    sessionStorage.setItem('phoneNumber', fullFormattedPhone);
+                    sessionStorage.setItem('isExamAlreadyStarted', 'false');
 
-                        <button
-                            onclick="triggerHistoricalReviewSession(${att.id})"
-                            style="
-                                border:none;
-                                background:#0b698b;
-                                color:#fff;
-                                padding:6px 10px;
-                                font-size:0.75rem;
-                                font-weight:700;
-                                border-radius:5px;
-                                cursor:pointer;
-                            ">
-                            Fungura
-                        </button>
-                    </div>
-                </div>
-                `;
-            }).join('');
+                    // Disable button during network state to prevent double clicks
+                    const submitBtn = registrationForm.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = "Tegereza vuba...";
+                    }
 
-            lookupFormView.style.display = 'none';
-            resultsListView.style.display = 'flex';
+                    fetch('/api/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ studentName: name, phoneNumber: fullFormattedPhone })
+                    })
+                    .then(res => {
+                        // Fallback gateway safe router redirection
+                        window.location.href = '/exam';
+                    })
+                    .catch(err => {
+                        console.warn("[Network Redirect Fallback]", err);
+                        window.location.href = '/exam';
+                    }); 
+                });
+            }
 
-        } catch (err) {
+            // Amanota lookup UI configurations
+            const amanotaModal = document.getElementById('amanotaModal');
+            const lookupFormView = document.getElementById('amanotaLookupFormView');
+            const resultsListView = document.getElementById('amanotaResultsListView');
+            const resultsScrollTarget = document.getElementById('resultsListScrollTarget');
+            const lookupPhoneInp = document.getElementById('lookupPhoneNumber');
+            const lookupPhoneHint = document.getElementById('lookupPhoneHint');
+            const navAmanotaLink = document.getElementById('navAmanotaLink');
 
-            console.error(err);
+            function openAmanotaModal() {
+                if (!amanotaModal) return;
+                lookupPhoneInp.value = '';
+                lookupPhoneHint.textContent = 'Injiza numero yawe hano';
+                lookupPhoneHint.className = 'hint';
+                lookupFormView.style.display = 'block';
+                resultsListView.style.display = 'none';
+                amanotaModal.style.display = 'flex';
+            }
 
-            lookupPhoneHint.textContent =
-                "Gushaka byanze, reba internet cyangwa server.";
-            lookupPhoneHint.className = "hint error";
+            function closeAmanotaModal() {
+                if (!amanotaModal) return;
+                amanotaModal.style.display = 'none';
+            }
 
-        } finally {
+            if (navAmanotaLink) {
+                navAmanotaLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openAmanotaModal();
+                });
+            }
 
-            submitLookupBtn.disabled = false;
-            submitLookupBtn.textContent = "Shakisha Amanota";
-        }
-    });
-}
+            const closeBtn = document.getElementById('closeAmanotaModalBtn');
+            if (closeBtn) { closeBtn.addEventListener('click', closeAmanotaModal); }
 
-// ==========================================================================
-// 📈 AUTO OPEN FROM OTHER PAGES
-// Example:
-// /?tab=amanota
-// /?open=amanota
-// ==========================================================================
+            if (amanotaModal) {
+                amanotaModal.addEventListener('click', (e) => {
+                    if (e.target === amanotaModal) { closeAmanotaModal(); }
+                });
+            }
 
-const urlParams = new URLSearchParams(window.location.search);
+            const backBtn = document.getElementById('backToLookupBtn');
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    lookupFormView.style.display = 'block';
+                    resultsListView.style.display = 'none';
+                });
+            }
 
-if (
-    urlParams.get('tab') === 'amanota' ||
-    urlParams.get('open') === 'amanota'
-) {
-    setTimeout(() => {
-        openAmanotaModal();
-    }, 300);
-}
+            // 🎯 AMANOTA SEARCH ACTIONS LOGIC 
+            const submitLookupBtn = document.getElementById('submitLookupBtn');
+            if (submitLookupBtn) {
+                submitLookupBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const phoneVal = lookupPhoneInp.value.trim();
 
-// ==========================================================================
-// 📈 HISTORICAL REVIEW SESSION
-// ==========================================================================
+                    if (phoneVal.length !== 9 || !phoneVal.startsWith('7')) {
+                        lookupPhoneHint.textContent = "IKOSA: Injiza numero y'inyuguti 9 itangizwa na 7!";
+                        lookupPhoneHint.className = "hint error";
+                        return;
+                                            }
 
-window.triggerHistoricalReviewSession = async function(attemptId) {
+                    lookupPhoneHint.className = "hint";
+                    lookupPhoneHint.textContent = "Iri gushakisha amanota yawe...";
+                    submitLookupBtn.disabled = true;
+                    submitLookupBtn.textContent = "Birimo gushakisha...";
 
-    try {
+                    try {
+                        const response = await fetch(`/api/amanota/lookup/${phoneVal}`);
+                        if (!response.ok) { throw new Error('Server Error'); }
 
-        const response = await fetch(`/api/amanota/review/${attemptId}`);
+                        const attempts = await response.json();
+                        if (!attempts || attempts.length === 0) {
+                            lookupPhoneHint.textContent = "Nta kizamini na kimwe cyabonetse kuri iyi numero!";
+                            lookupPhoneHint.className = "hint error";
+                            return;
+                        }
 
-        if (!response.ok) {
-            throw new Error('Failed');
-        }
+                        resultsScrollTarget.innerHTML = attempts.map((att, i) => {
+                            const dateFormatted = new Date(att.created_at).toLocaleDateString('rw-RW', {
+                                month: 'short', day: 'numeric', year: 'numeric'
+                            });
+                            const isPassed = Number(att.score) >= 12;
 
-        const res = await response.json();
+                            return `
+                            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #e2e8f0; background:${i % 2 === 0 ? '#ffffff' : '#f8fafc'}; gap:10px;">
+                                <div style="display:flex; flex-direction:column; gap:3px; min-width:0;">
+                                    <span style="font-size:0.84rem; font-weight:700; color:var(--text-dark);">${att.student_name}</span>
+                                    <span style="font-size:0.72rem; color:var(--text-muted);">${dateFormatted}</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <span style="font-size:0.95rem; font-weight:800; color:${isPassed ? '#166534' : '#991b1b'}; background:${isPassed ? '#dcfce7' : '#fee2e2'}; padding:3px 9px; border-radius:5px;">
+                                        ${att.score}/${att.total_questions}
+                                    </span>
+                                    <button onclick="triggerHistoricalReviewSession(${att.id})" style="border:none; background:#0b698b; color:#fff; padding:6px 10px; font-size:0.75rem; font-weight:700; border-radius:5px; cursor:pointer;">Fungura</button>
+                                </div>
+                            </div>
+                            `;
+                        }).join('');
 
-        sessionStorage.setItem('latestScore', res.score);
-        sessionStorage.setItem('latestTotal', res.total);
-        sessionStorage.setItem(
-            'studentAnswerMapping',
-            JSON.stringify(res.answers)
-        );
+                        lookupFormView.style.display = 'none';
+                        resultsListView.style.display = 'flex';
 
-        sessionStorage.setItem(
-            'shuffledQuestionsReview',
-            JSON.stringify(res.questions)
-        );
+                    } catch (err) {
+                        console.error(err);
+                        lookupPhoneHint.textContent = "Gushaka byanze, reba internet cyangwa server.";
+                        lookupPhoneHint.className = "hint error";
+                    } finally {
+                        submitLookupBtn.disabled = false;
+                        submitLookupBtn.textContent = "Shakisha Amanota";
+                    }
+                });
+            }
 
-        sessionStorage.setItem('studentName', res.studentName);
-        sessionStorage.setItem('phoneNumber', res.phoneNumber);
+            // Cross-page anchor router checks
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('tab') === 'amanota' || urlParams.get('open') === 'amanota') {
+                setTimeout(() => { openAmanotaModal(); }, 300);
+            }
 
-        window.location.href = 'exam-result';
+            // Historical review function handler binding
+            window.triggerHistoricalReviewSession = async function(attemptId) {
+                try {
+                    const response = await fetch(`/api/amanota/review/${attemptId}`);
+                    if (!response.ok) { throw new Error('Failed'); }
 
-    } catch (err) {
+                    const res = await response.json();
 
-        console.error(err);
-        alert('Gufungura ibyavuye mu kizamini byanze.');
-    }
-};
+                    sessionStorage.setItem('latestScore', res.score);
+                    sessionStorage.setItem('latestTotal', res.total);
+                    sessionStorage.setItem('studentAnswerMapping', JSON.stringify(res.answers));
+                    sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(res.questions));
+                    sessionStorage.setItem('studentName', res.studentName);
+                    sessionStorage.setItem('phoneNumber', res.phoneNumber);
+
+                    window.location.href = 'exam-result';
+                } catch (err) {
+                    console.error(err);
+                    alert('Gufungura ibyavuye mu kizamini byanze.');
+                }
+            };
         });
     </script>
 </body>
