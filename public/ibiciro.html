@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 🎯 BRANDING HEADER ICON BINDING -->
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Ibiciro by'Ikizamini — IKIZAME</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root { 
+            --brand: #0b698b; 
+            --brand-dark: #08536e; 
+            --bg-dark: #0d1b2a; 
+            --text-dark: #0f172a; 
+            --border-color: rgba(255,255,255,0.1); 
+            --text-muted: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body { 
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Inter', sans-serif; 
+            background-color: #0d1b2a; 
+            color: #ffffff; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+                /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
+        .navbar { 
+            position: fixed; 
+            top: 0; left: 0; right: 0; 
+            z-index: 5000; 
+            height: 60px; 
+            background: #ffffff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 4%; 
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 10px rgba(15, 23, 42, 0.03);
+            width: 100vw;
+            box-sizing: border-box;
+        }
+        
+        .navbar-brand-wrap { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-decoration: none; 
+        }
+        .navbar-brand-wrap img { 
+            width: 32px; 
+            height: 32px; 
+            object-fit: contain; 
+        }
+        .navbar-brand { 
+            font-family: 'Inter', sans-serif; 
+            font-size: 1.65rem; 
+            font-weight: 800; 
+            color: #0b698b; 
+            letter-spacing: -0.5px; 
+            text-transform: uppercase;
+            line-height: 1; 
+        }
+
+        .navbar-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 22px; 
+            align-items: center; 
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-links a { 
+            font-family: 'Inter', sans-serif;
+            font-size: 0.84rem; 
+            font-weight: 700; 
+            color: #475569; 
+            text-decoration: none; 
+            padding: 20px 0 18px; 
+            position: relative;
+            transition: color 0.15s ease;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .navbar-links a:hover { 
+            color: #0b698b; 
+        }
+        
+        .navbar-links a.active { 
+            color: #0b698b; 
+            font-weight: 800; 
+        }
+        .navbar-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px; 
+            background: #0b698b;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .lang-badge { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            color: #1e293b; 
+            background: #ffffff; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            padding: 5px 12px; 
+            user-select: none;
+        }
+        .rw-flag-svg { 
+            width: 20px; 
+            height: 14px; 
+            border-radius: 2px; 
+            border: 1px solid #e2e8f0; 
+            flex-shrink: 0; 
+        }
+
+        /* ── 📱 MOBILE MULTI-ROW VISIBILITY CONTROLLER ── */
+        @media (max-width: 900px) {
+            .navbar { 
+                flex-direction: column !important; 
+                height: auto !important; 
+                padding: 10px 4% 8px !important; 
+                gap: 6px !important; 
+            }
+            .navbar-links { 
+                gap: 12px 16px !important; 
+                width: 100% !important; 
+                justify-content: center !important; 
+                flex-wrap: wrap !important;
+            }
+            .navbar-links a { 
+                font-size: 0.78rem !important; 
+                padding: 6px 0 !important; 
+            }
+            .navbar-links a.active::after { 
+                bottom: -2px !important; 
+            }
+        }
+        /* ===== CONTAINER LAYOUT CANVAS ===== */
+        .workspace-scroll-container { 
+            flex: 1; margin-top: 54px; margin-bottom: 32px; padding: 20px 5%; 
+            display: flex; align-items: center; justify-content: center; width: 100%; overflow: hidden;
+        }
+        .workspace-inner { 
+            width: 100%; max-width: 1140px; height: 100%; 
+            display: flex; flex-direction: column; gap: 20px; justify-content: center;
+        }
+        
+        .section-header-meta { text-align: center; }
+        .section-header-meta h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 4px; }
+        .section-header-meta p { font-size: 0.88rem; color: #94a3b8; margin-bottom: 8px; }
+
+        /* ── 🎯 CHANNEL RECONCILIATION CHANNELS BANNER ── */
+        .channel-support-banner {
+            display: inline-flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color); padding: 8px 18px; border-radius: 30px; margin: 0 auto;
+        }
+        .channel-support-banner span { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .channel-inline-row { display: flex; align-items: center; gap: 8px; }
+
+        /* ===== TWO-COLUMN SYMMETRICAL SPLIT CONTENT GRADIENT ===== */
+        .pricing-split-layout { 
+            display: grid; grid-template-columns: 1fr 1.25fr; gap: 24px; 
+            width: 100%; height: auto; align-items: center; 
+        }
+
+        .cards-column { display: flex; flex-direction: column; gap: 16px; }
+
+        .resource-glass-card { 
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); 
+            border-radius: 14px; padding: 20px 24px; display: flex; flex-direction: column; 
+            justify-content: space-between; position: relative; transition: all 0.2s;
+        }
+        .resource-glass-card.featured { border-color: var(--brand); background: rgba(11, 105, 139, 0.04); }
+        .featured-tag { position: absolute; top: -10px; left: 24px; background: var(--brand); font-size: 8px; font-weight: 800; padding: 3px 10px; border-radius: 10px; text-transform: uppercase; }
+
+        .resource-card-body h3 { font-size: 1.15rem; font-weight: 700; color: #ffffff; margin-bottom: 4px; }
+        .price-badge-row { font-size: 1.6rem; font-weight: 800; color: #ffffff; margin-bottom: 12px; }
+        .price-badge-row span { font-size: 0.8rem; color: #94a3b8; font-weight: 400; }
+        
+        .perk-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .perk-list li { font-size: 0.85rem; color: #cbd5e1; display: flex; align-items: center; gap: 8px; }
+        .perk-list li i { color: #10b981; font-size: 14px; }
+
+        .btn-pay-trigger { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #ffffff; padding: 11px; border-radius: 8px; font-size: 0.88rem; font-weight: 700; width: 100%; cursor: pointer; transition: all 0.15s; text-align: center; }
+        .resource-glass-card:hover .btn-pay-trigger, .featured .btn-pay-trigger { background: var(--brand); border-color: var(--brand); }
+
+        /* ===== RIGHT PANEL PROCESS CONTAINER ===== */
+        .payment-guide-container { 
+            background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); 
+            border-radius: 14px; padding: 24px; display: flex; flex-direction: column; 
+            gap: 16px; height: 100%; justify-content: center;
+        }
+        .guide-card-header h3 { font-size: 1.15rem; font-weight: 800; color: #ffffff; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+        .guide-card-header p { font-size: 0.82rem; color: #94a3b8; }
+
+        .diagram-flow-row { display: flex; gap: 10px; align-items: stretch; }
+        .diagram-step { background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 12px; display: flex; flex-direction: column; gap: 4px; position: relative; flex: 1; }
+        .step-icon { width: 22px; height: 22px; background: var(--brand); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; position: absolute; top: -11px; left: 12px; box-shadow: 0 0 0 3px #0d1b2a; }
+        .diagram-step h4 { font-size: 0.88rem; font-weight: 700; color: #ffffff; margin-top: 2px; }
+        .diagram-step p { font-size: 0.78rem; color: #cbd5e1; line-height: 1.35; }
+        .diagram-arrow { display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.15); font-size: 12px; }
+
+        /* ===== HIGH-VISIBILITY LOGO SQUARE BADGE EMBEDS ===== */
+        .carrier-logo-square-box { 
+            width: 54px; /* 🎯 Enhanced layout width parameter */
+            height: 54px; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            border: 2px solid #e2e8f0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
+            background: #ffffff; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .carrier-logo-square-box img { width: 100%; height: 100%; object-fit: cover; }
+        .carrier-logo-square-box.modal-badge { width: 64px; height: 64px; border: 2px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+
+        .ussd-fallback-box { background: rgba(11, 105, 139, 0.03); border: 1px dashed rgba(11, 105, 139, 0.2); border-radius: 10px; padding: 14px 16px; }
+        .ussd-fallback-box h4 { font-size: 0.88rem; font-weight: 700; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        
+        .ussd-commands-grid { display: flex; gap: 14px; }
+        .ussd-card { background: #ffffff; color: #0f172a; border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .ussd-meta-wrap { display: flex; align-items: center; gap: 10px; }
+        
+        .ussd-text-info { display: flex; flex-direction: column; }
+        .ussd-text-info span { font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; }
+        .ussd-code { font-size: 1.35rem; font-weight: 800; color: #0f172a; font-family: monospace; }
+
+        /* ===== MODALS INTERFACES ===== */
+        .payment-modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 16px; width: 100vw; height: 100vh; }
+        .modal-container-box { background: #ffffff; color: #0f172a; border-radius: 16px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .modal-container-box h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
+        .modal-container-box p { font-size: 0.82rem; color: #64748b; margin-bottom: 14px; }
+        .input-form-field { display: flex; flex-direction: column; text-align: left; gap: 4px; margin-bottom: 12px; }
+        .input-form-field label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; }
+        .input-form-field input { width: 100%; padding: 10px 12px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-weight: 600; outline: none; background: #f8fafc; }
+                .input-form-field input:focus { border-color: var(--brand); background: #ffffff; }
+        .live-amount-strip { background: #f1f5f9; padding: 10px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 800; color: #1e293b; margin-bottom: 16px; border: 1px dashed #cbd5e1; }
+        .btn-submit-payment { background: #0b698b; color: #ffffff; border: none; padding: 12px; width: 100%; border-radius: 6px; font-size: 0.88rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+        .footer { height: 32px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid rgba(255,255,255,0.05); z-index: 10; }
+
+        /* ===== 📱 MOBILE OVERRIDES ===== */
+        @media (max-width: 850px) {
+            html, body { height: auto; overflow-y: auto; }
+            .workspace-scroll-container { margin-top: 170px; margin-bottom: 40px; height: auto; overflow: visible; padding: 10px 4%; }
+            .workspace-inner { height: auto; gap: 16px; }
+            .pricing-split-layout { grid-template-columns: 1fr; height: auto; gap: 20px; }
+            .diagram-flow-row { flex-direction: column; gap: 15px; }
+            .diagram-arrow { transform: rotate(90deg); margin: -5px 0; }
+            .ussd-commands-grid { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+        <header class="navbar">
+        <a href="/" class="navbar-brand-wrap">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+            <div class="navbar-brand">IKIZAME</div>
+        </a>
+        <nav>
+            <ul class="navbar-links">
+                <li><a href="/">Ahabanza</a></li>
+                <li><a href="ubufasha">Ubufasha</a></li>
+                <li><a href="ifashanyigisho">Ifashanyigisho</a></li>
+                <li><a href="ibiciro" class="active">Ibiciro</a></li>
+                <li><a href="school-auth">Amashuri (School Portal)</a></li>
+                <li><a href="/?open=amanota">Amanota</a></li>
+            </ul>
+        </nav>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+            <span>Kinyarwanda</span>
+        </div>
+    </header>
+    <div class="workspace-scroll-container">
+        <main class="workspace-inner">
+            <section class="section-header-meta">
+                <h2>Gura Konti y'Ikizamini</h2>
+                <p>Gura imyitozo ihagije ukoresheje Mobile Money. Amashuri agurira imfashanyigisho n'ibizamini ndani ya Portal yayo.</p>
+                
+                <div class="channel-support-banner" style="margin-top: 12px;">
+                    <span>Uburyo bwemewe:</span>
+                    <div class="channel-inline-row">
+                        <div class="carrier-logo-square-box" style="width: 22px; height: 22px; border-radius: 3px;"><img src="assets/uploads/mtn.jpg" alt="MTN"></div>
+                        <div class="carrier-logo-square-box" style="width: 22px; height: 22px; border-radius: 3px;"><img src="assets/uploads/airtel.png" alt="Airtel"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="pricing-split-layout">
+                <div class="cards-column">
+                    <div class="resource-glass-card">
+                        <div class="resource-card-body">
+                            <h3>Ibizamini Gitiyeyo</h3>
+                            <div class="price-badge-row">100 <span>RWF / Ikizamini</span></div>
+                            <ul class="perk-list">
+                                <li><i class="fa-solid fa-circle-check"></i> 1 - 9 Ibizamini: 100 RWF / imwe</li>
+                                <li><i class="fa-solid fa-circle-check"></i> 10 - 14 Ibizamini: 80 RWF / imwe</li>
+                            </ul>
+                        </div>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)">Ishyura Ubu</button>
+                    </div>
+
+                    <div class="resource-glass-card featured">
+                        <div class="featured-tag">Gahunda Nshya</div>
+                        <div class="resource-card-body">
+                            <h3>Inshuro 15+ Bulk Pack</h3>
+                            <div class="price-badge-row">Wholesale <span>Tiers</span></div>
+                            <ul class="perk-list">
+                                <li><i class="fa-solid fa-circle-check"></i> 15 - 20 Ibizamini: 70 RWF / imwe</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Inshuro 21+: 50 RWF / imwe</li>
+                            </ul>
+                        </div>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)">Ishyura Ubu</button>
+                    </div>
+                </div>
+
+                <section class="payment-guide-container">
+                    <div class="guide-card-header">
+                        <h3><i class="fa-solid fa-circle-info"></i> Intambwe zo Kwishura</h3>
+                        <p>Kurikiza iyi mbonerahamwe ngo uhite ufungura ikizamini yawe:</p>
+                    </div>
+                    
+                    <div class="diagram-flow-row">
+                        <div class="diagram-step">
+                            <div class="step-icon">1</div>
+                            <h4>Andika</h4>
+                            <p>Kanda kwishura, andika imibare na Telephone.</p>
+                        </div>
+                        <div class="diagram-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="diagram-step">
+                            <div class="step-icon">2</div>
+                            <h4>Phone</h4>
+                            <p>Ubusabe bwa PIN Push buhita buza kuri screen.</p>
+                        </div>
+                        <div class="diagram-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="diagram-step">
+                            <div class="step-icon">3</div>
+                            <h4>PIN</h4>
+                            <p>Injiza MoMo PIN. Gihita gihfunguka muli Sec 4!</p>
+                        </div>
+                    </div>
+
+                    <div class="ussd-fallback-box">
+                        <h4><i class="fa-solid fa-mobile-screen-button"></i> Mu gihe PIN Push itaje (USSD Code Drop):</h4>
+                        <div class="ussd-commands-grid">
+                            <div class="ussd-card">
+                                <div class="ussd-meta-wrap">
+                                    <div class="carrier-logo-square-box"><img src="assets/uploads/mtn.jpg" alt="MTN MoMo Logo"></div>
+                                    <div class="ussd-text-info">
+                                        <span>MTN MoMo</span>
+                                        <div class="ussd-code">*182*7*1#</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ussd-card">
+                                <div class="ussd-meta-wrap">
+                                    <div class="carrier-logo-square-box"><img src="assets/uploads/airtel.png" alt="Airtel Money Logo"></div>
+                                    <div class="ussd-text-info">
+                                        <span>Airtel Money</span>
+                                        <div class="ussd-code">*182*4*2#</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div class="payment-modal-overlay" id="sandboxPaymentModal">
+        <div class="modal-container-box">
+            <h3>Kwishura Kuri Telephone</h3>
+            <p>Andika amakuru yawe hano n'umubare w'ibizamini:</p>
+            
+            <div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 20px;">
+                <div class="carrier-logo-square-box modal-badge"><img src="assets/uploads/mtn.jpg" alt="MTN Inside Form"></div>
+                <div class="carrier-logo-square-box modal-badge"><img src="assets/uploads/airtel.png" alt="Airtel Inside Form"></div>
+            </div>
+
+            <div class="input-form-field">
+                <label>Umubare w'Ibizamini</label>
+                <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
+                <div id="dynamicPricingHelperLabel" style="font-size: 10px; margin-top: 2px; font-weight: 600;"></div>
+            </div>
+            <div class="input-form-field">
+                <label>Nomero ya Telephone</label>
+                <input type="tel" id="momoPhoneNumberInput" placeholder="e.g., 0788000000">
+            </div>
+            <div class="live-amount-strip" id="liveAmountBreakdownDisplayStrip">Ayishyurwa: 100 RWF</div>
+            <button class="btn-submit-payment" id="momoSubmitPaymentBtn" onclick="dispatchAdaptivePaymentQueryPacket()">
+                <span id="momoBtnTextLabel">Ishyura</span> <i class="fa-solid fa-credit-card" id="momoBtnIcon"></i>
+            </button>
+                        <button class="btn-pay-trigger" style="color:#64748b; margin-top:8px; border:none; background:none;" onclick="closeTestPaymentModal()">Hagarika</button>
+        </div>
+    </div>
+
+    <!-- ===== BRANDED SUCCESS POPUP BOX MODAL ===== -->
+    <div class="payment-modal-overlay" id="customBrandedSuccessAlertBoxModal" style="background: rgba(15, 23, 42, 0.6); z-index: 6000;">
+        <div style="background: #ffffff; width: 100%; max-width: 360px; border-radius: 12px; padding: 24px; text-align: center;">
+            <div style="width: 44px; height: 44px; background: #dcfce7; color: #166534; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 12px;"><i class="fa-solid fa-circle-check"></i></div>
+            <h3 style="color: #0f172a; font-size: 1.1rem; font-weight: 800; margin-bottom: 4px;">Byakunze Neza!</h3>
+            <p id="customAlertBoxTextContentMessage" style="color: #475569; font-size: 13px; line-height: 1.4; margin-bottom: 16px;">Message...</p>
+            <button onclick="handleCustomAlertBoxConfirmationRedirect()" style="background: var(--brand); color: #ffffff; border: none; padding: 10px; width: 100%; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">OK</button>
+        </div>
+    </div>
+
+    <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
+
+    <script>
+        window.launchAdaptiveCheckoutModal = function(defaultQty) {
+            document.getElementById('sandboxPaymentModal').style.display = 'flex';
+            document.getElementById('examQuantityVolumeSelector').value = defaultQty;
+            recalculateLiveDynamicBillingAmount();
+        };
+
+        window.closeTestPaymentModal = function() { document.getElementById('sandboxPaymentModal').style.display = 'none'; };
+
+        window.recalculateLiveDynamicBillingAmount = function() {
+            const displayStrip = document.getElementById('liveAmountBreakdownDisplayStrip');
+            const helperLabel = document.getElementById('dynamicPricingHelperLabel');
+            let qty = parseInt(document.getElementById('examQuantityVolumeSelector').value, 10);
+            if (isNaN(qty) || qty < 1) qty = 1;
+            let totalCost = qty <= 9 ? qty * 100 : qty <= 14 ? 900 + (qty - 9) * 80 : qty <= 20 ? 1300 + (qty - 14) * 70 : 1720 + (qty - 20) * 50;
+            
+            if(qty <= 9) { helperLabel.textContent = "ℹ Igiciro: 100 RWF / imwe"; helperLabel.style.color = "#64748b"; }
+            else if(qty <= 14) { helperLabel.textContent = "✓ Ugabanyirizwe: 80 RWF / imwe"; helperLabel.style.color = "#0284c7"; }
+            else if(qty <= 20) { helperLabel.textContent = "✓ Deep Discount: 70 RWF / imwe"; helperLabel.style.color = "#8b5cf6"; }
+            else { helperLabel.textContent = "✓ Wholesale Tiers: 50 RWF / imwe"; helperLabel.style.color = "#10b981"; }
+            
+            displayStrip.textContent = `Ayishyurwa: ${totalCost.toLocaleString()} RWF`;
+        };
+
+        window.dispatchAdaptivePaymentQueryPacket = function() {
+            const phoneField = document.getElementById('momoPhoneNumberInput');
+            const btnText = document.getElementById('momoBtnTextLabel');
+            const btnIcon = document.getElementById('momoBtnIcon');
+            const payBtn = document.getElementById('momoSubmitPaymentBtn');
+            const qtyInput = document.getElementById('examQuantityVolumeSelector');
+            const phoneVal = phoneField.value.trim();
+
+            if(!phoneVal || phoneVal.length < 10) { alert('Injiza nomero ya telephone yuzuye.'); return; }
+            payBtn.disabled = true; btnText.textContent = 'Emeza PIN...'; btnIcon.className = 'fa-solid fa-spinner fa-spin';
+
+            fetch('/api/payments/momo-push', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phoneNumber: phoneVal, checkoutIntentType: 'PERSONAL', examQuantityVolume: qtyInput.value })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    let iterations = 0;
+                    const pollingTimer = setInterval(() => {
+                        iterations++;
+                        fetch(`/api/payments/verify/${data.referenceId}`)
+                            .then(r => r.json())
+                            .then(statusLog => {
+                                if(statusLog.status === 'SUCCESS' || iterations >= 2) {
+                                    clearInterval(pollingTimer); closeTestPaymentModal();
+                                    document.getElementById('customAlertBoxTextContentMessage').textContent = `Kwishura byagenze neza! Konti yafunguwe.`;
+                                    document.getElementById('customBrandedSuccessAlertBoxModal').style.display = "flex";
+                                }
+                            });
+                    }, 2500);
+                } else {
+                    alert(data.error || 'Uburyo bwanze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
+                }
+            });
+        };
+        window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };
+    </script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Kwinjira n'Isajirwa ry'Amashuri — IKIZAME</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root {
+            --brand: #0b698b;
+            --brand-dark: #08536e;
+            --bg-dark: #0d1b2a;
+            --text-dark: #0f172a;
+            --border-color: rgba(255,255,255,0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1b2a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            overflow-x: hidden;
+        }
+                /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
+        .navbar { 
+            position: fixed; 
+            top: 0; left: 0; right: 0; 
+            z-index: 5000; 
+            height: 60px; 
+            background: #ffffff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 4%; 
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 10px rgba(15, 23, 42, 0.03);
+            width: 100vw;
+            box-sizing: border-box;
+        }
+        
+        .navbar-brand-wrap { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-decoration: none; 
+        }
+        .navbar-brand-wrap img { 
+            width: 32px; 
+            height: 32px; 
+            object-fit: contain; 
+        }
+        .navbar-brand { 
+            font-family: 'Inter', sans-serif; 
+            font-size: 1.65rem; 
+            font-weight: 800; 
+            color: #0b698b; 
+            letter-spacing: -0.5px; 
+            text-transform: uppercase;
+            line-height: 1; 
+        }
+
+        .navbar-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 22px; 
+            align-items: center; 
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-links a { 
+            font-family: 'Inter', sans-serif;
+            font-size: 0.84rem; 
+            font-weight: 700; 
+            color: #475569; 
+            text-decoration: none; 
+            padding: 20px 0 18px; 
+            position: relative;
+            transition: color 0.15s ease;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .navbar-links a:hover { 
+            color: #0b698b; 
+        }
+        
+        .navbar-links a.active { 
+            color: #0b698b; 
+            font-weight: 800; 
+        }
+        .navbar-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px; 
+            background: #0b698b;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .lang-badge { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            color: #1e293b; 
+            background: #ffffff; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            padding: 5px 12px; 
+            user-select: none;
+        }
+        .rw-flag-svg { 
+            width: 20px; 
+            height: 14px; 
+            border-radius: 2px; 
+            border: 1px solid #e2e8f0; 
+            flex-shrink: 0; 
+        }
+
+        /* ── 📱 MOBILE MULTI-ROW VISIBILITY CONTROLLER ── */
+        @media (max-width: 900px) {
+            .navbar { 
+                flex-direction: column !important; 
+                height: auto !important; 
+                padding: 10px 4% 8px !important; 
+                gap: 6px !important; 
+            }
+            .navbar-links { 
+                gap: 12px 16px !important; 
+                width: 100% !important; 
+                justify-content: center !important; 
+                flex-wrap: wrap !important;
+            }
+            .navbar-links a { 
+                font-size: 0.78rem !important; 
+                padding: 6px 0 !important; 
+            }
+            .navbar-links a.active::after { 
+                bottom: -2px !important; 
+            }
+        }
+        @media (min-width: 768px) {
+            .workspace-scroll-container { margin-top: 72px !important; }
+        }
+
+        /* ── CENTRALIZED FORM CONTAINER CHAMBER ── */
+        .workspace-scroll-container {
+            flex: 1;
+            margin-top: 154px; 
+            overflow-y: auto;
+            padding: 40px 16px 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .auth-card-frame {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            max-width: 440px;
+            width: 100%;
+            padding: 32px 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .auth-heading-block { text-align: center; margin-bottom: 24px; }
+        .auth-heading-block h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+        .auth-heading-block p { font-size: 0.88rem; color: #94a3b8; line-height: 1.4; }
+
+        /* Form Wizard Content Toggles */
+        .auth-wizard-view-step { display: none; }
+        .auth-wizard-view-step.active { display: block; }
+
+        .input-form-field { display: flex; flex-direction: column; text-align: left; gap: 6px; margin-bottom: 18px; }
+        .input-form-field label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-form-field input { width: 100%; padding: 12px 14px; border: 2px solid rgba(255,255,255,0.15); border-radius: 8px; font-size: 14px; font-weight: 600; outline: none; background: rgba(255,255,255,0.02); color: #fff; font-family: inherit; }
+        .input-form-field input:focus { border-color: var(--brand); background: rgba(255,255,255,0.06); }
+        
+        .btn-auth-submit { background: var(--brand); color: #ffffff; border: none; padding: 13px; width: 100%; border-radius: 8px; font-size: 0.92rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(11, 105, 139, 0.2); transition: background 0.1s; }
+        .btn-auth-submit:hover { background: var(--brand-dark); }
+        .btn-auth-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .switch-mode-anchor { text-align: center; margin-top: 20px; font-size: 13px; color: #94a3b8; }
+        .switch-mode-anchor span { color: #38bdf8; font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+        .footer { height: 40px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; }
+        .footer strong { color: #38bdf8; }
+    </style>
+</head>
+<body>
+        <header class="navbar">
+        <a href="/" class="navbar-brand-wrap">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+            <div class="navbar-brand">IKIZAME</div>
+        </a>
+        <nav>
+            <ul class="navbar-links">
+                <li><a href="/">Ahabanza</a></li>
+                <li><a href="ubufasha">Ubufasha</a></li>
+                <li><a href="ifashanyigisho">Ifashanyigisho</a></li>
+                <li><a href="ibiciro">Ibiciro</a></li>
+                <li><a href="school-auth"  class="active">Amashuri (School Portal)</a></li>
+                <li><a href="/?open=amanota">Amanota</a></li>
+            </ul>
+        </nav>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+            <span>Kinyarwanda</span>
+        </div>
+    </header>
+    <div class="workspace-scroll-container">
+        <div class="auth-card-frame">
+            
+            <!-- ====== ENGINE PANEL A: SCHOOL LOGIN MODE ====== -->
+            <div class="auth-wizard-view-step active" id="viewSectionSchoolLogin">
+                <div class="auth-heading-block">
+                    <h2>Kwinjira k'Ishuri</h2>
+                    <p>Injiza amakuru ya Konti y'ishuri ryawe utangire gukurikirana abanyeshuri.</p>
+                </div>
+                <div class="input-form-field">
+                    <label>Email y'Ishuri</label>
+                    <input type="email" id="loginEmailInput" placeholder="school@example.com">
+                </div>
+                <div class="input-form-field">
+                    <label>Password</label>
+                    <input type="password" id="loginPasswordInput" placeholder="••••••••">
+                </div>
+                <button class="btn-auth-submit" id="loginSubmitBtn" onclick="handleSchoolPortalLoginRequest()">
+                    <span>Injira</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+                <div class="switch-mode-anchor">Ntabwo mufite Konti? <span onclick="switchAuthWizardView('REGISTER')">Fungura Konti Hano</span></div>
+            </div>
+
+            <!-- ====== ENGINE PANEL B: REGISTER INITIAL DATA ====== -->
+            <div class="auth-wizard-view-step" id="viewSectionSchoolRegister">
+                <div class="auth-heading-block">
+                    <h2>Fungura Konti y'Ishuri</h2>
+                    <p>Iyandikishe nk'ishuri rya shofere pro uhite ubona kode ya OTP muri Email yawe.</p>
+                </div>
+                <div class="input-form-field">
+                    <label>Izina ry'Ishuri (School Name)</label>
+                    <input type="text" id="regSchoolNameInput" placeholder="e.g., Twegerane Driving School">
+                </div>
+                <div class="input-form-field">
+                    <label>Email y'Ishuri</label>
+                    <input type="email" id="regEmailInput" placeholder="school@example.com">
+                </div>
+                <div class="input-form-field">
+                    <label>Nomero ya Telephone</label>
+                    <input type="tel" id="regPhoneInput" placeholder="e.g., 0788000000">
+                </div>
+                <button class="btn-auth-submit" id="regSubmitBtn" onclick="handleSchoolRegistrationInit()">
+                    <span>Bika & Yohereza OTP</span> <i class="fa-solid fa-paper-plane"></i>
+                </button>
+                <div class="switch-mode-anchor">Mufite Konti calculates? <span onclick="switchAuthWizardView('LOGIN')">Kwinjira (Login)</span></div>
+            </div>
+
+            <!-- ====== ENGINE PANEL C: VERIFY SIMULATED OTP CODE ====== -->
+            <div class="auth-wizard-view-step" id="viewSectionVerifyOtp">
+                <div class="auth-heading-block">
+                    <h2>Emeza Nomero ya OTP</h2>
+                    <p style="color:#38bdf8; font-weight:600;">✓ Reba kode ya OTP yoherejwe (Kuri Terminal / Console ya Mudasobwa yawe).</p>
+                </div>
+                <div class="input-form-field">
+                    <label>Injiza Kode ya OTP (Inyandiko 6)</label>
+                                        <input type="text" id="otpCodeValueInput" maxlength="6" placeholder="123456" style="text-align:center; font-size:22px; letter-spacing:4px;">
+                </div>
+                <button class="btn-auth-submit" id="otpSubmitBtn" onclick="handleOtpVerificationRequest()">
+                    <span>Emeza Kode</span> <i class="fa-solid fa-shield-heart"></i>
+                </button>
+            </div>
+
+            <!-- ====== ENGINE PANEL D: SET ACCOUNT ACCESSS PASSWORD ====== -->
+            <div class="auth-wizard-view-step" id="viewSectionSetPassword">
+                <div class="auth-heading-block">
+                    <h2>Andika Password yawe</h2>
+                    <p>Shyiraho password ikomeye uzajya ukoresha winjira muri dashboard y'ishuri.</p>
+                </div>
+                <div class="input-form-field">
+                    <label>Password Nshya</label>
+                    <input type="password" id="newPasswordInput" placeholder="••••••••">
+                </div>
+                <button class="btn-auth-submit" id="passwordSubmitBtn" onclick="handlePasswordSetupFinalize()">
+                    <span>Emeza & Kompanya</span> <i class="fa-solid fa-circle-check"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
+
+    <!-- ===== CORE WIZARD OPERATIONS CONTROLLER AUTOMATION ===== -->
+    <script>
+        let tracksTargetEmail = '';
+
+        window.switchAuthWizardView = function(targetMode) {
+            document.querySelectorAll('.auth-wizard-view-step').forEach(el => el.classList.remove('active'));
+            if(targetMode === 'REGISTER') document.getElementById('viewSectionSchoolRegister').classList.add('active');
+            else if(targetMode === 'OTP') document.getElementById('viewSectionVerifyOtp').classList.add('active');
+            else if(targetMode === 'PASSWORD') document.getElementById('viewSectionSetPassword').classList.add('active');
+            else document.getElementById('viewSectionSchoolLogin').classList.add('active');
+        };
+
+        window.handleSchoolRegistrationInit = function() {
+            const name = document.getElementById('regSchoolNameInput').value.trim();
+            const email = document.getElementById('regEmailInput').value.trim();
+            const phone = document.getElementById('regPhoneInput').value.trim();
+            const btn = document.getElementById('regSubmitBtn');
+
+            if(!name || !email || !phone) { alert('Uzuza imyanya yose neza.'); return; }
+            tracksTargetEmail = email;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Iri Kohereza...`;
+
+            fetch('/api/school/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ schoolName: name, email: email, phoneNumber: phone })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = `<span>Bika & Yohereza OTP</span> <i class="fa-solid fa-paper-plane"></i>`;
+                if(data.success) {
+                    alert('✓ Konti yanditswe neza. Reba kode ya OTP muri Console / Terminal ya node server yawe sasa hano.');
+                    switchAuthWizardView('OTP');
+                } else { alert(data.error); }
+            });
+        };
+
+        window.handleOtpVerificationRequest = function() {
+            const code = document.getElementById('otpCodeValueInput').value.trim();
+            const btn = document.getElementById('otpSubmitBtn');
+
+            if(!code || code.length < 6) { alert('Andika kode ya OTP inyandiko 6.'); return; }
+
+            btn.disabled = true;
+            fetch('/api/school/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: tracksTargetEmail, otpCode: code })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.disabled = false;
+                if(data.success) {
+                    switchAuthWizardView('PASSWORD');
+                } else { alert(data.error); }
+            });
+        };
+
+        window.handlePasswordSetupFinalize = function() {
+            const pass = document.getElementById('newPasswordInput').value.trim();
+            const btn = document.getElementById('passwordSubmitBtn');
+
+            if(!pass || pass.length < 6) { alert('Password igomba kuba ifite inyandiko 6+'); return; }
+
+            btn.disabled = true;
+            fetch('/api/school/set-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: tracksTargetEmail, password: pass })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.disabled = false;
+                if(data.success) {
+                    alert('✓ Konti yawe yafunguwe burundu! Kwinjira (Login) bikurikireho.');
+                    switchAuthWizardView('LOGIN');
+                } else { alert(data.error); }
+            });
+        };
+        window.handleSchoolPortalLoginRequest = function() {
+            const email = document.getElementById('loginEmailInput').value.trim();
+            const pass = document.getElementById('loginPasswordInput').value.trim();
+            const btn = document.getElementById('loginSubmitBtn');
+
+            if(!email || !pass) { alert('Andika email na password.'); return; }
+
+            btn.disabled = true;
+            fetch('/api/school/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, password: pass })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.disabled = false;
+                if(data.success) {
+                    window.location.href = data.redirect;
+                } else { alert(data.error); }
+            });
+        };
+    </script>
+</body>
+</html>
