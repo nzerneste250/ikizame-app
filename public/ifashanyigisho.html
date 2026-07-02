@@ -5,414 +5,309 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 🎯 BRANDING HEADER ICON BINDING -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>IKIZAME</title>
+    <title>Imfashanyigisho — IKIZAME</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        :root {
-            --brand: #0b698b;
-            --brand-dark: #08536e;
-            --bg-dark: #0d1b2a;
-            --text-dark: #0f172a;
-            --border-color: rgba(255,255,255,0.12);
+        :root { 
+            --brand: #0b698b; 
+            --brand-dark: #08536e; 
+            --bg-dark: #0d1b2a; 
+            --border-color: rgba(255,255,255,0.1); 
+            --text-muted: #64748b;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        html, body {
-            height: 100%;
-            font-family: 'Inter', sans-serif;
-            background-color: #0d1b2a;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            overflow-x: hidden;
-        }
-
-        /* ── 🎯 PIXEL-PERFECT NAVBAR: EXACT MATCH TO YOUR INDEX HEADER SCREENSHOT ── */
-        .navbar {
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 18px 10px 14px; 
-            position: fixed; 
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            gap: 12px;
-            width: 100%;
+        html, body { 
+            height: 100vh; width: 100vw; 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0d1b2a; color: #ffffff; 
+            display: flex; flex-direction: column; overflow: hidden; 
         }
         
-        .navbar-brand-wrap {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
+        /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
+        .navbar { 
+            position: fixed; top: 0; left: 0; right: 0; z-index: 5000; height: 60px; 
+            background: #ffffff; display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 4%; border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 10px rgba(15, 23, 42, 0.03); 
+            width: 100vw; box-sizing: border-box;
+        }
+        .navbar-brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .navbar-brand-wrap img { width: 32px; height: 32px; object-fit: contain; }
+        .navbar-brand { font-family: 'Inter', sans-serif; font-size: 1.65rem; font-weight: 800; color: #0b698b; letter-spacing: -0.5px; text-transform: uppercase; line-height: 1; }
+        .navbar-links { display: flex; list-style: none; gap: 22px; align-items: center; margin: 0; padding: 0; }
+        .navbar-links a { font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 700; color: #475569; text-decoration: none; padding: 20px 0 18px; position: relative; transition: color 0.15s ease; white-space: nowrap; display: inline-block; }
+        .navbar-links a:hover { color: #0b698b; }
+        .navbar-links a.active { color: #0b698b; font-weight: 800; }
+        .navbar-links a.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #0b698b; border-radius: 2px 2px 0 0; }
+        .lang-badge { display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #1e293b; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 12px; user-select: none; }
+        .rw-flag-svg { width: 20px; height: 14px; border-radius: 2px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+
+        /* ===== MAIN WORKSPACE CONTROLLER ===== */
+        .workspace-scroll-container { 
+            flex: 1; margin-top: 60px; margin-bottom: 32px; padding: 16px 4%; 
+            display: flex; align-items: center; justify-content: center; width: 100%; overflow: hidden;
+        }
+        .workspace-inner { 
+            width: 100%; max-width: 1240px; height: 100%; 
+            display: grid; grid-template-columns: 325px 1fr; gap: 20px; align-items: stretch; 
+            transition: grid-template-columns 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
-        .navbar-brand {
-            font-family: 'Inter', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 800; 
-            color: #0b698b;   
-            letter-spacing: -0.5px;
-            line-height: 1;
-        }
+        .workspace-inner.sidebar-hidden { grid-template-columns: 0px 1fr; gap: 0px; }
 
-        .navbar-links {
-            display: flex;
-            list-style: none;
-            gap: 14px; 
-            align-items: center;
-            justify-content: center;
-            width: 100%;
+        /* Left Sidebar Catalog Panel */
+        .documents-sidebar-list { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); 
+            border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; height: 100%; overflow-y: auto;
+            transition: opacity 0.25s, visibility 0.25s;
+        }
+        .workspace-inner.sidebar-hidden .documents-sidebar-list { opacity: 0; visibility: hidden; pointer-events: none; padding: 0; }
+        
+        .sidebar-title { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; color: #38bdf8; letter-spacing: 0.5px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px; }
+        
+        .document-item-btn { 
+            background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); 
+            border-radius: 8px; padding: 12px; text-align: left; cursor: pointer; color: #ffffff; 
+            display: flex; align-items: center; gap: 12px; transition: all 0.15s ease; font-family: inherit; width: 100%;
+        }
+        .document-item-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+        .document-item-btn.active { background: var(--brand); border-color: var(--brand); box-shadow: 0 4px 12px rgba(11,105,139,0.3); }
+        
+        .doc-icon-box { width: 34px; height: 34px; border-radius: 6px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .document-item-btn.active .doc-icon-box { background: rgba(255,255,255,0.15); }
+        .doc-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+        .doc-meta h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .doc-meta span { font-size: 0.72rem; color: #94a3b8; font-weight: 500; text-transform: uppercase; }
+        .document-item-btn.active .doc-meta span { color: #e0f2fe; }
+
+        /* Right Column Preview Frame Panel */
+        .preview-viewer-chamber { 
+            background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); 
+            border-radius: 12px; height: 100%; overflow: hidden; position: relative; display: flex; flex-direction: column;
+        }
+        .viewer-toolbar-header { background: rgba(0,0,0,0.2); padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        
+        .btn-sidebar-toggle-trigger { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: #ffffff; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; }
+        .btn-sidebar-toggle-trigger:hover { background: rgba(255,255,255,0.15); color: #38bdf8; }
+
+        .viewer-title-wrap { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+        .viewer-toolbar-header h3 { font-size: 0.9rem; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .btn-download-fallback { background: #10b981; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; color: #fff; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background 0.15s; font-family: inherit; }
+        .btn-download-fallback:hover { background: #059669; }
+        .btn-download-fallback.disabled { background: #334155 !important; color: #94a3b8 !important; cursor: not-allowed !important; pointer-events: none; opacity: 0.5; }
+
+        /* ── 🎯 SOLID HEIGHT MASKING VIEWPORT CHASSIS (CROPS NATIVE TOOLBARS) ── */
+        .iframe-masking-viewport-chassis { 
+            width: 100%; flex: 1; overflow: hidden; position: relative; background: #ffffff; 
         }
         
-        .navbar-links a {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #64748b; 
-            text-decoration: none;
-            transition: color 0.1s;
-            white-space: nowrap;
-            padding-bottom: 4px;
+        /* ── 🎯 SHIFTS IFRAME BOX UPWARD BY 56PX TO EXCLUDE BLACK MENUS ON DESKTOP ── */
+        .embedded-frame-iframe { 
+            position: absolute; top: -56px; left: 0; width: 100%; height: calc(100% + 56px); border: none; background: #ffffff; display: block;
         }
+        .embedded-frame-iframe.no-offset { top: 0px !important; height: 100% !important; position: relative !important; }
         
-        .navbar-links a:hover { color: #0f172a; }
-        .navbar-links a.active {
-            color: #0b698b; 
-            border-bottom: 3px solid #0b698b;
-            padding-bottom: 4px;
-        }
+        .empty-placeholder-view { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; flex: 1; gap: 12px; color: #64748b; text-align: center; padding: 24px; }
+        .empty-placeholder-view i { font-size: 3rem; color: rgba(255,255,255,0.05); }
 
-        .lang-badge {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 6px 14px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #0f172a;
-            font-size: 0.82rem;
-            font-weight: 700;
-            margin-top: 2px;
+        /* ── 📱 MOBILES OVERRIDES FOR OPTIMIZED COMFORT SCALING ── */
+        @media (max-width: 900px) {
+            html, body { height: auto; overflow-y: auto; }
+            .workspace-scroll-container { margin-top: 105px; height: auto; overflow: visible; padding: 10px 4%; }
+            .workspace-inner { grid-template-columns: 1fr !important; height: auto; gap: 16px; }
+            .workspace-inner.sidebar-hidden { grid-template-columns: 1fr !important; gap: 16px; }
+            .navbar { flex-direction: column !important; height: auto !important; padding: 10px 4% 8px !important; gap: 6px !important; }
+            .navbar-links { gap: 12px 16px !important; width: 100% !important; justify-content: center !important; flex-wrap: wrap !important; }
+            .navbar-links a { font-size: 0.78rem !important; padding: 6px 0 !important; }
+            .navbar-links a.active::after { bottom: -2px !important; }
+            .preview-viewer-chamber { height: 80vh; }
+            .btn-sidebar-toggle-trigger { display: none !important; }
+            
+            /* ── 🎯 MOBILE FIX: REMOVES THE VERTICAL OFFSET TO ENABLE PERFECT TOUCH SCROLLING ── */
+            .iframe-masking-viewport-chassis { overflow-y: auto !important; overflow-x: hidden !important; -webkit-overflow-scrolling: touch; }
+            .embedded-frame-iframe { position: relative !important; top: 0px !important; height: 100% !important; width: 100% !important; }
         }
-        .rw-flag-svg { width: 16px; height: auto; border-radius: 1px; }
-
-        @media (min-width: 768px) {
-            .navbar { flex-direction: row; height: 72px; padding: 0 6%; justify-content: space-between; gap: 0; }
-            .navbar-links { width: auto; gap: 28px; }
-            .navbar-links a { font-size: 0.92rem; }
-            .workspace-scroll-container { margin-top: 72px !important; }
-        }
-
-        /* ── CANVAS CONTENT FIELDS ── */
-        .workspace-scroll-container {
-            flex: 1;
-            margin-top: 154px; 
-            overflow-y: auto;
-            padding: 24px 16px 80px;
-            width: 100%;
-        }
-        
-        .workspace-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .section-header-meta .pill {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
-            padding: 5px 12px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #38bdf8;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-        
-        .section-header-meta h2 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; line-height: 1.2; }
-        .section-header-meta p { font-size: 0.92rem; color: #94a3b8; line-height: 1.4; }
-
-        .catalog-grid-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            width: 100%;
-        }
-        @media (min-width: 640px) { .catalog-grid-layout { grid-template-columns: repeat(2, 1fr); } }
-
-        .resource-glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .resource-card-body h3 { font-size: 1.15rem; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
-        .resource-card-body p { font-size: 0.85rem; color: #94a3b8; line-height: 1.4; margin-bottom: 12px; }
-        .file-type-pill { font-size: 9px; font-weight: 800; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
-
-        .actions-button-group { display: flex; gap: 10px; margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 14px; }
-        .btn-action-trigger {
-            flex: 1; text-decoration: none; font-size: 0.82rem; font-weight: 700; padding: 10px 14px; border-radius: 6px;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; transition: background 0.1s; cursor: pointer;
-        }
-        .btn-preview-link { background: rgba(255,255,255,0.05); color: #ffffff; border: 1px solid rgba(255,255,255,0.12); }
-        .btn-preview-link:hover { background: rgba(255,255,255,0.12); }
-        .btn-download-link { background: var(--brand); color: #ffffff; border: none; }
-        .btn-download-link:hover { background: var(--brand-dark); }
-
-        /* ── 🎯 POPUP MODAL WINDOW PROFILES ── */
-        .custom-popup-window-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 5000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            width: 100vw;
-            height: 100vh;
-        }
-        
-        .popup-window-container {
-            width: 100%;
-            max-width: 900px;
-            height: 85vh;
-            background: #ffffff;
-            border-radius: 14px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-        }
-
-        .popup-window-header {
-            height: 56px;
-            background: #f1f5f9;
-            border-bottom: 1px solid #cbd5e1;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: #0f172a;
-        }
-        .popup-window-header h3 { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-        .btn-close-popup {
-            background: #ef4444; color: #ffffff; border: none; padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer;
-        }
-
-        .popup-window-body-viewport {
-            flex: 1;
-            width: 100%;
-            background: #475569;
-            position: relative;
-            overflow-y: auto;
-        }
-        .popup-embed-frame { width: 100%; height: 100%; border: none; display: block; }
-        .popup-image-renderer { width: 100%; height: auto; max-width: 100%; display: block; margin: 0 auto; padding: 10px; object-fit: contain; }
-
-        .footer { height: 40px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; }
-        .footer strong { color: #38bdf8; }
     </style>
 </head>
 <body>
-
-    <!-- ===== PIXEL-PERFECT NAVBAR HEADER ===== -->
-    <header class="navbar">
+        <header class="navbar">
         <a href="/" class="navbar-brand-wrap">
-            <img src="assets/uploads/logo.png" alt="IKIZAME Logo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: contain;">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
             <div class="navbar-brand">IKIZAME</div>
         </a>
-        <nav style="width: 100%;">
+        <nav>
             <ul class="navbar-links">
                 <li><a href="/">Ahabanza</a></li>
-                <li><a href="#" onclick="alert('Ubufasha bugiye kuboneka vuba!')">Ubufasha</a></li>
+                <li><a href="ubufasha">Ubufasha</a></li>
                 <li><a href="ifashanyigisho" class="active">Ifashanyigisho</a></li>
-                <li><a href="#" onclick="alert('Ibiciro bishya biri kuvugururwa!')">Ibiciro</a></li>
+                <li><a href="ibiciro">Ibiciro</a></li>
+                <li><a href="school-auth">Amashuri (School Portal)</a></li>
                 <li><a href="/?open=amanota">Amanota</a></li>
             </ul>
         </nav>
         <div class="lang-badge">
-            <svg class="rw-flag-svg" viewBox="0 0 4 3">
-                <rect width="4" height="1.1" y="0" fill="#1EB5E5"/>
-                <rect width="4" height="0.9" y="1.1" fill="#FAD201"/>
-                <rect width="4" height="0.9" y="2" fill="#20603D"/>
-                <circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/>
-                            </svg>
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
             <span>Kinyarwanda</span>
         </div>
     </header>
 
-    <!-- ===== WORKSPACE CANVAS SCROLL CHAMBER ===== -->
     <div class="workspace-scroll-container">
-        <main class="workspace-inner">
-            <section class="section-header-meta">
-                <span class="pill">Ifashanyigisho 2026</span>
-                <h2>Imfashanyigisho n'Ibitabo</h2>
-                <p>Soma, download, kandi usubiremo amategeko n'ibyapa by'umuhanda ukolesheje inyandiko zateguwe n'ababizobereye.</p>
-            </section>
-
-            <!-- Cards Catalog Grid Feed -->
-            <section class="catalog-grid-layout" id="studentResourcesLibraryFeedGrid">
-                <div style="text-align: center; padding: 40px; color: #94a3b8; font-style: italic;">
-                    <i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px; color: var(--brand);"></i> Gushakisha amadosiye...
+        <main class="workspace-inner" id="masterWorkspaceSplitLayoutInnerGrid">
+            
+            <!-- LEFT COLUMN: AVAILABLE DOCUMENTS SIDEBAR -->
+            <div class="documents-sidebar-list">
+                <div class="sidebar-title">Imfashanyigisho zihari</div>
+                <div id="dynamicDocumentsListContainerTarget" style="display:flex; flex-direction:column; gap:10px;">
                 </div>
-            </section>
+            </div>
+
+            <!-- RIGHT COLUMN: INTERACTIVE DOC PREVIEWER FRAME CHAMBER -->
+            <div class="preview-viewer-chamber" id="mainDocumentPreviewerContainerFrameBox">
+                <div class="empty-placeholder-view" id="emptyPlaceholderStateBox">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <p style="font-size:0.88rem; font-weight:600;">Hitamo imfashanyigisho ku rutonde ngo uyisome hano</p>
+                </div>
+            </div>
+
         </main>
     </div>
 
-    <!-- ===== 🎯 IN-PAGE MODAL POPUP WINDOW PANE ===== -->
-    <div class="custom-popup-window-modal" id="inPageResourcePopupModal">
-        <div class="popup-window-container">
-            <div class="popup-window-header">
-                <h3 id="popupModalDocTitleLabel"><i class="fa-solid fa-book-open"></i> Reading Guide</h3>
-                <button class="btn-close-popup" onclick="closeInPagePopupModalWindow()">Funga (Close)</button>
-            </div>
-            <div class="popup-window-body-viewport" id="popupModalViewportBodyTarget">
-                <!-- Content injected dynamically via file type detector -->
-            </div>
-        </div>
-    </div>
+    <footer class="footer" style="height:32px; background:#0f172a; display:flex; align-items:center; justify-content:center; font-size:10px; color:#64748b; position:fixed; bottom:0; left:0; right:0; border-top:1px solid rgba(255,255,255,0.05); z-index:10;">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
 
-    <footer class="footer">
-        &copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong>
-    </footer>
-
-    <!-- ===== CORE SCRIPT AUTOMATION LOADER ===== -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const feedContainer = document.getElementById('studentResourcesLibraryFeedGrid');
+        let globalLoadedDocumentsArray = [];
 
-            fetch('/api/resources')
+        document.addEventListener('DOMContentLoaded', () => {
+            loadActivePublicDocumentsDatabaseRows();
+        });
+
+        function loadActivePublicDocumentsDatabaseRows() {
+            const listTarget = document.getElementById('dynamicDocumentsListContainerTarget');
+            listTarget.innerHTML = `<div style="text-align:center; padding:20px; font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Irimo gushaka...</div>`;
+
+            fetch('/api/public/documents')
                 .then(res => res.json())
-                .then(data => {
-                    if (!data || data.length === 0) {
-                        feedContainer.innerHTML = `<p style="font-style:italic; color:#94a3b8; text-align:center; padding:20px; width:100%;">Nta mfashanyigisho n'imwe irashyirwa ku rubuga mu kanya.</p>`;
+                .then(documents => {
+                    listTarget.innerHTML = '';
+                    if(!documents || documents.length === 0) {
+                        listTarget.innerHTML = `<div style="text-align:center; padding:16px; font-size:12px; color:var(--text-muted);">Nta mfashanyigisho zanditswe ziri ku muryango.</div>`;
                         return;
                     }
 
-                    feedContainer.innerHTML = data.map(resource => {
-                        const noteDesc = resource.description && resource.description.trim() ? resource.description.trim() : "Nta bisobanuro byongewe kuri iyi mfashanyigisho.";
+                    globalLoadedDocumentsArray = documents;
 
-                        // 🎯 ROBUST TRUTHY CHECK: MySQL can return TINYINT(1) flags as a JS
-                        // number (1/0), a string ("1"/"0"), or a boolean depending on driver
-                        // config. A strict `=== 1` check silently fails for the other shapes,
-                        // which made "Fungura" look broken/locked even when it should work.
-                        const toBool = (val) => val === true || val === 1 || val === '1';
+                    documents.forEach((doc, idx) => {
+                        const filePathStr = doc.file_path || '';
+                        const fileExtension = filePathStr.split('.').pop().toLowerCase();
+                        
+                        let iconClass = "fa-file-pdf";
+                        let iconColor = "#ef4444"; 
 
-                        const isReadable = toBool(resource.allow_read);
-                        const isDownloadable = toBool(resource.allow_download);
+                        if (['doc', 'docx'].includes(fileExtension)) {
+                            iconClass = "fa-file-word";
+                            iconColor = "#0284c7"; 
+                        }
 
-                        const previewBtnHTML = isReadable 
-                            ? `<button class="btn-action-trigger btn-preview-link" onclick="openDocumentUniversally('${resource.file_name}', '${resource.title.replace(/'/g, "\\'")}')"><i class="fa-solid fa-eye"></i> Fungura</button>`
-                            : `<button class="btn-action-trigger btn-preview-link" style="opacity:0.3; cursor:not-allowed;" disabled><i class="fa-solid fa-lock"></i> Locked</button>`;
-
-                        const downloadBtnHTML = isDownloadable 
-                            ? `<a href="assets/uploads/${resource.file_name}" download="${resource.title}" class="btn-action-trigger btn-download-link"><i class="fa-solid fa-cloud-arrow-down"></i> Kuramo</a>`
-                            : ``;
-
-                        return `
-                            <div class="resource-glass-card">
-                                <div class="resource-card-body">
-                                    <span class="file-type-pill">${resource.file_type} Document</span>
-                                    <h3 style="margin-top:10px;">${resource.title}</h3>
-                                    <p>${noteDesc}</p>
+                        listTarget.innerHTML += `
+                            <button class="document-item-btn" id="docBtnItem-${doc.id}" onclick="executeAdaptiveDocumentFramePreview(${idx}, ${doc.id})">
+                                <div class="doc-icon-box"><i class="fa-solid ${iconClass}" style="color: ${iconColor};"></i></div>
+                                <div class="doc-meta">
+                                    <h4>${doc.title}</h4>
+                                    <span>${fileExtension.toUpperCase()} Imfashanyigisho</span>
                                 </div>
-                                <div class="actions-button-group">
-                                    ${previewBtnHTML}
-                                    ${downloadBtnHTML}
-                                </div>
-                            </div>
+                            </button>
                         `;
-                    }).join('');
+                    });
+                })
+                .catch(() => {
+                    listTarget.innerHTML = `<div style="text-align:center; padding:16px; font-size:12px; color:#ef4444; font-weight:600;">Gushaka imfashanyigisho byanze.</div>`;
                 });
-        });
+        }
 
-        // ── 🎯 IN-PAGE DOCUMENT VIEWER: everything opens inside the modal, never navigates away ──
-        window.openDocumentUniversally = function(fileName, docTitle) {
-            const modal = document.getElementById('inPageResourcePopupModal');
-            const titleLabel = document.getElementById('popupModalDocTitleLabel');
-            const viewportBody = document.getElementById('popupModalViewportBodyTarget');
+        window.toggleSidebarDisplayChassisGrid = function() {
+            const layoutGrid = document.getElementById('masterWorkspaceSplitLayoutInnerGrid');
+            const toggleBtn = document.getElementById('sidebarToggleActionButtonLabel');
+            
+            if(layoutGrid.classList.contains('sidebar-hidden')) {
+                layoutGrid.classList.remove('sidebar-hidden');
+                if(toggleBtn) toggleBtn.innerHTML = `<i class="fa-solid fa-angles-left"></i> Hisha `;
+            } else {
+                layoutGrid.classList.add('sidebar-hidden');
+                if(toggleBtn) toggleBtn.innerHTML = `<i class="fa-solid fa-angles-right"></i> >>`;
+            }
+        };
 
-            if (!fileName) {
-                console.error('openDocumentUniversally called with empty fileName');
-                alert('Iyi nyandiko ifite ikibazo (missing file). Menyesha admin.');
-                return;
+        function executeAdaptiveDocumentFramePreview(arrayIndexValue, targetId) {
+            const viewerChamber = document.getElementById('mainDocumentPreviewerContainerFrameBox');
+            
+            document.querySelectorAll('.document-item-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`docBtnItem-${targetId}`);
+            if(activeBtn) activeBtn.classList.add('active');
+
+            const doc = globalLoadedDocumentsArray[arrayIndexValue];
+            if (!doc) return;
+
+            const filePath = doc.file_path;
+            const documentTitle = doc.title;
+            const allowDownloadFlag = doc.allow_download;
+
+            const fileExtensionString = filePath.split('.').pop().toLowerCase();
+            const fullyQualifiedFileUrl = window.location.protocol + "//" + window.location.host + "/" + filePath + "#view=FitH&toolbar=0";
+            
+            let downloadActionElement = "";
+            if (allowDownloadFlag === 1) {
+                downloadActionElement = `<a href="/${filePath}" download class="btn-download-fallback"><i class="fa-solid fa-download"></i> Gukura Hano (Download)</a>`;
+            } else {
+                downloadActionElement = `<button class="btn-download-fallback disabled" disabled><i class="fa-solid fa-lock"></i> Blocked</button>`;
             }
 
-            const targetFilePath = `/assets/uploads/${fileName}`;
-            const fileExtension = fileName.split('.').pop().toLowerCase();
+            console.log(`[UI Engine] Processing secure file preview layer: ${fileExtensionString}`);
 
-            // Images render directly inline inside the popup panel
-            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExtension)) {
-                titleLabel.innerHTML = `<i class="fa-solid fa-image" style="color:var(--brand);"></i> Reba: ${docTitle}`;
-                viewportBody.innerHTML = `<img src="${targetFilePath}" class="popup-image-renderer" alt="Document Sheet"
-                    onerror="this.replaceWith(Object.assign(document.createElement('p'),{textContent:'Ifoto ntiyabonetse (404). Reba ko dosiye ${fileName} ihari muri assets/uploads.',style:'color:#fca5a5;text-align:center;padding:30px;'}))">`;
-                document.body.style.overflow = "hidden";
-                modal.style.display = "flex";
-                return;
-            }
-
-            // For PDFs and other documents: always render inside the in-page modal
-            // on every screen size — desktop, tablet, and mobile alike. We never
-            // navigate the browser away from this page (no window.location.assign).
-            titleLabel.innerHTML = `<i class="fa-solid fa-file-invoice" style="color:var(--brand);"></i> Soma: ${docTitle}`;
-            viewportBody.innerHTML = `
-                <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#ffffff; background:#1e293b; gap:12px; z-index:1;">
-                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size:32px; color:var(--brand);"></i>
-                    <p style="font-size:13px; font-style:italic; opacity:0.8;">Iri gufungura inyandiko neza...</p>
+            let toolbarHeaderLayout = `
+                <div class="viewer-toolbar-header">
+                    <div class="viewer-title-wrap">
+                        <button class="btn-sidebar-toggle-trigger" id="sidebarToggleActionButtonLabel" onclick="toggleSidebarDisplayChassisGrid()"><i class="fa-solid fa-angles-left"></i> Hisha </button>
+                        <h3>Soma: ${documentTitle}</h3>
+                    </div>
+                    ${downloadActionElement}
                 </div>
             `;
-            document.body.style.overflow = "hidden";
-            modal.style.display = "flex";
 
-            fetch(targetFilePath)
-                .then(r => {
-                    if (!r.ok) throw new Error(`HTTP ${r.status} fetching ${targetFilePath}`);
-                    return r.blob();
-                })
-                .then(fileBlob => {
-                    const localMemoryBlobPathUrl = URL.createObjectURL(fileBlob);
-                    viewportBody.innerHTML = `
-                        <iframe src="${localMemoryBlobPathUrl}#toolbar=0&navpanes=0" class="popup-embed-frame" style="width:100%; height:100%; border:none; display:block;"></iframe>
-                    `;
-                })
-                .catch((err) => {
-                    // Log the real reason to the console so it's debuggable instead of silent
-                    console.error('Document open failed:', err);
-                    viewportBody.innerHTML = `
-                        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fca5a5; gap:10px; padding:24px; text-align:center;">
-                            <i class="fa-solid fa-triangle-exclamation" style="font-size:28px;"></i>
-                            <p style="font-size:13px;">Inyandiko ntiyashoboye gufungurwa (${err.message}).<br>Reba ko dosiye iri muri public/assets/uploads/.</p>
+            if (['doc', 'docx'].includes(fileExtensionString)) {
+                if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                    viewerChamber.innerHTML = `
+                        ${toolbarHeaderLayout}
+                        <div class="iframe-masking-viewport-chassis">
+                            <div class="empty-placeholder-view" style="color:#ffffff; padding:40px; height:100%;">
+                                <i class="fa-solid fa-file-word" style="color:#0284c7; font-size:3.5rem; margin-bottom:12px;"></i>
+                                <h4 style="margin-bottom:6px; font-size:1.1rem;">Urugero rwa Word Document</h4>
+                                <p style="font-size:0.85rem; color:#94a3b8; max-width:400px; margin-bottom:16px;">Kubera ko ukorera kuri Localhost, Microsoft cloud viewer ntishobora gusoma iyi file. Umunyeshuri ugiye kuyisoma kuri internet yo izahita yifungura neza hano.</p>
+                                <a href="/${filePath}" download class="btn-download-fallback" style="background:var(--brand);"><i class="fa-solid fa-file-arrow-down"></i> Fungura Ubu (Open File)</a>
+                            </div>
                         </div>
                     `;
-                });
-        };
-
-        window.closeInPagePopupModalWindow = function() {
-            document.getElementById('inPageResourcePopupModal').style.display = "none";
-            document.getElementById('popupModalViewportBodyTarget').innerHTML = "";
-            document.body.style.overflow = "auto";
-        };
+                } else {
+                    const secureCloudViewerPath = `https://live.com{encodeURIComponent(fullyQualifiedFileUrl)}`;
+                    viewerChamber.innerHTML = `
+                        ${toolbarHeaderLayout}
+                        <div class="iframe-masking-viewport-chassis">
+                            <iframe src="${secureCloudViewerPath}" class="embedded-frame-iframe"></iframe>
+                        </div>
+                    `;
+                }
+            } else {
+                viewerChamber.innerHTML = `
+                    ${toolbarHeaderLayout}
+                    <div class="iframe-masking-viewport-chassis">
+                        <iframe src="${fullyQualifiedFileUrl}" class="embedded-frame-iframe"></iframe>
+                    </div>
+                `;
+            }
+        }
     </script>
 </body>
 </html>

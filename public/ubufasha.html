@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 🎯 BRANDING HEADER ICON BINDING -->
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Ubufasha n'Ikoreshwa — IKIZAME</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root { 
+            --brand: #0b698b; 
+            --brand-dark: #08536e; 
+            --bg-dark: #0d1b2a; 
+            --text-dark: #0f172a; 
+            --border-color: rgba(255,255,255,0.1); 
+            --text-muted: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body { 
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Inter', sans-serif; 
+            background-color: #0d1b2a; 
+            color: #ffffff; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+        }
+                /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
+        .navbar { 
+            position: fixed; 
+            top: 0; left: 0; right: 0; 
+            z-index: 5000; 
+            height: 60px; 
+            background: #ffffff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 4%; 
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 10px rgba(15, 23, 42, 0.03);
+            width: 100vw;
+            box-sizing: border-box;
+        }
+        
+        .navbar-brand-wrap { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-decoration: none; 
+        }
+        .navbar-brand-wrap img { 
+            width: 32px; 
+            height: 32px; 
+            object-fit: contain; 
+        }
+        .navbar-brand { 
+            font-family: 'Inter', sans-serif; 
+            font-size: 1.65rem; 
+            font-weight: 800; 
+            color: #0b698b; 
+            letter-spacing: -0.5px; 
+            text-transform: uppercase;
+            line-height: 1; 
+        }
+
+        .navbar-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 22px; 
+            align-items: center; 
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-links a { 
+            font-family: 'Inter', sans-serif;
+            font-size: 0.84rem; 
+            font-weight: 700; 
+            color: #475569; 
+            text-decoration: none; 
+            padding: 20px 0 18px; 
+            position: relative;
+            transition: color 0.15s ease;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .navbar-links a:hover { 
+            color: #0b698b; 
+        }
+        
+        .navbar-links a.active { 
+            color: #0b698b; 
+            font-weight: 800; 
+        }
+        .navbar-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px; 
+            background: #0b698b;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .lang-badge { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            color: #1e293b; 
+            background: #ffffff; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            padding: 5px 12px; 
+            user-select: none;
+        }
+        .rw-flag-svg { 
+            width: 20px; 
+            height: 14px; 
+            border-radius: 2px; 
+            border: 1px solid #e2e8f0; 
+            flex-shrink: 0; 
+        }
+
+        /* ── 📱 MOBILE MULTI-ROW VISIBILITY CONTROLLER ── */
+        @media (max-width: 900px) {
+            .navbar { 
+                flex-direction: column !important; 
+                height: auto !important; 
+                padding: 10px 4% 8px !important; 
+                gap: 6px !important; 
+            }
+            .navbar-links { 
+                gap: 12px 16px !important; 
+                width: 100% !important; 
+                justify-content: center !important; 
+                flex-wrap: wrap !important;
+            }
+            .navbar-links a { 
+                font-size: 0.78rem !important; 
+                padding: 6px 0 !important; 
+            }
+            .navbar-links a.active::after { 
+                bottom: -2px !important; 
+            }
+        }
+        /* ===== MAIN COMPACT CONTAINER LAYOUT CANVAS ===== */
+        .workspace-scroll-container { 
+            flex: 1; margin-top: 60px; margin-bottom: 32px; padding: 20px 4%; 
+            display: flex; align-items: center; justify-content: center; width: 100%; overflow: hidden;
+        }
+        .workspace-inner { 
+            width: 100%; max-width: 1140px; height: 100%; display: flex; flex-direction: column; gap: 20px; justify-content: center;
+        }
+        
+        .section-header-meta { text-align: center; }
+        .section-header-meta h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 2px; }
+        .section-header-meta p { font-size: 0.85rem; color: #94a3b8; }
+
+        /* ===== TWO-COLUMN SYMMETRICAL SPLIT SCREEN VIEW ===== */
+        .pricing-split-layout { 
+            display: grid; grid-template-columns: 1fr 1.25fr; gap: 24px; 
+            width: 100%; height: calc(100% - 60px); align-items: stretch; 
+        }
+
+        .cards-column { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; height: 100%; align-content: center; }
+
+        .social-card {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; text-decoration: none; color: #ffffff; transition: all 0.2s ease; justify-content: center;
+        }
+        .social-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+        .social-icon-box { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        
+        .social-card.whatsapp .social-icon-box { background: #25d366; box-shadow: 0 4px 12px rgba(37,211,102,0.2); }
+        .social-card.instagram .social-icon-box { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); box-shadow: 0 4px 12px rgba(220,39,67,0.2); }
+        .social-card.facebook .social-icon-box { background: #1877f2; box-shadow: 0 4px 12px rgba(24,119,242,0.2); }
+        .social-card.x-twitter .social-icon-box { background: #000000; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+        .social-info h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+        .social-info p { font-size: 0.78rem; color: #94a3b8; }
+
+        /* ===== INTERACTIVE PROCESS FLOW DIAGRAM ===== */
+        .payment-guide-container { 
+            background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); 
+            border-radius: 14px; padding: 24px; display: flex; flex-direction: column; 
+            gap: 16px; height: 100%; justify-content: center;
+        }
+        .guide-card-header h3 { font-size: 1.15rem; font-weight: 800; color: #ffffff; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+        .guide-card-header p { font-size: 0.82rem; color: #94a3b8; }
+
+        .vertical-timeline { position: relative; display: flex; flex-direction: column; gap: 15px; max-width: 800px; margin: 0 auto; width: 100%; }
+        .vertical-timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 16px; width: 2px; background: rgba(11, 105, 139, 0.2); z-index: 1; }
+        .timeline-item { position: relative; padding-left: 44px; display: flex; flex-direction: column; gap: 4px; z-index: 2; }
+        .timeline-badge { width: 34px; height: 34px; background: #0d1b2a; border: 2px solid var(--brand); color: #ffffff; font-weight: 800; font-size: 0.9rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 2px; box-shadow: 0 0 0 3px #0d1b2a; }
+        .timeline-item:hover .timeline-badge { background: var(--brand); box-shadow: 0 0 10px rgba(11,105,139,0.5); }
+        
+        .timeline-content-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 16px; }
+        .timeline-content-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; color: #38bdf8; }
+        .timeline-content-card p { font-size: 0.8rem; color: #cbd5e1; line-height: 1.4; }
+
+        .footer { height: 32px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid rgba(255,255,255,0.05); z-index: 10; }
+
+        /* ===== 📱 RESPONSIVE MEDIA QUERIES ===== */
+        @media (max-width: 850px) {
+            html, body { height: auto; overflow-y: auto; }
+            .workspace-scroll-container { margin-top: 165px; margin-bottom: 40px; height: auto; overflow: visible; padding: 10px 4%; }
+            .workspace-inner { height: auto; gap: 16px; }
+            .pricing-split-layout { grid-template-columns: 1fr; height: auto; gap: 20px; }
+            .cards-column { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        }
+        @media (max-width: 480px) {
+            .cards-column { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+        <header class="navbar">
+        <a href="/" class="navbar-brand-wrap">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+            <div class="navbar-brand">IKIZAME</div>
+        </a>
+        <nav>
+            <ul class="navbar-links">
+                <li><a href="/">Ahabanza</a></li>
+                <li><a href="ubufasha" class="active">Ubufasha</a></li>
+                <li><a href="ifashanyigisho">Ifashanyigisho</a></li>
+                <li><a href="ibiciro">Ibiciro</a></li>
+                <li><a href="school-auth">Amashuri (School Portal)</a></li>
+                <li><a href="/?open=amanota">Amanota</a></li>
+            </ul>
+        </nav>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+            <span>Kinyarwanda</span>
+        </div>
+    </header>
+    <div class="workspace-scroll-container">
+                <main class="workspace-inner">
+            
+            <section class="section-header-meta">
+                <h2>Ubufasha n'Ikoreshwa</h2>
+                <p>Uhawe ikaze mu kigo cy'ubufasha. Twandikire cyangwa ukurikize imbonerahamwe y'intambwe zo gukora ikizamini.</p>
+            </section>
+
+            <!-- ===== TOP CARDS: REAL BRANDED SOCIAL PORTALS ===== -->
+            <div class="pricing-split-layout">
+                <div class="cards-column">
+                    <!-- WhatsApp Card -->
+                    <a href="https://wa.me/250786663377?text=Muraho!%20Ndashaka%20ubufasha."target="_blank" rel="noopener" class="social-card whatsapp">
+                        <div class="social-icon-box">
+                            <svg viewBox="0 0 448 512" style="width: 24px; height: 24px; fill: #ffffff;"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                        </div>
+                        <div class="social-info">
+                            <h4>WhatsApp</h4>
+                            <p>0786663377</p>
+                        </div>
+                    </a>
+
+                    <!-- Instagram Card -->
+                    <a href="https://instagram.com" target="_blank" rel="noopener" class="social-card instagram">
+                        <div class="social-icon-box">
+                            <svg viewBox="0 0 448 512" style="width: 22px; height: 24px; fill: #ffffff;"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9s-58-34.5-93.9-36.2c-36.9-2.1-147.9-2.1-184.8 0-35.9 1.7-67.7 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 36.9-2.1 147.9 0 184.8 1.7 35.9 9.9 67.7 36.2 93.9s58 34.5 93.9 36.2c36.9 2.1 147.9 2.1 184.8 0 35.9-1.7 67.7-9.9 93.9-36.2s34.5-58 36.2-93.9c2.1-36.9 2.1-147.9 0-184.8zM402.3 392c-7.8 19.6-22.9 34.7-42.6 42.5-29.5 11.7-99.5 9-135.7 9s-106.2 2.6-135.7-9c-19.6-7.8-34.7-22.9-42.5-42.6-11.7-29.5-9-99.5-9-135.7s-2.6-106.2 9-135.7c7.8-19.6 22.9-34.7 42.6-42.5 29.5-11.7 99.5-9 135.7-9s106.2-2.6 135.7 9c19.6 7.8 34.7 22.9 42.5 42.6 11.7 29.5 9 99.5 9 135.7s2.6 106.2-9 135.7z"/></svg>
+                        </div>
+                        <div class="social-info">
+                            <h4>Instagram</h4>
+                            <p>@ikizame_portal</p>
+                        </div>
+                    </a>
+
+                    <!-- Facebook Card -->
+                    <a href="https://facebook.com" target="_blank" rel="noopener" class="social-card facebook">
+                        <div class="social-icon-box">
+                            <svg viewBox="0 0 512 512" style="width: 22px; height: 24px; fill: #ffffff;"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg>
+                        </div>
+                        <div class="social-info">
+                            <h4>Facebook</h4>
+                            <p>IKIZAME Platform</p>
+                        </div>
+                    </a>
+
+                    <!-- X Card -->
+                    <a href="https://x.com" target="_blank" rel="noopener" class="social-card x-twitter">
+                        <div class="social-icon-box">
+                            <svg viewBox="0 0 512 512" style="width: 22px; height: 24px; fill: #ffffff;"><path d="M182.6 242.1L20 48h54.1l132.3 162L319.4 48h151.1L298.3 268.4 485 464h-54.1L285.3 304.3 173 464H22L182.6 242.1zM265.6 279.6l24.3 35.1L405.3 432h21.1L309.4 259.9l-24.3-35.1L168.1 72h-21.1l118.6 171.3z"/></svg>
+                        </div>
+                        <div class="social-info">
+                            <h4>X Platform</h4>
+                            <p>@ikizame_rw</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- COLUMN 2: EXAM PROCESS TIMELINE FLOW DIAGRAM -->
+                <section class="payment-guide-container">
+                    <div class="guide-card-header">
+                        <h3><i class="fa-solid fa-diagram-next" style="color:var(--brand);"></i> Intambwe z'Ikizamini</h3>
+                        <p>Kurikiza iyi mbonerahamwe y'intambwe zo gukora ikizamini kuva ku ntangiriro kugeza ku musozo:</p>
+                    </div>
+                    
+                    <div class="vertical-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-badge">1</div>
+                            <div class="timeline-content-card">
+                                <h4>Kwiyandikisha ku Ntangiriro (Index Page Gate)</h4>
+                                <p>Injiza Amazina yanyu neza hamwe na Nomero ya telephone ikoreshwa (itangira na 7). Hano uhitamo niba uri umukandida gitiyeyo cyangwa umunyeshuri w'ishuri rya shofere.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-badge">2</div>
+                            <div class="timeline-content-card">
+                                <h4>Igenzura rya Token (Wallet Access Check)</h4>
+                                <p>Sisitemu ihita igenzura niba nomero yawe cyangwa ishuri ryawe rifite inshuro z'ibizamini zihagije. Niba ari ntabwo, unyura ku gice cy'Ibiciro ukagura imfashanyigisho ihita ifunguka muli MoMo PIN Push.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-badge">3</div>
+                            <div class="timeline-content-card">
+                                <h4>Gukora Ikizamini (Live Exam Workspace)</h4>
+                                <p>Urupapuro ruhita rurundanya ibibazo 20 byatoranyijwe muli database mu buryo bw'akamashu (shuffled random pool). Usubiza buri kibazo uhitamo imvugo cyangwa ishusho ikwiye muli minutu 20.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-badge">4</div>
+                            <div class="timeline-content-card">
+                                <h4>Gusubiza & Guhabwa Amanota (Exam End & Score)</h4>
+                                <p>Kanda "Submit" ubashe gisoza. Inshuro 1 ihita igabanyuka kuri konti yawe, hanyuma sisitemu ikwereke amanota wagize muli Sec 2, ndetse n'ibisubizo byose birambuye (Historical Review Panel).</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
+
+</body>
+</html>

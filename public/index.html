@@ -6,10 +6,10 @@
         <!-- 🎯 BRANDING HEADER: LINKS DIRECTLY TO YOUR LOGO IN THE UPLOADS FOLDER -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>IKIZAME</title>
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg-dark: #0d1b2a;
@@ -94,66 +94,6 @@
             90%  { opacity: 1; }
             100% { transform: translateX(120vw) rotate(360deg); opacity: 0; }
         }
-
-        /* ===== NAVBAR ===== */
-        .navbar {
-            position: relative;
-            z-index: 20;
-            height: 62px;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 5%;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.08);
-            flex-shrink: 0;
-        }
-
-        .navbar-brand {
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.55rem;
-            color: #0b698b;
-            letter-spacing: 1px;
-        }
-
-        .navbar-links {
-            display: flex;
-            gap: 28px;
-            list-style: none;
-        }
-        .navbar-links a {
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding-bottom: 3px;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .navbar-links a:hover { color: #0b698b; }
-        .navbar-links a.active { color: #0b698b; border-color: #0b698b; font-weight: 700; }
-
-        .lang-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            background: #f1f5f9;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 6px 14px;
-        }
-        .rw-flag-svg {
-            width: 24px;
-            height: 16px;
-            border-radius: 2px;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-            flex-shrink: 0;
-        }
-
         /* ===== MAIN GRID ===== */
         .workspace {
             flex: 1;
@@ -539,43 +479,139 @@
         @keyframes fullscreenSpinnerRotate {
             to { transform: rotate(360deg); }
         }
-
-        /* 🎯 CALIBRATED MOBILE NAV FLOW: ENFORCES FULL VISIBILITY ACROSS ALL SMARTPHONES */
+                /* 🎯 CALIBRATED MOBILE NAV FLOW: ENFORCES MULTI-ROW VISIBILITY FOR EXTRA MENU LINKS */
 @media (max-width: 900px) {
     .workspace {
         grid-template-columns: 1fr;
-        padding: 24px 4%;
+        padding: 170px 4%;
         gap: 28px;
     }
     .hero-copy { text-align: center; align-items: center; }
     .hero-desc { max-width: 100%; }
     .reg-card { margin: 0 auto; }
-    
-    /* 📱 Transforms top menu bar header into a smooth swipeable link track container */
-    .navbar {
-        flex-direction: column;
-        height: auto;
-        padding: 12px 4%;
-        gap: 12px;
-        align-items: center;
-    }
-    .navbar-links {
-        display: flex;
-        gap: 16px;
-        overflow-x: auto;
-        width: 100%;
-        justify-content: center;
-        padding: 4px 0 8px;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; /* Hide scrollbars on Firefox */
-    }
-    .navbar-links::-webkit-scrollbar { display: none; } /* Hide scrollbars on Chrome/Safari */
-    .navbar-links a {
-        font-size: 0.82rem;
-    }
 }
-    </style>
+        /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
+        .navbar { 
+            position: fixed; 
+            top: 0; left: 0; right: 0; 
+            z-index: 5000; 
+            height: 60px; 
+            background: #ffffff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 4%; 
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 10px rgba(15, 23, 42, 0.03);
+            width: 100vw;
+            box-sizing: border-box;
+        }
+        
+        .navbar-brand-wrap { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-decoration: none; 
+        }
+        .navbar-brand-wrap img { 
+            width: 32px; 
+            height: 32px; 
+            object-fit: contain; 
+        }
+        .navbar-brand { 
+            font-family: 'Inter', sans-serif; 
+            font-size: 1.65rem; 
+            font-weight: 800; 
+            color: #0b698b; 
+            letter-spacing: -0.5px; 
+            text-transform: uppercase;
+            line-height: 1; 
+        }
+
+        .navbar-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 22px; 
+            align-items: center; 
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-links a { 
+            font-family: 'Inter', sans-serif;
+            font-size: 0.84rem; 
+            font-weight: 700; 
+            color: #475569; 
+            text-decoration: none; 
+            padding: 20px 0 18px; 
+            position: relative;
+            transition: color 0.15s ease;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .navbar-links a:hover { 
+            color: #0b698b; 
+        }
+        
+        .navbar-links a.active { 
+            color: #0b698b; 
+            font-weight: 800; 
+        }
+        .navbar-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px; 
+            background: #0b698b;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .lang-badge { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            color: #1e293b; 
+            background: #ffffff; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            padding: 5px 12px; 
+            user-select: none;
+        }
+        .rw-flag-svg { 
+            width: 20px; 
+            height: 14px; 
+            border-radius: 2px; 
+            border: 1px solid #e2e8f0; 
+            flex-shrink: 0; 
+        }
+
+        /* ── 📱 MOBILE MULTI-ROW VISIBILITY CONTROLLER ── */
+        @media (max-width: 900px) {
+            .navbar { 
+                flex-direction: column !important; 
+                height: auto !important; 
+                padding: 10px 4% 8px !important; 
+                gap: 6px !important; 
+            }
+            .navbar-links { 
+                gap: 12px 16px !important; 
+                width: 100% !important; 
+                justify-content: center !important; 
+                flex-wrap: wrap !important;
+            }
+            .navbar-links a { 
+                font-size: 0.78rem !important; 
+                padding: 6px 0 !important; 
+            }
+            .navbar-links a.active::after { 
+                bottom: -2px !important; 
+            }
+        }
+ </style>
 </head>
 <body>
         <!-- ===== 🚀 INNOVATIVE FULL-SCREEN LOGO ENTRY ANIMATION SPLASH SCREEN ===== -->
@@ -616,40 +652,26 @@
             <svg viewBox="0 0 576 512" width="75" height="75" fill="currentColor"><path d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-11.046 0-20 8.954-20 20s8.954 20 20 20 20-8.954 20-20-8.954-20-20-20zm-43.673-165.346l6.666 120c.386 6.914 6.055 12.346 12.98 12.346h48.054c6.925 0 12.594-5.431 12.98-12.346l6.666-120c.406-7.328-5.383-13.654-12.98-13.654h-61.385c-7.598 0-13.386 6.326-12.981 13.654z"/></svg>
         </div>
     </div>
-    <header class="navbar">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                <!-- 🎯 INNOVATIVE ANIMATION CONTAINER: Scales and pulses beautifully on page boot up -->
-                <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-                    <!-- Ambient Glow Behind Logo -->
-                    <div style="position: absolute; inset: -2px; background: rgba(11, 105, 139, 0.3); border-radius: 8px; filter: blur(4px); animation: logoPulseGlow 2s ease-in-out infinite alternate;"></div>
-                    <!-- Animated Logo Image -->
-                    <img src="assets/uploads/logo.png" alt="IKIZAME Logo" style="width: 38px; height: 38px; border-radius: 6px; object-fit: contain; position: relative; z-index: 2; animation: logoEntranceScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;">
-                </div>
-                
-                <!-- Master deep bold black title -->
-                <div class="navbar-brand" style="font-family: 'Black Han Sans', 'Inter', sans-serif; font-size: 2.1rem; font-weight: 900;font-style: normal; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1;">IKIZAME</div>
-            </div>
+        <header class="navbar">
+        <a href="/" class="navbar-brand-wrap">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+            <div class="navbar-brand">IKIZAME</div>
+        </a>
         <nav>
             <ul class="navbar-links">
-                <li><a href="#" class="active">Ahabanza</a></li>
-                <li><a href="#" onclick="alert('Ubufasha bugiye kuboneka vuba!')">Ubufasha</a></li>
+                <li><a href="/" class="active">Ahabanza</a></li>
+                <li><a href="ubufasha">Ubufasha</a></li>
                 <li><a href="ifashanyigisho">Ifashanyigisho</a></li>
-                <li><a href="#" onclick="alert('Ibiciro bishya biri kuvugururwa!')">Ibiciro</a></li>
-                <!-- 🎯 INTERACTIVE NAVBAR LINK TRIGGER FOR AMANOTA MODAL OVERLAY -->
+                <li><a href="ibiciro">Ibiciro</a></li>
+                <li><a href="school-auth">Amashuri (School Portal)</a></li>
                 <li><a href="#" id="navAmanotaLink">Amanota</a></li>
             </ul>
         </nav>
         <div class="lang-badge">
-            <svg class="rw-flag-svg" viewBox="0 0 4 3">
-                <rect width="4" height="1.1" y="0" fill="#1EB5E5"/>
-                <rect width="4" height="0.9" y="1.1" fill="#FAD201"/>
-                <rect width="4" height="0.9" y="2" fill="#20603D"/>
-                <circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/>
-            </svg>
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
             <span>Kinyarwanda</span>
         </div>
     </header>
-
     <!-- ===== MAIN CONTENT ===== -->
     <main class="workspace">
         <!-- Hero Copy -->
@@ -769,35 +791,41 @@
         </div>
     </div>
         <!-- ===== FLOAT WHATSAPP LAYERS ===== -->
-    <div class="wa-popup" id="waPopup">
+         <div class="wa-popup" id="waPopup">
         <div class="wa-popup-header">
             <div class="wa-avatar">
-                <svg viewBox="0 0 512 512"><path d="M256 48C141.1 48 48 141.1 48 256v32c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32H96.3c14.6-60.6 68.7-106.3 133.7-111.4c3.4-.3 6-.3 9.4-.3c3.4 0 6 0 9.4.3c65 5.1 119.1 50.8 133.7 111.4H352c-17.7 0-32 14.3-32 32v64c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32V256c0-114.9-93.1-208-208-208z"/></svg>
+                <!-- 🎯 PRECISION EXTRACTED GREEN VECTOR LOGO MATCHING YOUR IMAGE -->
+                <svg viewBox="0 0 24 24" style="width: 24px; height: 24px;">
+                    <path d="M12.004 2C6.48 2 2.001 6.482 2 12.004c0 1.83.493 3.543 1.349 5.023L2 22l5.12-1.312a9.923 9.923 0 0 0 4.884 1.272c5.523 0 10.002-4.482 10.002-10.004C22.006 6.482 17.527 2 12.004 2zm0 1.637c4.614 0 8.367 3.753 8.367 8.367 0 4.615-3.753 8.368-8.367 8.368-1.59 0-3.076-.445-4.321-1.22l-.31-.192-3.2.82.836-3.11-.21-.334A8.322 8.323 0 0 1 3.637 12.01c0-4.614 3.753-8.367 8.367-8.367z" fill="#25d366"/>
+                    <path d="M15.42 12.932c-.22-.11-1.3-.64-1.5-.71-.2-.08-.34-.12-.48.09-.14.22-.55.71-.68.86-.12.14-.25.16-.47.05-.22-.11-.93-.34-1.78-1.1-.66-.58-1.1-1.3-1.23-1.52-.13-.22-.01-.34.1-.45.1-.1.22-.25.33-.37.11-.12.15-.2.22-.34.07-.14.04-.26-.02-.37-.05-.11-.48-1.16-.66-1.59-.18-.42-.35-.36-.48-.37h-.41c-.14 0-.38.05-.58.31-.2.25-.76.74-.76 1.8 0 1.07.78 2.1 1.39 2.37.12.16 2.05 3.12 4.96 4.38.69.3 1.23.48 1.66.62.7.22 1.33.19 1.83.12.56-.08 1.72-.7 1.96-1.38.24-.68.24-1.27.17-1.38-.07-.12-.25-.19-.47-.3z" fill="#25d366"/>
+                </svg>
                 <div class="wa-dot"></div>
             </div>
             <div class="wa-meta">
-                <h4>IKIZAME Support</h4>
-                <span>● Online</span>
+                <h4>Ubufasha bw'IKIZAME</h4>
+                <span>Arasubiza vuba</span>
             </div>
         </div>
         <div class="wa-body">
             <div class="wa-bubble">
-                Muraho! Niba ufite ikibazo cyangwa urimo guhura n'ikosa muri sisitemu, twandikire uyu mwanya tugufashe hano kuri WhatsApp!
+                Muraho! Ikaze kuri IKIZAME Support. Tuvugishe hano niba ufite ikibazo ku biciro, konti cyangwa uburyo bwo kwishura amashuri.
             </div>
         </div>
         <div class="wa-footer">
-            <a href="https://wa.me" target="_blank" rel="noopener" class="wa-link">
-                <svg viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+            <a href="https://wa.me." target="_blank" rel="noopener" class="wa-link" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center; width:100%; font-weight:700;">
+                <!-- 🎯 BUTTON SVG TO PERFECTLY MATCH THE MAIN WIDGET -->
+                <svg viewBox="0 0 24 24" style="width:18px; height:18px; margin-right:8px;"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.335 4.975L2 22l5.134-1.347a9.945 9.945 0 0 0 4.873 1.264c5.505 0 9.988-4.478 9.989-9.984C22 6.478 17.517 2 12.012 2zm4.738 11.884c-.26.13-1.539.759-1.776.846-.237.087-.41.13-.58.39-.171.26-.662.846-.812.976-.15.13-.3.151-.56.021-.26-.13-1.097-.404-2.09-1.294-.772-.689-1.293-1.541-1.444-1.801-.15-.26-.016-.4.114-.529.117-.117.26-.303.39-.454.128-.152.17-.252.256-.42.087-.169.043-.317-.021-.447-.065-.13-.58-1.396-.795-1.914-.21-.505-.418-.436-.574-.443-.153-.007-.327-.008-.501-.008-.173 0-.455.065-.693.376-.237.312-.906.885-.906 2.158 0 1.273.927 2.502 1.056 2.673.13.171 1.825 2.787 4.42 3.904.618.266 1.1.424 1.476.544.622.197 1.188.17 1.635.103.498-.075 1.539-.629 1.756-1.237.217-.609.217-1.129.153-1.237-.064-.108-.237-.173-.497-.303z" fill="#ffffff"/></svg>
                 Twandikire kuri WhatsApp
             </a>
         </div>
+</div>
     </div>
+    
+<div id="waFloat" class="wa-float" onclick="window.open('https://wa.me/250786663377','_blank')" title="WhatsApp">
+<svg viewBox="0 0 448 512"><path fill="#fff" d="M380.9 97.1C339 55.1 283.2 32 223.9 32 101.5 32 1.9 131.6 1.9 254c0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-23.1-115.1-67-156z"/></svg>
+</div>
 
-    <div class="wa-float" id="waFloat">
-        <svg viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
-    </div>
-
-    <!-- ===== FOOTER ===== -->
+<!-- ===== FOOTER ===== -->
     <footer class="footer">
         &copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong>
     </footer>
@@ -805,7 +833,10 @@
     <!-- ===== RUNTIME SYSTEM LOGIC ENGINE SCRIPT ===== -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            sessionStorage.clear();
+            // Preserve splash state
+            sessionStorage.removeItem('studentName');
+            sessionStorage.removeItem('phoneNumber');
+            sessionStorage.removeItem('isExamAlreadyStarted');
             fetch('/api/clear-session', { method: 'POST' }).catch(() => {});
 
             const registrationForm = document.getElementById('candidateRegistrationInteractiveForm');
@@ -917,121 +948,251 @@
                 .then(() => { window.location.href = '/exam'; })
                 .catch(() => { window.location.href = '/exam'; }); 
             });
-
             // ==========================================================================
-            // 📈 AMANOTA LOOKUP OVERLAY MODAL SCRIPT ENGINE
-            // ==========================================================================
-            const amanotaModal = document.getElementById('amanotaModal');
-            const lookupFormView = document.getElementById('amanotaLookupFormView');
-            const resultsListView = document.getElementById('amanotaResultsListView');
-            const resultsScrollTarget = document.getElementById('resultsListScrollTarget');
-            const lookupPhoneInp = document.getElementById('lookupPhoneNumber');
-            const lookupPhoneHint = document.getElementById('lookupPhoneHint');
-            const navAmanotaLink = document.getElementById('navAmanotaLink');
+// 📈 AMANOTA LOOKUP OVERLAY MODAL SCRIPT ENGINE
+// ==========================================================================
 
-            if (navAmanotaLink) {
-                navAmanotaLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    lookupPhoneInp.value = '';
-                    lookupPhoneHint.textContent = 'Injiza numero yawe hano';
-                    lookupPhoneHint.className = 'hint';
-                    lookupFormView.style.display = 'block';
-                    resultsListView.style.display = 'none';
-                    amanotaModal.style.display = 'flex';
-                });
+const amanotaModal = document.getElementById('amanotaModal');
+const lookupFormView = document.getElementById('amanotaLookupFormView');
+const resultsListView = document.getElementById('amanotaResultsListView');
+const resultsScrollTarget = document.getElementById('resultsListScrollTarget');
+const lookupPhoneInp = document.getElementById('lookupPhoneNumber');
+const lookupPhoneHint = document.getElementById('lookupPhoneHint');
+const navAmanotaLink = document.getElementById('navAmanotaLink');
+
+function openAmanotaModal() {
+    if (!amanotaModal) return;
+
+    lookupPhoneInp.value = '';
+    lookupPhoneHint.textContent = 'Injiza numero yawe hano';
+    lookupPhoneHint.className = 'hint';
+
+    lookupFormView.style.display = 'block';
+    resultsListView.style.display = 'none';
+
+    amanotaModal.style.display = 'flex';
+}
+
+function closeAmanotaModal() {
+    if (!amanotaModal) return;
+    amanotaModal.style.display = 'none';
+}
+
+// Open modal from navbar
+if (navAmanotaLink) {
+    navAmanotaLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openAmanotaModal();
+    });
+}
+
+// Close button
+const closeBtn = document.getElementById('closeAmanotaModalBtn');
+if (closeBtn) {
+    closeBtn.addEventListener('click', closeAmanotaModal);
+}
+
+// Close when clicking outside popup
+if (amanotaModal) {
+    amanotaModal.addEventListener('click', (e) => {
+        if (e.target === amanotaModal) {
+            closeAmanotaModal();
+        }
+    });
+}
+
+// Back button
+const backBtn = document.getElementById('backToLookupBtn');
+if (backBtn) {
+    backBtn.addEventListener('click', () => {
+        lookupFormView.style.display = 'block';
+        resultsListView.style.display = 'none';
+    });
+}
+
+// Search button
+const submitLookupBtn = document.getElementById('submitLookupBtn');
+
+if (submitLookupBtn) {
+    submitLookupBtn.addEventListener('click', async () => {
+
+        const phoneVal = lookupPhoneInp.value.trim();
+
+        if (phoneVal.length !== 9 || !phoneVal.startsWith('7')) {
+            lookupPhoneHint.textContent =
+                "IKOSA: Injiza numero y'inyuguti 9 itangizwa na 7!";
+            lookupPhoneHint.className = "hint error";
+            return;
+        }
+
+        lookupPhoneHint.className = "hint";
+        lookupPhoneHint.textContent = "Iri gushakisha amanota yawe...";
+
+        submitLookupBtn.disabled = true;
+        submitLookupBtn.textContent = "Birimo gushakisha...";
+
+        try {
+
+            const response = await fetch(`/api/amanota/lookup/${phoneVal}`);
+
+            if (!response.ok) {
+                throw new Error('Server Error');
             }
 
-            document.getElementById('closeAmanotaModalBtn').addEventListener('click', () => { amanotaModal.style.display = 'none'; });
-            document.getElementById('backToLookupBtn').addEventListener('click', () => {
-                lookupFormView.style.display = 'block';
-                resultsListView.style.display = 'none';
-            });
+            const attempts = await response.json();
 
-            document.getElementById('submitLookupBtn').addEventListener('click', () => {
-                const phoneVal = lookupPhoneInp.value.trim();
-                if (phoneVal.length !== 9 || !phoneVal.startsWith('7')) {
-                    lookupPhoneHint.textContent = "IKOSA: Injiza numero y'inyuguti 9 itangizwa na 7!";
-                    lookupPhoneHint.className = "hint error";
-                    return;
-                }
-
-                lookupPhoneHint.className = 'hint';
-                lookupPhoneHint.textContent = 'Iri gushakisha amanota yawe...';
-
-                fetch(`/api/amanota/lookup/${phoneVal}`)
-                .then(r => r.json())
-                .then(attempts => {
-                    if (!attempts || attempts.length === 0) {
-                        lookupPhoneHint.textContent = "Nta kizamini na kimwe cyabonetse kuri iyi numero!";
-                        lookupPhoneHint.className = "hint error";
-                        return;
-                    }
-
-                    resultsScrollTarget.innerHTML = attempts.map((att, i) => {
-                        const dateFormatted = new Date(att.created_at).toLocaleDateString('rw-RW', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                        const isPassed = att.score >= 12; 
-                        
-                        return `
-                        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #e2e8f0; background:${i%2===0?'#ffffff':'#f8fafc'}; gap:10px;">
-                            <div style="display:flex; flex-direction:column; gap:3px; min-width:0;">
-                                <span style="font-size:0.84rem; font-weight:700; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${att.student_name}</span>
-                                <span style="font-size:0.72rem; color:var(--text-muted); font-weight:500;">${dateFormatted}</span>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:12px; flex-shrink:0;">
-                                <span style="font-size:0.95rem; font-weight:800; color:${isPassed?'#166534':'#991b1b'}; background:${isPassed?'#dcfce7':'#fee2e2'}; padding:3px 9px; border-radius:5px;">
-                                    ${att.score}/${att.total_questions}
-                                </span>
-                                <button onclick="triggerHistoricalReviewSession(${att.id})" style="border:none; background:#0b698b; color:#ffffff; padding:6px 10px; font-size:0.75rem; font-weight:700; border-radius:5px; cursor:pointer; font-family:inherit; transition:background 0.15s;">
-                                    Fungura <i class="fa-solid fa-folder-open" style="font-size:10px; margin-left:2px;"></i>
-                                </button>
-                            </div>
-                        </div>`;
-                    }).join('');
-
-                    if(resultsScrollTarget.lastElementChild) resultsScrollTarget.lastElementChild.style.borderBottom = 'none';
-
-                    lookupFormView.style.display = 'none';
-                    resultsListView.style.display = 'flex';
-                })
-                .catch(() => {
-                    lookupPhoneHint.textContent = "Gushaka byanze, biba internet ihagaze.";
-                    lookupPhoneHint.className = "hint error";
-                });
-            });
-           // ==========================================================================
-            // 📈 AUTOMATIC OUTSIDE ROUTING LISTENER FOR AMANOTA MODAL LAUNCHES
-            // ==========================================================================
-            const homepageUrlParams = new URLSearchParams(window.location.search);
-            if (homepageUrlParams.get('open') === 'amanota') {
-                const targetHomeAmanotaTrigger = document.getElementById('navAmanotaLink');
-                if (targetHomeAmanotaTrigger) {
-                    // Delays trigger slightly for 300ms to allow your full-screen splash loader to clear out smoothly first!
-                    setTimeout(() => { 
-                        targetHomeAmanotaTrigger.click(); 
-                    }, 300);
-                }
+            if (!attempts || attempts.length === 0) {
+                lookupPhoneHint.textContent =
+                    "Nta kizamini na kimwe cyabonetse kuri iyi numero!";
+                lookupPhoneHint.className = "hint error";
+                return;
             }
-            // 🎯 FIXED DATA OVERLAY INJECTION FOR HISTORICAL TRACKING PREVIEWS
-            window.triggerHistoricalReviewSession = function(attemptId) {
-                fetch(`/api/amanota/review/${attemptId}`)
-                .then(r => r.json())
-                .then(res => {
-                    // Inject parameters directly into local sessionStorage memory streams 
-                    sessionStorage.setItem('latestScore', res.score);
-                    sessionStorage.setItem('latestTotal', res.total);
-                    sessionStorage.setItem('studentAnswerMapping', JSON.stringify(res.answers));
-                    sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(res.questions));
-                    
-                    // 🎯 FIX: Populates your name and phone number dynamically from the historical record!
-                    sessionStorage.setItem('studentName', res.studentName);
-                    sessionStorage.setItem('phoneNumber', res.phoneNumber);
-                    
-                    // Route cleanly to the extensionless secure review canvas target screen
-                    window.location.replace('exam-result');
-                })
-                .catch(() => alert('Gufungura ibyavuye mu kizamini byanze.'));
-            };
 
+            resultsScrollTarget.innerHTML = attempts.map((att, i) => {
+
+                const dateFormatted = new Date(att.created_at)
+                    .toLocaleDateString('rw-RW', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+
+                const isPassed = Number(att.score) >= 12;
+
+                return `
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    padding:12px 14px;
+                    border-bottom:1px solid #e2e8f0;
+                    background:${i % 2 === 0 ? '#ffffff' : '#f8fafc'};
+                    gap:10px;
+                ">
+                    <div style="display:flex;flex-direction:column;gap:3px;min-width:0;">
+                        <span style="
+                            font-size:0.84rem;
+                            font-weight:700;
+                            color:var(--text-dark);
+                        ">
+                            ${att.student_name}
+                        </span>
+
+                        <span style="
+                            font-size:0.72rem;
+                            color:var(--text-muted);
+                        ">
+                            ${dateFormatted}
+                        </span>
+                    </div>
+
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <span style="
+                            font-size:0.95rem;
+                            font-weight:800;
+                            color:${isPassed ? '#166534' : '#991b1b'};
+                            background:${isPassed ? '#dcfce7' : '#fee2e2'};
+                            padding:3px 9px;
+                            border-radius:5px;
+                        ">
+                            ${att.score}/${att.total_questions}
+                        </span>
+
+                        <button
+                            onclick="triggerHistoricalReviewSession(${att.id})"
+                            style="
+                                border:none;
+                                background:#0b698b;
+                                color:#fff;
+                                padding:6px 10px;
+                                font-size:0.75rem;
+                                font-weight:700;
+                                border-radius:5px;
+                                cursor:pointer;
+                            ">
+                            Fungura
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            lookupFormView.style.display = 'none';
+            resultsListView.style.display = 'flex';
+
+        } catch (err) {
+
+            console.error(err);
+
+            lookupPhoneHint.textContent =
+                "Gushaka byanze, reba internet cyangwa server.";
+            lookupPhoneHint.className = "hint error";
+
+        } finally {
+
+            submitLookupBtn.disabled = false;
+            submitLookupBtn.textContent = "Shakisha Amanota";
+        }
+    });
+}
+
+// ==========================================================================
+// 📈 AUTO OPEN FROM OTHER PAGES
+// Example:
+// /?tab=amanota
+// /?open=amanota
+// ==========================================================================
+
+const urlParams = new URLSearchParams(window.location.search);
+
+if (
+    urlParams.get('tab') === 'amanota' ||
+    urlParams.get('open') === 'amanota'
+) {
+    setTimeout(() => {
+        openAmanotaModal();
+    }, 300);
+}
+
+// ==========================================================================
+// 📈 HISTORICAL REVIEW SESSION
+// ==========================================================================
+
+window.triggerHistoricalReviewSession = async function(attemptId) {
+
+    try {
+
+        const response = await fetch(`/api/amanota/review/${attemptId}`);
+
+        if (!response.ok) {
+            throw new Error('Failed');
+        }
+
+        const res = await response.json();
+
+        sessionStorage.setItem('latestScore', res.score);
+        sessionStorage.setItem('latestTotal', res.total);
+        sessionStorage.setItem(
+            'studentAnswerMapping',
+            JSON.stringify(res.answers)
+        );
+
+        sessionStorage.setItem(
+            'shuffledQuestionsReview',
+            JSON.stringify(res.questions)
+        );
+
+        sessionStorage.setItem('studentName', res.studentName);
+        sessionStorage.setItem('phoneNumber', res.phoneNumber);
+
+        window.location.href = 'exam-result';
+
+    } catch (err) {
+
+        console.error(err);
+        alert('Gufungura ibyavuye mu kizamini byanze.');
+    }
+};
         });
     </script>
 </body>
