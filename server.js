@@ -34,7 +34,6 @@ const dbConfig = isProduction ? {
     queueLimit:         0
 };
 
-const MySQLStore = require('express-mysql-session')(session);
 const app = express();
 
 // ── SECURITY & PERFORMANCE ────────────────────────────────────────────────
@@ -81,17 +80,9 @@ db.getConnection((err, conn) => {
     conn.release();
 });
 
-// ── SESSION STORE (MySQL-backed) ──────────────────────────────────────────
-const sessionStore = new MySQLStore({
-    host:                    dbConfig.host,
-    port:                    dbConfig.port,
-    user:                    dbConfig.user,
-    password:                dbConfig.password,
-    database:                dbConfig.database,
-    clearExpired:            true,
-    checkExpirationInterval: 15 * 60 * 1000,
-    expiration:              4  * 60 * 60 * 1000
-});
+// ── SESSION STORE ────────────────────────────────────────────────
+const MySQLStore = require('express-mysql-session')(session);
+const sessionStore = new MySQLStore({}, db.promise());
 
 app.use(session({
     secret:            process.env.SESSION_SECRET || 'fallback_dev_secret_change_me',
@@ -280,6 +271,20 @@ app.use('/api/admin', adminRouter);
 // School routes — rate limiters applied on the router before mounting
 const schoolRouter = require('./routes/school')(db, emailTransport, loginLimiter, otpLimiter);
 app.use('/api/school', schoolRouter);
+
+// ── KEEPALIVE PING (prevents Render free tier from sleeping) ─────────────
+if (isProduction) {
+    const https = require('https');
+    setInterval(() => {
+        const url = process.env.RENDER_EXTERNAL_URL;
+        if (!url) return;
+        https.get(url, (res) => {
+            console.log(`⚡ KeepAlive ping: ${res.statusCode}`);
+        }).on('error', (err) => {
+            console.log('⚠️  KeepAlive ping failed:', err.message);
+        });
+    }, 14 * 60 * 1000);
+}
 
 // ── SERVER START ──────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 8080;
