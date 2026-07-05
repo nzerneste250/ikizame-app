@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 🎯 BRANDING HEADER ICON BINDING -->
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Reba Amanota — IKIZAME</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root { 
+            --brand: #0b698b; 
+            --brand-dark: #08536e; 
+            --bg-dark: #0d1b2a; 
+            --border-color: rgba(255,255,255,0.1); 
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body { 
+            min-height: 100vh; width: 100%; 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0d1b2a; color: #ffffff; 
+            display: flex; flex-direction: column; overflow-x: hidden;
+        }
+        
+        /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
+        .navbar { 
+            position: fixed; top: 0; left: 0; right: 0; z-index: 5000; height: 60px; 
+            background: #ffffff; display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 4%; border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 10px rgba(15, 23, 42, 0.03); 
+            width: 100vw; box-sizing: border-box;
+        }
+        .navbar-brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .navbar-brand-wrap img { width: 32px; height: 32px; object-fit: contain; }
+        .navbar-brand { font-family: 'Inter', sans-serif; font-size: 1.65rem; font-weight: 800; color: #0b698b; letter-spacing: -0.5px; text-transform: uppercase; line-height: 1; }
+        .navbar-links { display: flex; list-style: none; gap: 22px; align-items: center; margin: 0; padding: 0; }
+        .navbar-links a { font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 700; color: #475569; text-decoration: none; padding: 20px 0 18px; position: relative; transition: color 0.15s ease; white-space: nowrap; display: inline-block; }
+        .navbar-links a:hover { color: #0b698b; }
+        .navbar-links a.active { color: #0b698b; font-weight: 800; }
+        .navbar-links a.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #0b698b; border-radius: 2px 2px 0 0; }
+        .lang-badge { display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #1e293b; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 12px; user-select: none; }
+        .rw-flag-svg { width: 20px; height: 14px; border-radius: 2px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+
+        /* ===== CONTAINER CANVAS ===== */
+        .workspace-scroll-container { 
+            flex: 1; margin-top: 60px; padding: 40px 16px 60px; 
+            display: flex; align-items: center; justify-content: center; width: 100%; 
+        }
+        .workspace-scroll-container.results-open {
+            padding: 0; align-items: flex-start;
+        }
+
+        /* ===== SEARCH FORM CARD ===== */
+        #amanotaLookupFormView {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 32px 28px 28px;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            text-align: center;
+        }
+        .lookup-icon-wrap {
+            width: 60px; height: 60px; border-radius: 16px;
+            background: linear-gradient(135deg, #0b698b 0%, #0ea5e9 100%);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px; font-size: 1.6rem; color: #fff;
+            box-shadow: 0 6px 20px rgba(11,105,139,0.4);
+        }
+        #amanotaLookupFormView h2 {
+            font-size: 1.35rem; font-weight: 800; color: #0d1b2a;
+            margin-bottom: 6px; letter-spacing: -0.4px;
+        }
+        #amanotaLookupFormView p {
+            font-size: 0.88rem; color: var(--text-muted);
+            margin-bottom: 22px; line-height: 1.55;
+        }
+        .phone-field-label {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 0.75rem; font-weight: 800; color: #475569;
+            text-transform: uppercase; letter-spacing: 0.6px;
+            margin-bottom: 7px; text-align: left;
+        }
+        .phone-field-label i { color: var(--brand); font-size: 0.8rem; }
+        .phone-input-row {
+            display: flex; align-items: stretch;
+            border: 2px solid #cbd5e1; border-radius: 12px;
+            overflow: hidden; background: #f8fafc;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            margin-bottom: 8px;
+        }
+        .phone-input-row:focus-within {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgba(11,105,139,0.12);
+            background: #fff;
+        }
+        .phone-prefix {
+            display: flex; align-items: center; gap: 5px;
+            padding: 0 12px; background: #e0f2fe;
+            border-right: 2px solid #bae6fd;
+            font-size: 0.95rem; font-weight: 800; color: #0369a1;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .phone-prefix i { font-size: 0.85rem; }
+        .phone-input-row input {
+            flex: 1; border: none; outline: none;
+            padding: 13px 12px; font-size: 1.05rem; font-weight: 700;
+            background: transparent; color: var(--text-dark);
+            letter-spacing: 2px; min-width: 0; font-family: 'Inter', sans-serif;
+        }
+        .phone-input-row input::placeholder {
+            font-weight: 500; letter-spacing: 0.5px;
+            color: #94a3b8; font-size: 0.9rem;
+        }
+        .hint {
+            font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+            margin-bottom: 18px; text-align: left;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .hint::before { content: '\f05a'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.72rem; color: #94a3b8; }
+        .hint.error { color: #ef4444; }
+        .hint.error::before { content: '\f071'; color: #ef4444; }
+        .hint.ok { color: #10b981; }
+        .hint.ok::before { content: '\f058'; color: #10b981; }
+        .btn-submit-lookup {
+            background: linear-gradient(135deg, #0b698b 0%, #0ea5e9 100%);
+            color: #fff; border: none; padding: 13px 20px;
+            width: 100%; border-radius: 12px;
+            font-size: 1rem; font-weight: 800; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 9px;
+            transition: transform 0.12s, box-shadow 0.12s;
+            box-shadow: 0 6px 20px rgba(11,105,139,0.35);
+            letter-spacing: 0.3px; font-family: 'Inter', sans-serif;
+        }
+        .btn-submit-lookup:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(11,105,139,0.45); }
+        .btn-submit-lookup:active { transform: translateY(0); }
+
+        /* ===== RESULTS CARD ===== */
+        .amanota-card-box {
+            background: #f4f7fa; color: var(--text-dark);
+            width: 100%; min-height: calc(100vh - 60px);
+            padding: 28px 10% 60px;
+            display: flex; flex-direction: column; gap: 20px; text-align: left;
+        }
+
+        /* ===== RESULTS INNER WRAP ===== */
+        .results-inner { width: 100%; display: flex; flex-direction: column; gap: 20px; }
+
+        /* ===== RESULTS DASHBOARD ===== */
+        .results-header-row { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; }
+        .results-header-row h4 { font-size: 1.05rem; font-weight: 800; color: #0d1b2a; }
+        .btn-back-link { background: none; border: none; color: var(--brand); font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+        /* Student identity strip */
+        .student-identity-strip { display: flex; align-items: center; gap: 14px; background: linear-gradient(135deg, #0b698b 0%, #08536e 100%); border-radius: 12px; padding: 16px 20px; color: #fff; }
+        .student-avatar { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; flex-shrink: 0; }
+        .student-identity-strip .s-name { font-size: 1rem; font-weight: 800; }
+        .student-identity-strip .s-phone { font-size: 0.78rem; opacity: 0.8; margin-top: 2px; }
+        .remaining-badge { margin-left: auto; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 8px 14px; text-align: center; flex-shrink: 0; }
+        .remaining-badge .rb-num { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+        .remaining-badge .rb-lbl { font-size: 0.65rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+        /* ===== REMAINING EXAMS PANEL ===== */
+        .remaining-panel { border-radius: 14px; overflow: hidden; border: 2px solid #e2e8f0; }
+        .remaining-panel-header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .remaining-panel-header .rph-title { font-size: 0.85rem; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+        .remaining-panel-header .rph-title i { color: #38bdf8; }
+        .remaining-panel-body { background: #fff; padding: 20px; display: flex; align-items: center; gap: 20px; }
+        .rem-big-num { font-size: 3.5rem; font-weight: 900; line-height: 1; color: #0b698b; flex-shrink: 0; }
+        .rem-big-num.zero { color: #dc2626; }
+        .rem-info { flex: 1; }
+        .rem-info .rem-label { font-size: 0.78rem; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+        .rem-info .rem-desc { font-size: 0.82rem; color: #64748b; margin-top: 4px; line-height: 1.4; }
+        .rem-progress-wrap { margin-top: 10px; }
+        .rem-progress-track { height: 6px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+        .rem-progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #0b698b, #38bdf8); transition: width 0.7s ease; }
+        .rem-progress-fill.danger { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .rem-status-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 800; padding: 4px 10px; border-radius: 99px; margin-top: 8px; }
+        .rem-status-chip.active { background: #dcfce7; color: #166534; }
+        .rem-status-chip.empty { background: #fee2e2; color: #991b1b; }
+        .rem-buy-btn { background: var(--brand); color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s; flex-shrink: 0; }
+        .rem-buy-btn:hover { background: var(--brand-dark); }
+
+        /* Stats grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .stat-tile { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 12px; text-align: center; }
+        .stat-tile .st-val { font-size: 1.35rem; font-weight: 800; color: #0d1b2a; line-height: 1; }
+        .stat-tile .st-lbl { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 4px; }
+        .stat-tile.pass-tile .st-val { color: #16a34a; }
+        .stat-tile.fail-tile .st-val { color: #dc2626; }
+        .stat-tile.avg-tile .st-val { color: #0b698b; }
+
+        /* Attempts table */
+        .attempts-section-title { font-size: 0.78rem; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .attempts-table-wrap { border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; }
+        .attempts-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .attempts-table thead tr { background: #f1f5f9; }
+        .attempts-table th { padding: 9px 10px; font-weight: 800; color: #475569; text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid #e2e8f0; }
+        .attempts-table td { padding: 10px 10px; border-bottom: 1px solid #f1f5f9; color: #0f172a; vertical-align: middle; }
+        .attempts-table tbody tr:last-child td { border-bottom: none; }
+        .attempts-table tbody tr:hover td { background: #f8fafc; }
+        .code-cell { font-family: monospace; font-size: 0.75rem; color: #64748b; }
+        .score-pill { font-size: 0.8rem; font-weight: 800; padding: 3px 9px; border-radius: 5px; display: inline-block; }
+        .score-pill.pass { color: #166534; background: #dcfce7; }
+        .score-pill.fail { color: #991b1b; background: #fee2e2; }
+        .status-dot { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 700; }
+        .status-dot::before { content: ''; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+        .status-dot.pass::before { background: #22c55e; }
+        .status-dot.fail::before { background: #ef4444; }
+        .status-dot.pass { color: #16a34a; }
+        .status-dot.fail { color: #dc2626; }
+        .btn-open-review { border: none; background: var(--brand); color: #ffffff; padding: 5px 11px; font-size: 0.75rem; font-weight: 700; border-radius: 5px; cursor: pointer; transition: background 0.1s; white-space: nowrap; }
+        .btn-open-review:hover { background: var(--brand-dark); }
+        .attempts-scroll { max-height: 320px; overflow-y: auto; }
+
+        .footer { height: 32px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid rgba(255,255,255,0.05); z-index: 10; }
+
+        @media (max-width: 768px) {
+            .workspace-scroll-container { margin-top: 105px; padding: 20px 16px 50px; }
+            .workspace-scroll-container.results-open { padding: 0; }
+            .amanota-card-box { padding: 20px 16px 50px; }
+            .navbar { flex-direction: column !important; height: auto !important; padding: 10px 4% 8px !important; gap: 6px !important; }
+            .navbar-links { gap: 10px 14px !important; width: 100% !important; justify-content: center !important; flex-wrap: wrap !important; }
+            .navbar-links a { font-size: 0.75rem !important; padding: 6px 0 !important; }
+            .navbar-links a.active::after { bottom: -2px !important; }
+            #amanotaLookupFormView { padding: 24px 20px 22px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .student-identity-strip { flex-wrap: wrap; gap: 10px; }
+            .remaining-badge { margin-left: 0; }
+            .remaining-panel-body { flex-wrap: wrap; gap: 12px; }
+            .rem-big-num { font-size: 2.8rem; }
+            .rem-buy-btn { width: 100%; justify-content: center; }
+            .attempts-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .attempts-table { min-width: 480px; }
+            .attempts-table th:nth-child(3), .attempts-table td:nth-child(3) { display: none; }
+            .results-header-row h4 { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== FIXED HEADER NAVBAR ===== -->
+    <header class="navbar">
+        <a href="/" class="navbar-brand-wrap">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+            <div class="navbar-brand">IKIZAME</div>
+        </a>
+        <nav>
+            <ul class="navbar-links">
+                <li><a href="/">Ahabanza</a></li>
+                <li><a href="ubufasha">Ubufasha</a></li>
+                <li><a href="ifashanyigisho">Ifashanyigisho</a></li>
+                <li><a href="ibiciro">Ibiciro</a></li>
+                <li><a href="school-auth">Amashuri (School Portal)</a></li>
+                <li><a href="amanota" class="active">Amanota</a></li>
+            </ul>
+        </nav>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+            <span>Kinyarwanda</span>
+        </div>
+    </header>
+
+    <div class="workspace-scroll-container">
+
+        <!-- VIEW 1: SEARCH FORM — standalone narrow card -->
+        <div id="amanotaLookupFormView">
+            <div class="lookup-icon-wrap"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+            <h2>Reba Amanota Yawe</h2>
+            <p>Injiza numero ya telefoni yakoreshejwe mu kizamini kugira ngo urebe amateka yawe yose.</p>
+            <div class="phone-field-label"><i class="fa-solid fa-sim-card"></i> Numero ya Telefoni</div>
+            <div class="phone-input-row">
+                <div class="phone-prefix"><i class="fa-solid fa-phone"></i>&nbsp;+250</div>
+                <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" maxlength="10">
+            </div>
+            <div id="lookupPhoneHint" class="hint">Injiza imibare 10 gutangira na 078, 073 cyangwa 079</div>
+            <button class="btn-submit-lookup" id="submitLookupBtn">
+                <i class="fa-solid fa-magnifying-glass"></i> Shakisha Amanota
+            </button>
+        </div>
+
+        <!-- VIEW 2: RESULTS DASHBOARD -->
+        <div class="amanota-card-box" id="amanotaResultsListView" style="display:none;">
+            <div class="results-inner">
+                <div class="results-header-row">
+                    <h4 id="dashboardTitle">Ibizamini Byakozwe</h4>
+                    <button class="btn-back-link" id="backToLookupBtn"><i class="fa-solid fa-arrow-left"></i> Subira inyuma</button>
+                </div>
+
+                <!-- Student identity -->
+                <div class="student-identity-strip">
+                    <div class="student-avatar" id="studentAvatarInitial">?</div>
+                    <div>
+                        <div class="s-name" id="dashStudentName">—</div>
+                        <div class="s-phone" id="dashStudentPhone">—</div>
+                    </div>
+                    <div class="remaining-badge" id="remainingBadge" style="display:none">
+                        <div class="rb-num" id="remainingNum">0</div>
+                        <div class="rb-lbl">Ibizamini<br>Bisigaye</div>
+                    </div>
+                </div>
+
+                <!-- Remaining Exams Panel -->
+                <div class="remaining-panel">
+                    <div class="remaining-panel-header">
+                        <div class="rph-title"><i class="fa-solid fa-ticket"></i> Ibizamini Bisigaye — Byishyuwe</div>
+                    </div>
+                    <div class="remaining-panel-body">
+                        <div class="rem-big-num" id="remBigNum">—</div>
+                        <div class="rem-info">
+                            <div class="rem-label">Ibizamini Bisigaye mu Byishyuwe</div>
+                            <div class="rem-desc" id="remDesc">Iri gushakisha...</div>
+                            <div class="rem-progress-wrap">
+                                <div class="rem-progress-track"><div class="rem-progress-fill" id="remProgressFill" style="width:0%"></div></div>
+                            </div>
+                            <span class="rem-status-chip" id="remStatusChip"><i class="fa-solid fa-circle-notch fa-spin"></i> Iri gushakisha...</span>
+                        </div>
+                        <a href="/ibiciro" class="rem-buy-btn"><i class="fa-solid fa-cart-plus"></i> Gura Ibizamini</a>
+                    </div>
+                </div>
+
+                <!-- Stats grid -->
+                <div class="stats-grid">
+                    <div class="stat-tile">
+                        <div class="st-val" id="statTotal">0</div>
+                        <div class="st-lbl">Ibizamini Byose</div>
+                    </div>
+                    <div class="stat-tile pass-tile">
+                        <div class="st-val" id="statPassed">0</div>
+                        <div class="st-lbl">Yatsinze</div>
+                    </div>
+                    <div class="stat-tile fail-tile">
+                        <div class="st-val" id="statFailed">0</div>
+                        <div class="st-lbl">Watsinzwe</div>
+                    </div>
+                    <div class="stat-tile avg-tile">
+                        <div class="st-val" id="statAvg">0/20</div>
+                        <div class="st-lbl">Amanota Hagati</div>
+                    </div>
+                    <div class="stat-tile">
+                        <div class="st-val" id="statBest">0/20</div>
+                        <div class="st-lbl">Amanota Menshi</div>
+                    </div>
+                    <div class="stat-tile">
+                        <div class="st-val" id="statPassMark">12/20</div>
+                        <div class="st-lbl">Amanota Asabwa</div>
+                    </div>
+                </div>
+
+
+                <!-- Attempts table -->
+                <div>
+                    <div class="attempts-section-title"><i class="fa-solid fa-list-check" style="margin-right:5px;color:var(--brand)"></i>Ibizamini Biherutse Gukorwa — <span id="attemptsCount">0</span> tests</div>
+                    <div class="attempts-table-wrap">
+                        <div class="attempts-scroll">
+                            <table class="attempts-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Code</th>
+                                        <th>Itariki</th>
+                                        <th>Imimerere</th>
+                                        <th>Amanota</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attemptsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /results-inner -->
+        </div><!-- /results card -->
+
+    </div><!-- /workspace-scroll-container -->
+
+    <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
+
+    <script>
+        let globalLoadedAttemptsArray = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lookupPhoneInp = document.getElementById('lookupPhoneNumber');
+            const lookupPhoneHint = document.getElementById('lookupPhoneHint');
+            const submitLookupBtn = document.getElementById('submitLookupBtn');
+            const lookupFormView = document.getElementById('amanotaLookupFormView');
+            const resultsListView = document.getElementById('amanotaResultsListView');
+            const resultsScrollTarget = document.getElementById('resultsListScrollTarget');
+            const backBtn = document.getElementById('backToLookupBtn');
+
+            // 🎯 FIXED MOBILE PHONE MASK FILTER: Allows natural typing of '078...' / '073...' / '079...' without clipping the zero
+            if (lookupPhoneInp) {
+                lookupPhoneInp.addEventListener('input', function () {
+                    this.value = this.value.replace(/\D/g, ''); // Strips text characters only
+                });
+            }
+
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    lookupFormView.style.display = 'flex';
+                    resultsListView.style.display = 'none';
+                    document.querySelector('.workspace-scroll-container').classList.remove('results-open');
+                });
+            }
+
+            if (submitLookupBtn) {
+                submitLookupBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    let phoneVal = lookupPhoneInp.value.trim();
+
+                    // 🎯 ADAPTIVE LOGIC PARSER: Handles variations like 078..., +25078..., or 78... uniformly 
+                    // and extracts the last 9 digits cleanly before dispatching the background fetch
+                    if (phoneVal.length < 9) {
+                        lookupPhoneHint.textContent = "IKOSA: Numero ya telephone ntabwo yuzuye!";
+                        lookupPhoneHint.className = "hint error";
+                        return;
+                    }
+
+                    const extractedLast9Digits = phoneVal.slice(-9);
+                    if (!extractedLast9Digits.startsWith('7')) {
+                        lookupPhoneHint.textContent = "IKOSA: Numero igomba kuba irimo imvugo ya 78, 79, cyangwa 73!";
+                        lookupPhoneHint.className = "hint error";
+                        return;
+                    }
+
+                    lookupPhoneHint.className = "hint";
+                    lookupPhoneHint.textContent = "Iri gushakisha amanota yawe...";
+                    submitLookupBtn.disabled = true;
+                    submitLookupBtn.innerHTML = `Birimo gushakisha... <i class="fa-solid fa-spinner fa-spin"></i>`;
+
+                    try {
+                        const response = await fetch(`/api/amanota/lookup/${extractedLast9Digits}`);
+                        if (!response.ok) { throw new Error('Server Error'); }
+
+                        const attempts = await response.json();
+                        if (!attempts || attempts.length === 0) {
+                            lookupPhoneHint.textContent = "Nta kizamini na kimwe cyabonetse kuri iyi numero!";
+                            lookupPhoneHint.className = "hint error";
+                            submitLookupBtn.disabled = false;
+                            submitLookupBtn.innerHTML = `Shakisha Amanota <i class="fa-solid fa-magnifying-glass"></i>`;
+                            return;
+                        }
+
+                        globalLoadedAttemptsArray = attempts;
+
+                        // Populate student identity
+                        const latest = attempts[0];
+                        document.getElementById('dashStudentName').textContent = latest.student_name;
+                        document.getElementById('dashStudentPhone').textContent = latest.phone_number;
+                        document.getElementById('studentAvatarInitial').textContent = latest.student_name.charAt(0).toUpperCase();
+
+                        // Fetch remaining exams
+                        const last9 = extractedLast9Digits;
+                        fetch(`/api/amanota/remaining/${last9}`)
+                            .then(r => r.json())
+                            .then(data => {
+                                const rem = data.remaining || 0;
+                                const bigNum = document.getElementById('remBigNum');
+                                const remainingBadge = document.getElementById('remainingBadge');
+                                bigNum.textContent = rem;
+                                remainingBadge.style.display = rem > 0 ? 'flex' : 'none';
+                                if (rem === 0) bigNum.classList.add('zero'); else bigNum.classList.remove('zero');
+
+                                const fill = document.getElementById('remProgressFill');
+                                const pct = rem > 0 ? Math.min(100, Math.round((rem / Math.max(rem, 20)) * 100)) : 0;
+                                fill.classList.toggle('danger', rem === 0);
+                                setTimeout(() => { fill.style.width = pct + '%'; }, 200);
+
+                                const chip = document.getElementById('remStatusChip');
+                                const desc = document.getElementById('remDesc');
+                                const buyLink = document.querySelector('.rem-buy-btn');
+                                if (rem > 0) {
+                                    chip.className = 'rem-status-chip active';
+                                    chip.innerHTML = '<i class="fa-solid fa-circle-check"></i> Ufite inshuro zisigaye';
+                                    desc.textContent = `Ufite inshuro ${rem} zisigaye mu bizamini byishyuwe. Gerageza kandi!`;
+                                    buyLink.textContent = 'Reba Ibiciro';
+                                } else {
+                                    chip.className = 'rem-status-chip empty';
+                                    chip.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Nta bizamini bisigaye';
+                                    desc.textContent = 'Nta bizamini bisigaye. Gura ibizamini bishya kugira ngo ukomeze.';
+                                    buyLink.textContent = 'Gura Ibizamini';
+                                }
+                            })
+                            .catch(() => {
+                                document.getElementById('remBigNum').textContent = '?';
+                                document.getElementById('remDesc').textContent = 'Gushaka ibisigaye byanze.';
+                                document.getElementById('remStatusChip').className = 'rem-status-chip empty';
+                                document.getElementById('remStatusChip').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Ikosa';
+                            });
+
+                        // Compute stats
+                        const total = attempts.length;
+                        const passed = attempts.filter(a => Number(a.score) >= 12).length;
+                        const failed = total - passed;
+                        const avgScore = (attempts.reduce((s, a) => s + Number(a.score), 0) / total).toFixed(1);
+                        const bestScore = Math.max(...attempts.map(a => Number(a.score)));
+                        const passRate = Math.round((passed / total) * 100);
+
+                        document.getElementById('statTotal').textContent = total;
+                        document.getElementById('statPassed').textContent = passed;
+                        document.getElementById('statFailed').textContent = failed;
+                        document.getElementById('statAvg').textContent = avgScore + '/20';
+                        document.getElementById('statBest').textContent = bestScore + '/20';
+                        document.getElementById('attemptsCount').textContent = total;
+
+                        // Populate table rows
+                        const tbody = document.getElementById('attemptsTableBody');
+                        tbody.innerHTML = attempts.map((att, i) => {
+                            const dateFormatted = new Date(att.created_at).toLocaleDateString('en-GB', {
+                                month: 'short', day: 'numeric', year: 'numeric'
+                            });
+                            const isPassed = Number(att.score) >= 12;
+                            const statusClass = isPassed ? 'pass' : 'fail';
+                            const statusLabel = isPassed ? 'Yatsinze' : 'Watsinzwe';
+                            return `<tr>
+                                <td>${i + 1}</td>
+                                <td class="code-cell">#${att.id}</td>
+                                <td>${dateFormatted}</td>
+                                <td><span class="status-dot ${statusClass}">${statusLabel}</span></td>
+                                <td><span class="score-pill ${statusClass}">${att.score}/20</span></td>
+                                <td><button onclick="triggerHistoricalReviewSession(event, ${i}, ${att.id})" class="btn-open-review">Fungura</button></td>
+                            </tr>`;
+                        }).join('');
+
+                        lookupFormView.style.display = 'none';
+                        resultsListView.style.display = 'block';
+                        document.querySelector('.workspace-scroll-container').classList.add('results-open');
+
+                    } catch (err) {
+                        console.error(err);
+                        lookupPhoneHint.textContent = "Gushaka byanze, reba internet cyangwa server.";
+                        lookupPhoneHint.className = "hint error";
+                    } finally {
+                        submitLookupBtn.disabled = false;
+                        submitLookupBtn.innerHTML = `Shakisha Amanota <i class="fa-solid fa-magnifying-glass"></i>`;
+                    }
+                });
+            }
+
+            // 🎯 FIXED: SEAMLESS BACKGROUND TOKENS BINDING FOR REDIRECTIONS
+            window.triggerHistoricalReviewSession = async function(event, arrayIdx, attemptId) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                const activeBtn = event ? event.target : null;
+                if (activeBtn) {
+                    activeBtn.disabled = true;
+                    activeBtn.textContent = 'Mushake...';
+                }
+
+                try {
+                    console.log(`[Review Router] Initializing attempt verification payload for ID: ${attemptId}`);
+                    const response = await fetch(`/api/amanota/review/${attemptId}`);
+                    if (!response.ok) { throw new Error('Failed to retrieve attempt token snapshot'); }
+
+                    const res = await response.json();
+
+                    // Hydrate all web processing slots inside sessionStorage variables securely 
+                    sessionStorage.setItem('latestScore', res.score);
+                    sessionStorage.setItem('latestTotal', res.total);
+                    sessionStorage.setItem('studentAnswerMapping', JSON.stringify(res.answers));
+                    sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(res.questions));
+                    sessionStorage.setItem('studentName', res.studentName);
+                    sessionStorage.setItem('phoneNumber', res.phoneNumber);
+                  console.log("[Review Router] State tokens successfully hydrated. Navigating straight to review template...");
+                    window.location.href = '/exam-result';
+
+                } catch (err) {
+                    console.error("[UI Engine Error] Failed to prepare exam review session data payload:", err);
+                    alert('Gufungura ibyavuye mu kizamini byanze. Subira ugerageze.');
+                    if (activeBtn) {
+                        activeBtn.disabled = false;
+                        activeBtn.textContent = 'Fungura';
+                    }
+                }
+            };
+        });
+    </script>
+</body>
+</html>

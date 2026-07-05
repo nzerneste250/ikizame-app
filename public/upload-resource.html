@@ -33,8 +33,19 @@
         .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; color: var(--sidebar-muted); text-decoration: none; font-size: 13.5px; font-weight: 600; transition: all 0.15s; }
         .sidebar-nav a:hover { color: #f8fafc; background: rgba(255,255,255,0.06); }
         .sidebar-nav a.active { color: #f8fafc; background: rgba(56,189,248,0.12); border-left: 3px solid #38bdf8; padding-left: 11px; }
-        .nav-logout { color: #f87171 !important; }
-        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #ef4444 !important; }
+        .nav-logout { color: #ef4444 !important; font-weight: 700; }
+        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #dc2626 !important; }
+        .session-pill { font-size: 10px; font-weight: 700; background: rgba(56,189,248,0.15); color: #38bdf8; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+        #sessionModal { position:fixed; inset:0; background:rgba(15,23,42,0.75); display:none; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(4px); }
+        #sessionModal.show { display:flex; }
+        .session-modal-box { background:#fff; border-radius:16px; padding:36px 32px; max-width:360px; width:90%; text-align:center; box-shadow:0 24px 48px rgba(0,0,0,0.25); }
+        .session-modal-box .modal-icon { width:60px; height:60px; background:#fef2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; color:#ef4444; margin:0 auto 16px; }
+        .session-modal-box h3 { font-size:17px; font-weight:800; margin-bottom:8px; }
+        .session-modal-box p { font-size:13.5px; color:var(--text-muted); line-height:1.5; margin-bottom:20px; }
+        .session-countdown { font-size:28px; font-weight:800; color:#ef4444; margin-bottom:16px; }
+        .btn-relogin { background:var(--brand); color:#fff; border:none; padding:12px 28px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; width:100%; }
+        #sessionToast { position:fixed; top:70px; right:20px; background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:10px; padding:12px 16px; font-size:13px; font-weight:600; display:none; align-items:center; gap:10px; z-index:9998; box-shadow:0 4px 12px rgba(0,0,0,0.1); max-width:320px; }
+        #sessionToast.show { display:flex; }
         
         .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .topbar { height: 74px; background: var(--bg-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; flex-shrink: 0; }
@@ -75,17 +86,39 @@
     </style>
 </head>
 <body>
+<div id="sessionModal">
+    <div class="session-modal-box">
+        <div class="modal-icon"><i class="fa-solid fa-clock"></i></div>
+        <h3>Session Expired</h3>
+        <p>You were idle for too long. Redirecting to login...</p>
+        <div class="session-countdown" id="modalCountdown">5</div>
+        <button class="btn-relogin" onclick="doLogout()"><i class="fa-solid fa-right-to-bracket"></i> Log In Again</button>
+    </div>
+</div>
+<div id="sessionToast">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span>Session expires in <span id="toastTimer">60</span>s — move the mouse to stay active.</span>
+</div>
 <div class="shell">
     <aside class="sidebar">
         <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
         <nav class="sidebar-nav">
             <a href="dashboard" id="navLinkDashboard"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+            <a href="/admin-payments" id="navLinkPayments"><i class="fa-solid fa-credit-card"></i> Payments</a>
             <a href="add-exam" id="navLinkAddQuestion"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
             <a href="system-performance" id="navLinkSysPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
             <a href="dashboard?view=analytics" id="navLinkPerformance"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
             <a href="upload-resource" class="active" id="navLinkResources"><i class="fa-solid fa-book-bookmark"></i> Upload Resources</a>
             <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
+        <div class="sidebar-footer" style="padding:14px 16px; border-top:1px solid var(--sidebar-border); display:flex; align-items:center; gap:10px;">
+            <div style="width:34px;height:34px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;">A</div>
+            <div style="flex:1;min-width:0;">
+                <div style="font-size:12.5px;font-weight:700;color:#f8fafc;">Admin</div>
+                <div style="font-size:11px;color:var(--sidebar-muted);">Administrator</div>
+            </div>
+            <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
+        </div>
     </aside>
     
     <div class="workspace">
@@ -234,6 +267,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadResources();
 });
+
+/* ═══ SESSION TIMEOUT (5 min idle) ═══ */
+(function() {
+    const IDLE = 5*60*1000, WARN = 60*1000, REDIR = '/admin-login';
+    let idleT, warnT, cdInt;
+    const modal = document.getElementById('sessionModal');
+    const toast = document.getElementById('sessionToast');
+    const toastT = document.getElementById('toastTimer');
+    const cdEl = document.getElementById('modalCountdown');
+    const sbVal = document.getElementById('sidebarTimerVal');
+    function fmt(ms){const s=Math.ceil(ms/1000),m=Math.floor(s/60);return m+':'+String(s%60).padStart(2,'0');}
+    window.doLogout = function(){
+        clearTimeout(idleT);clearTimeout(warnT);clearInterval(cdInt);
+        fetch('/api/admin/logout',{method:'POST'}).finally(()=>window.location.replace(REDIR));
+    };
+    function expire(){
+        toast.classList.remove('show');modal.classList.add('show');
+        let c=5;cdEl.textContent=c;
+        cdInt=setInterval(()=>{c--;cdEl.textContent=c;if(c<=0){clearInterval(cdInt);window.doLogout();}},1000);
+    }
+    let start=Date.now(),rafId;
+    function tick(){const r=IDLE-(Date.now()-start);if(sbVal)sbVal.textContent=fmt(Math.max(0,r));if(r>0)rafId=requestAnimationFrame(tick);}
+    function reset(){
+        clearTimeout(idleT);clearTimeout(warnT);
+        start=Date.now();cancelAnimationFrame(rafId);rafId=requestAnimationFrame(tick);
+        warnT=setTimeout(()=>{
+            let s=Math.ceil((IDLE-(Date.now()-start))/1000);
+            toastT.textContent=s;toast.classList.add('show');
+            const iv=setInterval(()=>{s--;toastT.textContent=s;if(s<=0)clearInterval(iv);},1000);
+            setTimeout(()=>toast.classList.remove('show'),IDLE-(Date.now()-start));
+        },IDLE-WARN);
+        idleT=setTimeout(expire,IDLE);
+    }
+    ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(e=>document.addEventListener(e,reset,{passive:true}));
+    reset();
+})();
 </script>
 </body>
 </html>

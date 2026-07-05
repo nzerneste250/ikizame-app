@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>Dashboard y'Ishuri — IKIZAME</title>
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
             --brand: #0b698b;
@@ -30,37 +30,48 @@
             overflow-x: hidden;
         }
 
-        /* ── NAVBAR (EXACT REPLICATION BINDING) ── */
+        /* ── NAVBAR ── */
         .navbar {
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 18px 10px 14px; 
-            position: fixed; 
+            position: fixed;
             top: 0; left: 0; right: 0;
-            z-index: 1000;
-            gap: 12px;
-            width: 100%;
+            z-index: 5000;
+            height: 60px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4%;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 10px rgba(15,23,42,0.03);
+            width: 100vw;
+            box-sizing: border-box;
         }
-        .navbar-brand-wrap { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .navbar-brand { font-family: 'Inter', sans-serif; font-size: 2.2rem; font-weight: 800; color: #002e5b; letter-spacing: -0.5px; line-height: 1; }
-        .navbar-links { display: flex; list-style: none; gap: 14px; align-items: center; justify-content: center; width: 100%; }
-        .navbar-links a { font-size: 0.85rem; font-weight: 700; color: #64748b; text-decoration: none; transition: color 0.1s; white-space: nowrap; }
-        .navbar-links a:hover { color: #0f172a; }
+        .navbar-brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .navbar-brand-wrap img { width: 32px; height: 32px; object-fit: contain; }
+        .navbar-brand { font-family: 'Inter', sans-serif; font-size: 1.65rem; font-weight: 800; color: #0b698b; letter-spacing: -0.5px; text-transform: uppercase; line-height: 1; }
+        .navbar-links { display: flex; list-style: none; gap: 22px; align-items: center; margin: 0; padding: 0; }
+        .navbar-links a { font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 700; color: #475569; text-decoration: none; padding: 20px 0 18px; position: relative; transition: color 0.15s; white-space: nowrap; display: inline-block; }
+        .navbar-links a:hover { color: #0b698b; }
+        .navbar-links a.active { color: #0b698b; font-weight: 800; }
+        .navbar-links a.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #0b698b; border-radius: 2px 2px 0 0; }
         .navbar-links a.logout-btn { color: #ef4444; }
+        .lang-badge { display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #1e293b; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 12px; user-select: none; }
+        .rw-flag-svg { width: 20px; height: 14px; border-radius: 2px; border: 1px solid #e2e8f0; flex-shrink: 0; }
 
-        @media (min-width: 768px) {
-            .navbar { flex-direction: row; height: 72px; padding: 0 6%; justify-content: space-between; gap: 0; }
-            .navbar-links { width: auto; gap: 28px; }
-            .workspace-scroll-container { margin-top: 72px !important; }
+        @media (max-width: 900px) {
+            .navbar { flex-direction: column !important; height: auto !important; padding: 10px 4% 8px !important; gap: 6px !important; }
+            .navbar-links { gap: 12px 16px !important; width: 100% !important; justify-content: center !important; flex-wrap: wrap !important; }
+            .navbar-links a { font-size: 0.78rem !important; padding: 6px 0 !important; }
+            .workspace-scroll-container { margin-top: 110px !important; }
+        }
+        @media (min-width: 901px) {
+            .workspace-scroll-container { margin-top: 60px !important; }
         }
 
         /* ── DASHBOARD WORKSPACE CANVAS ── */
         .workspace-scroll-container {
             flex: 1;
-            margin-top: 154px; 
+            margin-top: 60px;
             overflow-y: auto;
             padding: 24px 16px 80px;
             width: 100%;
@@ -131,23 +142,92 @@
 
         .footer { height: 40px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; }
         .footer strong { color: #38bdf8; }
+
+        /* ── PERFORMANCE SECTION ── */
+        .section-title {
+            font-size: 1rem; font-weight: 800; color: #e2e8f0;
+            display: flex; align-items: center; gap: 8px;
+            padding-bottom: 12px; border-bottom: 1px solid var(--border-color);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        @media(min-width: 640px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media(min-width: 900px) { .stats-grid { grid-template-columns: repeat(6, 1fr); } }
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+        }
+        .stat-card .stat-val { font-size: 1.7rem; font-weight: 800; color: #fff; line-height: 1; }
+        .stat-card .stat-lbl { font-size: 10px; text-transform: uppercase; color: #64748b; margin-top: 5px; letter-spacing: 0.4px; }
+        .stat-card.pass .stat-val { color: #10b981; }
+        .stat-card.fail .stat-val { color: #ef4444; }
+        .stat-card.avg .stat-val { color: #38bdf8; }
+
+        /* Distribution bar */
+        .dist-row { display: flex; flex-direction: column; gap: 8px; }
+        .dist-item { display: flex; align-items: center; gap: 10px; }
+        .dist-label { font-size: 11px; color: #94a3b8; width: 70px; flex-shrink: 0; }
+        .dist-bar-wrap { flex: 1; background: rgba(255,255,255,0.06); border-radius: 4px; height: 10px; overflow: hidden; }
+        .dist-bar { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+        .dist-bar.excellent { background: #10b981; }
+        .dist-bar.good      { background: #38bdf8; }
+        .dist-bar.average   { background: #f59e0b; }
+        .dist-bar.poor      { background: #ef4444; }
+        .dist-count { font-size: 11px; color: #94a3b8; width: 28px; text-align: right; flex-shrink: 0; }
+
+        /* Table */
+        .perf-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border-color); }
+        .perf-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .perf-table thead tr { background: rgba(255,255,255,0.04); }
+        .perf-table th { padding: 10px 14px; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; white-space: nowrap; }
+        .perf-table td { padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.05); color: #cbd5e1; white-space: nowrap; }
+        .perf-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+        .badge.pass { background: rgba(16,185,129,0.15); color: #10b981; }
+        .badge.fail { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .score-bar-cell { display: flex; align-items: center; gap: 8px; }
+        .score-mini-bar { flex: 1; max-width: 80px; background: rgba(255,255,255,0.06); border-radius: 3px; height: 6px; overflow: hidden; }
+        .score-mini-fill { height: 100%; border-radius: 3px; }
+
+        .perf-section { display: flex; flex-direction: column; gap: 20px; }
+        .two-col { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media(min-width: 768px) { .two-col { grid-template-columns: 1fr 1fr; } }
+        .panel {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        #perfLoadingState { text-align: center; padding: 40px; color: #64748b; font-size: 0.9rem; }
+        #perfEmptyState { text-align: center; padding: 40px; color: #64748b; font-size: 0.9rem; display: none; }
     </style>
 </head>
 <body>
 
-    <!-- ===== FIXED NAVBAR ===== -->
+    <!-- ===== NAVBAR ===== -->
     <header class="navbar">
         <a href="/" class="navbar-brand-wrap">
-            <img src="assets/uploads/logo.png" alt="IKIZAME Logo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: contain;">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
             <div class="navbar-brand">IKIZAME</div>
         </a>
         <nav>
             <ul class="navbar-links">
-                <li><a href="/">Ahabanza</a></li>
-                <li><a href="/school-dashboard" style="color:var(--brand); font-weight:800;">Dashboard</a></li>
-                <li><a href="/api/school/logout" class="logout-btn">Sohoka (Logout)</a></li>
+                <li><a href="/school-dashboard" class="active">Dashboard</a></li>
+                <li><a href="/school-profile"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
+                <li><a href="/api/school/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
             </ul>
         </nav>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+            <span>Kinyarwanda</span>
+        </div>
     </header>
 
     <div class="workspace-scroll-container">
@@ -179,7 +259,6 @@
             <section class="action-form-panel">
                 <h3>Vugurura Lisansi y'Ukwezi</h3>
                 <p>Emeza itumanaho rya MoMo wishure 10,000 RWF wongeze inshuro z'ibizamini ku banyeshuri bawe bose.</p>
-                
                 <div class="input-form-field">
                     <label>Nomero ya Telephone (MTN / Airtel)</label>
                     <input type="tel" id="renewMomoPhoneInput" placeholder="e.g., 0788000000">
@@ -189,6 +268,97 @@
                 </button>
             </section>
 
+            <!-- ===== PERFORMANCE DASHBOARD ===== -->
+            <section class="perf-section">
+                <div class="section-title">📊 Imikorere y'Abanyeshuri (Students Performance)</div>
+
+                <div id="perfLoadingState">⏳ Gushaka amakuru y'abanyeshuri...</div>
+                <div id="perfEmptyState">📭 Nta makuru y'ibizamini yabonetse kuri iyi konti.</div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid" id="statsGrid" style="display:none">
+                    <div class="stat-card">
+                        <div class="stat-val" id="statTotal">0</div>
+                        <div class="stat-lbl">Ibizamini Byose</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="statStudents">0</div>
+                        <div class="stat-lbl">Abanyeshuri</div>
+                    </div>
+                    <div class="stat-card avg">
+                        <div class="stat-val" id="statAvg">0</div>
+                        <div class="stat-lbl">Amanota Avr.</div>
+                    </div>
+                    <div class="stat-card avg">
+                        <div class="stat-val" id="statAvgPct">0%</div>
+                        <div class="stat-lbl">Avr. %</div>
+                    </div>
+                    <div class="stat-card pass">
+                        <div class="stat-val" id="statPassed">0</div>
+                        <div class="stat-lbl">Barapfuye ✓</div>
+                    </div>
+                    <div class="stat-card fail">
+                        <div class="stat-val" id="statPassRate">0%</div>
+                        <div class="stat-lbl">Pass Rate</div>
+                    </div>
+                </div>
+
+                <!-- Distribution + Top Students -->
+                <div class="two-col" id="twoColSection" style="display:none">
+                    <div class="panel">
+                        <div class="section-title" style="font-size:0.85rem;">📈 Ikigereranyo cy'Amanota</div>
+                        <div class="dist-row">
+                            <div class="dist-item">
+                                <span class="dist-label">🟢 Byiza (85%+)</span>
+                                <div class="dist-bar-wrap"><div class="dist-bar excellent" id="barExcellent" style="width:0%"></div></div>
+                                <span class="dist-count" id="cntExcellent">0</span>
+                            </div>
+                            <div class="dist-item">
+                                <span class="dist-label">🔵 Nziza (70%+)</span>
+                                <div class="dist-bar-wrap"><div class="dist-bar good" id="barGood" style="width:0%"></div></div>
+                                <span class="dist-count" id="cntGood">0</span>
+                            </div>
+                            <div class="dist-item">
+                                <span class="dist-label">🟡 Hagati (50%+)</span>
+                                <div class="dist-bar-wrap"><div class="dist-bar average" id="barAverage" style="width:0%"></div></div>
+                                <span class="dist-count" id="cntAverage">0</span>
+                            </div>
+                            <div class="dist-item">
+                                <span class="dist-label">🔴 Nke (&lt;50%)</span>
+                                <div class="dist-bar-wrap"><div class="dist-bar poor" id="barPoor" style="width:0%"></div></div>
+                                <span class="dist-count" id="cntPoor">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="section-title" style="font-size:0.85rem;">🏆 Abanyeshuri 5 Baheruka</div>
+                        <div id="topStudentsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+                    </div>
+                </div>
+
+                <!-- Full Attempts Table -->
+                <div class="panel" id="tablePanel" style="display:none">
+                    <div class="section-title" style="font-size:0.85rem;">📋 Amateka y'Ibizamini Byose</div>
+                    <div class="perf-table-wrap">
+                        <table class="perf-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Amazina</th>
+                                    <th>Telephone</th>
+                                    <th>Amanota</th>
+                                    <th>Score %</th>
+                                    <th>Ibibazo</th>
+                                    <th>Igihe</th>
+                                    <th>Imiterere</th>
+                                </tr>
+                            </thead>
+                            <tbody id="perfTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
 
@@ -196,7 +366,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Guard: verify session is alive before rendering anything
+            fetch('/api/school/wallet-metrics')
+                .then(r => { if (r.status === 401) window.location.href = '/school-auth'; })
+                .catch(() => { window.location.href = '/school-auth'; });
             loadSchoolWalletMetricsData();
+            loadStudentsPerformance();
         });
 
         function loadSchoolWalletMetricsData() {
@@ -254,6 +429,93 @@
                 }
             });
         };
+        function loadStudentsPerformance() {
+            fetch('/api/school/students-performance')
+                .then(r => { if (r.status === 401) { window.location.href = '/school-auth'; return null; } return r.json(); })
+                .then(data => {
+                    const loading = document.getElementById('perfLoadingState');
+                    const empty   = document.getElementById('perfEmptyState');
+                    loading.style.display = 'none';
+
+                    if (!data || !data.success || !data.data.length) {
+                        empty.style.display = 'block';
+                        return;
+                    }
+
+                    const { stats, data: attempts } = data;
+
+                    // Show stat cards
+                    document.getElementById('statsGrid').style.display = 'grid';
+                    document.getElementById('statTotal').textContent    = stats.total;
+                    document.getElementById('statStudents').textContent = stats.uniqueStudents;
+                    document.getElementById('statAvg').textContent      = stats.avgScore + '/20';
+                    document.getElementById('statAvgPct').textContent   = stats.avgPct + '%';
+                    document.getElementById('statPassed').textContent   = stats.passed;
+                    document.getElementById('statPassRate').textContent = stats.passRate + '%';
+
+                    // Distribution bars
+                    document.getElementById('twoColSection').style.display = 'grid';
+                    const d = stats.dist;
+                    const maxD = Math.max(d.excellent, d.good, d.average, d.poor, 1);
+                    ['excellent','good','average','poor'].forEach(k => {
+                        document.getElementById('bar' + k.charAt(0).toUpperCase() + k.slice(1)).style.width = Math.round((d[k]/maxD)*100) + '%';
+                        document.getElementById('cnt' + k.charAt(0).toUpperCase() + k.slice(1)).textContent = d[k];
+                    });
+
+                    // Top 5 students by best score
+                    const byPhone = {};
+                    attempts.forEach(a => {
+                        const key = a.phone_number.slice(-9);
+                        if (!byPhone[key] || a.score > byPhone[key].score) byPhone[key] = a;
+                    });
+                    const top5 = Object.values(byPhone).sort((a,b) => b.score - a.score).slice(0,5);
+                    const topList = document.getElementById('topStudentsList');
+                    topList.innerHTML = top5.map((s, i) => {
+                        const pct = Math.round((s.score / (s.total_questions || 20)) * 100);
+                        const medal = ['🥇','🥈','🥉','4️⃣','5️⃣'][i];
+                        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                            <span style="font-size:1.1rem;">${medal}</span>
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-size:13px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(s.student_name)}</div>
+                                <div style="font-size:10px;color:#64748b;">${s.phone_number}</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:13px;font-weight:800;color:${pct>=60?'#10b981':'#ef4444'};">${s.score}/20</div>
+                                <div style="font-size:10px;color:#64748b;">${pct}%</div>
+                            </div>
+                        </div>`;
+                    }).join('');
+
+                    // Full table
+                    document.getElementById('tablePanel').style.display = 'flex';
+                    const tbody = document.getElementById('perfTableBody');
+                    tbody.innerHTML = attempts.map((a, i) => {
+                        const total = a.total_questions || 20;
+                        const pct   = Math.round((a.score / total) * 100);
+                        const pass  = a.score >= Math.ceil(total * 0.6);
+                        const color = pct >= 85 ? '#10b981' : pct >= 70 ? '#38bdf8' : pct >= 50 ? '#f59e0b' : '#ef4444';
+                        const date  = new Date(a.created_at).toLocaleDateString('rw-RW', { day:'2-digit', month:'short', year:'numeric' });
+                        return `<tr>
+                            <td style="color:#475569;">${i+1}</td>
+                            <td style="font-weight:600;color:#e2e8f0;">${escHtml(a.student_name)}</td>
+                            <td>${a.phone_number}</td>
+                            <td><div class="score-bar-cell">
+                                <span style="font-weight:700;color:${color};">${a.score}/${total}</span>
+                                <div class="score-mini-bar"><div class="score-mini-fill" style="width:${pct}%;background:${color};"></div></div>
+                            </div></td>
+                            <td style="font-weight:700;color:${color};">${pct}%</td>
+                            <td style="color:#64748b;font-size:11px;">✓${a.correct_count||0} ✗${a.wrong_count||0} —${a.skipped_count||0}</td>
+                            <td style="color:#64748b;font-size:11px;">${date}</td>
+                            <td><span class="badge ${pass?'pass':'fail'}">${pass?'YAPFUYE':'NTIYAPFUYE'}</span></td>
+                        </tr>`;
+                    }).join('');
+                })
+                .catch(() => { document.getElementById('perfLoadingState').textContent = '❌ Gushaka amakuru byanze. Gerageza nanone.'; });
+        }
+
+        function escHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
     </script>
 </body>
 </html>

@@ -87,8 +87,8 @@
         .sidebar-nav a:hover { color: #f8fafc; background: rgba(255,255,255,0.06); }
         .sidebar-nav a.active { color: #f8fafc; background: rgba(56,189,248,0.12); border-left: 3px solid #38bdf8; padding-left: 11px; }
         .sidebar-nav a i { width: 16px; text-align: center; }
-        .nav-logout { color: #f87171 !important; }
-        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #ef4444 !important; }
+        .nav-logout { color: #ef4444 !important; font-weight: 700; }
+        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #dc2626 !important; }
         .sidebar-footer {
             padding: 14px 16px; border-top: 1px solid var(--sidebar-border);
             display: flex; align-items: center; gap: 10px;
@@ -299,6 +299,7 @@
         <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
         <nav class="sidebar-nav">
             <a href="dashboard" id="navLinkDashboard"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+            <a href="/admin-payments" id="navLinkPayments"><i class="fa-solid fa-credit-card"></i> Payments</a>
             <a href="add-exam" class="active" id="navLinkAddQuestion"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
             <a href="system-performance" id="navLinkSysPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
             <a href="dashboard?view=analytics" id="navLinkPerformance"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>

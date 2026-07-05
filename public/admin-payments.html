@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IKIZAME Admin Payments</title>
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand: #0b698b;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body, html { min-height:100%; font-family:'Inter',sans-serif; background:var(--bg); color:#0f172a; }
+        .shell { display:flex; min-height:100vh; }
+        .sidebar { width:240px; background:#0f172a; display:flex; flex-direction:column; border-right:1px solid #1e293b; }
+        .sidebar-brand { padding:24px 20px 20px; color:#38bdf8; font-family:'Black Han Sans',sans-serif; letter-spacing:2px; font-size:1.1rem; border-bottom:1px solid #1e293b; }
+        .sidebar-nav { padding:16px 12px; display:flex; flex-direction:column; gap:4px; flex:1; }
+        .sidebar-nav a { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:8px; color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:600; transition:all .15s; }
+        .sidebar-nav a:hover { color:#f8fafc; background:rgba(255,255,255,.06); }
+        .sidebar-nav a.active { color:#f8fafc; background:rgba(56,189,248,.12); border-left:3px solid #38bdf8; padding-left:11px; }
+        .sidebar-nav a i { width:16px; text-align:center; }
+        .nav-logout { color:#ef4444 !important; font-weight:700; }
+        .nav-logout:hover { background:rgba(239,68,68,.1) !important; color:#dc2626 !important; }
+        .sidebar-footer { padding:14px 16px; border-top:1px solid #1e293b; display:flex; align-items:center; gap:10px; }
+        .admin-avatar { width:34px; height:34px; border-radius:50%; background:var(--brand); display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px; font-weight:700; }
+        .admin-meta { flex:1; min-width:0; }
+        .admin-name { font-size:12.5px; font-weight:700; color:#f8fafc; }
+        .admin-role { font-size:11px; color:var(--muted); }
+        .session-pill { font-size:10px; font-weight:700; background:rgba(56,189,248,0.15); color:#38bdf8; padding:2px 8px; border-radius:20px; white-space:nowrap; }
+        #sessionModal { position:fixed; inset:0; background:rgba(15,23,42,0.75); display:none; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(4px); }
+        #sessionModal.show { display:flex; }
+        .session-modal-box { background:#fff; border-radius:16px; padding:36px 32px; max-width:360px; width:90%; text-align:center; box-shadow:0 24px 48px rgba(0,0,0,0.25); }
+        .session-modal-box .modal-icon { width:60px; height:60px; background:#fef2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; color:#ef4444; margin:0 auto 16px; }
+        .session-modal-box h3 { font-size:17px; font-weight:800; margin-bottom:8px; }
+        .session-modal-box p { font-size:13.5px; color:var(--muted); line-height:1.5; margin-bottom:20px; }
+        .session-countdown { font-size:28px; font-weight:800; color:#ef4444; margin-bottom:16px; }
+        .btn-relogin { background:var(--brand); color:#fff; border:none; padding:12px 28px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; width:100%; }
+        #sessionToast { position:fixed; top:70px; right:20px; background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:10px; padding:12px 16px; font-size:13px; font-weight:600; display:none; align-items:center; gap:10px; z-index:9998; box-shadow:0 4px 12px rgba(0,0,0,0.1); max-width:320px; }
+        #sessionToast.show { display:flex; }
+        .workspace { flex:1; display:flex; flex-direction:column; }
+        .topbar { height:74px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 32px; }
+        .topbar h1 { font-size:22px; font-weight:800; letter-spacing:-0.5px; }
+        .topbar p { font-size:13px; color:var(--muted); margin-top:2px; }
+        .form-scroll { flex:1; overflow-y:auto; padding:24px 32px; display:flex; flex-direction:column; gap:24px; }
+        .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+        .summary-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 1px 3px rgba(15,23,42,.06); display:flex; align-items:center; gap:16px; }
+        .summary-badge { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; }
+        .summary-card div p { font-size:2rem; font-weight:800; line-height:1.1; }
+        .summary-card div h3 { font-size:11px; font-weight:700; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.4px; }
+        .bg-blue { background:#0b698b; }
+        .bg-green { background:#16a34a; }
+        .bg-yellow { background:#f59e0b; }
+        .table-container { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow-x:auto; box-shadow:0 10px 30px rgba(15,23,42,.08); }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        th, td { padding:14px 16px; text-align:left; border-bottom:1px solid #f1f5f9; }
+        th { background:#f8fafc; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.3px; font-size:12px; }
+        tbody tr:hover { background:#f8fafc; }
+        .status-pill { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; font-weight:700; font-size:12px; }
+        .status-pill.success { background:#dcfce7; color:#166534; }
+        .status-pill.pending { background:#fef3c7; color:#92400e; }
+        .status-pill.error { background:#fee2e2; color:#991b1b; }
+        .btn-primary { background:var(--brand); color:#fff; border:none; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer; }
+        .btn-outline { background:#fff; border:1px solid var(--border); color:#0f172a; border-radius:10px; padding:10px 16px; cursor:pointer; }
+        .btn-text-action { display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; padding:8px 12px; font-size:13px; font-weight:700; cursor:pointer; }
+        .btn-edit { background:#e0f2fe; color:#0369a1; }
+        .modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:9500; }
+        .modal-card { width:100%; max-width:520px; background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 25px 60px rgba(15,23,42,.24); }
+        .modal-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+        .modal-header h3 { font-size:18px; font-weight:800; }
+        .modal-body { padding:20px 24px; display:flex; flex-direction:column; gap:16px; }
+        .modal-body label { font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; }
+        .modal-body input { width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; font-size:14px; }
+        .modal-footer { padding:16px 24px 24px; display:flex; justify-content:flex-end; gap:10px; }
+        .close-btn { background:#f1f5f9; color:#475569; }
+        @media (max-width: 960px) { .grid { grid-template-columns:1fr; } .sidebar { width:220px; } }
+        @media (max-width: 720px) { .shell { flex-direction:column; } .sidebar { width:100%; flex-direction:row; overflow-x:auto; } .sidebar-nav { flex-direction:row; gap:8px; padding:12px; } .sidebar-footer { display:none; } }
+    </style>
+</head>
+<body>
+<div id="sessionModal">
+    <div class="session-modal-box">
+        <div class="modal-icon"><i class="fa-solid fa-clock"></i></div>
+        <h3>Session Expired</h3>
+        <p>You were idle for too long. Redirecting to login...</p>
+        <div class="session-countdown" id="modalCountdown">5</div>
+        <button class="btn-relogin" onclick="doLogout()"><i class="fa-solid fa-right-to-bracket"></i> Log In Again</button>
+    </div>
+</div>
+<div id="sessionToast">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span>Session expires in <span id="toastTimer">60</span>s — move the mouse to stay active.</span>
+</div>
+<div class="shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <nav class="sidebar-nav">
+            <a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+            <a href="/admin-payments" class="active"><i class="fa-solid fa-credit-card"></i> Payments</a>
+            <a href="/add-exam"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
+            <a href="/system-performance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="/dashboard"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
+            <a href="/upload-resource"><i class="fa-solid fa-book-bookmark"></i> Upload Resources</a>
+            <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="admin-avatar">A</div>
+            <div class="admin-meta">
+                <div class="admin-name">Admin</div>
+                <div class="admin-role">Administrator</div>
+            </div>
+            <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
+        </div>
+    </aside>
+    <div class="workspace">
+        <div class="topbar">
+            <div>
+                <h1>Payments Dashboard</h1>
+                <p>Manage payment transactions, revenue totals, and exam credit balances.</p>
+            </div>
+        </div>
+        <div class="form-scroll">
+            <div class="grid">
+                <div class="summary-card">
+                    <div class="summary-badge bg-blue"><i class="fa-solid fa-wallet"></i></div>
+                    <div>
+                        <p id="totalPayments">0</p>
+                        <h3>Total Payments</h3>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-badge bg-green"><i class="fa-solid fa-money-bill-wave"></i></div>
+                    <div>
+                        <p id="totalRevenue">0</p>
+                        <h3>Total Revenue</h3>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-badge bg-yellow"><i class="fa-solid fa-coins"></i></div>
+                    <div>
+                        <p id="totalExamCredits">0</p>
+                        <h3>Total Exam Credits</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NO.</th>
+                            <th>Phone</th>
+                            <th>Reference</th>
+                            <th>Plan</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>All Exams</th>
+                            <th>Remaining</th>
+                            <th>Price/Exam</th>
+                            <th>Created</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody">
+                        <tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">Loading payment transactions...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-overlay" id="editPaymentModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Edit Transaction</h3>
+            <button class="btn-text-action close-btn" onclick="closeEditPaymentModal()">Close</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editPaymentId">
+            <div>
+                <label>Phone Number</label>
+                <input type="text" id="editPaymentPhone" disabled>
+            </div>
+            <div>
+                <label>Reference ID</label>
+                <input type="text" id="editPaymentRef" disabled>
+            </div>
+            <div>
+                <label>Plan Name</label>
+                <input type="text" id="editPaymentPlan" disabled>
+            </div>
+            <div>
+                <label>Total Exams Purchased</label>
+                <input type="number" id="editPaymentTotalExams" min="0">
+            </div>
+            <div>
+                <label>Remaining Exams</label>
+                <input type="number" id="editPaymentRemainingExams" min="0">
+            </div>
+            <div>
+                <label>Amount (RWF)</label>
+                <input type="number" id="editPaymentAmount" min="0" readonly>
+            </div>
+            <div>
+                <label>Price per Exam (RWF)</label>
+                <input type="text" id="editPaymentPricePerExam" readonly>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-text-action close-btn" onclick="closeEditPaymentModal()">Cancel</button>
+            <button class="btn-primary" onclick="savePaymentTransactionEdit()">Save Changes</button>
+        </div>
+    </div>
+</div>
+<script>
+    let paymentTransactions = [];
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('en-US', { style:'currency', currency:'RWF', maximumFractionDigits:0 }).format(value || 0);
+    }
+
+    function loadPaymentDashboard() {
+        fetch('/api/admin/payments-summary')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('totalPayments').textContent = data.totalPayments || 0;
+                document.getElementById('totalRevenue').textContent = formatCurrency(data.totalRevenue || 0);
+                document.getElementById('totalExamCredits').textContent = data.totalExamCredits || 0;
+            })
+            .catch(() => {
+                document.getElementById('totalPayments').textContent = '0';
+                document.getElementById('totalRevenue').textContent = formatCurrency(0);
+                document.getElementById('totalExamCredits').textContent = '0';
+            });
+
+        fetch('/api/admin/payment-transactions')
+            .then(res => res.json())
+            .then(data => {
+                paymentTransactions = Array.isArray(data) ? data : [];
+                const body = document.getElementById('transactionsTableBody');
+                if (!paymentTransactions.length) {
+                    body.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
+                    return;
+                }
+                body.innerHTML = paymentTransactions.map((tx, i) => {
+                    const statusClass = tx.status === 'SUCCESS' ? 'success' : tx.status === 'PENDING' ? 'pending' : 'error';
+                    const created = new Date(tx.created_at || tx.createdAt || tx.createdAt).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                    return `<tr>
+                        <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
+                        <td>${tx.phone_number}</td>
+                        <td>${tx.reference_id || tx.referenceId || '---'}</td>
+                        <td>${tx.plan_name || tx.planName || '---'}</td>
+                        <td><span class="status-pill ${statusClass}">${tx.status || 'UNKNOWN'}</span></td>
+                        <td>${formatCurrency(tx.amount || 0)}</td>
+                        <td>${tx.total_exams || tx.remaining_exams || 0}</td>
+                        <td>${tx.remaining_exams || 0}</td>
+                        <td>${tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '—'}</td>
+                        <td>${created}</td>
+                        <td><button class="btn-text-action btn-edit" onclick="openEditPaymentModal(${tx.id})">Edit</button></td>
+                    </tr>`;
+                }).join('');
+            })
+            .catch(() => {
+                document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="9" style="text-align:center; padding:30px; color:#ef4444;">Unable to load transactions.</td></tr>';
+            });
+    }
+
+    function formatExamPrice(value) {
+        const num = Number(value);
+        if (isNaN(num) || num <= 0) return '—';
+        return num.toFixed(2) + ' RWF';
+    }
+
+    function calculateTieredExamAmount(qty) {
+        const count = Number(qty) || 0;
+        if (count <= 0) return 0;
+        if (count <= 9) return count * 100;
+        if (count <= 14) return 900 + (count - 9) * 80;
+        if (count <= 20) return 1300 + (count - 14) * 70;
+        return 1720 + (count - 20) * 50;
+    }
+
+    function updateEditCalculationFields() {
+        const totalExams = Number(document.getElementById('editPaymentTotalExams').value);
+        if (isNaN(totalExams) || totalExams <= 0) {
+            document.getElementById('editPaymentAmount').value = 0;
+            document.getElementById('editPaymentPricePerExam').value = '—';
+            return;
+        }
+        const amount = calculateTieredExamAmount(totalExams);
+        document.getElementById('editPaymentAmount').value = amount;
+        document.getElementById('editPaymentPricePerExam').value = formatExamPrice(amount / totalExams);
+        document.getElementById('editPaymentPlan').value = `Personal Tiered Pass (${totalExams} Exams Package)`;
+    }
+
+    function openEditPaymentModal(transactionId) {
+        const tx = paymentTransactions.find(item => item.id === transactionId);
+        if (!tx) return;
+        document.getElementById('editPaymentId').value = tx.id;
+        document.getElementById('editPaymentPhone').value = tx.phone_number || '';
+        document.getElementById('editPaymentRef').value = tx.reference_id || tx.referenceId || '';
+        document.getElementById('editPaymentPlan').value = tx.plan_name || tx.planName || '';
+        document.getElementById('editPaymentTotalExams').value = tx.total_exams || tx.remaining_exams || 0;
+        document.getElementById('editPaymentRemainingExams').value = tx.remaining_exams || 0;
+        document.getElementById('editPaymentAmount').value = tx.amount || 0;
+        document.getElementById('editPaymentPricePerExam').value = tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : formatExamPrice((tx.amount || 0) / (tx.total_exams || tx.remaining_exams || 1));
+        updateEditCalculationFields();
+        document.getElementById('editPaymentModal').style.display = 'flex';
+    }
+
+    function closeEditPaymentModal() {
+        document.getElementById('editPaymentModal').style.display = 'none';
+    }
+
+    function savePaymentTransactionEdit() {
+        const id = Number(document.getElementById('editPaymentId').value);
+        const total_exams = Number(document.getElementById('editPaymentTotalExams').value);
+        const remaining_exams = Number(document.getElementById('editPaymentRemainingExams').value);
+        if (isNaN(id) || isNaN(total_exams) || isNaN(remaining_exams) || total_exams < 0 || remaining_exams < 0) {
+            alert('Please enter valid numeric values for total and remaining exams.');
+            return;
+        }
+        if (remaining_exams > total_exams) {
+            alert('Remaining exams cannot be greater than total exams purchased.');
+            return;
+        }
+        fetch(`/api/admin/payment-transaction/${id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ total_exams, remaining_exams })
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (!result.success) {
+                throw new Error(result.error || 'Unable to save transaction.');
+            }
+            closeEditPaymentModal();
+            loadPaymentDashboard();
+        })
+        .catch(err => {
+            alert(err.message || 'Update failed.');
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('editPaymentTotalExams').addEventListener('input', updateEditCalculationFields);
+        loadPaymentDashboard();
+    });
+
+    /* ═══ SESSION TIMEOUT (5 min idle) ═══ */
+    (function() {
+        const IDLE = 5*60*1000, WARN = 60*1000, REDIR = '/admin-login';
+        let idleT, warnT, cdInt;
+        const modal = document.getElementById('sessionModal');
+        const toast = document.getElementById('sessionToast');
+        const toastT = document.getElementById('toastTimer');
+        const cdEl = document.getElementById('modalCountdown');
+        const sbVal = document.getElementById('sidebarTimerVal');
+        function fmt(ms){const s=Math.ceil(ms/1000),m=Math.floor(s/60);return m+':'+String(s%60).padStart(2,'0');}
+        window.doLogout = function(){
+            clearTimeout(idleT);clearTimeout(warnT);clearInterval(cdInt);
+            fetch('/api/admin/logout',{method:'POST'}).finally(()=>window.location.replace(REDIR));
+        };
+        function expire(){
+            toast.classList.remove('show');modal.classList.add('show');
+            let c=5;cdEl.textContent=c;
+            cdInt=setInterval(()=>{c--;cdEl.textContent=c;if(c<=0){clearInterval(cdInt);window.doLogout();}},1000);
+        }
+        let start=Date.now(),rafId;
+        function tick(){const r=IDLE-(Date.now()-start);if(sbVal)sbVal.textContent=fmt(Math.max(0,r));if(r>0)rafId=requestAnimationFrame(tick);}
+        function reset(){
+            clearTimeout(idleT);clearTimeout(warnT);
+            start=Date.now();cancelAnimationFrame(rafId);rafId=requestAnimationFrame(tick);
+            warnT=setTimeout(()=>{
+                let s=Math.ceil((IDLE-(Date.now()-start))/1000);
+                toastT.textContent=s;toast.classList.add('show');
+                const iv=setInterval(()=>{s--;toastT.textContent=s;if(s<=0)clearInterval(iv);},1000);
+                setTimeout(()=>toast.classList.remove('show'),IDLE-(Date.now()-start));
+            },IDLE-WARN);
+            idleT=setTimeout(expire,IDLE);
+        }
+        ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(e=>document.addEventListener(e,reset,{passive:true}));
+        reset();
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Profil y'Ishuri — IKIZAME</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --brand: #0b698b;
+            --brand-dark: #08536e;
+            --border-color: rgba(255,255,255,0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            min-height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1b2a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 5000;
+            height: 60px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4%;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 10px rgba(15,23,42,0.03);
+            width: 100vw;
+            box-sizing: border-box;
+        }
+        .navbar-brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .navbar-brand-wrap img { width: 32px; height: 32px; object-fit: contain; }
+        .navbar-brand { font-family: 'Inter', sans-serif; font-size: 1.65rem; font-weight: 800; color: #0b698b; letter-spacing: -0.5px; text-transform: uppercase; line-height: 1; }
+        .navbar-links { display: flex; list-style: none; gap: 22px; align-items: center; margin: 0; padding: 0; }
+        .navbar-links a { font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 700; color: #475569; text-decoration: none; padding: 20px 0 18px; position: relative; transition: color 0.15s; white-space: nowrap; display: inline-block; }
+        .navbar-links a:hover { color: #0b698b; }
+        .navbar-links a.active { color: #0b698b; font-weight: 800; }
+        .navbar-links a.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #0b698b; border-radius: 2px 2px 0 0; }
+        .navbar-links a.logout-btn { color: #ef4444; }
+        .lang-badge { display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #1e293b; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 12px; user-select: none; }
+        .rw-flag-svg { width: 20px; height: 14px; border-radius: 2px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+
+        @media (max-width: 900px) {
+            .navbar { flex-direction: column !important; height: auto !important; padding: 10px 4% 8px !important; gap: 6px !important; }
+            .navbar-links { gap: 12px 16px !important; width: 100% !important; justify-content: center !important; flex-wrap: wrap !important; }
+            .navbar-links a { font-size: 0.78rem !important; padding: 6px 0 !important; }
+            .page-wrap { margin-top: 110px !important; }
+        }
+        @media (min-width: 901px) {
+            .page-wrap { margin-top: 60px !important; }
+        }
+
+        /* ── PAGE LAYOUT ── */
+        .page-wrap {
+            flex: 1;
+            margin-top: 60px;
+            padding: 32px 16px 80px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .profile-container {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .page-header-icon {
+            width: 56px; height: 56px;
+            border-radius: 14px;
+            background: rgba(11,105,139,0.15);
+            border: 1px solid rgba(11,105,139,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; color: #38bdf8;
+            flex-shrink: 0;
+        }
+        .page-header h1 { font-size: 1.5rem; font-weight: 800; color: #fff; }
+        .page-header p  { font-size: 0.85rem; color: #64748b; margin-top: 3px; }
+
+        /* ── INFO CARD (read-only) ── */
+        .info-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 22px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .info-card-title {
+            font-size: 11px; font-weight: 800; text-transform: uppercase;
+            color: #64748b; letter-spacing: 0.6px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .info-row {
+            display: flex; align-items: center; gap: 14px;
+        }
+        .info-row-icon {
+            width: 36px; height: 36px; border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: #64748b; flex-shrink: 0;
+        }
+        .info-row-body label { font-size: 10px; text-transform: uppercase; color: #475569; font-weight: 700; letter-spacing: 0.4px; }
+        .info-row-body span  { display: block; font-size: 0.95rem; font-weight: 700; color: #e2e8f0; margin-top: 2px; }
+
+        /* ── FORM CARD ── */
+        .form-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 22px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .form-card-title {
+            font-size: 11px; font-weight: 800; text-transform: uppercase;
+            color: #64748b; letter-spacing: 0.6px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.4px; }
+        .field input {
+            width: 100%; padding: 12px 14px;
+            border: 2px solid rgba(255,255,255,0.12);
+            border-radius: 8px; font-size: 14px; font-weight: 600;
+            outline: none; background: rgba(255,255,255,0.03);
+            color: #fff; font-family: inherit;
+            transition: border-color 0.15s;
+        }
+        .field input:focus { border-color: var(--brand); background: rgba(255,255,255,0.05); }
+        .pw-wrap { position: relative; }
+        .pw-wrap input { padding-right: 44px; }
+        .pw-eye {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: #64748b; cursor: pointer;
+            padding: 4px; font-size: 15px; transition: color 0.15s;
+        }
+        .pw-eye:hover { color: #94a3b8; }
+
+        .field-hint { font-size: 11px; color: #475569; margin-top: 2px; }
+
+        /* ── DIVIDER ── */
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            color: #334155; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border-color);
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary {
+            background: var(--brand); color: #fff; border: none;
+            padding: 13px 20px; border-radius: 8px;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(11,105,139,0.25);
+            transition: background 0.1s;
+            width: 100%;
+        }
+        .btn-primary:hover { background: var(--brand-dark); }
+        .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        /* ── ALERT MESSAGES ── */
+        .alert {
+            padding: 12px 16px; border-radius: 8px;
+            font-size: 13px; font-weight: 600;
+            display: none; align-items: center; gap: 10px;
+        }
+        .alert.show { display: flex; }
+        .alert.success { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+        .alert.error   { background: rgba(239,68,68,0.12);  color: #ef4444;  border: 1px solid rgba(239,68,68,0.2); }
+
+        /* ── FOOTER ── */
+        .footer {
+            height: 40px; background: #0f172a;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; color: #64748b;
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+        }
+        .footer strong { color: #38bdf8; }
+
+        /* ── SKELETON LOADER ── */
+        .skeleton { background: rgba(255,255,255,0.06); border-radius: 6px; animation: pulse 1.4s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="/" class="navbar-brand-wrap">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+            <div class="navbar-brand">IKIZAME</div>
+        </a>
+        <nav>
+            <ul class="navbar-links">
+                <li><a href="/school-dashboard">Dashboard</a></li>
+                <li><a href="/school-profile" class="active"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
+                <li><a href="/api/school/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sohoka</a></li>
+            </ul>
+        </nav>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+            <span>Kinyarwanda</span>
+        </div>
+    </header>
+
+    <div class="page-wrap">
+        <div class="profile-container">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-icon"><i class="fa-solid fa-user-shield"></i></div>
+                <div>
+                    <h1>Profil y'Ishuri</h1>
+                    <p>Hindura izina ry'ishuri cyangwa password ya konti yawe.</p>
+                </div>
+            </div>
+
+            <!-- Account Info (read-only) -->
+            <div class="info-card">
+                <div class="info-card-title"><i class="fa-solid fa-circle-info"></i> Amakuru ya Konti</div>
+                <div class="info-row">
+                    <div class="info-row-icon"><i class="fa-solid fa-school"></i></div>
+                    <div class="info-row-body">
+                        <label>Izina ry'Ishuri</label>
+                        <span id="infoSchoolName"><span class="skeleton" style="width:160px;height:16px;display:inline-block;"></span></span>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-row-icon"><i class="fa-solid fa-envelope"></i></div>
+                    <div class="info-row-body">
+                        <label>Email</label>
+                        <span id="infoEmail"><span class="skeleton" style="width:200px;height:16px;display:inline-block;"></span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Change School Name -->
+            <div class="form-card">
+                <div class="form-card-title"><i class="fa-solid fa-pen-to-square"></i> Hindura Izina ry'Ishuri</div>
+                <div class="alert" id="nameAlert"></div>
+                <div class="field">
+                    <label>Izina Rishya ry'Ishuri</label>
+                    <input type="text" id="newSchoolName" placeholder="e.g., Twegerane Driving School" autocomplete="off">
+                    <span class="field-hint">Izina rigomba kuba ridasanzwe (unique) mu mashuri yose.</span>
+                </div>
+                <button class="btn-primary" id="saveNameBtn" onclick="saveName()">
+                    <i class="fa-solid fa-floppy-disk"></i> <span>Bika Izina</span>
+                </button>
+            </div>
+
+            <div class="divider">Hindura Password</div>
+
+            <!-- Change Password -->
+            <div class="form-card">
+                <div class="form-card-title"><i class="fa-solid fa-lock"></i> Hindura Password</div>
+                <div class="alert" id="pwAlert"></div>
+                <div class="field">
+                    <label>Password ya Kera</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="currentPw" placeholder="••••••••" autocomplete="current-password">
+                        <button type="button" class="pw-eye" onclick="togglePw('currentPw',this)"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Password Nshya</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="newPw" placeholder="••••••••" autocomplete="new-password">
+                        <button type="button" class="pw-eye" onclick="togglePw('newPw',this)"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                    <span class="field-hint">Byibura inyandiko 6.</span>
+                </div>
+                <div class="field">
+                    <label>Powtora Password Nshya</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="confirmPw" placeholder="••••••••" autocomplete="new-password">
+                        <button type="button" class="pw-eye" onclick="togglePw('confirmPw',this)"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                </div>
+                <button class="btn-primary" id="savePwBtn" onclick="savePassword()">
+                    <i class="fa-solid fa-key"></i> <span>Hindura Password</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
+
+    <script>
+        // ── Session guard + load profile info ──
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/school/profile')
+                .then(r => { if (r.status === 401) { window.location.href = '/school-auth'; return null; } return r.json(); })
+                .then(data => {
+                    if (!data || !data.success) { window.location.href = '/school-auth'; return; }
+                    document.getElementById('infoSchoolName').textContent = data.schoolName;
+                    document.getElementById('infoEmail').textContent      = data.email;
+                    document.getElementById('newSchoolName').value        = data.schoolName;
+                });
+        });
+
+        function togglePw(id, btn) {
+            const inp = document.getElementById(id);
+            const icon = btn.querySelector('i');
+            if (inp.type === 'password') { inp.type = 'text'; icon.className = 'fa-regular fa-eye-slash'; }
+            else                         { inp.type = 'password'; icon.className = 'fa-regular fa-eye'; }
+        }
+
+        function showAlert(id, text, type) {
+            const el = document.getElementById(id);
+            el.textContent = text;
+            el.className = 'alert ' + type + ' show';
+            setTimeout(() => { el.className = 'alert'; }, 4000);
+        }
+
+        function setBtn(id, loading, label, icon) {
+            const btn = document.getElementById(id);
+            btn.disabled = loading;
+            btn.innerHTML = loading
+                ? `<i class="fa-solid fa-spinner fa-spin"></i> <span>Iri Kubika...</span>`
+                : `<i class="fa-solid fa-${icon}"></i> <span>${label}</span>`;
+        }
+
+        // ── Save name only ──
+        function saveName() {
+            const schoolName = document.getElementById('newSchoolName').value.trim();
+            if (!schoolName) { showAlert('nameAlert', 'Injiza izina ry\'ishuri.', 'error'); return; }
+
+            setBtn('saveNameBtn', true);
+            fetch('/api/school/update-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ schoolName, currentPassword: '', newPassword: '' })
+            })
+            .then(r => r.json())
+            .then(data => {
+                setBtn('saveNameBtn', false, 'Bika Izina', 'floppy-disk');
+                if (data.success) {
+                    document.getElementById('infoSchoolName').textContent = schoolName;
+                    showAlert('nameAlert', data.message || 'Izina ryahinduwe neza!', 'success');
+                } else {
+                    showAlert('nameAlert', data.error || 'Byanze. Gerageza nanone.', 'error');
+                }
+            })
+            .catch(() => { setBtn('saveNameBtn', false, 'Bika Izina', 'floppy-disk'); showAlert('nameAlert', 'Ikibazo cya network.', 'error'); });
+        }
+
+        // ── Save password only ──
+        function savePassword() {
+            const currentPassword = document.getElementById('currentPw').value;
+            const newPassword     = document.getElementById('newPw').value;
+            const confirmPassword = document.getElementById('confirmPw').value;
+
+            if (!currentPassword)              { showAlert('pwAlert', 'Injiza password ya kera.', 'error'); return; }
+            if (!newPassword || newPassword.length < 6) { showAlert('pwAlert', 'Password nshya igomba kuba ifite inyandiko 6+.', 'error'); return; }
+            if (newPassword !== confirmPassword){ showAlert('pwAlert', 'Passwords zombi ntizihura.', 'error'); return; }
+
+            // Use current name so update-profile doesn't reject empty name
+            const schoolName = document.getElementById('infoSchoolName').textContent;
+
+            setBtn('savePwBtn', true);
+            fetch('/api/school/update-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ schoolName, currentPassword, newPassword })
+            })
+            .then(r => r.json())
+            .then(data => {
+                setBtn('savePwBtn', false, 'Hindura Password', 'key');
+                if (data.success) {
+                    document.getElementById('currentPw').value = '';
+                    document.getElementById('newPw').value     = '';
+                    document.getElementById('confirmPw').value = '';
+                    showAlert('pwAlert', data.message || 'Password yahinduwe neza!', 'success');
+                } else {
+                    showAlert('pwAlert', data.error || 'Byanze. Gerageza nanone.', 'error');
+                }
+            })
+            .catch(() => { setBtn('savePwBtn', false, 'Hindura Password', 'key'); showAlert('pwAlert', 'Ikibazo cya network.', 'error'); });
+        }
+    </script>
+</body>
+</html>

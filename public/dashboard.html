@@ -51,8 +51,8 @@
         .sidebar-nav a:hover { color: #f8fafc; background: rgba(255,255,255,0.06); }
         .sidebar-nav a.active { color: #f8fafc; background: rgba(56,189,248,0.12); border-left: 3px solid #38bdf8; padding-left: 11px; }
         .sidebar-nav a i { width: 16px; text-align: center; }
-        .nav-logout { color: #f87171 !important; }
-        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #ef4444 !important; }
+        .nav-logout { color: #ef4444 !important; font-weight: 700; }
+        .nav-logout:hover { background: rgba(239,68,68,0.1) !important; color: #dc2626 !important; }
         
         .sidebar-footer { padding: 14px 16px; border-top: 1px solid var(--sidebar-border); display: flex; align-items: center; gap: 10px; }
         .admin-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; }
@@ -135,6 +135,105 @@
             font-size: 13.5px; 
         }
 
+        /* ── EXAM RESULT POPUP STYLES ── */
+        #answerSheetModal {
+            padding: 12px 12px 0;
+        }
+        .review-modal-wrapper {
+            width: 90%; max-width: 1040px; min-width: 420px;
+            min-height: 86vh; height: 86vh; max-height: 92vh;
+            display: flex; flex-direction: column;
+            background: #fff; border-radius: 20px;
+            overflow: hidden; box-shadow: 0 30px 70px rgba(15,23,42,0.22);
+        }
+        .review-modal-header {
+            position: sticky; top: 0; z-index: 2;
+            padding: 20px 24px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; gap: 14px;
+            background: #f8fafc;
+        }
+        .review-modal-title { font-size: 20px; font-weight: 900; color: #0f172a; }
+        .review-modal-sub { font-size: 13px; color: #475569; margin-top: 4px; }
+        .review-modal-close {
+            width: 40px; height: 40px; border-radius: 12px; border: none;
+            background: #0f172a; color: #fff; cursor: pointer; display: inline-flex;
+            align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 10px 20px rgba(15,23,42,0.12);
+        }
+        .review-modal-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; padding: 18px 24px 24px; background: #f4f7fa; }
+        .review-score-hero {
+            display: flex; flex-direction: column; gap: 14px;
+            background: #f8fafc; border: 1px solid #e2e8f0;
+            border-radius: 18px; padding: 20px;
+        }
+        .review-score-row {
+            display: flex; flex-wrap: wrap; gap: 18px; align-items: center;
+        }
+        .review-score-block {
+            display: flex; align-items: center; gap: 12px;
+            background: #fff; border: 1px solid #e2e8f0;
+            border-radius: 18px; padding: 16px 18px; min-width: 160px;
+        }
+        .review-score-value { font-size: 2.7rem; font-weight: 900; line-height: 1; color: #0f172a; }
+        .review-score-denom { font-size: 1.2rem; font-weight: 700; color: #475569; }
+        .review-score-info { display: flex; flex-direction: column; gap: 4px; }
+        .review-status-pill {
+            display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px;
+            border-radius: 999px; font-size: 0.76rem; font-weight: 800; text-transform: uppercase;
+        }
+        .review-status-pill.pass { background: #dcfce7; color: #166534; }
+        .review-status-pill.fail { background: #fee2e2; color: #991b1b; }
+        .review-progress { width: 100%; }
+        .review-progress-bar { height: 10px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+        .review-progress-fill { height: 100%; border-radius: 999px; transition: width 1s ease; }
+        .review-progress-fill.pass { background: linear-gradient(90deg, #34d399, #10b981); }
+        .review-progress-fill.fail { background: linear-gradient(90deg, #f87171, #ef4444); }
+        .review-info-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+        .review-info-card {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
+            padding: 14px 16px;
+        }
+        .review-info-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #64748b; }
+        .review-info-value { font-size: 1rem; font-weight: 800; color: #0f172a; margin-top: 4px; }
+        .review-question-card {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 16px;
+            padding: 18px; display: flex; flex-direction: column; gap: 14px;
+        }
+        .review-question-card.correct { border-color: #d1fae5; background: #f0fdf4; }
+        .review-question-card.wrong { border-color: #fee2e2; background: #fef2f2; }
+        .review-question-card.skipped { border-color: #fde68a; background: #fffbeb; }
+        .review-question-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .review-question-title { font-size: 0.95rem; font-weight: 700; color: #0f172a; }
+        .review-question-status { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; }
+        .review-question-status.correct { background: #dcfce7; color: #166534; }
+        .review-question-status.wrong { background: #fee2e2; color: #991b1b; }
+        .review-question-status.skipped { background: #fef3c7; color: #92400e; }
+        .review-question-status.correct { background: #dcfce7; color: #166534; }
+        .review-question-status.wrong { background: #fee2e2; color: #991b1b; }
+        .review-options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .review-option-row {
+            padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 12px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; font-size: 0.9rem; color: #334155; background: #f8fafc;
+        }
+        .review-option-row.user-correct { border-color: #10b981; background: #dcfce7; color: #166534; }
+        .review-option-row.correct-target { border-color: #10b981; background: #dcfce7; color: #166534; }
+        .review-option-row.user-wrong { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
+        .review-option-left { display: flex; align-items: center; gap: 12px; width: 100%; }
+        .review-option-text { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; color: inherit; }
+        .review-option-image { max-width: 120px; max-height: 100px; border-radius: 12px; object-fit: contain; border: 1px solid #e2e8f0; background: #fff; padding: 6px; }
+        .review-question-image { margin: 14px 0 8px; }
+        .review-question-image img { width: 100%; max-height: 180px; object-fit: contain; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .review-option-row.selected { border-color: #0b698b; background: #e0f2fe; }
+        .review-option-row.correct { border-color: #10b981; background: #dcfce7; color: #166534; }
+        .review-option-row.incorrect { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
+        .review-option-label { font-weight: 800; min-width: 22px; }
+        .review-option-note { font-size: 0.8rem; color: #475569; }
+        @media (max-width: 768px) {
+            .review-info-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .review-score-row { flex-direction: column; }
+            .review-options-grid { grid-template-columns: 1fr; }
+        }
+
         /* 🎯 ABSOLUTE SCROLL-LOCKED STICKY METADATA HEADERS CONTAINER */
         thead th {
             position: sticky; 
@@ -185,6 +284,16 @@
 
         .admin-footer { height: 44px; background: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; font-size: 11.5px; color: #64748b; flex-shrink: 0; }
         .admin-footer strong { color: #38bdf8; }
+        .session-pill { font-size: 10px; font-weight: 700; background: rgba(56,189,248,0.15); color: #38bdf8; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+        #adminSessionModal { position:fixed; inset:0; background:rgba(15,23,42,0.75); display:none; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(4px); }
+        .session-modal-box { background:#fff; border-radius:16px; padding:36px 32px; max-width:360px; width:90%; text-align:center; box-shadow:0 24px 48px rgba(0,0,0,0.25); animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes popIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+        .session-modal-box .modal-icon { width:60px; height:60px; background:#fef2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; color:#ef4444; margin:0 auto 16px; }
+        .session-modal-box h3 { font-size:17px; font-weight:800; margin-bottom:8px; }
+        .session-modal-box p { font-size:13.5px; color:var(--text-muted); line-height:1.5; margin-bottom:20px; }
+        .session-countdown { font-size:28px; font-weight:800; color:#ef4444; margin-bottom:16px; }
+        .btn-relogin { background:var(--brand); color:#fff; border:none; padding:12px 28px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; width:100%; }
+        #adminSessionToast { position:fixed; top:70px; right:20px; background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:10px; padding:12px 16px; font-size:13px; font-weight:600; display:none; align-items:center; gap:10px; z-index:9998; box-shadow:0 4px 12px rgba(0,0,0,0.1); max-width:320px; }
     </style>
 </head>
 <body>
@@ -196,6 +305,7 @@
                 <nav class="sidebar-nav">
             <!-- 🎯 UNIFIED ADMIN NAVIGATION TREE WITH SYNCHRONIZED LINK STATE CHANGER -->
             <a href="#" class="active" id="navLinkDashboard" onclick="switchAdminControlView('table-view'); document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+            <a href="/admin-payments" id="navLinkPayments"><i class="fa-solid fa-credit-card"></i> Payments</a>
             <a href="add-exam" id="navLinkAddQuestion"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
             <a href="system-performance" id="navLinkSysPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
             <a href="#" id="navLinkPerformance" onclick="switchAdminControlView('analytics-view'); document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
@@ -208,6 +318,7 @@
                 <div class="admin-name">Admin</div>
                 <div class="admin-role">Administrator</div>
             </div>
+            <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
         </div>
     </aside>
 
@@ -339,6 +450,21 @@
     &copy; 2026 IKIZAME &nbsp;<strong> Developed by Dotado Stationery Store Ltd</strong>
 </footer>
 
+<div id="adminSessionModal">
+    <div class="session-modal-box">
+        <div class="modal-icon"><i class="fa-solid fa-clock"></i></div>
+        <h3>Session Expired</h3>
+        <p>You were idle for too long. Redirecting to login...</p>
+        <div class="session-countdown" id="adminModalCd">5</div>
+        <button class="btn-relogin" onclick="adminDoLogout()"><i class="fa-solid fa-right-to-bracket"></i> Log In Again</button>
+    </div>
+</div>
+<div id="adminSessionToast">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span>Session expires in <span id="adminToastSec">60</span>s — move the mouse to stay active.</span>
+</div>
+<script src="assets/js/admin-session.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('questionsMasterTableBody');
@@ -370,6 +496,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!val || !val.trim()) return `<span style="color:#94a3b8; font-style:italic;">None</span>`;
         if (checkIsGraphicAssetString(val)) {
             return `<img src="assets/uploads/${val.trim()}" class="cell-img" alt="Option image" onerror="this.outerHTML='<span class=\'fallback-filename-txt\'>${val}</span>'">`;
+        }
+        return `<span>${val}</span>`;
+    }
+
+    function renderReviewContentHTML(val) {
+        if (!val || !val.trim()) return `<span style="color:#94a3b8; font-style:italic;">None</span>`;
+        if (checkIsGraphicAssetString(val)) {
+            return `<img src="assets/uploads/${val.trim()}" class="review-option-image" alt="Option image" onerror="this.outerHTML='<span class=\'fallback-filename-txt\'>${val}</span>'">`;
         }
         return `<span>${val}</span>`;
     }
@@ -554,18 +688,19 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch('/api/admin/performance-stats')
                 .then(res => res.json())
                 .then(data => {
-                    document.getElementById('statPassRate').textContent = data.passRate + '%';
-                    document.getElementById('statTotalAttempts').textContent = data.totalAttempts;
-                    document.getElementById('statAvgScore').textContent = data.averageScore + '/20';
+                    document.getElementById('statPassRate').textContent = (data.passRate || 0) + '%';
+                    document.getElementById('statTotalAttempts').textContent = (data.totalAttempts || data.total || 0);
+                    document.getElementById('statAvgScore').textContent = (data.avgScore || data.averageScore || 0) + '/20';
 
                     const trickyTarget = document.getElementById('trickyQuestionsListTarget');
-                    if (data.trickyQuestions.length === 0) {
+                    const trickyQuestions = Array.isArray(data.trickyQuestions) ? data.trickyQuestions : [];
+                    if (trickyQuestions.length === 0) {
                         trickyTarget.innerHTML = `<p style="text-align:center; padding:15px; font-style:italic; color:#64748b; font-size:13px;">No data trends captured yet.</p>`;
                     } else {
-                        trickyTarget.innerHTML = data.trickyQuestions.map((q, idx) => {
+                        trickyTarget.innerHTML = trickyQuestions.map((q, idx) => {
                             return `
                                 <div style="background:#fef2f2; border:1px solid #fee2e2; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:6px;">
-                                    <div style="display:flex; justify-content:between; align-items:center; width:100%; justify-content:space-between;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
                                         <span style="font-size:11px; background:#ef4444; color:#fff; font-weight:800; padding:1px 6px; border-radius:4px;">Rank #${idx+1} Tricky</span>
                                         <span style="font-size:11px; color:#b91c1c; font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Failed ${q.failCount} times</span>
                                     </div>
@@ -627,6 +762,213 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    window.openStudentAttemptsModal = function(phoneNumber, studentName) {
+        const modal = document.getElementById('studentAttemptsModal');
+        const studentNameElem = document.getElementById('studentModalName');
+        const studentPhoneElem = document.getElementById('studentModalPhone');
+        const attemptsBody = document.getElementById('studentAttemptsTableBody');
+
+        studentNameElem.textContent = studentName || 'Unknown Student';
+        studentPhoneElem.textContent = phoneNumber;
+        attemptsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:24px; color:#64748b;
+            font-style:italic;"><i class="fa-solid fa-spinner fa-spin"></i> Gushakisha ibizamini...</td></tr>`;
+        modal.style.display = 'flex';
+
+        fetch(`/api/admin/student-attempts/${encodeURIComponent(phoneNumber)}`)
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(attempts => {
+                if (!Array.isArray(attempts) || attempts.length === 0) {
+                    attemptsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:24px; color:#64748b; font-style:italic;">Nta bizamini byabonetse kuri uyu munyeshuri.</td></tr>`;
+                    return;
+                }
+
+                attemptsBody.innerHTML = attempts.map(attempt => {
+                    const examDate = new Date(attempt.created_at).toLocaleDateString('rw-RW', { month: 'short', day: 'numeric', year: 'numeric' });
+                    const scoreLabel = attempt.score !== null ? `${attempt.score}/${attempt.total_questions || 20}` : 'N/A';
+                    return `
+                        <tr style="border-bottom:1px solid #f1f5f9;">
+                            <td style="padding:12px 8px;">${examDate}</td>
+                            <td style="padding:12px 8px; text-align:center; font-weight:700; color:#0b698b;">${scoreLabel}</td>
+                            <td style="padding:12px 8px; text-align:left;"><button type="button" onclick="openAnswerSheetModal(${attempt.id}, '${studentName.replace(/'/g, "\\'")}', '${phoneNumber.replace(/'/g, "\\'")}')" style="background:#0b698b; color:#fff; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-size:13px;">Fungura</button></td>
+                        </tr>
+                    `;
+                }).join('');
+            })
+            .catch(err => {
+                console.error(err);
+                attemptsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:24px; color:#ef4444;">Habayeho ikosa mu gushakisha ibizamini. Ongera ugerageze.</td></tr>`;
+            });
+    };
+
+    window.closeStudentAttemptsModal = function() {
+        document.getElementById('studentAttemptsModal').style.display = 'none';
+    };
+
+    function formatReviewDate(value) {
+        if (!value) return '---';
+        let normalized = value.toString().trim();
+        normalized = normalized.replace(' ', 'T');
+        let parsed = new Date(normalized);
+        if (isNaN(parsed)) {
+            parsed = new Date(normalized.replace(/-/g, '/'));
+        }
+        if (isNaN(parsed)) {
+            const match = normalized.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (match) {
+                parsed = new Date(`${match[1]}/${match[2]}/${match[3]}`);
+            }
+        }
+        return isNaN(parsed)
+            ? '---'
+            : parsed.toLocaleDateString('rw-RW', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    window.openAnswerSheetModal = function(attemptId, studentName, phoneNumber) {
+        const modal = document.getElementById('answerSheetModal');
+        const body = document.getElementById('answerSheetBody');
+
+        body.innerHTML = `<p style="text-align:center; padding:30px; color:#64748b; font-style:italic;"><i class="fa-solid fa-spinner fa-spin"></i> Gufungura ibisubizo...</p>`;
+        modal.style.display = 'flex';
+
+        fetch(`/api/amanota/review/${encodeURIComponent(attemptId)}`)
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.error || 'Nta bisubizo bibonetse.');
+                }
+
+                const score = data.score || 0;
+                const total = data.total || 20;
+                const correctCount = data.correctCount || 0;
+                const wrongCount = data.wrongCount || 0;
+                const skippedCount = data.skippedCount || 0;
+                const answers = data.answers || {};
+                const questions = Array.isArray(data.questions) ? data.questions : [];
+                const passed = score >= 12;
+                const percentage = Math.round((score / total) * 100);
+                const attemptDate = (data.created_at || data.createdAt) ? formatReviewDate(data.created_at || data.createdAt) : '---';
+
+                if (questions.length === 0) {
+                    body.innerHTML = `<p style="text-align:center; padding:30px; color:#64748b; font-style:italic;">Nta byerekanwa byabonywe ku bizamini.</p>`;
+                    return;
+                }
+
+                const summaryHtml = `
+                    <div class="review-score-hero">
+                        <div class="review-score-row">
+                            <div class="review-score-block">
+                                <div class="review-score-value">${score}</div>
+                                <div class="review-score-info">
+                                    <div class="review-score-denom">/${total}</div>
+                                    <div class="review-info-label">Amanota</div>
+                                </div>
+                            </div>
+                            <div style="flex:1; min-width:180px;">
+                                <div class="review-status-pill ${passed ? 'pass' : 'fail'}">
+                                    <i class="fa-solid ${passed ? 'fa-trophy' : 'fa-rotate-right'}"></i>
+                                    ${passed ? 'Yatsinze' : 'Yatsinzwe'}
+                                </div>
+                                <div class="review-progress" style="margin-top:14px;">
+                                    <div class="review-progress-bar"><div class="review-progress-fill ${passed ? 'pass' : 'fail'}" style="width:${percentage}%"></div></div>
+                                </div>
+                                <div class="review-info-label" style="margin-top:8px;">Ijanisha ry'amanota</div>
+                            </div>
+                        </div>
+                        <div class="review-info-grid">
+                            <div class="review-info-card"><div class="review-info-label">Umunyeshuri</div><div class="review-info-value">${studentName || 'Unknown'}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Telephone</div><div class="review-info-value">${phoneNumber}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Itariki</div><div class="review-info-value">${attemptDate}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Ibibazo</div><div class="review-info-value">${questions.length}</div></div>
+                        </div>
+                        <div class="review-info-grid">
+                            <div class="review-info-card"><div class="review-info-label">Byakozwe neza</div><div class="review-info-value">${correctCount}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Byasubijwe nabi</div><div class="review-info-value">${wrongCount}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Byasize</div><div class="review-info-value">${skippedCount}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Ijanisha</div><div class="review-info-value">${percentage}%</div></div>
+                        </div>
+                    </div>
+                `;
+
+                const questionsHtml = questions.map((question, index) => {
+                    const answerKey = `question_${question.id}`;
+                    const selectedRaw = answers.hasOwnProperty(answerKey)
+                        ? answers[answerKey]
+                        : answers.hasOwnProperty(String(question.id))
+                            ? answers[String(question.id)]
+                            : '';
+                    const selected = (selectedRaw || '').toString().trim().toUpperCase();
+                    const correct = (question.correct_option || question.correct_option_letter || '').toString().trim().toUpperCase();
+                    const isSkipped = !selected;
+                    const isCorrect = !isSkipped && selected === correct;
+                    const optionOrder = ['A', 'B', 'C', 'D'];
+                    const options = optionOrder.map(letter => {
+                        const text = question[`option_${letter.toLowerCase()}`] || '---';
+                        const isUserPick = selected === letter;
+                        const isCor = correct === letter;
+                        let cls = '';
+                        let icon = '';
+                        if (isCor && isUserPick) {
+                            cls = 'user-correct';
+                            icon = `<i class="fa-solid fa-check opt-icon" style="color:#10b981;"></i>`;
+                        } else if (isCor) {
+                            cls = 'correct-target';
+                            icon = `<i class="fa-solid fa-check opt-icon" style="color:#10b981;"></i>`;
+                        } else if (isUserPick) {
+                            cls = 'user-wrong';
+                            icon = `<i class="fa-solid fa-xmark opt-icon" style="color:#ef4444;"></i>`;
+                        }
+                        return { letter, text, cls, icon };
+                    });
+
+                    const cardClass = isSkipped ? 'skipped' : isCorrect ? 'correct' : 'wrong';
+                    const statusText = isSkipped ? 'Yarasize' : isCorrect ? 'Yakoze neza' : 'Byasubijwe nabi';
+
+                    return `
+                        <div class="review-question-card">
+                            <div class="review-question-header">
+                                <div class="review-question-title">Ikibazo ${index + 1}: ${question.question || '...'} </div>
+                                <div class="review-question-status ${cardClass}">
+                                    ${statusText}
+                                </div>
+                            </div>
+                            ${question.image_path ? `<div class="review-question-image"><img src="assets/uploads/${question.image_path}" alt="Question image"></div>` : ''}
+                            <div class="review-options-grid">
+                                ${options.map(opt => `
+                                    <div class="review-option-row ${opt.cls}">
+                                        <div class="review-option-left">
+                                            <span class="review-option-label">${opt.letter}</span>
+                                            <span class="review-option-text">${renderReviewContentHTML(opt.text)}</span>
+                                        </div>
+                                        ${opt.icon}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div style="display:flex; gap:12px; flex-wrap:wrap; font-size:0.85rem; color:#475569;">
+                                <span><strong>Selected:</strong> ${selected || '---'}</span>
+                                <span><strong>Correct:</strong> ${correct || '---'}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                body.innerHTML = summaryHtml + questionsHtml;
+            })
+            .catch(err => {
+                console.error(err);
+                body.innerHTML = `<p style="text-align:center; padding:30px; color:#ef4444; font-style:italic;">Habayeho ikosa mu gufungura ibisubizo. Ongera ugerageze.</p>`;
+            });
+    };
+
+    window.closeAnswerSheetModal = function() {
+        document.getElementById('answerSheetModal').style.display = 'none';
+    };
+
     loadRepositoryQuestionsPool();
 });
 </script>
@@ -640,7 +982,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3 id="studentModalName" style="font-size:16px; font-weight:800; color:#0f172a;">Student Name</h3>
                 <p id="studentModalPhone" style="font-size:12px; color:var(--text-muted); margin-top:2px;">+250...</p>
             </div>
-            <button onclick="closeStudentAttemptsModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:14px; color:#64748b;"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeStudentAttemptsModal()" style="background:#f1f5f9; border:none; min-width:72px; height:32px; border-radius:8px; cursor:pointer; font-size:14px; color:#64748b; font-weight:700; padding:0 14px;">Back</button>
         </div>
         <div style="flex:1; overflow-y:auto; padding:12px 24px 20px;">
             <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
@@ -648,7 +990,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <tr style="border-bottom:2px solid var(--border); color:var(--text-muted); font-weight:700;">
                         <th style="padding:10px 6px;">Itariki (Date)</th>
                         <th style="padding:10px 6px; text-align:center;">Amanota (Score)</th>
-                        <th style="padding:10px 6px; text-align:right;">Ibikorwa (Action)</th>
+                        <th style="padding:10px 6px; text-align:left;">Ibikorwa (Action)</th>
                     </tr>
                 </thead>
                 <tbody id="studentAttemptsTableBody"></tbody>
@@ -660,17 +1002,16 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- ==========================================================================
      📝 MODAL 2: ANSWER SHEET — what the student answered for one attempt
      ========================================================================== -->
-<div id="answerSheetModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:9100; align-items:center; justify-content:center;">
-    <div style="background:#fff; border-radius:16px; width:94%; max-width:780px; max-height:86vh; display:flex; flex-direction:column; box-shadow:0 24px 48px rgba(0,0,0,0.3);">
-        <div style="padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+<div id="answerSheetModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); z-index:9100; align-items:center; justify-content:center; overflow-y:auto;">
+    <div class="review-modal-wrapper">
+        <div class="review-modal-header">
             <div>
-                <h3 style="font-size:16px; font-weight:800; color:#0f172a;">Ibisubizo by'Ikizamini (Answer Sheet)</h3>
-                <p id="answerSheetMeta" style="font-size:12px; color:var(--text-muted); margin-top:2px;"></p>
+                <div class="review-modal-title">Ibyavuye mu kizamini</div>
+                <div class="review-modal-sub">Reba ibisobanuro byuzuye by'umunyeshuri n'ibyo yasubije.</div>
             </div>
-            <button onclick="closeAnswerSheetModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:14px; color:#64748b;"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeAnswerSheetModal()" class="review-modal-close">Back</button>
         </div>
-        <div style="flex:1; overflow-y:auto; padding:16px 24px 24px; display:flex; flex-direction:column; gap:14px;" id="answerSheetBody">
-            <p style="text-align:center; padding:30px; color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Gufungura ibisubizo...</p>
+        <div class="review-modal-content" id="answerSheetBody">
         </div>
     </div>
 </div>

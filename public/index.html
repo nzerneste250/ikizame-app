@@ -168,9 +168,132 @@
             font-weight: 700;
             border-radius: 40px;
             transition: all 0.2s;
+            cursor: pointer;
         }
         .hero-cta:hover { background: rgba(255,255,255,0.08); }
         .hero-cta svg { width: 16px; height: 16px; }
+
+        /* ===== GUIDE MODAL ===== */
+        .guide-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(13,27,42,0.88);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .guide-overlay.open { display: flex; }
+        .guide-modal {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 680px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+        }
+        .guide-header {
+            background: #0b698b;
+            padding: 22px 28px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .guide-header h3 {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: #fff;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+        .guide-header p {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.7);
+            margin: 4px 0 0;
+        }
+        .guide-close {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .guide-body { padding: 32px 28px; }
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .guide-step {
+            display: flex;
+            gap: 20px;
+            position: relative;
+        }
+        .guide-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 44px;
+            width: 2px;
+            height: calc(100% - 12px);
+            background: linear-gradient(to bottom, #0b698b44, #0b698b11);
+        }
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+        .step-content {
+            padding-bottom: 28px;
+            flex: 1;
+        }
+        .step-content h4 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 8px 0 5px;
+        }
+        .step-content p {
+            font-size: 0.82rem;
+            color: #64748b;
+            line-height: 1.55;
+            margin: 0;
+        }
+        .step-tag {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 2px;
+        }
+        @media (max-width: 600px) {
+            .guide-body { padding: 24px 18px; }
+            .guide-header { padding: 18px 20px; }
+        }
 
         /* ===== REGISTRATION CARD ===== */
         .reg-card {
@@ -182,30 +305,6 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.45);
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .card-tabs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .tab-btn {
-            border: none;
-            padding: 16px;
-            font-size: 0.78rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            background: transparent;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-        }
-        .tab-btn.active {
-            color: #0b698b;
-            background: #ffffff;
-            border-color: #0b698b;
         }
 
         .card-body {
@@ -664,7 +763,7 @@
                 <li><a href="ifashanyigisho">Ifashanyigisho</a></li>
                 <li><a href="ibiciro">Ibiciro</a></li>
                 <li><a href="school-auth">Amashuri (School Portal)</a></li>
-                <li><a href="#" id="navAmanotaLink">Amanota</a></li>
+                <li><a href="amanota">Amanota</a></li>
             </ul>
         </nav>
         <div class="lang-badge">
@@ -686,18 +785,14 @@
                 Ikizamini.
             </h1>
             <p class="hero-desc">Iga, isuzume, kora imyitozo y'amategeko y'umuhanda ukoresheje ikoranabuhanga rigezweho ririnda ikoreshwa ry'internet nyinshi.</p>
-            <a href="#" class="hero-cta" onclick="event.preventDefault(); document.getElementById('studentNameInput').focus();">
+            <button class="hero-cta" onclick="document.getElementById('guideOverlay').classList.add('open')">
                 Reba Uko Bigenda
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </a>
+            </button>
         </section>
 
         <!-- Registration Card -->
         <section class="reg-card">
-            <div class="card-tabs">
-                <button class="tab-btn active">Kwiyandikisha</button>
-                <button class="tab-btn" onclick="alert('Ubu buryo bugiye kuboneka vuba!')">Koresha Kode</button>
-            </div>
             <div class="card-body">
                 <h2>Isuzuma Bumenyi</h2>
                 <p class="sub">Iyandikishe gukora isuzuma ry'amategeko y'umuhanda kugira ngo uhabwe kode y'ikizamini.</p>
@@ -725,9 +820,9 @@
                                 </svg>
                                 <span>+250</span>
                             </div>
-                            <input type="tel" id="studentPhoneInput" name="studentPhoneInput" placeholder="788000000" maxlength="9" required autocomplete="tel-national">
+                            <input type="tel" id="studentPhoneInput" name="studentPhoneInput" placeholder="0788000000" maxlength="10" required autocomplete="tel-national">
                         </div>
-                        <span class="hint" id="phoneValidationHint">Igomba gutangizwa na 7 (Inimero 9 gusa)</span>
+                        <span class="hint" id="phoneValidationHint">Tangira na 0 (Inimero 10 gusa, urugero: 0788000000)</span>
                     </div>
 
                     <button type="submit" class="btn-submit">Tangira Ikizamini</button>
@@ -736,62 +831,71 @@
         </section>
     </main>
 
-    <!-- ===== 📈 AMANOTA LOOKUP OVERLAY MODAL WINDOW (GLASSMORPHIC POPUP) ===== -->
-    <div id="amanotaModal" style="position:fixed; inset:0; background:rgba(13,27,42,0.85); display:none; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(6px); padding:20px;">
-        <div style="background:#ffffff; border-radius:18px; max-width:460px; width:100%; box-shadow:0 24px 60px rgba(0,0,0,0.35); overflow:hidden; border:1px solid rgba(255,255,255,0.1); animation:popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
-            <!-- Modal Header -->
-            <div style="background:#f8fafc; padding:20px 24px; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:10px; color:#0b698b;">
-                    <h3 style="font-family:'Black Han Sans', sans-serif; font-size:1.25rem; font-weight:400; color:var(--text-dark); letter-spacing:0.5px; margin:0;">Reba Amanota Yawe</h3>
+    <!-- ===== GUIDE MODAL ===== -->
+    <div class="guide-overlay" id="guideOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+        <div class="guide-modal">
+            <div class="guide-header">
+                <div>
+                    <h3>Uko IKIZAME Ikora</h3>
+                    <p>Inzira yose kuva gutangira kugeza kureba amanota yawe</p>
                 </div>
-                <button id="closeAmanotaModalBtn" style="background:none; border:none; font-size:22px; color:var(--text-muted); cursor:pointer; padding:0; line-height:1;">&times;</button>
+                <button class="guide-close" onclick="document.getElementById('guideOverlay').classList.remove('open')">&times;</button>
             </div>
-            
-            <!-- Modal Content Body -->
-            <div style="padding:24px;">
-                <!-- VIEW A: Phone lookup search form -->
-                <div id="amanotaLookupFormView">
-                    <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.5; margin-bottom:18px;">Andika numero ya terefone yakoreshejwe ukora ikizamini kugira ngo urebe amanota yose n'ibizamini byakozwe mu mibare yawe.</p>
-                    
-                    <div class="field-group" style="margin-bottom:20px;">
-                        <label style="font-size:0.74rem; font-weight:700; color:var(--text-dark); margin-bottom:6px; display:block;">Numero ya Terefone</label>
-                        <div class="input-wrap phone-mode">
-                            <div class="phone-prefix">
-                                <svg class="rw-flag-svg" viewBox="0 0 4 3">
-                                    <rect width="4" height="1.1" y="0" fill="#1EB5E5"/>
-                                    <rect width="4" height="0.9" y="1.1" fill="#FAD201"/>
-                                    <rect width="4" height="0.9" y="2" fill="#20603D"/>
-                                    <circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/>
-                                </svg>
-                                <span>+250</span>
-                            </div>
-                            <input type="tel" id="lookupPhoneNumber" name="lookupPhoneNumber" placeholder="788000000" maxlength="9" autocomplete="tel-national">
-                        </div>
-                        <span class="hint" id="lookupPhoneHint">Injiza numero yawe hano</span>
-                    </div>
-                    
-                    <button class="btn-submit" id="submitLookupBtn" style="margin:0;">Shakisha Amanota</button>
-                </div>
+            <div class="guide-body">
+                <div class="guide-steps">
 
-                <!-- VIEW B: Results mapping list container -->
-                <div id="amanotaResultsListView" style="display:none; flex-direction:column; gap:16px;">
-                    <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:8px; display:flex; align-items:center; gap:10px; color:#166534; font-size:0.85rem; font-weight:600;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Ibizamini byabonetse mu byumweru 3 bishize:
+                    <div class="guide-step">
+                        <div class="step-icon" style="background:#0b698b;">1</div>
+                        <div class="step-content">
+                            <span class="step-tag" style="background:#e0f2fe; color:#0369a1;">Intangiriro</span>
+                            <h4>Injiza Amazina n'Inomero ya Telefone</h4>
+                            <p>Kuri paji ya mbere (Ahabanza), uzuza amazina yawe yose hamwe n'inomero ya telefone (urugero: 0788000000). Inomero ni yo izakoreshwa kumenya amanota yawe nyuma.</p>
+                        </div>
                     </div>
-                    
-                    <div style="max-height:240px; overflow-y:auto; border:1px solid var(--border-color); border-radius:8px;" id="resultsListScrollTarget">
-                        <!-- Attempts list records injected via JavaScript row loops -->
+
+                    <div class="guide-step">
+                        <div class="step-icon" style="background:#0369a1;">2</div>
+                        <div class="step-content">
+                            <span class="step-tag" style="background:#e0f2fe; color:#0369a1;">Kwishyura</span>
+                            <h4>Gura Ikizamini (Niba Ari Ugushyura)</h4>
+                            <p>Niba ari ubwa mbere, uzabona ikizamini kimwe cy'ubuntu. Nyuma y'icyo, ujye ku <strong>Ibiciro</strong> ugure inshuro zo gukora ikizamini ukoresheje MTN MoMo cyangwa Airtel Money.</p>
+                        </div>
                     </div>
-                    
-                    <button class="btn-submit" id="backToLookupBtn" style="background:#f1f5f9; color:var(--text-dark); border:1px solid var(--border-color); box-shadow:none; margin:0;">
-                        Subira Inyuma
-                    </button>
+
+                    <div class="guide-step">
+                        <div class="step-icon" style="background:#0891b2;">3</div>
+                        <div class="step-content">
+                            <span class="step-tag" style="background:#cffafe; color:#0e7490;">Ikizamini</span>
+                            <h4>Kora Ikizamini cy'Amategeko</h4>
+                            <p>Uzabona ibibazo 20 by'amategeko y'umuhanda. Subiza buri kibazo uhitemo igisubizo cyiza. Ufite iminota igena kugeza urangiza.</p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="step-icon" style="background:#0e7490;">4</div>
+                        <div class="step-content">
+                            <span class="step-tag" style="background:#cffafe; color:#0e7490;">Ibisubizo</span>
+                            <h4>Reba Amanota Wahawe Ako Kanya</h4>
+                            <p>Nyuma yo gusoza ikizamini, amanota yawe azagaragara ako kanya — ubone umubare w'ibibazo wasubije neza, ibyo wabeshye, n'ibyo wasimbutse.</p>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="step-icon" style="background:#10b981;">5</div>
+                        <div class="step-content" style="padding-bottom:0;">
+                            <span class="step-tag" style="background:#d1fae5; color:#065f46;">Amanota</span>
+                            <h4>Reba Amanota Yawe Yose — Ukoresheje Inomero</h4>
+                            <p>Jya ku <strong>Amanota</strong> mu menu, injiza inomero ya telefone yawe, ubone amanota y'ibizamini byose wakoze. Ushobora no gufungura buri kizamini urebe ibibazo n'ibisubizo byacyo.</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
-        <!-- ===== FLOAT WHATSAPP LAYERS ===== -->
-         <div class="wa-popup" id="waPopup">
+
+    <!-- ===== FLOAT WHATSAPP LAYERS ===== -->
+    <div class="wa-popup" id="waPopup">
         <div class="wa-popup-header">
             <div class="wa-avatar">
                 <!-- 🎯 PRECISION EXTRACTED GREEN VECTOR LOGO MATCHING YOUR IMAGE -->
@@ -819,10 +923,11 @@
             </a>
         </div>
 </div>
-    </div>
-    
+
 <div id="waFloat" class="wa-float" onclick="window.open('https://wa.me/250786663377','_blank')" title="WhatsApp">
-<svg viewBox="0 0 448 512"><path fill="#fff" d="M380.9 97.1C339 55.1 283.2 32 223.9 32 101.5 32 1.9 131.6 1.9 254c0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-23.1-115.1-67-156z"/></svg>
+    <svg viewBox="0 0 24 24" width="30" height="30" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
 </div>
 
 <!-- ===== FOOTER ===== -->
@@ -857,20 +962,14 @@
                 document.addEventListener('click', () => { waPopup.style.display = 'none'; });
             }
 
-            // 🎯 FIXED: SMART INPUT FILTER (Strips letters AND drops accidental leading zeros instantly)
-            const inputElementsToFilter = [phoneField, document.getElementById('lookupPhoneNumber')];
-            inputElementsToFilter.forEach(input => {
-                if (input) {
-                    input.addEventListener('input', function () { 
-                        let cleanValue = this.value.replace(/\D/g, ''); 
-                        if (cleanValue.startsWith('0')) {
-                            cleanValue = cleanValue.substring(1); // Drops leading zero
-                        }
-                        this.value = cleanValue;
-                    });
-                }
-            });
-
+            // 🎯 SMART INPUT FILTER: strips non-digits only (keeps leading zero for main phone)
+            if (phoneField) {
+                phoneField.addEventListener('input', function () {
+                    let v = this.value.replace(/\D/g, '');
+                    if (v.length > 0 && v.charAt(0) !== '0') v = '0' + v.replace(/^0*/, '');
+                    this.value = v.substring(0, 10);
+                });
+            }
             // 🎯 DISMISS LAUNCHER SPLASH SCREEN SCRIPT
             window.addEventListener('load', () => {
                 const splashCurtain = document.getElementById('fullScreenAppLauncherSplashCurtain');
@@ -883,24 +982,27 @@
                 }
             });
 
-            // Live Phone validation checking
+            // Live Phone validation checking (10 digits starting with 0)
             if (phoneField) {
                 phoneField.addEventListener('input', function () {
                     const v = this.value;
-                    if (v.length > 0 && !v.startsWith('7')) {
-                        phoneHint.textContent = "IKOSA: Numero ya telefone igomba gutangirana n'umubare 7 gusa!";
+                    if (v.length > 0 && v.charAt(0) !== '0') {
+                        phoneHint.textContent = "IKOSA: Numero igomba gutangirana na 0 (urugero: 0788000000)!";
                         phoneHint.className = "hint error";
-                    } else if (v.length >= 2 && !['8','9','3'].includes(v.charAt(1))) {
-                        phoneHint.textContent = "IKOSA: Umubare wa kabiri ugomba kuba 8, 9, cyangwa 3 (MTN / Airtel)!";
+                    } else if (v.length >= 2 && v.charAt(1) !== '7') {
+                        phoneHint.textContent = "IKOSA: Umubare wa kabiri ugomba kuba 7 (07...)!";
                         phoneHint.className = "hint error";
-                    } else if (v.length > 0 && v.length < 9) {
-                        phoneHint.textContent = `Haracyabura imibare (${v.length} / 9)`;
+                    } else if (v.length >= 3 && !['8','9','3'].includes(v.charAt(2))) {
+                        phoneHint.textContent = "IKOSA: Umubare wa gatatu ugomba kuba 8, 9, cyangwa 3 (078/079/073)!";
                         phoneHint.className = "hint error";
-                    } else if (v.length === 9) {
+                    } else if (v.length > 0 && v.length < 10) {
+                        phoneHint.textContent = `Haracyabura imibare (${v.length} / 10)`;
+                        phoneHint.className = "hint error";
+                    } else if (v.length === 10) {
                         phoneHint.textContent = "✓ Numero yuzuye neza kandi iremewe mu Rwanda!";
                         phoneHint.className = "hint ok";
                     } else {
-                        phoneHint.textContent = "Igomba gutangizwa na 7 (Inimero 9 gusa)";
+                        phoneHint.textContent = "Tangira na 0 (Inimero 10 gusa, urugero: 0788000000)";
                         phoneHint.className = "hint";
                     }
                 });
@@ -935,9 +1037,10 @@
                         valid = false;
                     }
 
-                    const okSecond = phone.length >= 2 && ['8','9','3'].includes(phone.charAt(1));
-                    if (phone.length !== 9 || !phone.startsWith('7') || !okSecond) {
-                        phoneHint.textContent = "IKOSA: Numero ntabwo yuzuye cyangwa ntabwo ihuye n'imirongo ya Rwanda (78, 79, 73)!";
+                    // Validate: must be 10 digits, start with 07, third digit 8/9/3
+                    const okFormat = phone.length === 10 && phone.startsWith('07') && ['8','9','3'].includes(phone.charAt(2));
+                    if (!okFormat) {
+                        phoneHint.textContent = "IKOSA: Numero ntabwo yuzuye cyangwa ntabwo ihuye n'imirongo ya Rwanda (078, 079, 073)!";
                         phoneHint.className = "hint error";
                         if (valid) phoneField.focus();
                         valid = false;
@@ -945,175 +1048,70 @@
 
                     if (!valid) return;
 
-                    const fullFormattedPhone = '+250' + phone;
+                    // phone is like 0788000000, strip leading 0 for +250 format
+                    const fullFormattedPhone = '+250' + phone.substring(1);
 
-                    sessionStorage.setItem('studentName', name);
-                    sessionStorage.setItem('phoneNumber', fullFormattedPhone);
-                    sessionStorage.setItem('isExamAlreadyStarted', 'false');
-
-                    // Disable button during network state to prevent double clicks
                     const submitBtn = registrationForm.querySelector('button[type="submit"]');
-                    if (submitBtn) {
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = "Tegereza vuba...";
-                    }
+                    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Tegereza vuba..."; }
 
-                    fetch('/api/register', {
+                    // Step 1: Check phone status before registering
+                    fetch('/api/check-phone', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ studentName: name, phoneNumber: fullFormattedPhone })
+                        body: JSON.stringify({ phoneNumber: fullFormattedPhone })
                     })
-                    .then(res => {
-                        // Fallback gateway safe router redirection
-                        window.location.href = '/exam';
-                    })
-                    .catch(err => {
-                        console.warn("[Network Redirect Fallback]", err);
-                        window.location.href = '/exam';
-                    }); 
-                });
-            }
-
-            // Amanota lookup UI configurations
-            const amanotaModal = document.getElementById('amanotaModal');
-            const lookupFormView = document.getElementById('amanotaLookupFormView');
-            const resultsListView = document.getElementById('amanotaResultsListView');
-            const resultsScrollTarget = document.getElementById('resultsListScrollTarget');
-            const lookupPhoneInp = document.getElementById('lookupPhoneNumber');
-            const lookupPhoneHint = document.getElementById('lookupPhoneHint');
-            const navAmanotaLink = document.getElementById('navAmanotaLink');
-
-            function openAmanotaModal() {
-                if (!amanotaModal) return;
-                lookupPhoneInp.value = '';
-                lookupPhoneHint.textContent = 'Injiza numero yawe hano';
-                lookupPhoneHint.className = 'hint';
-                lookupFormView.style.display = 'block';
-                resultsListView.style.display = 'none';
-                amanotaModal.style.display = 'flex';
-            }
-
-            function closeAmanotaModal() {
-                if (!amanotaModal) return;
-                amanotaModal.style.display = 'none';
-            }
-
-            if (navAmanotaLink) {
-                navAmanotaLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    openAmanotaModal();
-                });
-            }
-
-            const closeBtn = document.getElementById('closeAmanotaModalBtn');
-            if (closeBtn) { closeBtn.addEventListener('click', closeAmanotaModal); }
-
-            if (amanotaModal) {
-                amanotaModal.addEventListener('click', (e) => {
-                    if (e.target === amanotaModal) { closeAmanotaModal(); }
-                });
-            }
-
-            const backBtn = document.getElementById('backToLookupBtn');
-            if (backBtn) {
-                backBtn.addEventListener('click', () => {
-                    lookupFormView.style.display = 'block';
-                    resultsListView.style.display = 'none';
-                });
-            }
-
-            // 🎯 AMANOTA SEARCH ACTIONS LOGIC 
-            const submitLookupBtn = document.getElementById('submitLookupBtn');
-            if (submitLookupBtn) {
-                submitLookupBtn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    const phoneVal = lookupPhoneInp.value.trim();
-
-                    if (phoneVal.length !== 9 || !phoneVal.startsWith('7')) {
-                        lookupPhoneHint.textContent = "IKOSA: Injiza numero y'inyuguti 9 itangizwa na 7!";
-                        lookupPhoneHint.className = "hint error";
-                        return;
-                                            }
-
-                    lookupPhoneHint.className = "hint";
-                    lookupPhoneHint.textContent = "Iri gushakisha amanota yawe...";
-                    submitLookupBtn.disabled = true;
-                    submitLookupBtn.textContent = "Birimo gushakisha...";
-
-                    try {
-                        const response = await fetch(`/api/amanota/lookup/${phoneVal}`);
-                        if (!response.ok) { throw new Error('Server Error'); }
-
-                        const attempts = await response.json();
-                        if (!attempts || attempts.length === 0) {
-                            lookupPhoneHint.textContent = "Nta kizamini na kimwe cyabonetse kuri iyi numero!";
-                            lookupPhoneHint.className = "hint error";
-                            return;
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.status === 'first_time') {
+                            // New user — go straight to register then exam
+                            return doRegister(name, fullFormattedPhone, submitBtn);
+                        } else if (data.status === 'has_unfinished') {
+                            // Has a bought exam not yet finished — resume
+                            phoneHint.textContent = `Ufite ${data.remaining || 0} bizamini bisigaye. Ukomereze aho.`;
+                            phoneHint.className = "hint success";
+                            return doRegister(name, fullFormattedPhone, submitBtn);
+                        } else if (data.status === 'all_finished') {
+                            // All exams used up — redirect to buy page
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
+                            phoneHint.textContent = "Nta bizamini bisigaye kuri iyi nomero. Gura ibindi ku gice cy'Ibiciro.";
+                            phoneHint.className = "hint error";
+                            setTimeout(() => { window.location.href = '/ibiciro'; }, 2500);
+                        } else {
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
+                            phoneHint.textContent = data.error || "Habaye ikosa. Gerageza nanone.";
+                            phoneHint.className = "hint error";
                         }
+                    })
+                    .catch(() => {
+                        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
+                        phoneHint.textContent = "Ikosa rya network. Gerageza nanone.";
+                        phoneHint.className = "hint error";
+                    });
 
-                        resultsScrollTarget.innerHTML = attempts.map((att, i) => {
-                            const dateFormatted = new Date(att.created_at).toLocaleDateString('rw-RW', {
-                                month: 'short', day: 'numeric', year: 'numeric'
-                            });
-                            const isPassed = Number(att.score) >= 12;
-
-                            return `
-                            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #e2e8f0; background:${i % 2 === 0 ? '#ffffff' : '#f8fafc'}; gap:10px;">
-                                <div style="display:flex; flex-direction:column; gap:3px; min-width:0;">
-                                    <span style="font-size:0.84rem; font-weight:700; color:var(--text-dark);">${att.student_name}</span>
-                                    <span style="font-size:0.72rem; color:var(--text-muted);">${dateFormatted}</span>
-                                </div>
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <span style="font-size:0.95rem; font-weight:800; color:${isPassed ? '#166534' : '#991b1b'}; background:${isPassed ? '#dcfce7' : '#fee2e2'}; padding:3px 9px; border-radius:5px;">
-                                        ${att.score}/${att.total_questions}
-                                    </span>
-                                    <button onclick="triggerHistoricalReviewSession(${att.id})" style="border:none; background:#0b698b; color:#fff; padding:6px 10px; font-size:0.75rem; font-weight:700; border-radius:5px; cursor:pointer;">Fungura</button>
-                                </div>
-                            </div>
-                            `;
-                        }).join('');
-
-                        lookupFormView.style.display = 'none';
-                        resultsListView.style.display = 'flex';
-
-                    } catch (err) {
-                        console.error(err);
-                        lookupPhoneHint.textContent = "Gushaka byanze, reba internet cyangwa server.";
-                        lookupPhoneHint.className = "hint error";
-                    } finally {
-                        submitLookupBtn.disabled = false;
-                        submitLookupBtn.textContent = "Shakisha Amanota";
+                    function doRegister(studentName, phoneNumber, btn) {
+                        sessionStorage.setItem('studentName', studentName);
+                        sessionStorage.setItem('phoneNumber', phoneNumber);
+                        sessionStorage.setItem('isExamAlreadyStarted', 'false');
+                        fetch('/api/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ studentName, phoneNumber })
+                        })
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.ok) { window.location.href = '/exam'; }
+                            else {
+                                if (btn) { btn.disabled = false; btn.textContent = "Tangira Ikizamini"; }
+                                phoneHint.textContent = d.error || "Nta madorandore. Gura ibizamini ku gice cy'Ibiciro!";
+                                phoneHint.className = "hint error";
+                                setTimeout(() => { window.location.href = '/ibiciro'; }, 2500);
+                            }
+                        })
+                        .catch(() => { window.location.href = '/exam'; });
                     }
                 });
             }
 
-            // Cross-page anchor router checks
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('tab') === 'amanota' || urlParams.get('open') === 'amanota') {
-                setTimeout(() => { openAmanotaModal(); }, 300);
-            }
-
-            // Historical review function handler binding
-            window.triggerHistoricalReviewSession = async function(attemptId) {
-                try {
-                    const response = await fetch(`/api/amanota/review/${attemptId}`);
-                    if (!response.ok) { throw new Error('Failed'); }
-
-                    const res = await response.json();
-
-                    sessionStorage.setItem('latestScore', res.score);
-                    sessionStorage.setItem('latestTotal', res.total);
-                    sessionStorage.setItem('studentAnswerMapping', JSON.stringify(res.answers));
-                    sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(res.questions));
-                    sessionStorage.setItem('studentName', res.studentName);
-                    sessionStorage.setItem('phoneNumber', res.phoneNumber);
-
-                    window.location.href = 'exam-result';
-                } catch (err) {
-                    console.error(err);
-                    alert('Gufungura ibyavuye mu kizamini byanze.');
-                }
-            };
         });
     </script>
 </body>

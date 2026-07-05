@@ -3,328 +3,567 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <!-- 🎯 BRANDING HEADER: LINKS DIRECTLY TO YOUR LOGO IN THE UPLOADS FOLDER -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>IKIZAME</title>
-    <!-- Premium Google Fonts Hierarchy Inter -->
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <title>Ibyavuye mu kizamini — IKIZAME</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* 🪐 PREMIUM FLUID SYSTEM ARCHITECTURE */
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --accent-blue: #0b698b;
-            --border-color: #cbd5e1;
-            
-            --success-bg: #dcfce7;
-            --success-text: #15803d;
-            --error-bg: #fee2e2;
-            --error-text: #b91c1c;
-            
-            font-size: clamp(12px, 1.2vw, 16px);
+            --brand: #0b698b;
+            --brand-dark: #084f6a;
+            --pass: #10b981;
+            --fail: #ef4444;
+            --warn: #f59e0b;
+            --bg: #f4f7fa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding-bottom: 60px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-primary); color: var(--text-dark); padding: 25px 15px; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-
-        .result-layout-wrapper { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; width: 100%; }
-
-        /* 🏆 PREMIUM METRIC SCOREBOARD SUMMARY CARD */
-        .summary-banner-card {
-            background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px;
-            padding: 35px 30px; text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02);
-            display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative;
+        /* ── TOP BANNER ── */
+        .top-banner {
+            width: 100%;
+            background: linear-gradient(135deg, #0b698b 0%, #084f6a 60%, #052d40 100%);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            border-bottom: 3px solid rgba(255,255,255,0.13);
         }
-        .summary-banner-card h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; color: #0046b8; margin-bottom: 5px; }
-        
-        /* Profile Metadata Grid */
-        .student-meta-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 550px;
-            margin: 5px 0; padding: 14px 18px; background-color: #f1f5f9; border-radius: 10px; text-align: left;
+        .banner-logo {
+            display: flex; align-items: center; gap: 10px; text-decoration: none;
         }
-        .meta-item { display: flex; flex-direction: column; gap: 2px; }
-        .meta-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .meta-value { font-size: 1rem; font-weight: 700; color: var(--text-dark); }
-
-        /* 🎯 SCORE CIRCLE BADGE: Uruziga runini kandi rugaragara neza n'amabara ahinduka ku buryo bwikora */
-        .score-circle-badge {
-            width: 140px; height: 140px; border-radius: 50%; background-color: #ffffff;
-            border: 4px solid var(--border-color); display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; box-shadow: 0 6px 15px rgba(0,0,0,0.03); 
-            margin: 10px 0; flex-shrink: 0; transition: border-color 0.2s ease;
+        .banner-logo img {
+            width: 38px; height: 38px; border-radius: 9px; object-fit: contain;
+            background: rgba(255,255,255,0.12);
         }
-        
-        /* Ubunini bw'Amanota (Score size alignment) */
-        .score-num-display {
-            display: flex; align-items: center; justify-content: center; gap: 4px; line-height: 1;
+        .banner-logo-text {
+            font-size: 1.1rem; font-weight: 900; color: #fff; letter-spacing: -0.5px;
         }
-        .score-num { font-size: 2.2rem; font-weight: 900; transition: color 0.2s ease; }
-        .score-divider { font-size: 1.8rem; font-weight: 500; color: var(--text-muted); }
-        
-        /* 🚨 SPECIFICATION FIX: Umubare 20 ungana n'amanota kandi uguma ari umutuku buri gihe */
-        .score-total-txt { font-size: 2.2rem; font-weight: 900; color: #000000 !important; }
-
-        .status-ribbon { padding: 10px 28px; font-size: 0.9rem; font-weight: 800; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .status-ribbon.pass { background-color: var(--success-bg); color: var(--success-text); border: 1px solid #bbf7d0; }
-        .status-ribbon.fail { background-color: var(--error-bg); color: var(--error-text); border: 1px solid #fecaca; }
-
-        .btn-restart-exam {
-            display: inline-flex; align-items: center; gap: 8px; background-color: var(--accent-blue);
-            color: #ffffff; text-decoration: none; padding: 12px 28px; font-size: 0.95rem; font-weight: 700;
-            border-radius: 8px; transition: all 0.15s ease; margin-top: 5px; box-shadow: 0 4px 10px rgba(11, 105, 139, 0.2);
+        .banner-logo-sub {
+            font-size: 0.58rem; font-weight: 600; color: rgba(255,255,255,0.55);
+            text-transform: uppercase; letter-spacing: 0.8px;
         }
-        .btn-restart-exam:hover { background-color: #08536e; transform: translateY(-1px); }
-
-        /* 📝 CORRECTIONS MASTER FEED LIST */
-        .section-title { font-size: 1.1rem; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 15px; display: flex; align-items: center; gap: 8px; }
-        .corrections-master-feed { display: flex; flex-direction: column; gap: 16px; margin-top: 5px; }
-
-        .correction-item-row {
-            background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px;
-            padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+        .banner-title {
+            font-size: 1rem; font-weight: 800; color: #fff;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            position: absolute; left: 50%; transform: translateX(-50%);
+            white-space: nowrap;
         }
-        
-        /* 🚨 SKIPPED QUESTION ALERTER */
-        .correction-item-row.question-skipped-row {
-            border: 2px solid #ef4444 !important;
-            background: #fff5f5;
-        }
-        
-        .row-header-meta { display: flex; justify-content: space-between; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
-        .question-number-index { font-size: 0.8rem; font-weight: 800; color: var(--accent-blue); background-color: #e0f2fe; padding: 4px 10px; border-radius: 4px; }
-        
-        .verdict-badge { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; }
-        .verdict-badge.correct { background-color: var(--success-bg); color: var(--success-text); }
-        .verdict-badge.wrong { background-color: var(--error-bg); color: var(--error-text); }
-        .verdict-badge.skipped { background-color: #ffedd5; color: #c2410c; }
+        .banner-spacer { width: 160px; }
 
-        .question-wording-txt { font-size: 1.05rem; font-weight: 700; color: #1e293b; line-height: 1.45; }
-
-        .question-media-wrapper { display: flex; flex-direction: column; gap: 12px; }
-        .question-sign-preview-box { width: 130px; height: 130px; border: 1px solid var(--border-color); border-radius: 8px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px; }
-        .question-sign-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-        /* 🎛️ OPTIONS PRESENTATION SHIFTER GRID */
-        .choices-review-block { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-        .choices-review-block.image-options-grid-mode {
-            display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important;
+        /* ── MAIN WRAPPER ── */
+        .page-wrap {
+            max-width: 100%;
+            margin: 0;
+            padding: 0 24px;
         }
 
-        .choice-strip-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 2px solid #e2e8f0;
-            border-radius: 8px; font-size: 0.95rem; font-weight: 600; color: #334155; background-color: #ffffff; width: 100%; box-sizing: border-box;
+        /* ── INFO CARD ── */
+        .info-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+            margin-top: 20px;
+            overflow: hidden;
+            width: 100%;
         }
-        .choice-strip-item.student-selected { border-color: #fca5a5; background-color: #fef2f2; color: #991b1b; }
-        .choice-strip-item.system-correct { border-color: #86efac; background-color: #f0fdf4; color: #166534; font-weight: 700; }
-        .choice-strip-item.both-matched { border-color: #22c55e; background-color: #f0fdf4; color: #166534; font-weight: 700; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1); }
 
-        .letter-marker { font-weight: 800; text-transform: uppercase; margin-right: 2px; }
-
-        .choice-embedded-thumb-box {
-            height: 70px; width: 100%; max-width: 120px; border: 1px solid var(--border-color);
-            border-radius: 6px; padding: 4px; background-color: #ffffff; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
+        /* Score hero — full-width one-line bar */
+        .score-hero {
+            display: flex;
+            align-items: stretch;
+            border-bottom: 1px solid #f1f5f9;
         }
-        .choice-embedded-thumb-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        .brand-attribution-footer { text-align: center; color: #94a3b8; font-size: 0.8rem; margin-top: auto; padding-top: 25px; }
-        .brand-attribution-footer strong { color: #38bdf8; }
+        /* Highlighted score block */
+        .score-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 28px;
+            border-right: 1px solid #f1f5f9;
+            min-width: 130px;
+            flex-shrink: 0;
+        }
+        .score-block.pass-bg { background: #f0fdf4; }
+        .score-block.fail-bg { background: #fff5f5; }
 
-        @media screen and (max-width: 768px) {
-            .choices-review-block.image-options-grid-mode { grid-template-columns: 1fr !important; gap: 8px !important; }
-            .student-meta-grid { grid-template-columns: 1fr; gap: 10px; }
-            .summary-banner-card { padding: 25px 15px; }
-            .correction-item-row { padding: 15px; }
+        .score-fraction { display: flex; align-items: baseline; gap: 3px; }
+        .score-value { font-size: 3rem; font-weight: 900; letter-spacing: -3px; line-height: 1; }
+        .score-value.pass { color: var(--pass); }
+        .score-value.fail { color: var(--fail); }
+        .score-denom { font-size: 1.6rem; font-weight: 700; color: #94a3b8; }
+        .score-label { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; color: #94a3b8; }
+
+        /* Status + progress */
+        .score-meta {
+            flex: 1;
+            padding: 8px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            justify-content: center;
+        }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.8rem; font-weight: 800; padding: 5px 15px;
+            border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px;
+            align-self: flex-start;
+        }
+        .status-pill.pass { background: #dcfce7; color: #166534; }
+        .status-pill.fail { background: #fee2e2; color: #991b1b; }
+
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.67rem; font-weight: 700; color: #94a3b8; margin-bottom: 5px; }
+        .progress-bar { height: 8px; background: #f1f5f9; border-radius: 99px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 99px; transition: width 1.3s cubic-bezier(.4,0,.2,1); }
+        .progress-fill.pass { background: linear-gradient(90deg, #34d399, #10b981); }
+        .progress-fill.fail { background: linear-gradient(90deg, #f87171, #ef4444); }
+
+        /* Student info grid — single row on desktop */
+        .student-info {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 0;
+            border-bottom: 1px solid #f1f5f9;
+            overflow-x: auto;
+        }
+        .info-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 18px;
+            border-right: 1px solid #f1f5f9;
+            flex: 1;
+            min-width: 0;
+        }
+        .info-row:last-child { border-right: none; }
+        .info-icon {
+            width: 34px; height: 34px; border-radius: 9px;
+            background: #e0f2fe; color: var(--brand);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; flex-shrink: 0;
+        }
+        .info-icon.score-icon  { background: #fef9c3; color: #b45309; }
+        .info-icon.phone-icon  { background: #dcfce7; color: #166534; }
+        .info-icon.time-icon   { background: #ede9fe; color: #6d28d9; }
+        .info-label { font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.4px; }
+        .info-value { font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Stats row */
+        .stats-row {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .stat-cell {
+            text-align: center; padding: 8px 8px;
+            border-right: 1px solid #f1f5f9;
+        }
+        .stat-cell:last-child { border-right: none; }
+        .stat-num { font-size: 1.7rem; font-weight: 900; line-height: 1; }
+        .stat-lbl { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; margin-top: 3px; letter-spacing: 0.3px; }
+        .stat-cell.s-correct .stat-num { color: var(--pass); }
+        .stat-cell.s-correct .stat-lbl { color: #166534; }
+        .stat-cell.s-wrong   .stat-num { color: var(--fail); }
+        .stat-cell.s-wrong   .stat-lbl { color: #991b1b; }
+        .stat-cell.s-skip    .stat-num { color: var(--warn); }
+        .stat-cell.s-skip    .stat-lbl { color: #92400e; }
+
+        /* Card footer */
+        .card-footer {
+            padding: 10px 20px;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            flex-wrap: wrap;
+        }
+        .logo-wrap {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .logo-wrap img {
+            width: 36px; height: 36px; border-radius: 8px; object-fit: contain;
+        }
+        .logo-wrap .logo-text {
+            font-size: 1rem; font-weight: 900; color: var(--brand); letter-spacing: -0.5px;
+        }
+        .logo-wrap .logo-sub {
+            font-size: 0.6rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .btn-home {
+            background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+            color: #fff; border: none; padding: 10px 22px;
+            font-size: 0.84rem; font-weight: 700; border-radius: 10px;
+            cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 7px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 14px rgba(11,105,139,0.3);
+        }
+        .btn-home:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(11,105,139,0.4); }
+
+        /* ── QUESTIONS WRAP ── */
+        .questions-wrap {
+            max-width: 75%;
+            margin: 0 auto;
+        }
+
+        /* ── SECTION DIVIDER ── */
+        .section-divider {
+            display: flex; align-items: center; gap: 12px;
+            padding: 28px 0 14px;
+        }
+        .section-divider .line { flex: 1; height: 1.5px; background: #e2e8f0; }
+        .section-divider span {
+            font-size: 0.72rem; font-weight: 800; color: #64748b;
+            text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;
+        }
+
+        /* ── QUESTION CARDS ── */
+        .question-card {
+            background: #fff;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            border: 1.5px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            animation: fadeUp 0.3s ease both;
+        }
+        .question-card.correct-card { border-color: #a7f3d0; }
+        .question-card.wrong-card   { border-color: #fecaca; }
+        .question-card.skipped-card { border-color: #fde68a; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Question header bar */
+        .q-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .correct-card .q-bar { background: #f0fdf4; border-bottom-color: #d1fae5; }
+        .wrong-card   .q-bar { background: #fff5f5; border-bottom-color: #fee2e2; }
+        .skipped-card .q-bar { background: #fffbeb; border-bottom-color: #fef3c7; }
+
+        .q-num {
+            font-size: 0.82rem; font-weight: 800; color: var(--brand);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .q-num .num-circle {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--brand); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.72rem; font-weight: 900;
+        }
+        .correct-card .q-num .num-circle { background: var(--pass); }
+        .wrong-card   .q-num .num-circle { background: var(--fail); }
+        .skipped-card .q-num .num-circle { background: var(--warn); }
+
+        .q-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.68rem; font-weight: 800; padding: 3px 10px;
+            border-radius: 50px; text-transform: uppercase;
+        }
+        .q-badge.correct { background: #dcfce7; color: #166534; }
+        .q-badge.wrong   { background: #fee2e2; color: #991b1b; }
+        .q-badge.skipped { background: #fef3c7; color: #92400e; }
+
+        /* Question body */
+        .q-body { padding: 14px 16px 6px; }
+
+        .q-text {
+            font-size: 1.08rem;
+            font-weight: 700;
+            line-height: 1.55;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .q-image {
+            display: block;
+            max-width: 100%; max-height: 200px;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 12px;
+            background: #f8fafc;
+        }
+
+        /* Options list */
+        .options-list { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 7px; }
+
+        .option-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 13px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.92rem; font-weight: 600;
+            color: #334155; background: #f8fafc;
+            transition: background 0.12s;
+        }
+        .option-row.user-wrong    { border-color: #fca5a5; background: #fff5f5; color: #991b1b; }
+        .option-row.correct-target{ border-color: #6ee7b7 !important; background: #f0fdf4 !important; color: #166534 !important; font-weight: 700; }
+        .option-row.user-correct  { border-color: #6ee7b7; background: #f0fdf4; color: #166534; font-weight: 700; }
+
+        .opt-letter {
+            width: 28px; height: 28px; border-radius: 8px;
+            background: #e2e8f0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.72rem; font-weight: 900; color: #475569; flex-shrink: 0;
+        }
+        .option-row.user-wrong .opt-letter    { background: #fee2e2; color: #991b1b; }
+        .option-row.correct-target .opt-letter,
+        .option-row.user-correct .opt-letter  { background: #dcfce7; color: #166534; }
+
+        .opt-icon { margin-left: auto; font-size: 0.8rem; flex-shrink: 0; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 640px) {
+            .page-wrap { padding: 0 12px; }
+            .questions-wrap { max-width: 100%; }
+            .banner-title { position: static; transform: none; font-size: 0.78rem; }
+            .banner-spacer { display: none; }
+            .score-block { padding: 14px 18px; min-width: 90px; }
+            .score-value { font-size: 2.2rem; }
+            .student-info { flex-wrap: wrap; }
+            .info-row { flex: 0 0 50%; border-right: none; border-bottom: 1px solid #f1f5f9; }
+            .info-row:nth-child(odd) { border-right: 1px solid #f1f5f9; }
+            .info-row:last-child { border-bottom: none; }
+            .info-value { font-size: 0.78rem; white-space: normal; word-break: break-word; }
+            .info-label { font-size: 0.58rem; }
+            .info-icon { width: 28px; height: 28px; font-size: 0.75rem; }
+            .card-footer { justify-content: center; }
+            .q-text { font-size: 0.97rem; }
+            .option-row { font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
 
-    <main class="result-layout-wrapper">
-        <!-- Summary Scorecard Overview Panel -->
-        <section class="summary-banner-card">
-            <h1>IBYO MWAKOZE MUKIZAMI MWAKOZE</h1>
-            
-            <!-- Student Profile Metadata Row -->
-            <div class="student-meta-grid">
-                <div class="meta-item">
-                    <span class="meta-label">Amazina yombi</span>
-                    <span class="meta-value" id="lblStudentName">---</span>
+    <!-- TOP BANNER -->
+    <div class="top-banner">
+        <a href="/" class="banner-logo">
+            <img src="assets/uploads/logo.png" alt="IKIZAME Logo" onerror="this.style.display='none'">
+            <div>
+                <div class="banner-logo-text">IKIZAME</div>
+                <div class="banner-logo-sub">Kizamini cy'Inzira</div>
+            </div>
+        </a>
+        <div class="banner-title">IBYAVUYE MU KIZAMINI CYAWE</div>
+        <div class="banner-spacer"></div>
+    </div>
+
+    <div class="page-wrap">
+
+        <!-- INFO CARD -->
+        <div class="info-card">
+
+            <!-- Score hero: full-width one-line bar -->
+            <div class="score-hero">
+                <div class="score-block" id="scoreBlock">
+                    <div class="score-fraction">
+                        <div class="score-value" id="scoreValue">0</div>
+                        <div class="score-denom">/20</div>
+                    </div>
+                    <div class="score-label">Amanota</div>
                 </div>
-                <div class="meta-item">
-                    <span class="meta-label">Numero ya Telefone</span>
-                    <span class="meta-value" id="lblStudentPhone">---</span>
-                </div>
-            </div> 
-                        <!-- 🎯 INTENDED SCORE CIRCLE BADGE: Uruziga rwagutse neza, umubare 20 urangana neza n'amanota kandi uratukura buri gihe -->
-            <div id="dynamicScoreCircle" class="score-circle-badge">
-                <div class="score-num-display">
-                    <span class="score-num" id="displayScoreNum">0</span>
-                    <span class="score-divider">/</span>
-                    <span class="score-total-txt">20</span>
+                <div class="score-meta">
+                    <div class="status-pill" id="statusPill">---</div>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-label">
+                            <span>Amanota yawe</span>
+                            <span id="progressPct">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="status-ribbon" id="verdictStatusRibbon">---</div>
-            
-            <a href="/" class="btn-restart-exam"><i class="fa-solid fa-rotate-left"></i> Tangira Ikizami Gishya</a>
-        </section>
+            <!-- Student info — one line on desktop, 2-col on mobile -->
+            <div class="student-info">
+                <div class="info-row">
+                    <div class="info-icon"><i class="fa-solid fa-id-card"></i></div>
+                    <div style="min-width:0;">
+                        <div class="info-label">Amazina</div>
+                        <div class="info-value" id="labelStudentName">---</div>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon score-icon"><i class="fa-solid fa-medal"></i></div>
+                    <div style="min-width:0;">
+                        <div class="info-label">Amanota</div>
+                        <div class="info-value" id="labelScore">---</div>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon phone-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                    <div style="min-width:0;">
+                        <div class="info-label">Telefoni</div>
+                        <div class="info-value" id="labelPhoneNumber">---</div>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon time-icon"><i class="fa-regular fa-calendar-check"></i></div>
+                    <div style="min-width:0;">
+                        <div class="info-label">Igihe cyakorewe</div>
+                        <div class="info-value" id="labelTime">---</div>
+                    </div>
+                </div>
+            </div>
 
-        <h2 class="section-title"><i class="fa-solid fa-list-check"></i>IBIBAZO BYOSE WAKOZE N'IBISUBIZO</h2>
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-cell s-correct">
+                    <div class="stat-num" id="statCorrect">0</div>
+                    <div class="stat-lbl"><i class="fa-solid fa-circle-check" style="margin-right:3px;"></i>IBIBAZO WAKOZE</div>
+                </div>
+                <div class="stat-cell s-wrong">
+                    <div class="stat-num" id="statWrong">0</div>
+                    <div class="stat-lbl"><i class="fa-solid fa-circle-xmark" style="margin-right:3px;"></i>IBIBAZO WISHE</div>
+                </div>
+                <div class="stat-cell s-skip">
+                    <div class="stat-num" id="statSkip">0</div>
+                    <div class="stat-lbl"><i class="fa-solid fa-circle-minus" style="margin-right:3px;"></i>IBIBAZO BIDASUBIWE</div>
+                </div>
+            </div>
 
-        <!-- Interactive Sheet feed where row iterations append -->
-        <section class="corrections-master-feed" id="correctionsMasterContainerFeed"></section>
+            <!-- Footer: button only -->
+            <div class="card-footer">
+                <a href="/" class="btn-home">
+                    <i class="fa-solid fa-house"></i> Subira Ahabanza
+                </a>
+            </div>
+        </div>
 
-        <footer class="brand-attribution-footer">
-            <p>&copy; 2026 IKIZAME Web Portal. Developed by <strong> Dotado Stationery Store Ltd</strong></p>
-        </footer>
-    </main>
+        <!-- QUESTIONS SECTION -->
+        <div class="questions-wrap">
+            <div class="section-divider">
+                <div class="line"></div>
+                <span><i class="fa-solid fa-list-check" style="margin-right:5px;color:var(--brand);"></i>Ibibazo Byose n'Ibisubizo Byazo</span>
+                <div class="line"></div>
+            </div>
+            <div id="questionsContainer"></div>
+        </div>
 
-    <!-- Async Controller Data Mapping Logic Core Engine -->
-     <script>
+    </div><!-- /page-wrap -->
+
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const studentName = sessionStorage.getItem('studentName') || "Umunyeshuri";
-            let rawPhone = sessionStorage.getItem('phoneNumber') || "";
-            const score = parseInt(sessionStorage.getItem('latestScore'), 10) || 0;
-            
-            // 🛡️ TELEPHONE PREFIX SECURITY MATRIX: Normalizes numbers to start exactly with +250
-            let formattedPhone = rawPhone.trim().replace(/\s+/g, '');
-            if (formattedPhone && !formattedPhone.startsWith('+')) {
-                if (formattedPhone.startsWith('250')) {
-                    formattedPhone = '+' + formattedPhone;
-                } else if (formattedPhone.startsWith('07')) {
-                    formattedPhone = '+250' + formattedPhone.substring(1);
-                } else if (formattedPhone.startsWith('7')) {
-                    formattedPhone = '+250' + formattedPhone;
-                } else {
-                    formattedPhone = '+250' + formattedPhone;
-                }
-            }
+            const latestScore  = parseInt(sessionStorage.getItem('latestScore'), 10) || 0;
+            const studentName  = sessionStorage.getItem('studentName')  || 'Umunyeshuri';
+            const phoneNumber  = sessionStorage.getItem('phoneNumber')  || '---';
 
-            const rawAnswersMapping = sessionStorage.getItem('studentAnswerMapping');
-            const rawQuestionsReviewPool = sessionStorage.getItem('shuffledQuestionsReview');
+            let studentAnswerMapping = {};
+            let snapshotQuestionsArray = [];
+            try { studentAnswerMapping  = JSON.parse(sessionStorage.getItem('studentAnswerMapping'))   || {}; } catch(e) {}
+            try { snapshotQuestionsArray = JSON.parse(sessionStorage.getItem('shuffledQuestionsReview')) || []; } catch(e) {}
 
-            // Inject candidate data tokens safely
-            document.getElementById('lblStudentName').innerText = studentName;
-            document.getElementById('lblStudentPhone').innerText = formattedPhone || "Nta gihari";
-            document.getElementById('displayScoreNum').innerText = score;
+            // Header info
+            document.getElementById('labelStudentName').textContent = studentName;
+            document.getElementById('labelPhoneNumber').textContent = phoneNumber;
+            document.getElementById('labelScore').textContent       = latestScore + ' / 20';
+            document.getElementById('labelTime').textContent = new Date().toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
-            const ribbon = document.getElementById('verdictStatusRibbon');
-            const scoreCircle = document.getElementById('dynamicScoreCircle');
-            const scoreNumText = document.getElementById('displayScoreNum');
+            const isPassed = latestScore >= 12;
+            const pct      = Math.round((latestScore / 20) * 100);
 
-            // 🎯 PASS MARK THRESHOLD SPECIFIED AT 12 OUT OF FIXED 20 WITH DYNAMIC BORDER COLOR INJECTIONS
-            if (score >= 12) {
-                ribbon.innerText = "MWATSINZE IKIZAMINI 🎉";
-                ribbon.className = "status-ribbon pass";
-                scoreCircle.style.borderColor = "#22c55e"; // Uruziga ruba icyatsi (Green border)
-                scoreNumText.style.color = "#15803d";      // Imibare y'amanota yatsinzwe iba icyatsi
-            } else {
-                ribbon.innerText = "WATSINZWE";
-                ribbon.className = "status-ribbon fail";
-                scoreCircle.style.borderColor = "#ef4444"; // Uruziga ruba umutuku (Red border)
-                scoreNumText.style.color = "#b91c1c";      // Imibare y'amanota yatsinzwe iba umutuku
-            }
+            const scoreVal = document.getElementById('scoreValue');
+            scoreVal.textContent = latestScore;
+            scoreVal.classList.add(isPassed ? 'pass' : 'fail');
+            document.getElementById('scoreBlock').classList.add(isPassed ? 'pass-bg' : 'fail-bg');
 
-            const feedContainer = document.getElementById('correctionsMasterContainerFeed');
+            // Pill
+            const pill = document.getElementById('statusPill');
+            pill.innerHTML = isPassed
+                ? '<i class="fa-solid fa-trophy"></i> YATSINZE'
+                : '<i class="fa-solid fa-rotate-right"></i>WATSINZWE';
+            pill.classList.add(isPassed ? 'pass' : 'fail');
 
-            if (!rawAnswersMapping || !rawQuestionsReviewPool) {
-                feedContainer.innerHTML = `<p style="text-align:center; padding:30px; font-style:italic; color:#64748b;">Nta makuru y'isuzuma agaragara mu bubiko muryo bw'akanya.</p>`;
+            // Progress
+            const pf = document.getElementById('progressFill');
+            pf.classList.add(isPassed ? 'pass' : 'fail');
+            document.getElementById('progressPct').textContent = pct + '%';
+            setTimeout(() => { pf.style.width = pct + '%'; }, 150);
+
+            // Stats
+            let correct = 0, wrong = 0, skip = 0;
+            snapshotQuestionsArray.forEach(q => {
+                const ans = (studentAnswerMapping[`question_${q.id}`] || studentAnswerMapping[String(q.id)] || '').toUpperCase().trim();
+                const cor = (q.correct_option || q.correct_option_letter || 'A').toUpperCase().trim();
+                if (!ans) skip++;
+                else if (ans === cor) correct++;
+                else wrong++;
+            });
+            document.getElementById('statCorrect').textContent = correct;
+            document.getElementById('statWrong').textContent   = wrong;
+            document.getElementById('statSkip').textContent    = skip;
+
+            // Questions
+            const container = document.getElementById('questionsContainer');
+            if (!snapshotQuestionsArray.length) {
+                container.innerHTML = `<div style="text-align:center;padding:40px;color:#94a3b8;font-weight:600;">Nta bibazo byabonetse. Gerageza undi mugera.</div>`;
                 return;
             }
 
-            const studentAnswers = JSON.parse(rawAnswersMapping);
-            const questionsList = JSON.parse(rawQuestionsReviewPool);
+            snapshotQuestionsArray.forEach((q, idx) => {
+                const ans = (studentAnswerMapping[`question_${q.id}`] || studentAnswerMapping[String(q.id)] || '').toUpperCase().trim();
+                const cor = (q.correct_option || q.correct_option_letter || 'A').toUpperCase().trim();
+                const isCorrect = ans && ans === cor;
+                const isSkipped = !ans;
 
-            // ⚡ MAIN RUNTIME FEED REPOSITORY MATRIX GENERATOR LOOP
-            feedContainer.innerHTML = questionsList.map((exam, index) => {
-                const questionNumber = index + 1;
-                
-                // 🎯 RECALIBRATION: Dynamically extracts user choices using both straight numeric ids or mapped question strings to be 100% crash-proof
-                const studentSelectionKey = studentAnswers[exam.id] || studentAnswers[`question_${exam.id}`] || null; 
-                const systemCorrectKey = exam.correct_option;
-                
-                const isQuestionSkipped = !studentSelectionKey; 
-                const isUserCorrect = studentSelectionKey === systemCorrectKey;
+                const cardClass  = isSkipped ? 'skipped-card' : isCorrect ? 'correct-card' : 'wrong-card';
+                const badgeClass = isSkipped ? 'skipped' : isCorrect ? 'correct' : 'wrong';
+                const badgeText  = isSkipped
+                    ? '<i class="fa-solid fa-minus"></i>WAGISIMBUTSE'
+                    : isCorrect
+                        ? '<i class="fa-solid fa-check"></i>WAGIKOZE NEZA'
+                        : '<i class="fa-solid fa-xmark"></i>MWAKISHE';
 
-                function compileOptionCardMarkup(letterKey, textValue) {
-                    if (!textValue) return "";
-                    
-                    let customStyleClass = "choice-strip-item";
-                    if (letterKey === studentSelectionKey) customStyleClass += " student-selected";
-                    if (letterKey === systemCorrectKey) customStyleClass += " system-correct";
-                    if (letterKey === studentSelectionKey && letterKey === systemCorrectKey) customStyleClass = "choice-strip-item both-matched";
+                let imgHtml = '';
+                const rawImg = q.image_path || q.image_url;
+                if (rawImg) {
+                    const src = rawImg.startsWith('assets/') ? rawImg : `assets/uploads/${rawImg}`;
+                    imgHtml = `<img src="${src}" class="q-image" alt="Ifoto y'ikibazo">`;
+                }
 
-                    const isChoiceGraphicImage = /\.(png|jpg|jpeg|gif|webp)$/i.test(textValue) || 
-                                                 textValue.startsWith('optiona_File-') || 
-                                                 textValue.startsWith('optionb_File-') || 
-                                                 textValue.startsWith('optionc_File-') || 
-                                                 textValue.startsWith('optiond_File-') ||
-                                                 textValue.startsWith('optionA_File-') || 
-                                                 textValue.startsWith('optionB_File-') || 
-                                                 textValue.startsWith('optionC_File-') || 
-                                                 textValue.startsWith('optionD_File-');
+                const opts = ['A','B','C','D'];
+                const optHtml = opts.map(l => {
+                    const val = q[`option_${l.toLowerCase()}`] || q[`option_${l}`] || '---';
+                    const isUserPick = ans === l;
+                    const isCor      = cor === l;
+                    let cls = '', icon = '';
+                    if (isCor && isUserPick) { cls = 'user-correct'; icon = `<i class="fa-solid fa-check opt-icon" style="color:#10b981;"></i>`; }
+                    else if (isCor)          { cls = 'correct-target'; icon = `<i class="fa-solid fa-check opt-icon" style="color:#10b981;"></i>`; }
+                    else if (isUserPick)     { cls = 'user-wrong'; icon = `<i class="fa-solid fa-xmark opt-icon" style="color:#ef4444;"></i>`; }
+                    return `<div class="option-row ${cls}"><div class="opt-letter">${l}</div><span>${val}</span>${icon}</div>`;
+                }).join('');
 
-                    if (isChoiceGraphicImage) {
-                        return `
-                            <div class="${customStyleClass}">
-                                <span class="letter-marker">${letterKey.toLowerCase()})</span>
-                                <div class="choice-embedded-thumb-box">
-                                    <img src="assets/uploads/${textValue}" alt="Amahitamo" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerText='${textValue}'">
-                                </div>
+                container.innerHTML += `
+                    <div class="question-card ${cardClass}" style="animation-delay:${idx * 30}ms">
+                        <div class="q-bar">
+                            <div class="q-num">
+                                <div class="num-circle">${idx + 1}</div>
+                                Ikibazo cya ${idx + 1}
                             </div>
-                        `;
-                    }
-
-                    return `
-                        <div class="${customStyleClass}">
-                            <span class="letter-marker">${letterKey.toLowerCase()})</span> <span>${textValue}</span>
+                            <span class="q-badge ${badgeClass}">${badgeText}</span>
                         </div>
-                    `;
-                }
-
-                const isOptionCollectionImageBased = /\.(png|jpg|jpeg|gif|webp)$/i.test(exam.option_a) || (exam.option_a && (exam.option_a.includes('optionA_File-') || exam.option_a.includes('optiona_File-')));
-
-                let verdictBadgeMarkup = "";
-                if (isQuestionSkipped) {
-                    verdictBadgeMarkup = `<span class="verdict-badge skipped"><i class="fa-solid fa-circle-minus"></i>Mwagisimbutse</span>`;
-                } else if (isUserCorrect) {
-                    verdictBadgeMarkup = `<span class="verdict-badge correct"><i class="fa-solid fa-circle-check"></i>Mwagikoze</span>`;
-                } else {
-                    verdictBadgeMarkup = `<span class="verdict-badge wrong"><i class="fa-solid fa-circle-xmark"></i>Ntagomwagikoze</span>`;
-                }
-
-                return `
-                    <div class="correction-item-row ${isQuestionSkipped ? 'question-skipped-row' : ''}">
-                        <div class="row-header-meta">
-                            <span class="question-number-index">Ikibazo cya ${questionNumber}</span>
-                            ${verdictBadgeMarkup}
+                        <div class="q-body">
+                            <div class="q-text">${q.question || q.question_text || 'Nta text ihari'}</div>
+                            ${imgHtml}
                         </div>
-
-                        <div class="question-media-wrapper">
-                            <div class="question-wording-txt">${exam.question}</div>
-                            ${exam.image_path ? `
-                                <div class="question-sign-preview-box">
-                                    <img src="assets/uploads/${exam.image_path}" alt="Sign Symbol" loading="lazy">
-                                </div>
-                            ` : ''}
-                        </div>
-
-                        <div class="choices-review-block ${isOptionCollectionImageBased ? 'image-options-grid-mode' : ''}">
-                            ${compileOptionCardMarkup("A", exam.option_a)}
-                            ${compileOptionCardMarkup("B", exam.option_b)}
-                            ${compileOptionCardMarkup("C", exam.option_c)}
-                            ${compileOptionCardMarkup("D", exam.option_d)}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                        <div class="options-list">${optHtml}</div>
+                    </div>`;
+            });
         });
     </script>
 </body>
 </html>
-
