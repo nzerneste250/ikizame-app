@@ -21,8 +21,11 @@ const dbConfig = isProduction ? {
     database:           process.env.PROD_DB_NAME,
     port:               parseInt(process.env.PROD_DB_PORT || '3306', 10),
     waitForConnections: true,
-    connectionLimit:    10,
-    queueLimit:         0
+    connectionLimit:    5,
+    queueLimit:         0,
+    connectTimeout:     10000,
+    acquireTimeout:     10000,
+    ssl:                { rejectUnauthorized: false }
 } : {
     host:               process.env.LOCAL_DB_HOST     || 'localhost',
     user:               process.env.LOCAL_DB_USER     || 'root',
@@ -82,7 +85,12 @@ db.getConnection((err, conn) => {
 
 // ── SESSION STORE ────────────────────────────────────────────────
 const MySQLStore = require('express-mysql-session')(session);
-const sessionStore = new MySQLStore({}, db.promise());
+const sessionStore = new MySQLStore({
+    expiration:          4 * 60 * 60 * 1000,
+    createDatabaseTable: false,
+    connectionLimit:     2,
+    endConnectionOnClose: true
+}, db.promise());
 
 app.use(session({
     secret:            process.env.SESSION_SECRET || 'fallback_dev_secret_change_me',
@@ -99,11 +107,15 @@ app.use(session({
 
 // ── SMTP EMAIL TRANSPORT ──────────────────────────────────────────────────
 const emailTransport = nodemailer.createTransport({
-    host:   'smtp.gmail.com',
-    port:   587,
-    secure: false,
-    auth:   { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-    tls:    { rejectUnauthorized: false }
+    host:       'smtp.gmail.com',
+    port:       587,
+    secure:     false,
+    requireTLS: true,
+    auth:       { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    tls:        { rejectUnauthorized: false },
+    connectionTimeout: 10000,
+    greetingTimeout:   10000,
+    socketTimeout:     15000
 });
 
 emailTransport.verify((err) => {
