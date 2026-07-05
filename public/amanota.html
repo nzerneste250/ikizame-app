@@ -275,7 +275,7 @@
             <p>Injiza numero ya telefoni yakoreshejwe mu kizamini kugira ngo urebe amateka yawe yose.</p>
             <div class="phone-field-label"><i class="fa-solid fa-sim-card"></i> Numero ya Telefoni</div>
             <div class="phone-input-row">
-                <div class="phone-prefix"><i class="fa-solid fa-phone"></i>&nbsp;+250</div>
+                <div class="phone-prefix"><i class="fa-solid fa-phone"></i>&nbsp;+25</div>
                 <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" maxlength="10">
             </div>
             <div id="lookupPhoneHint" class="hint">Injiza imibare 10 gutangira na 078, 073 cyangwa 079</div>
@@ -463,7 +463,8 @@
                                 const bigNum = document.getElementById('remBigNum');
                                 const remainingBadge = document.getElementById('remainingBadge');
                                 bigNum.textContent = rem;
-                                remainingBadge.style.display = rem > 0 ? 'flex' : 'none';
+                                remainingBadge.style.display = 'block';
+                                document.getElementById('remainingNum').textContent = rem;
                                 if (rem === 0) bigNum.classList.add('zero'); else bigNum.classList.remove('zero');
 
                                 const fill = document.getElementById('remProgressFill');
