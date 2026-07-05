@@ -39,6 +39,9 @@ const dbConfig = isProduction ? {
 
 const app = express();
 
+// ── TRUST PROXY (required on Render) ─────────────────────────────────────
+app.set('trust proxy', 1);
+
 // ── SECURITY & PERFORMANCE ────────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(compression());
@@ -108,11 +111,11 @@ app.use(session({
 // ── SMTP EMAIL TRANSPORT ──────────────────────────────────────────────────
 const emailTransport = nodemailer.createTransport({
     host:       'smtp.gmail.com',
-    port:       587,
-    secure:     false,
-    requireTLS: true,
+    port:       465,
+    secure:     true,
     auth:       { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
     tls:        { rejectUnauthorized: false },
+    family:     4,
     connectionTimeout: 10000,
     greetingTimeout:   10000,
     socketTimeout:     15000
