@@ -324,7 +324,28 @@
 
         .opt-icon { margin-left: auto; font-size: 0.8rem; flex-shrink: 0; }
 
-        /* ── RESPONSIVE ── */
+        /* ── BACK TO TOP BUTTON ── */
+        #backToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 25px;
+            background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+            color: #fff;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 6px 20px rgba(11,105,139,0.4);
+            z-index: 9999;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #backToTopBtn.visible { display: flex; }
+        #backToTopBtn:hover { transform: translateY(-2px); }
         @media (max-width: 640px) {
             .page-wrap { padding: 0 12px; }
             .questions-wrap { max-width: 100%; }
@@ -456,8 +477,19 @@
 
     </div><!-- /page-wrap -->
 
+    <!-- BACK TO TOP BUTTON -->
+    <button id="backToTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <i class="fa-solid fa-arrow-up"></i> Subira Hejuru
+    </button>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Back to top button
+            const backToTopBtn = document.getElementById('backToTopBtn');
+            window.addEventListener('scroll', () => {
+                backToTopBtn.classList.toggle('visible', window.scrollY > 300);
+            });
+
             const latestScore  = parseInt(sessionStorage.getItem('latestScore'), 10) || 0;
             const studentName  = sessionStorage.getItem('studentName')  || 'Umunyeshuri';
             const phoneNumber  = sessionStorage.getItem('phoneNumber')  || '---';
