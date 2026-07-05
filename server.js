@@ -23,9 +23,7 @@ const dbConfig = isProduction ? {
     waitForConnections: true,
     connectionLimit:    5,
     queueLimit:         0,
-    connectTimeout:     10000,
-    acquireTimeout:     10000,
-    ssl:                { rejectUnauthorized: false }
+    connectTimeout:     20000
 } : {
     host:               process.env.LOCAL_DB_HOST     || 'localhost',
     user:               process.env.LOCAL_DB_USER     || 'root',
@@ -81,7 +79,7 @@ console.log(`ℹ️  ${isProduction ? 'Production' : 'Local'} environment — co
 const db = mysql.createPool(dbConfig);
 
 db.getConnection((err, conn) => {
-    if (err) { console.error('❌ Database pool connection failure:', err.message); return; }
+    if (err) { console.error('❌ Database pool connection failure:', err.code, err.message); return; }
     console.log(`✅ Database pool ready on [${dbConfig.host}]`);
     conn.release();
 });
@@ -110,15 +108,14 @@ app.use(session({
 
 // ── SMTP EMAIL TRANSPORT ──────────────────────────────────────────────────
 const emailTransport = nodemailer.createTransport({
-    host:       'smtp.gmail.com',
-    port:       465,
-    secure:     true,
+    host:       'smtp-relay.brevo.com',
+    port:       587,
+    secure:     false,
     auth:       { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
     tls:        { rejectUnauthorized: false },
-    family:     4,
-    connectionTimeout: 10000,
+    connectionTimeout: 15000,
     greetingTimeout:   10000,
-    socketTimeout:     15000
+    socketTimeout:     20000
 });
 
 emailTransport.verify((err) => {
