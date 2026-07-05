@@ -270,12 +270,13 @@
                 </div>
                 <div class="input-form-field">
                     <label>Nomero ya Telephone</label>
-                    <input type="tel" id="regPhoneInput" placeholder="e.g., 0788000000">
+                    <input type="tel" id="regPhoneInput" placeholder="e.g., 0788000000" maxlength="10" oninput="autoFixRegPhone()">
+                    <span id="regPhoneHint" style="font-size:11px;font-weight:600;color:#64748b;">Tangira na 072, 073, 078 cyangwa 079</span>
                 </div>
                 <button class="btn-auth-submit" id="regSubmitBtn" onclick="handleSchoolRegistrationInit()">
                     <span>Bika & Yohereza OTP</span> <i class="fa-solid fa-paper-plane"></i>
                 </button>
-                <div class="switch-mode-anchor">Mufite Konti calculates? <span onclick="switchAuthWizardView('LOGIN')">Kwinjira (Login)</span></div>
+                <div class="switch-mode-anchor">Mufite Konti? <span onclick="switchAuthWizardView('LOGIN')">Kwinjira (Login)</span></div>
             </div>
 
             <!-- ====== ENGINE PANEL C: VERIFY SIMULATED OTP CODE ====== -->
@@ -374,6 +375,26 @@
 
     <!-- ===== CORE WIZARD OPERATIONS CONTROLLER AUTOMATION ===== -->
     <script>
+        function autoFixRegPhone() {
+            const inp = document.getElementById('regPhoneInput');
+            const hint = document.getElementById('regPhoneHint');
+            let v = inp.value.replace(/\D/g, '');
+            if (v.length >= 1 && v[0] !== '0') v = '0' + v.replace(/^0+/, '');
+            if (v.length >= 2 && v[1] !== '7') v = v[0] + '7' + v.slice(2);
+            if (v.length >= 3 && !['8','9','3','2'].includes(v[2])) v = v.slice(0,2) + '8' + v.slice(3);
+            inp.value = v.substring(0, 10);
+            if (v.length === 10) {
+                hint.textContent = '✓ Numero yuzuye neza!';
+                hint.style.color = '#10b981';
+            } else if (v.length > 0) {
+                hint.textContent = `Haracyabura imibare (${v.length}/10)`;
+                hint.style.color = '#f59e0b';
+            } else {
+                hint.textContent = 'Tangira na 072, 073, 078 cyangwa 079';
+                hint.style.color = '#64748b';
+            }
+        }
+
         function togglePw(inputId, btn) {
             const inp = document.getElementById(inputId);
             const icon = btn.querySelector('i');
@@ -406,6 +427,11 @@
             const btn = document.getElementById('regSubmitBtn');
 
             if(!name || !email || !phone) { alert('Uzuza imyanya yose neza.'); return; }
+            if(phone.length !== 10 || !phone.startsWith('07') || !['8','9','3','2'].includes(phone[2])) {
+                alert('Nomero ya telefone ntabwo yuzuye. Injiza nimero nka 0788000000.');
+                document.getElementById('regPhoneInput').focus();
+                return;
+            }
             tracksTargetEmail = email;
 
             btn.disabled = true;
