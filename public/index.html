@@ -964,11 +964,13 @@
                 document.addEventListener('click', () => { waPopup.style.display = 'none'; });
             }
 
-            // 🎯 SMART INPUT FILTER: strips non-digits only (keeps leading zero for main phone)
+            // 🎯 SMART INPUT FILTER: auto-corrects digits 1→0, 2→7, 3→8 if invalid
             if (phoneField) {
                 phoneField.addEventListener('input', function () {
                     let v = this.value.replace(/\D/g, '');
-                    if (v.length > 0 && v.charAt(0) !== '0') v = '0' + v.replace(/^0*/, '');
+                    if (v.length >= 1 && v[0] !== '0') v = '0' + v.replace(/^0+/, '');
+                    if (v.length >= 2 && v[1] !== '7') v = v[0] + '7' + v.slice(2);
+                    if (v.length >= 3 && !['8','9','3'].includes(v[2])) v = v.slice(0,2) + '8' + v.slice(3);
                     this.value = v.substring(0, 10);
                 });
             }

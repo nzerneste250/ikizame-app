@@ -108,7 +108,7 @@ app.use(session({
 
 // ── SMTP EMAIL TRANSPORT ──────────────────────────────────────────────────
 const emailTransport = nodemailer.createTransport({
-    host:       'smtp-relay.brevo.com',
+    host:       'smtp.gmail.com',
     port:       587,
     secure:     false,
     auth:       { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
@@ -192,7 +192,13 @@ app.get('/upload-resource', (req, res) => {
 app.get('*.html', (req, res) => res.status(403).send('Direct file access is not permitted.'));
 
 // Static files
-app.use(express.static(path.join(__dirname, 'public'), { extensions: false, index: false }));
+app.use(express.static(path.join(__dirname, 'public'), {
+    extensions: false,
+    index: false,
+    maxAge: '7d',
+    etag: true,
+    lastModified: true
+}));
 
 // ── STUDENT API ROUTES ────────────────────────────────────────────────────
 function normalizePhone(phoneString) {
