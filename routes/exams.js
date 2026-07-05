@@ -14,12 +14,10 @@ if (!fs.existsSync(uploadDirectoryPath)) {
 const storageEngine = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDirectoryPath),
     filename: (req, file, cb) => {
-        const cleanOriginalName = file.originalname.replace(/\s+/g, '_');
-        const completeTargetFilePath = path.join(uploadDirectoryPath, cleanOriginalName);
-        if (fs.existsSync(completeTargetFilePath)) {
-            console.log(`ℹ️ Asset [${cleanOriginalName}] already present. Skipping copy.`);
-        }
-        cb(null, cleanOriginalName);
+        const ext = path.extname(file.originalname);
+        const base = path.basename(file.originalname, ext).replace(/\s+/g, '_');
+        const uniqueName = `${base}_${Date.now()}${ext}`;
+        cb(null, uniqueName);
     }
 });
 
