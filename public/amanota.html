@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root { 
             --brand: #0b698b; 
@@ -270,7 +270,18 @@
 
         <!-- VIEW 1: SEARCH FORM — standalone narrow card -->
         <div id="amanotaLookupFormView">
-            <div class="lookup-icon-wrap"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+            <div class="lookup-icon-wrap">
+                <svg viewBox="0 0 100 44" width="54" height="24" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="22" width="90" height="18" rx="4" fill="rgba(255,255,255,0.3)"/>
+                    <rect x="18" y="8" width="58" height="18" rx="6" fill="rgba(255,255,255,0.5)"/>
+                    <rect x="21" y="10" width="24" height="13" rx="3" fill="rgba(56,189,248,0.7)"/>
+                    <rect x="49" y="10" width="24" height="13" rx="3" fill="rgba(56,189,248,0.7)"/>
+                    <circle cx="22" cy="40" r="7" fill="#fff"/><circle cx="22" cy="40" r="3" fill="rgba(255,255,255,0.4)"/>
+                    <circle cx="78" cy="40" r="7" fill="#fff"/><circle cx="78" cy="40" r="3" fill="rgba(255,255,255,0.4)"/>
+                    <rect x="5" y="26" width="7" height="5" rx="1" fill="#fbbf24"/>
+                    <rect x="88" y="26" width="7" height="5" rx="1" fill="#fef08a"/>
+                </svg>
+            </div>
             <h2>Reba Amanota Yawe</h2>
             <p>Injiza numero ya telefoni yakoreshejwe mu kizamini kugira ngo urebe amateka yawe yose.</p>
             <div class="phone-field-label"><i class="fa-solid fa-sim-card"></i> Numero ya Telefoni</div>
@@ -278,7 +289,7 @@
                 <div class="phone-prefix"><i class="fa-solid fa-phone"></i>&nbsp;+25</div>
                 <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" maxlength="10">
             </div>
-            <div id="lookupPhoneHint" class="hint">Injiza imibare 10 gutangira na 078, 073 cyangwa 079</div>
+            <div id="lookupPhoneHint" class="hint">Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079</div>
             <button class="btn-submit-lookup" id="submitLookupBtn">
                 <i class="fa-solid fa-magnifying-glass"></i> Shakisha Amanota
             </button>
@@ -399,7 +410,7 @@
                     let v = this.value.replace(/\D/g, '');
                     if (v.length >= 1 && v[0] !== '0') v = '0' + v.replace(/^0+/, '');
                     if (v.length >= 2 && v[1] !== '7') v = v[0] + '7' + v.slice(2);
-                    if (v.length >= 3 && !['8','9','3'].includes(v[2])) v = v.slice(0,2) + '8' + v.slice(3);
+                    if (v.length >= 3 && !['8','9','3','2'].includes(v[2])) v = v.slice(0,2) + '8' + v.slice(3);
                     this.value = v.substring(0, 10);
                 });
             }
