@@ -103,8 +103,19 @@ module.exports = (db) => {
                 const j = Math.floor(Math.random() * (i + 1));
                 [pool[i], pool[j]] = [pool[j], pool[i]];
             }
-            const examSize = Math.min(20, pool.length);
-            const selectedQuestions = pool.slice(0, examSize);
+
+            // Exclude recently seen questions so student never gets same set twice
+            const recentIds = new Set(req.session.recentExamQuestionIds || []);
+            const fresh = pool.filter(q => !recentIds.has(q.id));
+            const source = fresh.length >= 20 ? fresh : pool;
+
+            const examSize = Math.min(20, source.length);
+            const selectedQuestions = source.slice(0, examSize);
+
+            // Keep a rolling history of last 40 seen question IDs
+            const allSeen = [...recentIds, ...selectedQuestions.map(q => q.id)];
+            req.session.recentExamQuestionIds = allSeen.slice(-40);
+
             req.session.lockedExamQuestionIds = selectedQuestions.map(q => q.id);
             res.json(selectedQuestions);
         });
