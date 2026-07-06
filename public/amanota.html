@@ -427,6 +427,13 @@
 
             if (backBtn) {
                 backBtn.addEventListener('click', () => {
+                    // Reset form state fully
+                    lookupPhoneInp.value = '';
+                    lookupPhoneHint.textContent = 'Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079';
+                    lookupPhoneHint.className = 'hint';
+                    submitLookupBtn.disabled = false;
+                    submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Shakisha Amanota`;
+
                     lookupFormView.style.display = 'flex';
                     resultsListView.style.display = 'none';
                     document.querySelector('.workspace-scroll-container').classList.remove('results-open');
