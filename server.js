@@ -132,13 +132,10 @@ app.use((req, res, next) => {
             .replace(/^::1$/, '127.0.0.1')
             .trim();
         db.query(
-            `INSERT IGNORE INTO site_visitors (ip_address, visited_at)
-             SELECT ?, NOW() FROM DUAL
-             WHERE NOT EXISTS (
-                 SELECT 1 FROM site_visitors
-                 WHERE ip_address = ? AND DATE(visited_at) = CURDATE()
-             )`,
-            [ip, ip],
+            `INSERT INTO site_visitors (ip_address, visited_at, visit_count)
+             VALUES (?, NOW(), 1)
+             ON DUPLICATE KEY UPDATE visit_count = visit_count + 1`,
+            [ip],
             () => {}
         );
     }

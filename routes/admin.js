@@ -228,7 +228,9 @@ module.exports = (db, loginLimiter) => {
     // GET daily visitor breakdown for last 30 days
     router.get('/visitor-daily', requireAdminLogin, (req, res) => {
         db.query(`
-            SELECT DATE_FORMAT(visited_at, '%Y-%m-%d') AS day, COUNT(DISTINCT ip_address) AS unique_visitors
+            SELECT DATE_FORMAT(visited_at, '%Y-%m-%d') AS day,
+                   COUNT(DISTINCT ip_address) AS unique_visitors,
+                   SUM(visit_count) AS total_visits
             FROM site_visitors
             WHERE visited_at >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
             GROUP BY day ORDER BY day ASC`,

@@ -119,12 +119,12 @@
         <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
         <nav class="sidebar-nav">
             <a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
-            <a href="/admin-payments"><i class="fa-solid fa-credit-card"></i> Payments</a>
             <a href="/add-exam"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
-            <a href="/dashboard?view=analytics"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
+            <a href="/admin-payments"><i class="fa-solid fa-credit-card"></i> Payments</a>
             <a href="/upload-resource"><i class="fa-solid fa-book-bookmark"></i> Upload Resources</a>
-            <a href="/system-performance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="/dashboard?view=analytics"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
             <a href="/visitors" class="active"><i class="fa-solid fa-users-viewfinder"></i> Visitors</a>
+            <a href="/system-performance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
             <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
         <div class="sidebar-footer">
@@ -201,11 +201,12 @@
                                 <th>Date</th>
                                 <th>Day</th>
                                 <th>Unique Visitors</th>
+                                <th>Total Visits</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody id="visitorTableBody">
-                            <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr>
+                            <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -285,7 +286,7 @@ function buildChart(rows) {
 
 function buildTable(rows, todayStr) {
     const tbody = document.getElementById('visitorTableBody');
-    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">No data available.</td></tr>'; return; }
+    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">No data available.</td></tr>'; return; }
     const max = Math.max(...rows.map(r => r.unique_visitors));
     tbody.innerHTML = [...rows].reverse().map((r, i) => {
         const isToday = r.day === todayStr;
@@ -302,6 +303,7 @@ function buildTable(rows, todayStr) {
             <td style="font-weight:700">${formatDate(r.day)}</td>
             <td>${dayName}</td>
             <td style="font-weight:800;font-size:15px">${r.unique_visitors}</td>
+            <td style="font-weight:700;color:var(--brand)">${Number(r.total_visits) || 0}</td>
             <td>${badge}</td>
         </tr>`;
     }).join('');
@@ -323,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
         buildTable(daily, today);
     }).catch(() => {
         document.getElementById('visitorTableBody').innerHTML =
-            '<tr><td colspan="5" style="text-align:center;color:#ef4444;padding:24px;">Failed to load visitor data.</td></tr>';
+            '<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:24px;">Failed to load visitor data.</td></tr>';
     });
 });
 </script>
