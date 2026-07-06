@@ -326,8 +326,6 @@ module.exports = (db, loginLimiter) => {
             );
             const list = Array.isArray(data?.transactions) ? data.transactions
                 : Array.isArray(data) ? data : [];
-            // Log first item to see real field names from Paypack
-            if (list.length > 0) console.log('[Paypack TX sample]', JSON.stringify(list[0]));
             res.json({ transactions: list, total: data?.total || list.length });
         } catch (err) {
             const msg = err.response?.data?.message || err.message || 'Paypack API error';

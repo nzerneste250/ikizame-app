@@ -486,10 +486,9 @@
         // Compute totals
         let successCount = 0, pendingCount = 0, failedCount = 0, totalAmount = 0;
         list.forEach(tx => {
-            const s = (tx.status || '').toLowerCase();
-            if (s === 'successful' || s === 'success') { successCount++; totalAmount += Number(tx.amount || 0); }
-            else if (s === 'pending' || s === 'processing') pendingCount++;
-            else failedCount++;
+            // Paypack only lists completed transactions — all are successful
+            successCount++;
+            totalAmount += Number(tx.amount || 0);
         });
         document.getElementById('ppTotalCount').textContent   = list.length;
         document.getElementById('ppSuccessCount').textContent = successCount;
@@ -498,19 +497,24 @@
         document.getElementById('ppTotalAmount').textContent  = formatCurrency(totalAmount);
 
         body.innerHTML = list.map((tx, i) => {
-            const s = (tx.status || '').toLowerCase();
-            const statusClass = (s === 'successful' || s === 'success') ? 'success'
-                : (s === 'pending' || s === 'processing') ? 'pending' : 'error';
-            const date = tx.created_at ? new Date(tx.created_at).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+            // Paypack has no status field — listed txns are confirmed
+            const statusClass = 'success';
+            const statusLabel = 'Successful';
+            const date = tx.timestamp ? new Date(tx.timestamp).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+            const phone = tx.client || '';
+            const provider = (tx.provider || '').toLowerCase();
+            const netBadge = provider === 'mtn' ? '<span class="net-mtn">MTN</span>'
+                : provider === 'airtel' ? '<span class="net-airtel">Airtel</span>'
+                : detectNetwork(phone);
             const phone = tx.client || tx.number || '';
             const network = detectNetwork(phone);
             return `<tr data-pp="${(tx.ref||'').toLowerCase()} ${phone.toLowerCase()}">
                 <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
                 <td class="paypack-ref">${tx.ref || '—'}</td>
-                <td>${phone} ${network}</td>
+                <td>${phone} ${netBadge}</td>
                 <td>${formatCurrency(tx.amount || 0)}</td>
                 <td>${tx.kind || '—'}</td>
-                <td><span class="status-pill ${statusClass}">${tx.status || 'unknown'}</span></td>
+                <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
                 <td>${date}</td>
             </tr>`;
         }).join('');
