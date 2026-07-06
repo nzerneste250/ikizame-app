@@ -537,8 +537,29 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success && data.paymentUrl) {
-                    // Redirect customer to RwandaPay hosted checkout page
-                    window.location.href = data.paymentUrl;
+                    // Open RwandaPay checkout in a popup window
+                    const popup = window.open(data.paymentUrl, 'rwandapay_checkout', 'width=480,height=680,top=100,left=' + Math.round((screen.width - 480) / 2));
+                    closeTestPaymentModal();
+
+                    // Poll payment status while popup is open
+                    const pollTimer = setInterval(() => {
+                        fetch(`/api/payments/verify/${data.referenceId}`)
+                            .then(r => r.json())
+                            .then(d => {
+                                if (d.status === 'SUCCESS') {
+                                    clearInterval(pollTimer);
+                                    if (popup && !popup.closed) popup.close();
+                                    document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.';
+                                    document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
+                                } else if (d.status === 'FAILED') {
+                                    clearInterval(pollTimer);
+                                    if (popup && !popup.closed) popup.close();
+                                    alert('Kwishura byanze. Ongera ugerageze.');
+                                }
+                            });
+                        // Stop polling if popup was closed manually
+                        if (popup && popup.closed) clearInterval(pollTimer);
+                    }, 3000);
                 } else {
                     alert(data.error || 'Uburyo bwanze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
                 }
