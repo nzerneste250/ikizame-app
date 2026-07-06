@@ -433,10 +433,6 @@
             </div>
 
             <div class="input-form-field">
-                <label>Amazina yawe</label>
-                <input type="text" id="customerNameInput" placeholder="Amazina yawe yuzuye">
-            </div>
-            <div class="input-form-field">
                 <label>Umubare w'Ibizamini</label>
                 <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
                 <div id="dynamicPricingHelperLabel" style="font-size: 10px; margin-top: 2px; font-weight: 600;"></div>
@@ -450,6 +446,11 @@
             <button class="btn-submit-payment" id="momoSubmitPaymentBtn" onclick="dispatchAdaptivePaymentQueryPacket()">
                 <span id="momoBtnTextLabel">Ishyura</span> <i class="fa-solid fa-credit-card" id="momoBtnIcon"></i>
             </button>
+            <div id="ussdHintBox" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 12px; text-align:left;">
+                <div style="font-size:11px; font-weight:800; color:#166534; margin-bottom:6px;"><i class="fa-solid fa-mobile-screen-button"></i> Niba USSD itaje, koresha:</div>
+                <div id="ussdCodeDisplay" style="font-size:1.1rem; font-weight:800; color:#0f172a; font-family:monospace; letter-spacing:1px;"></div>
+                <div style="font-size:10px; color:#64748b; margin-top:4px;">Kanda iyo code kuri telephone yawe hanyuma emeza kwishyura.</div>
+            </div>
                         <button class="btn-pay-trigger" style="color:#64748b; margin-top:8px; border:none; background:none;" onclick="closeTestPaymentModal()">Hagarika</button>
         </div>
     </div>
@@ -520,7 +521,15 @@
             const unitPrice = pricePerExamForPurchaseQuantity(qty);
 
             if(!phoneVal || phoneVal.length < 10) { alert('Injiza nomero ya telephone yuzuye.'); return; }
+
+            // Detect carrier and set USSD code
+            const clean = phoneVal.replace(/[\s\-\+]/g, '');
+            const isMTN    = /^(078|079|025078|025079)/.test(clean);
+            const isAirtel = /^(072|073|025072|025073)/.test(clean);
+            const ussdCode = isMTN ? '*182*7*1#' : isAirtel ? '*185*1*1#' : null;
+
             payBtn.disabled = true; btnText.textContent = 'Gutegura...'; btnIcon.className = 'fa-solid fa-spinner fa-spin';
+            document.getElementById('ussdHintBox').style.display = 'none';
 
             fetch('/api/payments/momo-push', {
                 method: 'POST',
@@ -535,9 +544,16 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    // Direct USSD push sent — show waiting message and poll
                     btnText.textContent = 'Emeza kuri telephone...';
                     btnIcon.className = 'fa-solid fa-mobile-screen-button fa-beat';
+
+                    // Show USSD hint after 5 seconds
+                    if (ussdCode) {
+                        setTimeout(() => {
+                            document.getElementById('ussdCodeDisplay').textContent = ussdCode + (isMTN ? '  (MTN MoMo)' : '  (Airtel Money)');
+                            document.getElementById('ussdHintBox').style.display = 'block';
+                        }, 5000);
+                    }
 
                     let elapsed = 0;
                     const pollTimer = setInterval(() => {
@@ -547,15 +563,18 @@
                             .then(d => {
                                 if (d.status === 'SUCCESS') {
                                     clearInterval(pollTimer);
+                                    document.getElementById('ussdHintBox').style.display = 'none';
                                     closeTestPaymentModal();
                                     document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.';
                                     document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
                                 } else if (d.status === 'FAILED') {
                                     clearInterval(pollTimer);
+                                    document.getElementById('ussdHintBox').style.display = 'none';
                                     alert('Kwishura byanze. Ongera ugerageze.');
                                     payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
                                 } else if (elapsed >= 180) {
                                     clearInterval(pollTimer);
+                                    document.getElementById('ussdHintBox').style.display = 'none';
                                     fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
                                     alert('Igihe cyarangiye (iminuta 3). Ongera ugerageze.');
                                     payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
