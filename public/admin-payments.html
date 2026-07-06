@@ -139,6 +139,10 @@
                 <h1>Payments Dashboard</h1>
                 <p>Manage payment transactions, revenue totals, and exam credit balances.</p>
             </div>
+            <button class="btn-primary" id="ppToggleBtn" onclick="togglePaypackSection()" style="display:flex; align-items:center; gap:8px; white-space:nowrap;">
+                <i class="fa-solid fa-building-columns"></i> Paypack Transactions
+                <span id="ppToggleIcon" style="font-size:11px; opacity:.8;">▼ Show</span>
+            </button>
         </div>
         <div class="form-scroll">
             <div class="grid">
@@ -192,12 +196,6 @@
                 </table>
             </div>
             <!-- ═══ PAYPACK OFFICIAL CONFIRMED TRANSACTIONS ═══ -->
-            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-                <button class="btn-primary" id="ppToggleBtn" onclick="togglePaypackSection()" style="display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-building-columns"></i> Paypack Transactions
-                    <span id="ppToggleIcon" style="font-size:11px;">▼ Show</span>
-                </button>
-            </div>
             <div id="ppSection" style="display:none; flex-direction:column; gap:16px;">
                 <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
                     <div class="section-title">
@@ -489,8 +487,8 @@
         let successCount = 0, pendingCount = 0, failedCount = 0, totalAmount = 0;
         list.forEach(tx => {
             const s = (tx.status || '').toLowerCase();
-            if (s === 'successful') { successCount++; totalAmount += Number(tx.amount || 0); }
-            else if (s === 'pending') pendingCount++;
+            if (s === 'successful' || s === 'success') { successCount++; totalAmount += Number(tx.amount || 0); }
+            else if (s === 'pending' || s === 'processing') pendingCount++;
             else failedCount++;
         });
         document.getElementById('ppTotalCount').textContent   = list.length;
@@ -501,8 +499,8 @@
 
         body.innerHTML = list.map((tx, i) => {
             const s = (tx.status || '').toLowerCase();
-            const statusClass = s === 'successful' ? 'success' : s === 'pending' ? 'pending' : 'error';
-            const statusLabel = s === 'successful' ? 'Successful' : s === 'pending' ? 'Pending' : s === 'failed' ? 'Failed' : tx.status || 'Unknown';
+            const statusClass = (s === 'successful' || s === 'success') ? 'success'
+                : (s === 'pending' || s === 'processing') ? 'pending' : 'error';
             const date = tx.created_at ? new Date(tx.created_at).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
             const phone = tx.client || tx.number || '';
             const network = detectNetwork(phone);
@@ -512,7 +510,7 @@
                 <td>${phone} ${network}</td>
                 <td>${formatCurrency(tx.amount || 0)}</td>
                 <td>${tx.kind || '—'}</td>
-                <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+                <td><span class="status-pill ${statusClass}">${tx.status || 'unknown'}</span></td>
                 <td>${date}</td>
             </tr>`;
         }).join('');
