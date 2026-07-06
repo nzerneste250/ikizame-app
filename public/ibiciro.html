@@ -468,13 +468,30 @@
     <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
 
     <script>
+        let activeReferenceId = null;
+        let activePollTimer = null;
+
         window.launchAdaptiveCheckoutModal = function(defaultQty) {
             document.getElementById('sandboxPaymentModal').style.display = 'flex';
             document.getElementById('examQuantityVolumeSelector').value = defaultQty;
             recalculateLiveDynamicBillingAmount();
         };
 
-        window.closeTestPaymentModal = function() { document.getElementById('sandboxPaymentModal').style.display = 'none'; };
+        window.closeTestPaymentModal = function() {
+            document.getElementById('sandboxPaymentModal').style.display = 'none';
+            document.getElementById('ussdHintBox').style.display = 'none';
+            // Cancel ongoing transaction
+            if (activePollTimer) { clearInterval(activePollTimer); activePollTimer = null; }
+            if (activeReferenceId) {
+                fetch(`/api/payments/cancel/${activeReferenceId}`, { method: 'POST' });
+                activeReferenceId = null;
+            }
+            // Reset button
+            const payBtn = document.getElementById('momoSubmitPaymentBtn');
+            document.getElementById('momoBtnTextLabel').textContent = 'Ishyura';
+            document.getElementById('momoBtnIcon').className = 'fa-solid fa-credit-card';
+            if (payBtn) payBtn.disabled = false;
+        };
 
         function pricePerExamForPurchaseQuantity(qty) {
             const count = Number(qty) || 0;
@@ -555,27 +572,29 @@
                         }, 5000);
                     }
 
+                    activeReferenceId = data.referenceId;
                     let elapsed = 0;
-                    const pollTimer = setInterval(() => {
+                    activePollTimer = setInterval(() => {
                         elapsed += 3;
                         fetch(`/api/payments/verify/${data.referenceId}`)
                             .then(r => r.json())
                             .then(d => {
                                 if (d.status === 'SUCCESS') {
-                                    clearInterval(pollTimer);
+                                    clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     closeTestPaymentModal();
                                     document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.';
                                     document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
                                 } else if (d.status === 'FAILED') {
-                                    clearInterval(pollTimer);
+                                    clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     alert('Kwishura byanze. Ongera ugerageze.');
                                     payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
                                 } else if (elapsed >= 180) {
-                                    clearInterval(pollTimer);
+                                    clearInterval(activePollTimer); activePollTimer = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
+                                    activeReferenceId = null;
                                     alert('Igihe cyarangiye (iminuta 3). Ongera ugerageze.');
                                     payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
                                 }
