@@ -60,7 +60,7 @@ module.exports = (db) => {
 
                 try {
                     const { data } = await axios.post(
-                        `${BASE_URL}/api/v1/collections/momo-push`,
+                        `${BASE_URL}/v1/collections/momo-push`,
                         {
                             public_key:   PUBLIC_KEY,
                             phone_number: phoneForApi,
