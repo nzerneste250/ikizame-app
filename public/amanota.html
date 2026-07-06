@@ -434,9 +434,11 @@
                     submitLookupBtn.disabled = false;
                     submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Shakisha Amanota`;
 
-                    lookupFormView.style.display = 'flex';
                     resultsListView.style.display = 'none';
-                    document.querySelector('.workspace-scroll-container').classList.remove('results-open');
+                    const container = document.querySelector('.workspace-scroll-container');
+                    container.classList.remove('results-open');
+                    lookupFormView.style.display = '';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
             }
 
