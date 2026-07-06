@@ -267,6 +267,11 @@
                 <button class="btn-renew-submit" id="renewSubmitBtn" onclick="triggerSchoolLicenseRenewalRequest()">
                     <span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>
                 </button>
+                <div id="ussdSchoolHint" style="display:none; margin-top:12px; background:rgba(11,105,139,0.08); border:1px dashed rgba(56,189,248,0.3); border-radius:10px; padding:12px 14px;">
+                    <div style="font-size:11px; font-weight:800; color:#38bdf8; margin-bottom:8px;"><i class="fa-solid fa-mobile-screen-button"></i> PIN Push itaje? Koresha USSD:</div>
+                    <div id="ussdSchoolCode" style="font-size:1.3rem; font-weight:800; color:#fff; font-family:monospace; letter-spacing:1px;"></div>
+                    <div style="font-size:10px; color:#94a3b8; margin-top:4px;">Kanda iyo code kuri telephone yawe hanyuma emeza kwishyura 10,000 RWF.</div>
+                </div>
             </section>
 
             <!-- ===== PERFORMANCE DASHBOARD ===== -->
@@ -450,27 +455,45 @@
                 // Real payment initiated — poll for confirmation
                 btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Tegereza kwemeza kwa PIN...`;
                 const refId = data.referenceId;
+
+                // Detect network and show USSD after 5s
+                const isMTN    = /^07[89]/.test(phone);
+                const isAirtel = /^07[23]/.test(phone);
+                const ussdCode = isMTN ? '*182*7*1#' : isAirtel ? '*185*1*1#' : null;
+                const ussdHint = document.getElementById('ussdSchoolHint');
+                const ussdCodeEl = document.getElementById('ussdSchoolCode');
+                let ussdTimer = null;
+                if (ussdCode) {
+                    ussdTimer = setTimeout(() => {
+                        ussdCodeEl.textContent = ussdCode + (isMTN ? '  (MTN MoMo)' : '  (Airtel Money)');
+                        ussdHint.style.display = 'block';
+                    }, 5000);
+                }
+
                 let attempts = 0;
-                const maxAttempts = 24; // 2 min max (24 × 5s)
+                const maxAttempts = 24;
                 const poll = setInterval(() => {
                     attempts++;
                     fetch(`/api/school/renew-status/${refId}`)
                         .then(r => r.json())
                         .then(s => {
                             if (s.status === 'SUCCESS') {
-                                clearInterval(poll);
+                                clearInterval(poll); clearTimeout(ussdTimer);
+                                ussdHint.style.display = 'none';
                                 phoneField.value = '';
                                 btn.disabled = false;
                                 btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
                                 alert('✓ Lisansi yaguzwe neza! Inshuro nshya zongewe.');
                                 loadSchoolWalletMetricsData();
                             } else if (s.status === 'FAILED' || s.status === 'CANCELLED') {
-                                clearInterval(poll);
+                                clearInterval(poll); clearTimeout(ussdTimer);
+                                ussdHint.style.display = 'none';
                                 btn.disabled = false;
                                 btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
                                 alert('Kwishyura byanze cyangwa byahagaritswe. Gerageza nanone.');
                             } else if (attempts >= maxAttempts) {
-                                clearInterval(poll);
+                                clearInterval(poll); clearTimeout(ussdTimer);
+                                ussdHint.style.display = 'none';
                                 btn.disabled = false;
                                 btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
                                 alert('Igihe cyarenze. Reba niba amafaranga yakuwe, gerageza nanone niba bitabaye.');
@@ -478,7 +501,8 @@
                         })
                         .catch(() => {
                             if (attempts >= maxAttempts) {
-                                clearInterval(poll);
+                                clearInterval(poll); clearTimeout(ussdTimer);
+                                ussdHint.style.display = 'none';
                                 btn.disabled = false;
                                 btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
                             }
