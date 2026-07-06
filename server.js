@@ -127,7 +127,10 @@ emailTransport.verify((err) => {
 const TRACKED_PAGES = ['/', '/index', '/ifashanyigisho', '/ibiciro', '/ubufasha', '/amanota', '/exam-result', '/school-auth'];
 app.use((req, res, next) => {
     if (TRACKED_PAGES.includes(req.path)) {
-        const ip = (req.ip || req.connection.remoteAddress || 'unknown').replace(/^::ffff:/, '');
+        const ip = (req.ip || req.connection.remoteAddress || 'unknown')
+            .replace(/^::ffff:/i, '')
+            .replace(/^::1$/, '127.0.0.1')
+            .trim();
         db.query(
             `INSERT IGNORE INTO site_visitors (ip_address, visited_at)
              SELECT ?, NOW() FROM DUAL
