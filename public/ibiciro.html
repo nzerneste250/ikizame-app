@@ -472,9 +472,16 @@
         let activePollTimer = null;
 
         window.launchAdaptiveCheckoutModal = function(defaultQty) {
-            document.getElementById('sandboxPaymentModal').style.display = 'flex';
+            // Reset form fully before opening
+            document.getElementById('momoPhoneNumberInput').value = '';
             document.getElementById('examQuantityVolumeSelector').value = defaultQty;
+            document.getElementById('ussdHintBox').style.display = 'none';
+            const payBtn = document.getElementById('momoSubmitPaymentBtn');
+            document.getElementById('momoBtnTextLabel').textContent = 'Ishyura';
+            document.getElementById('momoBtnIcon').className = 'fa-solid fa-credit-card';
+            if (payBtn) payBtn.disabled = false;
             recalculateLiveDynamicBillingAmount();
+            document.getElementById('sandboxPaymentModal').style.display = 'flex';
         };
 
         window.closeTestPaymentModal = function() {
