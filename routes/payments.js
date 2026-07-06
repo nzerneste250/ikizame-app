@@ -2,18 +2,19 @@ const express = require('express');
 const axios   = require('axios');
 const crypto  = require('crypto');
 
-const BASE_URL       = process.env.RWANDAPAY_BASE_URL       || 'https://api.rwandapay.rw';
+const BASE_URL       = 'https://pay.rwandapay.rw/api/v1';
 const SECRET_KEY     = process.env.RWANDAPAY_SECRET_KEY;
 const PUBLIC_KEY     = process.env.RWANDAPAY_PUBLIC_KEY;
-const CALLBACK_URL   = process.env.RWANDAPAY_CALLBACK_URL   || 'https://ikizame.rw/api/payments/callback';
 const WEBHOOK_SECRET = process.env.RWANDAPAY_WEBHOOK_SECRET;
+const REDIRECT_URL   = 'https://ikizame.rw/ibiciro';
+const WEBHOOK_URL    = 'https://ikizame.rw/api/payments/callback';
 
 module.exports = (db) => {
     const router = express.Router();
 
-    // POST — initiate mobile money payment
+    // POST — initiate hosted checkout session
     router.post('/momo-push', async (req, res) => {
-        const { phoneNumber, checkoutIntentType, examQuantityVolume, pricePerExam } = req.body;
+        const { phoneNumber, checkoutIntentType, examQuantityVolume, pricePerExam, customerName, customerEmail } = req.body;
 
         if (!phoneNumber || !checkoutIntentType)
             return res.status(400).json({ success: false, error: 'Missing mandatory payment fields.' });
@@ -21,11 +22,7 @@ module.exports = (db) => {
         let phone = phoneNumber.toString().replace(/[\s\-\+]+/g, '').trim();
         if (phone.startsWith('250')) phone = '0' + phone.substring(3);
 
-        let carrier = 'UNKNOWN';
-        if (/^078|^079/.test(phone)) carrier = 'MTN_MOMO';
-        else if (/^072|^073/.test(phone)) carrier = 'AIRTEL_MONEY';
-
-        if (carrier === 'UNKNOWN' || phone.length < 10)
+        if (phone.length < 10)
             return res.status(400).json({ success: false, error: "Nomero yishuriwe ntabwo ari iy'i Rwanda." });
 
         let amount = 0, planLabel = '', examCount = 0;
@@ -46,9 +43,6 @@ module.exports = (db) => {
         const validPrices  = [100, 80, 70, 50];
         const priceToStore = validPrices.includes(submittedPx) ? submittedPx : getPricePerExam(examCount);
 
-        // RwandaPay requires phone in format 2507XXXXXXXX
-        const phoneForApi = '250' + phone.substring(1);
-
         db.query(
             `INSERT INTO payment_transactions
              (phone_number, amount, plan_name, reference_id, status, total_exams, remaining_exams, price_per_exam)
@@ -60,28 +54,33 @@ module.exports = (db) => {
 
                 try {
                     const { data } = await axios.post(
-                        `${BASE_URL}/v1/collections/momo-push`,
+                        `${BASE_URL}/checkout/initialize`,
                         {
-                            public_key:   PUBLIC_KEY,
-                            phone_number: phoneForApi,
-                            amount:       String(amount),
+                            amount:       amount,
                             currency:     'RWF',
                             tx_ref:       txRef,
-                            narration:    planLabel,
-                            callback_url: CALLBACK_URL
+                            description:  planLabel,
+                            redirect_url: REDIRECT_URL + '?ref=' + txRef,
+                            webhook_url:  WEBHOOK_URL,
+                            customer: {
+                                name:  customerName  || 'Ikizame Customer',
+                                email: customerEmail || 'customer@ikizame.rw',
+                                phone: phone
+                            }
                         },
                         {
                             headers: {
-                                'Authorization': `Bearer ${SECRET_KEY}`,
-                                'Content-Type':  'application/json',
-                                'Accept':        'application/json'
+                                'X-Public-Key': PUBLIC_KEY,
+                                'X-Secret-Key': SECRET_KEY,
+                                'Content-Type': 'application/json',
+                                'Accept':       'application/json'
                             },
                             timeout: 20000
                         }
                     );
 
-                    // Store RwandaPay's own transaction ID if returned
-                    const rwTxId = data?.data?.id || data?.transaction_id || data?.id || null;
+                    // Store RwandaPay transaction ID
+                    const rwTxId = data?.data?.id || data?.id || null;
                     if (rwTxId) {
                         db.query(
                             `UPDATE payment_transactions SET rwandapay_tx_id = ? WHERE reference_id = ?`,
@@ -90,7 +89,12 @@ module.exports = (db) => {
                         );
                     }
 
-                    res.json({ success: true, referenceId: txRef, provider: carrier, allocatedPlan: planLabel });
+                    // Return payment_url so frontend can redirect customer
+                    const paymentUrl = data?.data?.payment_url || data?.payment_url || null;
+                    if (!paymentUrl)
+                        return res.status(502).json({ success: false, error: 'RwandaPay did not return a payment URL.' });
+
+                    res.json({ success: true, referenceId: txRef, paymentUrl, allocatedPlan: planLabel });
 
                 } catch (apiErr) {
                     const errMsg = apiErr.response?.data?.message
@@ -106,33 +110,29 @@ module.exports = (db) => {
         );
     });
 
-    // POST — RwandaPay webhook callback (called by RwandaPay server when payment completes)
+    // POST — RwandaPay webhook (server-to-server payment confirmation)
     router.post('/callback', (req, res) => {
-        // Verify webhook signature if secret is configured
         if (WEBHOOK_SECRET) {
             const signature = req.headers['x-rwandapay-signature'] || req.headers['x-webhook-signature'] || '';
             const expected  = crypto.createHmac('sha256', WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('hex');
             if (signature && signature !== expected) {
-                console.warn('⚠️  Invalid webhook signature — request rejected');
-                return res.status(401).json({ ok: false, error: 'Invalid signature' });
+                console.warn('⚠️  Invalid webhook signature — rejected');
+                return res.status(401).json({ ok: false });
             }
         }
 
-        const body = req.body;
-
-        // RwandaPay may send: tx_ref or reference, status, id or transaction_id
-        const reference    = body.tx_ref || body.reference || body.txRef;
-        const rawStatus    = (body.status || '').toUpperCase();
-        const rwTxId       = body.id || body.transaction_id || null;
+        const body      = req.body;
+        const reference = body.tx_ref || body.reference || body.txRef;
+        const rawStatus = (body.status || '').toUpperCase();
+        const rwTxId    = body.id || body.transaction_id || null;
 
         if (!reference) {
-            console.warn('⚠️  Payment callback received with no reference:', body);
-            return res.status(400).json({ ok: false, error: 'No reference provided' });
+            console.warn('⚠️  Callback received with no reference:', body);
+            return res.status(400).json({ ok: false });
         }
 
         const newStatus = ['SUCCESS', 'SUCCESSFUL', 'COMPLETED', 'PAID'].includes(rawStatus)
-            ? 'SUCCESS'
-            : 'FAILED';
+            ? 'SUCCESS' : 'FAILED';
 
         db.query(
             `UPDATE payment_transactions
@@ -140,10 +140,7 @@ module.exports = (db) => {
              WHERE reference_id = ?`,
             [newStatus, rwTxId ? String(rwTxId) : null, reference],
             (err) => {
-                if (err) {
-                    console.error('❌ Callback DB update error:', err.message);
-                    return res.status(500).json({ ok: false });
-                }
+                if (err) { console.error('❌ Callback DB error:', err.message); return res.status(500).json({ ok: false }); }
                 console.log(`✅ Payment callback: ${reference} → ${newStatus}`);
                 res.json({ ok: true });
             }
