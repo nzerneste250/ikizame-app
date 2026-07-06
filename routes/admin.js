@@ -76,7 +76,7 @@ module.exports = (db, loginLimiter) => {
     // GET all payment transactions
     router.get('/payment-transactions', requireAdminLogin, (req, res) => {
         db.query(
-            `SELECT id, phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, created_at FROM payment_transactions ORDER BY created_at DESC`,
+            `SELECT id, phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, created_at FROM payment_transactions ORDER BY id DESC LIMIT 500`,
             (err, rows) => {
                 if (err) return res.status(500).json({ error: err.message });
                 res.json(rows);

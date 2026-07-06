@@ -320,51 +320,47 @@
     }
 
     function loadPaymentDashboard() {
-        fetch('/api/admin/payments-summary')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('totalPayments').textContent = data.totalPayments || 0;
-                document.getElementById('totalRevenue').textContent = formatCurrency(data.totalRevenue || 0);
-                document.getElementById('totalExamCredits').textContent = data.totalExamCredits || 0;
-            })
-            .catch(() => {
-                document.getElementById('totalPayments').textContent = '0';
-                document.getElementById('totalRevenue').textContent = formatCurrency(0);
-                document.getElementById('totalExamCredits').textContent = '0';
-            });
+        Promise.all([
+            fetch('/api/admin/payments-summary').then(r => r.json()),
+            fetch('/api/admin/payment-transactions').then(r => r.json())
+        ])
+        .then(([summary, data]) => {
+            document.getElementById('totalPayments').textContent = summary.totalPayments || 0;
+            document.getElementById('totalRevenue').textContent = formatCurrency(summary.totalRevenue || 0);
+            document.getElementById('totalExamCredits').textContent = summary.totalExamCredits || 0;
 
-        fetch('/api/admin/payment-transactions')
-            .then(res => res.json())
-            .then(data => {
-                paymentTransactions = Array.isArray(data) ? data : [];
-                const body = document.getElementById('transactionsTableBody');
-                if (!paymentTransactions.length) {
-                    body.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
-                    return;
-                }
-                body.innerHTML = paymentTransactions.map((tx, i) => {
-                    const statusClass = tx.status === 'SUCCESS' ? 'success' : tx.status === 'PENDING' ? 'pending' : 'error';
-                    const created = new Date(tx.created_at || tx.createdAt).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-                    const realRef = tx.rwandapay_tx_id || tx.reference_id || '---';
-                    const network = detectNetwork(tx.phone_number);
-                    return `<tr data-phone="${tx.phone_number || ''}">
-                        <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
-                        <td>${tx.phone_number} ${network}</td>
-                        <td class="paypack-ref">${realRef}</td>
-                        <td>${tx.plan_name || tx.planName || '---'}</td>
-                        <td><span class="status-pill ${statusClass}">${tx.status || 'UNKNOWN'}</span></td>
-                        <td>${formatCurrency(tx.amount || 0)}</td>
-                        <td>${tx.total_exams || tx.remaining_exams || 0}</td>
-                        <td>${tx.remaining_exams || 0}</td>
-                        <td>${tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '—'}</td>
-                        <td>${created}</td>
-                        <td><button class="btn-text-action btn-edit" onclick="openEditPaymentModal(${tx.id})">Edit</button></td>
-                    </tr>`;
-                }).join('');
-            })
-            .catch(() => {
-                document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="12" style="text-align:center; padding:30px; color:#ef4444;">Unable to load transactions.</td></tr>';
-            });
+            paymentTransactions = Array.isArray(data) ? data : [];
+            const body = document.getElementById('transactionsTableBody');
+            if (!paymentTransactions.length) {
+                body.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
+                return;
+            }
+            body.innerHTML = paymentTransactions.map((tx, i) => {
+                const statusClass = tx.status === 'SUCCESS' ? 'success' : tx.status === 'PENDING' ? 'pending' : 'error';
+                const created = new Date(tx.created_at).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                const realRef = tx.rwandapay_tx_id || tx.reference_id || '---';
+                const network = detectNetwork(tx.phone_number);
+                return `<tr data-phone="${tx.phone_number || ''}">
+                    <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
+                    <td>${tx.phone_number} ${network}</td>
+                    <td class="paypack-ref">${realRef}</td>
+                    <td>${tx.plan_name || '---'}</td>
+                    <td><span class="status-pill ${statusClass}">${tx.status || 'UNKNOWN'}</span></td>
+                    <td>${formatCurrency(tx.amount || 0)}</td>
+                    <td>${tx.total_exams || 0}</td>
+                    <td>${tx.remaining_exams || 0}</td>
+                    <td>${tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '—'}</td>
+                    <td>${created}</td>
+                    <td><button class="btn-text-action btn-edit" onclick="openEditPaymentModal(${tx.id})">Edit</button></td>
+                </tr>`;
+            }).join('');
+        })
+        .catch(() => {
+            document.getElementById('totalPayments').textContent = '0';
+            document.getElementById('totalRevenue').textContent = formatCurrency(0);
+            document.getElementById('totalExamCredits').textContent = '0';
+            document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#ef4444;">Unable to load transactions.</td></tr>';
+        });
     }
 
     function detectNetwork(phone) {
