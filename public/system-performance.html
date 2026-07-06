@@ -59,6 +59,7 @@
         .admin-meta { flex: 1; min-width: 0; }
         .admin-name { font-size: 12.5px; font-weight: 700; color: #f8fafc; }
         .admin-role { font-size: 11px; color: var(--sidebar-muted); }
+        .session-pill { font-size: 10px; font-weight: 700; background: rgba(56,189,248,0.15); color: #38bdf8; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
 
         /* ── WORKSPACE ── */
         .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -188,6 +189,7 @@
                 <div class="admin-name">Admin</div>
                 <div class="admin-role">Administrator</div>
             </div>
+            <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
         </div>
     </aside>
 
@@ -306,71 +308,37 @@
     const WARN_BEFORE  = 60 * 1000;     
     const REDIRECT_URL = '/admin-login'; 
 
-    let idleTimer, warnTimer, countdownInterval;
-    const modal      = document.getElementById('sessionModal');
-    const toast      = document.getElementById('sessionToast');
-    const toastTimer = document.getElementById('toastTimer');
-    const modalCd    = document.getElementById('modalCountdown');
-
-    window.doLogout = function() {
-        clearAll();
-        fetch('/api/admin/logout', { method: 'POST' }).finally(() => {
-            window.location.replace(REDIRECT_URL);
-        });
+    let idleT, warnT, cdInt;
+    const modal   = document.getElementById('sessionModal');
+    const toast   = document.getElementById('sessionToast');
+    const toastT  = document.getElementById('toastTimer');
+    const cdEl    = document.getElementById('modalCountdown');
+    const sbVal   = document.getElementById('sidebarTimerVal');
+    function fmt(ms){const s=Math.ceil(ms/1000),m=Math.floor(s/60);return m+':'+String(s%60).padStart(2,'0');}
+    window.doLogout = function(){
+        clearTimeout(idleT);clearTimeout(warnT);clearInterval(cdInt);
+        fetch('/api/admin/logout',{method:'POST'}).finally(()=>window.location.replace(REDIRECT_URL));
     };
-
-    function showExpired() {
-        toast.style.display = 'none';
-        modal.style.display = 'flex';
-        let count = 5;
-        modalCd.textContent = count;
-        countdownInterval = setInterval(() => {
-            count--;
-            modalCd.textContent = count;
-            if (count <= 0) {
-                clearInterval(countdownInterval);
-                window.doLogout();
-            }
-        }, 1000);
+    function expire(){
+        toast.style.display='none';modal.style.display='flex';
+        let c=5;cdEl.textContent=c;
+        cdInt=setInterval(()=>{c--;cdEl.textContent=c;if(c<=0){clearInterval(cdInt);window.doLogout();}},1000);
     }
-
-    function showWarning(remainingMs) {
-        let secs = Math.ceil(remainingMs / 1000);
-        toastTimer.textContent = secs;
-        toast.style.display = 'flex';
-        const iv = setInterval(() => {
-            secs--;
-            toastTimer.textContent = secs;
-            if (secs <= 0) clearInterval(iv);
-        }, 1000);
-        setTimeout(() => toast.style.display = 'none', remainingMs);
+    let start=Date.now(),rafId;
+    function tick(){const r=IDLE_LIMIT-(Date.now()-start);if(sbVal)sbVal.textContent=fmt(Math.max(0,r));if(r>0)rafId=requestAnimationFrame(tick);}
+    function resetTimer(){
+        clearTimeout(idleT);clearTimeout(warnT);
+        start=Date.now();cancelAnimationFrame(rafId);rafId=requestAnimationFrame(tick);
+        warnT=setTimeout(()=>{
+            let s=Math.ceil((IDLE_LIMIT-(Date.now()-start))/1000);
+            toastT.textContent=s;toast.style.display='flex';
+            const iv=setInterval(()=>{s--;toastT.textContent=s;if(s<=0)clearInterval(iv);},1000);
+            setTimeout(()=>toast.style.display='none',IDLE_LIMIT-(Date.now()-start));
+        },IDLE_LIMIT-WARN_BEFORE);
+        idleT=setTimeout(expire,IDLE_LIMIT);
     }
-
-    function clearAll() {
-        clearTimeout(idleTimer);
-        clearTimeout(warnTimer);
-        clearInterval(countdownInterval);
-    }
-
-    let sessionStart = Date.now();
-
-    function resetTimer() {
-        clearAll();
-        sessionStart = Date.now();
-
-        warnTimer = setTimeout(() => {
-            const remaining = IDLE_LIMIT - (Date.now() - sessionStart);
-            showWarning(remaining);
-        }, IDLE_LIMIT - WARN_BEFORE);
-
-        idleTimer = setTimeout(showExpired, IDLE_LIMIT);
-    }
-
-    ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(evt => {
-        document.addEventListener(evt, resetTimer, { passive: true });
-    });
-
-    resetTimer(); 
+    ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(e=>document.addEventListener(e,resetTimer,{passive:true}));
+    resetTimer();
 })();
 
 /* ═══════════════════════════════════════
