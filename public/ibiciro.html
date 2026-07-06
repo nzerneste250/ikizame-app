@@ -542,7 +542,9 @@
                     closeTestPaymentModal();
 
                     // Poll payment status while popup is open
+                    let elapsed = 0;
                     const pollTimer = setInterval(() => {
+                        elapsed += 3;
                         fetch(`/api/payments/verify/${data.referenceId}`)
                             .then(r => r.json())
                             .then(d => {
@@ -551,13 +553,17 @@
                                     if (popup && !popup.closed) popup.close();
                                     document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.';
                                     document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
-                                } else if (d.status === 'FAILED') {
+                                } else if (d.status === 'FAILED' || elapsed >= 180) {
                                     clearInterval(pollTimer);
                                     if (popup && !popup.closed) popup.close();
-                                    alert('Kwishura byanze. Ongera ugerageze.');
+                                    if (elapsed >= 180) {
+                                        fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
+                                        alert('Igihe cyarangiye (iminota 3). Kwishura byahagaritswe. Ongera ugerageze.');
+                                    } else {
+                                        alert('Kwishura byanze. Ongera ugerageze.');
+                                    }
                                 }
                             });
-                        // Stop polling if popup was closed manually
                         if (popup && popup.closed) clearInterval(pollTimer);
                     }, 3000);
                 } else {

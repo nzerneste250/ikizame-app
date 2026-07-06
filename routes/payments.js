@@ -147,6 +147,19 @@ module.exports = (db) => {
         );
     });
 
+    // POST — cancel a pending transaction (timeout)
+    router.post('/cancel/:refId', (req, res) => {
+        db.query(
+            `UPDATE payment_transactions SET status = 'CANCELLED' WHERE reference_id = ? AND status = 'PENDING'`,
+            [req.params.refId],
+            (err) => {
+                if (err) return res.status(500).json({ ok: false });
+                console.log(`🚫 Payment cancelled (timeout): ${req.params.refId}`);
+                res.json({ ok: true });
+            }
+        );
+    });
+
     // GET — poll payment status from frontend
     router.get('/verify/:refId', (req, res) => {
         db.query(
