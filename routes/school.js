@@ -18,6 +18,10 @@ async function getToken() {
     return _tok;
 }
 
+// In-memory pending map for school payments
+const schoolPendingMap = new Map();
+exports.schoolPendingMap = schoolPendingMap;
+
 module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
 
     // POST register school (sends OTP) — rate limited
@@ -146,7 +150,7 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
         });
     });
 
-    // POST renew license — real Paypack USSD push
+    // POST renew license — real Paypack USSD push, no DB insert until webhook confirms
     router.post('/renew-license', async (req, res) => {
         if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session timeout.' });
         const { phoneNumber } = req.body;
@@ -159,40 +163,36 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
         if (phone.startsWith('250')) phone = '0' + phone.substring(3);
         if (phone.length < 10) return res.status(400).json({ success: false, error: "Nomero yishuriwe ntabwo ari iy'i Rwanda." });
 
-        const amount    = 10000;
-        const planLabel = `School Driving Pass (${schoolName})`;
-        const txRef     = 'SCH_REF_' + Date.now();
+        try {
+            const token = await getToken();
+            const { data } = await axios.post(
+                `${PAYPACK_BASE}/transactions/cashin`,
+                { amount: 10000, number: phone },
+                { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Webhook-Mode': 'production' }, timeout: 20000 }
+            );
+            const paypackRef = data?.ref;
+            if (!paypackRef) throw new Error('No ref returned from Paypack');
 
-        db.query(
-            `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, status, total_exams, remaining_exams, price_per_exam, school_id) VALUES (?, ?, ?, ?, 'PENDING', 9999, 9999, ?, ?)`,
-            [phone, amount, planLabel, txRef, Number((amount / 9999).toFixed(2)), schoolId],
-            async (insertErr) => {
-                if (insertErr) return res.status(500).json({ success: false, error: 'Database error: ' + insertErr.message });
-                try {
-                    const token = await getToken();
-                    const { data } = await axios.post(
-                        `${PAYPACK_BASE}/transactions/cashin`,
-                        { amount, number: phone },
-                        { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Webhook-Mode': 'production' }, timeout: 20000 }
-                    );
-                    const paypackRef = data?.ref || null;
-                    if (paypackRef) db.query(`UPDATE payment_transactions SET rwandapay_tx_id = ? WHERE reference_id = ?`, [paypackRef, txRef], () => {});
-                    console.log(`✅ School cashin initiated: ${txRef} → ${paypackRef}`);
-                    res.json({ success: true, referenceId: txRef, paypackRef });
-                } catch (apiErr) {
-                    const msg = apiErr.response?.data?.message || apiErr.message || 'Paypack API error';
-                    db.query(`UPDATE payment_transactions SET status = 'FAILED' WHERE reference_id = ?`, [txRef], () => {});
-                    res.status(502).json({ success: false, error: 'Kwishyura byanze: ' + msg });
-                }
-            }
-        );
+            // Store in memory — DB insert happens only on successful webhook
+            schoolPendingMap.set(paypackRef, {
+                phone, schoolId, schoolName,
+                expires: Date.now() + 5 * 60 * 1000
+            });
+
+            console.log(`✅ School cashin initiated: ${paypackRef}`);
+            res.json({ success: true, referenceId: paypackRef });
+        } catch (apiErr) {
+            const msg = apiErr.response?.data?.message || apiErr.message || 'Paypack API error';
+            res.status(502).json({ success: false, error: 'Kwishyura byanze: ' + msg });
+        }
     });
 
-    // GET poll renewal status
+    // GET poll renewal status — check if webhook inserted the record
     router.get('/renew-status/:refId', (req, res) => {
         if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false });
-        db.query(`SELECT status FROM payment_transactions WHERE reference_id = ?`, [req.params.refId], (err, rows) => {
-            if (err || !rows.length) return res.json({ status: 'PENDING' });
+        const ref = req.params.refId;
+        db.query(`SELECT status FROM payment_transactions WHERE reference_id = ? OR rwandapay_tx_id = ?`, [ref, ref], (err, rows) => {
+            if (err || !rows.length) return res.json({ status: schoolPendingMap.has(ref) ? 'PENDING' : 'PENDING' });
             res.json({ status: rows[0].status });
         });
     });
