@@ -228,7 +228,7 @@ module.exports = (db, loginLimiter) => {
     // GET daily visitor breakdown for last 30 days
     router.get('/visitor-daily', requireAdminLogin, (req, res) => {
         db.query(`
-            SELECT DATE(visited_at) AS day, COUNT(DISTINCT ip_address) AS unique_visitors
+            SELECT DATE_FORMAT(visited_at, '%Y-%m-%d') AS day, COUNT(DISTINCT ip_address) AS unique_visitors
             FROM site_visitors
             WHERE visited_at >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
             GROUP BY day ORDER BY day ASC`,
@@ -243,21 +243,20 @@ module.exports = (db, loginLimiter) => {
     router.get('/visitor-count', requireAdminLogin, (req, res) => {
         db.query(`
             SELECT
-                COUNT(*) AS total,
-                SUM(DATE(visited_at) = CURDATE()) AS today,
-                SUM(visited_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)) AS week,
-                SUM(visited_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)) AS month,
-                SUM(YEAR(visited_at) = YEAR(NOW())) AS year
-            FROM site_visitors`,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE DATE(visited_at) = CURDATE()) AS today,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE visited_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)) AS week,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE visited_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)) AS month,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE YEAR(visited_at) = YEAR(NOW())) AS year,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors) AS total`,
             (err, rows) => {
                 if (err) return res.status(500).json({ error: err.message });
                 const r = rows[0];
                 res.json({
-                    today: r.today || 0,
-                    week:  r.week  || 0,
-                    month: r.month || 0,
-                    year:  r.year  || 0,
-                    total: r.total || 0
+                    today: Number(r.today) || 0,
+                    week:  Number(r.week)  || 0,
+                    month: Number(r.month) || 0,
+                    year:  Number(r.year)  || 0,
+                    total: Number(r.total) || 0
                 });
             }
         );
