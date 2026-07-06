@@ -197,6 +197,11 @@ app.get('/system-performance', (req, res) => {
     redirectToAdminLogin(req, res);
 });
 
+app.get('/visitors', (req, res) => {
+    if (getAdminSessionState(req)) return res.sendFile(path.join(__dirname, 'public', 'visitors.html'));
+    redirectToAdminLogin(req, res);
+});
+
 app.get(['/admin-payments', '/admin-payments/'], (req, res) => {
     if (getAdminSessionState(req)) return res.sendFile(path.join(__dirname, 'public', 'admin-payments.html'));
     redirectToAdminLogin(req, res);

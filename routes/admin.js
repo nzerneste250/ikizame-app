@@ -225,6 +225,20 @@ module.exports = (db, loginLimiter) => {
         );
     });
 
+    // GET daily visitor breakdown for last 30 days
+    router.get('/visitor-daily', requireAdminLogin, (req, res) => {
+        db.query(`
+            SELECT DATE(visited_at) AS day, COUNT(DISTINCT ip_address) AS unique_visitors
+            FROM site_visitors
+            WHERE visited_at >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
+            GROUP BY day ORDER BY day ASC`,
+            (err, rows) => {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json(rows);
+            }
+        );
+    });
+
     // GET visitor count (day, week, month, year, total)
     router.get('/visitor-count', requireAdminLogin, (req, res) => {
         db.query(`

@@ -39,7 +39,7 @@ function compressImage(filePath) {
     const ext = path.extname(filePath).toLowerCase();
     if (!['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) return;
     try {
-        execSync(`convert "${filePath}" -resize 800x800\> -quality 82 "${filePath}"`, { timeout: 15000 });
+        execSync(`convert "${filePath}" -resize '800x800>' -quality 82 "${filePath}"`, { timeout: 15000 });
         console.log(`✅ Compressed: ${path.basename(filePath)}`);
     } catch(e) {
         console.warn(`⚠️ Compression skipped for ${path.basename(filePath)}:`, e.message);
