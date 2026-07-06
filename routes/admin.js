@@ -225,6 +225,17 @@ module.exports = (db, loginLimiter) => {
         );
     });
 
+    // GET visitor count
+    router.get('/visitor-count', requireAdminLogin, (req, res) => {
+        db.query(
+            `SELECT COUNT(*) AS total, SUM(DATE(visited_at) = CURDATE()) AS today FROM site_visitors`,
+            (err, rows) => {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json({ total: rows[0].total || 0, today: rows[0].today || 0 });
+            }
+        );
+    });
+
     // GET system stats
     router.get('/system-stats', requireAdminLogin, (req, res) => {
         db.query(`

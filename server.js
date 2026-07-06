@@ -123,6 +123,20 @@ emailTransport.verify((err) => {
     else     console.log('✅ SMTP transport ready on port 587 TLS');
 });
 
+// ── VISITOR TRACKING ─────────────────────────────────────────────────────
+const TRACKED_PAGES = ['/', '/index', '/ifashanyigisho', '/ibiciro', '/ubufasha', '/amanota', '/exam-result', '/school-auth'];
+app.use((req, res, next) => {
+    if (TRACKED_PAGES.includes(req.path)) {
+        const ip = req.ip || req.connection.remoteAddress || 'unknown';
+        db.query(
+            `INSERT INTO site_visitors (ip_address, visited_at) VALUES (?, NOW())`,
+            [ip],
+            () => {}
+        );
+    }
+    next();
+});
+
 // ── PAGE ROUTES ───────────────────────────────────────────────────────────
 app.get('/',               (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/index',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
