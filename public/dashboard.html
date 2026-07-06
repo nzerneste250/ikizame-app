@@ -410,29 +410,29 @@
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #10b981;">
                         <div style="background: #dcfce7; color: #15803d; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-graduation-cap"></i></div>
-                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Average Passing Rate</div><div style="font-size: 1.8rem; font-weight: 800;" id="statPassRate">--%</div></div>
+                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Ijanisha ry'Abatsinze</div><div style="font-size: 1.8rem; font-weight: 800;" id="statPassRate">--%</div></div>
                     </div>
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #0284c7;">
                         <div style="background: #e0f2fe; color: #0369a1; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-user-clock"></i></div>
-                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Total Active Attempts</div><div style="font-size: 1.8rem; font-weight: 800;" id="statTotalAttempts">--</div></div>
+                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Umubare w'Ibizamini</div><div style="font-size: 1.8rem; font-weight: 800;" id="statTotalAttempts">--</div></div>
                     </div>
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #6b21a8;">
                         <div style="background: #f3e8ff; color: #6b21a8; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-star"></i></div>
-                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Average Class Score</div><div style="font-size: 1.8rem; font-weight: 800;" id="statAvgScore">--/20</div></div>
+                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Amanota y'Impuzandengo</div><div style="font-size: 1.8rem; font-weight: 800;" id="statAvgScore">--/20</div></div>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start;">
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Student Performance</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Click a student to view all their exam attempts and review their answers.</p>
+                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Imikorere y'Abanyeshuri</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Kanda ku munyeshuri kugira ngo ubone ibizamini bye byose n'ibisubizo bye.</p>
                         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
                             <thead>
                                 <tr style="border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 700;">
-                                    <th style="padding: 10px 8px;">Umunyeshuri (Student)</th>
-                                    <th style="padding: 10px 8px; text-align: center;">Ibizamini (Exams)</th>
-                                    <th style="padding: 10px 8px; text-align: center;">Impuzandengo (Average)</th>
-                                    <th style="padding: 10px 8px; text-align: right;">Itariki ya nyuma (Last)</th>
+                                    <th style="padding: 10px 8px;">Umunyeshuri</th>
+                                    <th style="padding: 10px 8px; text-align: center;">Ibizamini</th>
+                                    <th style="padding: 10px 8px; text-align: center;">Amanota y'Impuzandengo</th>
+                                    <th style="padding: 10px 8px; text-align: right;">Itariki ya Nyuma</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboardTableBodyTarget"></tbody>
@@ -440,8 +440,8 @@
                     </div>
 
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Top 5 Tricky Failed Questions</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Questions that students fail most frequently on tests.</p>
+                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Ibibazo 5 Bigoye Cyane</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Ibibazo abanyeshuri benshi basubiza nabi mu bizamini.</p>
                         <div style="display: flex; flex-direction: column; gap: 12px;" id="trickyQuestionsListTarget"></div>
                     </div>
                 </div>
@@ -711,17 +711,17 @@ document.addEventListener('DOMContentLoaded', () => {
             mainTitle.textContent = "Student Performance Analytics";
             mainSub.textContent = "Real-time educational metrics logs tracking pass-rates and tricky failure parameters trends";
 
-            fetch('/api/admin/performance-stats')
+                    fetch('/api/admin/performance-stats')
                 .then(res => res.json())
                 .then(data => {
-                    document.getElementById('statPassRate').textContent = (data.passRate || 0) + '%';
-                    document.getElementById('statTotalAttempts').textContent = (data.totalAttempts || data.total || 0);
-                    document.getElementById('statAvgScore').textContent = (data.avgScore || data.averageScore || 0) + '/20';
+                    document.getElementById('statPassRate').textContent = (Number(data.passRate) || 0) + '%';
+                    document.getElementById('statTotalAttempts').textContent = (Number(data.totalAttempts) || Number(data.total) || 0);
+                    document.getElementById('statAvgScore').textContent = (data.avgScore || data.averageScore || '0.0') + '/20';
 
                     const trickyTarget = document.getElementById('trickyQuestionsListTarget');
                     const trickyQuestions = Array.isArray(data.trickyQuestions) ? data.trickyQuestions : [];
                     if (trickyQuestions.length === 0) {
-                        trickyTarget.innerHTML = `<p style="text-align:center; padding:15px; font-style:italic; color:#64748b; font-size:13px;">No data trends captured yet.</p>`;
+                        trickyTarget.innerHTML = `<p style="text-align:center; padding:15px; font-style:italic; color:#64748b; font-size:13px;">Nta makuru aboneka ubu.</p>`;
                     } else {
                         trickyTarget.innerHTML = trickyQuestions.map((q, idx) => {
                             return `
