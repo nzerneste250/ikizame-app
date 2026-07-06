@@ -324,7 +324,18 @@ module.exports = (db, loginLimiter) => {
                 `${PAYPACK_BASE}/transactions/list?offset=${offset}&limit=${limit}`,
                 { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }, timeout: 15000 }
             );
-            res.json(data);
+            // Normalize status field across possible Paypack response shapes
+            const list = Array.isArray(data?.transactions) ? data.transactions
+                : Array.isArray(data) ? data : [];
+            const normalized = list.map(tx => {
+                const raw = (tx.status || tx.Status || tx.state || '').toLowerCase();
+                const status = raw === 'successful' || raw === 'success' ? 'successful'
+                    : raw === 'pending' ? 'pending'
+                    : raw === 'failed'  || raw === 'fail' ? 'failed'
+                    : raw || 'unknown';
+                return { ...tx, status };
+            });
+            res.json({ transactions: normalized, total: data?.total || normalized.length });
         } catch (err) {
             const msg = err.response?.data?.message || err.message || 'Paypack API error';
             res.status(502).json({ error: msg });
