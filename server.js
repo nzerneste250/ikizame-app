@@ -123,14 +123,19 @@ emailTransport.verify((err) => {
     else     console.log('✅ SMTP transport ready on port 587 TLS');
 });
 
-// ── VISITOR TRACKING ─────────────────────────────────────────────────────
+// ── VISITOR TRACKING (unique per IP per day) ────────────────────────────
 const TRACKED_PAGES = ['/', '/index', '/ifashanyigisho', '/ibiciro', '/ubufasha', '/amanota', '/exam-result', '/school-auth'];
 app.use((req, res, next) => {
     if (TRACKED_PAGES.includes(req.path)) {
-        const ip = req.ip || req.connection.remoteAddress || 'unknown';
+        const ip = (req.ip || req.connection.remoteAddress || 'unknown').replace(/^::ffff:/, '');
         db.query(
-            `INSERT INTO site_visitors (ip_address, visited_at) VALUES (?, NOW())`,
-            [ip],
+            `INSERT IGNORE INTO site_visitors (ip_address, visited_at)
+             SELECT ?, NOW() FROM DUAL
+             WHERE NOT EXISTS (
+                 SELECT 1 FROM site_visitors
+                 WHERE ip_address = ? AND DATE(visited_at) = CURDATE()
+             )`,
+            [ip, ip],
             () => {}
         );
     }
