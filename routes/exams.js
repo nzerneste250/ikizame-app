@@ -3,12 +3,47 @@ const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
+const crypto = require('crypto');
+const { execSync } = require('child_process');
 const { requireAdminLogin } = require('../middleware/auth');
 
 const uploadDirectoryPath = path.resolve(__dirname, '..', 'public', 'assets', 'uploads');
 
 if (!fs.existsSync(uploadDirectoryPath)) {
     fs.mkdirSync(uploadDirectoryPath, { recursive: true });
+}
+
+// Compute MD5 hash of a file to detect duplicates
+function getFileHash(filePath) {
+    const buf = fs.readFileSync(filePath);
+    return crypto.createHash('md5').update(buf).digest('hex');
+}
+
+// Find existing file with same hash in uploads folder
+function findDuplicateFile(newFilePath) {
+    const newHash = getFileHash(newFilePath);
+    const files = fs.readdirSync(uploadDirectoryPath);
+    for (const f of files) {
+        const existing = path.join(uploadDirectoryPath, f);
+        if (existing === newFilePath) continue;
+        if (!fs.statSync(existing).isFile()) continue;
+        try {
+            if (getFileHash(existing) === newHash) return f;
+        } catch(e) {}
+    }
+    return null;
+}
+
+// Compress image using ImageMagick convert (already installed on server)
+function compressImage(filePath) {
+    const ext = path.extname(filePath).toLowerCase();
+    if (!['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) return;
+    try {
+        execSync(`convert "${filePath}" -resize 800x800\> -quality 82 "${filePath}"`, { timeout: 15000 });
+        console.log(`✅ Compressed: ${path.basename(filePath)}`);
+    } catch(e) {
+        console.warn(`⚠️ Compression skipped for ${path.basename(filePath)}:`, e.message);
+    }
 }
 
 const storageEngine = multer.diskStorage({
@@ -20,6 +55,22 @@ const storageEngine = multer.diskStorage({
         cb(null, uniqueName);
     }
 });
+
+// Post-upload: check duplicate & compress, return final filename
+function processUploadedFile(file) {
+    if (!file) return null;
+    const filePath = file.path;
+    // Check for duplicate
+    const duplicate = findDuplicateFile(filePath);
+    if (duplicate) {
+        fs.unlinkSync(filePath); // delete the new copy
+        console.log(`ℹ️ Duplicate detected, reusing: ${duplicate}`);
+        return duplicate;
+    }
+    // Compress
+    compressImage(filePath);
+    return file.filename;
+}
 
 const upload = multer({ storage: storageEngine });
 const examUploadFieldsConfig = upload.fields([
@@ -74,17 +125,17 @@ module.exports = (db) => {
         const correctOption = req.body.correctOption || '';
         const optionsLayoutMode = req.body.optionsLayoutMode || 'text';
 
-        const mainQuestionImage = req.files && req.files['imageFile'] && req.files['imageFile'][0]
-            ? req.files['imageFile'][0].filename
+        const mainQuestionImage = req.files?.['imageFile']?.[0]
+            ? processUploadedFile(req.files['imageFile'][0])
             : (req.body.imageFileTextFallback ? req.body.imageFileTextFallback.trim() : null);
 
         let finalOptionA = '', finalOptionB = '', finalOptionC = '', finalOptionD = '';
 
         if (optionsLayoutMode === 'image') {
-            finalOptionA = req.files?.['optiona_File']?.[0]?.filename || req.body.optionATextFallback?.trim() || '';
-            finalOptionB = req.files?.['optionb_File']?.[0]?.filename || req.body.optionBTextFallback?.trim() || '';
-            finalOptionC = req.files?.['optionc_File']?.[0]?.filename || req.body.optionCTextFallback?.trim() || '';
-            finalOptionD = req.files?.['optiond_File']?.[0]?.filename || req.body.optionDTextFallback?.trim() || '';
+            finalOptionA = req.files?.['optiona_File']?.[0] ? processUploadedFile(req.files['optiona_File'][0]) : req.body.optionATextFallback?.trim() || '';
+            finalOptionB = req.files?.['optionb_File']?.[0] ? processUploadedFile(req.files['optionb_File'][0]) : req.body.optionBTextFallback?.trim() || '';
+            finalOptionC = req.files?.['optionc_File']?.[0] ? processUploadedFile(req.files['optionc_File'][0]) : req.body.optionCTextFallback?.trim() || '';
+            finalOptionD = req.files?.['optiond_File']?.[0] ? processUploadedFile(req.files['optiond_File'][0]) : req.body.optionDTextFallback?.trim() || '';
         } else {
             finalOptionA = req.body.optionA?.trim() || '';
             finalOptionB = req.body.optionB?.trim() || '';
@@ -110,15 +161,17 @@ module.exports = (db) => {
     router.post('/edit', examUploadFieldsConfig, (req, res) => {
         const { id, question, correctOption, optionsLayoutMode, existingImagePath, existingOptA, existingOptB, existingOptC, existingOptD, imageFileTextFallback, optionATextFallback, optionBTextFallback, optionCTextFallback, optionDTextFallback } = req.body;
 
-        const imagePath = req.files?.['imageFile']?.[0]?.filename || imageFileTextFallback?.trim() || existingImagePath;
+        const imagePath = req.files?.['imageFile']?.[0]
+            ? processUploadedFile(req.files['imageFile'][0])
+            : imageFileTextFallback?.trim() || existingImagePath;
 
         let finalOptionA = '', finalOptionB = '', finalOptionC = '', finalOptionD = '';
 
         if (optionsLayoutMode === 'image') {
-            finalOptionA = req.files?.['optiona_File']?.[0]?.filename || optionATextFallback?.trim() || existingOptA;
-            finalOptionB = req.files?.['optionb_File']?.[0]?.filename || optionBTextFallback?.trim() || existingOptB;
-            finalOptionC = req.files?.['optionc_File']?.[0]?.filename || optionCTextFallback?.trim() || existingOptC;
-            finalOptionD = req.files?.['optiond_File']?.[0]?.filename || optionDTextFallback?.trim() || existingOptD;
+            finalOptionA = req.files?.['optiona_File']?.[0] ? processUploadedFile(req.files['optiona_File'][0]) : optionATextFallback?.trim() || existingOptA;
+            finalOptionB = req.files?.['optionb_File']?.[0] ? processUploadedFile(req.files['optionb_File'][0]) : optionBTextFallback?.trim() || existingOptB;
+            finalOptionC = req.files?.['optionc_File']?.[0] ? processUploadedFile(req.files['optionc_File'][0]) : optionCTextFallback?.trim() || existingOptC;
+            finalOptionD = req.files?.['optiond_File']?.[0] ? processUploadedFile(req.files['optiond_File'][0]) : optionDTextFallback?.trim() || existingOptD;
         } else {
             finalOptionA = req.body.optionA?.trim() || '';
             finalOptionB = req.body.optionB?.trim() || '';
