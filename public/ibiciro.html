@@ -433,6 +433,10 @@
             </div>
 
             <div class="input-form-field">
+                <label>Amazina yawe</label>
+                <input type="text" id="customerNameInput" placeholder="Amazina yawe yuzuye">
+            </div>
+            <div class="input-form-field">
                 <label>Umubare w'Ibizamini</label>
                 <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
                 <div id="dynamicPricingHelperLabel" style="font-size: 10px; margin-top: 2px; font-weight: 600;"></div>
@@ -526,7 +530,7 @@
                     checkoutIntentType: 'PERSONAL',
                     examQuantityVolume: qtyInput.value,
                     pricePerExam: unitPrice,
-                    customerName: 'Ikizame Customer',
+                    customerName: (document.getElementById('customerNameInput').value.trim() || 'Ikizame Customer'),
                     customerEmail: 'customer@ikizame.rw'
                 })
             })
