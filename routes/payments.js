@@ -1,10 +1,12 @@
 const express = require('express');
 const axios   = require('axios');
+const crypto  = require('crypto');
 
-const BASE_URL     = process.env.RWANDAPAY_BASE_URL    || 'https://api.rwandapay.rw';
-const SECRET_KEY   = process.env.RWANDAPAY_SECRET_KEY;
-const PUBLIC_KEY   = process.env.RWANDAPAY_PUBLIC_KEY;
-const CALLBACK_URL = process.env.RWANDAPAY_CALLBACK_URL || 'https://ikizame.rw/api/payments/callback';
+const BASE_URL       = process.env.RWANDAPAY_BASE_URL       || 'https://api.rwandapay.rw';
+const SECRET_KEY     = process.env.RWANDAPAY_SECRET_KEY;
+const PUBLIC_KEY     = process.env.RWANDAPAY_PUBLIC_KEY;
+const CALLBACK_URL   = process.env.RWANDAPAY_CALLBACK_URL   || 'https://ikizame.rw/api/payments/callback';
+const WEBHOOK_SECRET = process.env.RWANDAPAY_WEBHOOK_SECRET;
 
 module.exports = (db) => {
     const router = express.Router();
@@ -106,6 +108,16 @@ module.exports = (db) => {
 
     // POST — RwandaPay webhook callback (called by RwandaPay server when payment completes)
     router.post('/callback', (req, res) => {
+        // Verify webhook signature if secret is configured
+        if (WEBHOOK_SECRET) {
+            const signature = req.headers['x-rwandapay-signature'] || req.headers['x-webhook-signature'] || '';
+            const expected  = crypto.createHmac('sha256', WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('hex');
+            if (signature && signature !== expected) {
+                console.warn('⚠️  Invalid webhook signature — request rejected');
+                return res.status(401).json({ ok: false, error: 'Invalid signature' });
+            }
+        }
+
         const body = req.body;
 
         // RwandaPay may send: tx_ref or reference, status, id or transaction_id
