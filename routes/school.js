@@ -1,7 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const axios  = require('axios');
 const BCRYPT_ROUNDS = 10;
+
+const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
+const PAYPACK_CLIENT = process.env.PAYPACK_CLIENT_ID;
+const PAYPACK_SECRET = process.env.PAYPACK_CLIENT_SECRET;
+let _tok = null, _tokExp = 0;
+async function getToken() {
+    if (_tok && Date.now() < _tokExp - 30000) return _tok;
+    const { data } = await axios.post(`${PAYPACK_BASE}/auth/agents/authorize`,
+        { client_id: PAYPACK_CLIENT, client_secret: PAYPACK_SECRET },
+        { headers: { 'Content-Type': 'application/json' }, timeout: 10000 }
+    );
+    _tok = data.access; _tokExp = data.expires * 1000;
+    return _tok;
+}
 
 module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
 
@@ -131,42 +146,55 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
         });
     });
 
-    // POST renew license
-    router.post('/renew-license', (req, res) => {
+    // POST renew license — real Paypack USSD push
+    router.post('/renew-license', async (req, res) => {
         if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session timeout.' });
         const { phoneNumber } = req.body;
-        const schoolId = req.session.schoolAccountId;
+        const schoolId   = req.session.schoolAccountId;
+        const schoolName = req.session.schoolAccountName;
 
         if (!phoneNumber || phoneNumber.trim().length < 10) return res.status(400).json({ success: false, error: 'Injiza nomero ya telephone yuzuye.' });
 
-        let cleanPhone = phoneNumber.toString().replace(/[\s\-\+]+/g, '').trim();
-        if (cleanPhone.startsWith('250')) cleanPhone = '0' + cleanPhone.substring(3);
+        let phone = phoneNumber.toString().replace(/[\s\-\+]+/g, '').trim();
+        if (phone.startsWith('250')) phone = '0' + phone.substring(3);
+        if (phone.length < 10) return res.status(400).json({ success: false, error: "Nomero yishuriwe ntabwo ari iy'i Rwanda." });
 
-        const flatSchoolRateAmount = 10000;
-        const uniqueTxRef = 'SCH_REF_' + Date.now();
-        const institutionalPlanLabel = `School Driving Pass (Licensed Owner: ${req.session.schoolAccountName})`;
-        const startingExamsCountAllocation = 9999;
-        const schoolPricePerExam = Number((flatSchoolRateAmount / startingExamsCountAllocation).toFixed(2));
+        const amount    = 10000;
+        const planLabel = `School Driving Pass (${schoolName})`;
+        const txRef     = 'SCH_REF_' + Date.now();
 
         db.query(
-            `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, status, total_exams, remaining_exams, price_per_exam, school_id) VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?)`,
-            [cleanPhone, flatSchoolRateAmount, institutionalPlanLabel, uniqueTxRef, startingExamsCountAllocation, startingExamsCountAllocation, schoolPricePerExam, schoolId],
-            (insertErr) => {
+            `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, status, total_exams, remaining_exams, price_per_exam, school_id) VALUES (?, ?, ?, ?, 'PENDING', 9999, 9999, ?, ?)`,
+            [phone, amount, planLabel, txRef, Number((amount / 9999).toFixed(2)), schoolId],
+            async (insertErr) => {
                 if (insertErr) return res.status(500).json({ success: false, error: 'Database error: ' + insertErr.message });
-
-                setTimeout(() => {
-                    db.query(`UPDATE payment_transactions SET status = 'SUCCESS' WHERE reference_id = ?`, [uniqueTxRef], (upErr) => {
-                        if (!upErr) {
-                            req.session.hasPaidPremiumAccess = true;
-                            req.session.paidPlanType = institutionalPlanLabel;
-                            req.session.examPhoneNumber = cleanPhone;
-                        }
-                    });
-                }, 4000);
-
-                res.json({ success: true, referenceId: uniqueTxRef, message: 'Processing your payment...' });
+                try {
+                    const token = await getToken();
+                    const { data } = await axios.post(
+                        `${PAYPACK_BASE}/transactions/cashin`,
+                        { amount, number: phone },
+                        { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Webhook-Mode': 'production' }, timeout: 20000 }
+                    );
+                    const paypackRef = data?.ref || null;
+                    if (paypackRef) db.query(`UPDATE payment_transactions SET rwandapay_tx_id = ? WHERE reference_id = ?`, [paypackRef, txRef], () => {});
+                    console.log(`✅ School cashin initiated: ${txRef} → ${paypackRef}`);
+                    res.json({ success: true, referenceId: txRef, paypackRef });
+                } catch (apiErr) {
+                    const msg = apiErr.response?.data?.message || apiErr.message || 'Paypack API error';
+                    db.query(`UPDATE payment_transactions SET status = 'FAILED' WHERE reference_id = ?`, [txRef], () => {});
+                    res.status(502).json({ success: false, error: 'Kwishyura byanze: ' + msg });
+                }
             }
         );
+    });
+
+    // GET poll renewal status
+    router.get('/renew-status/:refId', (req, res) => {
+        if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false });
+        db.query(`SELECT status FROM payment_transactions WHERE reference_id = ?`, [req.params.refId], (err, rows) => {
+            if (err || !rows.length) return res.json({ status: 'PENDING' });
+            res.json({ status: rows[0].status });
+        });
     });
 
     // POST forgot password — rate limited
