@@ -131,11 +131,15 @@ app.use((req, res, next) => {
             .replace(/^::ffff:/i, '')
             .replace(/^::1$/, '127.0.0.1')
             .trim();
+        // Only insert once per IP per day — ignore if already exists today
         db.query(
-            `INSERT INTO site_visitors (ip_address, visited_at, visit_count)
-             VALUES (?, NOW(), 1)
-             ON DUPLICATE KEY UPDATE visit_count = visit_count + 1`,
-            [ip],
+            `INSERT IGNORE INTO site_visitors (ip_address, visited_at, visit_count)
+             SELECT ?, NOW(), 1 FROM DUAL
+             WHERE NOT EXISTS (
+                 SELECT 1 FROM site_visitors
+                 WHERE ip_address = ? AND DATE(visited_at) = CURDATE()
+             )`,
+            [ip, ip],
             () => {}
         );
     }
