@@ -88,6 +88,11 @@
         .search-bar-wrap input { border:none; outline:none; font-size:13.5px; font-family:inherit; flex:1; color:#0f172a; background:transparent; }
         .search-bar-wrap input::placeholder { color:#94a3b8; }
         .search-count { font-size:12px; color:var(--muted); white-space:nowrap; }
+        .section-title { font-size:15px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px; }
+        .section-title span { font-size:11px; font-weight:700; background:rgba(16,185,129,.12); color:#065f46; padding:3px 10px; border-radius:20px; }
+        .paypack-ref { font-family:monospace; font-size:12px; color:#0369a1; }
+        .net-mtn { display:inline-block; font-size:10px; font-weight:800; background:#fef3c7; color:#92400e; padding:2px 7px; border-radius:20px; margin-left:4px; vertical-align:middle; }
+        .net-airtel { display:inline-block; font-size:10px; font-weight:800; background:#fee2e2; color:#991b1b; padding:2px 7px; border-radius:20px; margin-left:4px; vertical-align:middle; }
         @media (max-width: 960px) { .grid { grid-template-columns:1fr; } .sidebar { width:220px; } }
         @media (max-width: 720px) { .shell { flex-direction:column; } .sidebar { width:100%; flex-direction:row; overflow-x:auto; } .sidebar-nav { flex-direction:row; gap:8px; padding:12px; } .sidebar-footer { display:none; } }
     </style>
@@ -186,6 +191,39 @@
                     </tbody>
                 </table>
             </div>
+            <!-- ═══ PAYPACK OFFICIAL CONFIRMED TRANSACTIONS ═══ -->
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                <div class="section-title">
+                    <i class="fa-solid fa-circle-check" style="color:#10b981;"></i>
+                    Paypack Official Transactions
+                    <span>Live from paypack.rw</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div class="search-bar-wrap" style="min-width:220px;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="ppSearch" placeholder="Search phone or ref..." oninput="filterPaypack(this.value)">
+                    </div>
+                    <button class="btn-primary" onclick="loadPaypackTransactions()" style="white-space:nowrap;"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NO.</th>
+                            <th>Paypack Ref</th>
+                            <th>Phone</th>
+                            <th>Amount (RWF)</th>
+                            <th>Kind</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ppTableBody">
+                        <tr><td colspan="7" style="text-align:center; padding:30px; color:#64748b;">Click Refresh to load official Paypack transactions...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -272,16 +310,18 @@
                 paymentTransactions = Array.isArray(data) ? data : [];
                 const body = document.getElementById('transactionsTableBody');
                 if (!paymentTransactions.length) {
-                    body.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
+                    body.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
                     return;
                 }
                 body.innerHTML = paymentTransactions.map((tx, i) => {
                     const statusClass = tx.status === 'SUCCESS' ? 'success' : tx.status === 'PENDING' ? 'pending' : 'error';
-                    const created = new Date(tx.created_at || tx.createdAt || tx.createdAt).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                    const created = new Date(tx.created_at || tx.createdAt).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                    const realRef = tx.rwandapay_tx_id || tx.reference_id || '---';
+                    const network = detectNetwork(tx.phone_number);
                     return `<tr data-phone="${tx.phone_number || ''}">
                         <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
-                        <td>${tx.phone_number}</td>
-                        <td>${tx.reference_id || tx.referenceId || '---'}</td>
+                        <td>${tx.phone_number} ${network}</td>
+                        <td class="paypack-ref">${realRef}</td>
                         <td>${tx.plan_name || tx.planName || '---'}</td>
                         <td><span class="status-pill ${statusClass}">${tx.status || 'UNKNOWN'}</span></td>
                         <td>${formatCurrency(tx.amount || 0)}</td>
@@ -294,8 +334,16 @@
                 }).join('');
             })
             .catch(() => {
-                document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="9" style="text-align:center; padding:30px; color:#ef4444;">Unable to load transactions.</td></tr>';
+                document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="12" style="text-align:center; padding:30px; color:#ef4444;">Unable to load transactions.</td></tr>';
             });
+    }
+
+    function detectNetwork(phone) {
+        const p = (phone || '').replace(/\D/g, '');
+        const local = p.startsWith('250') ? '0' + p.slice(3) : p;
+        if (/^07[89]/.test(local)) return '<span class="net-mtn">MTN</span>';
+        if (/^07[23]/.test(local)) return '<span class="net-airtel">Airtel</span>';
+        return '';
     }
 
     function formatExamPrice(value) {
@@ -372,6 +420,54 @@
         })
         .catch(err => {
             alert(err.message || 'Update failed.');
+        });
+    }
+
+    let ppTransactions = [];
+
+    function loadPaypackTransactions() {
+        const body = document.getElementById('ppTableBody');
+        body.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>';
+        fetch('/api/admin/paypack-transactions?limit=200')
+            .then(r => r.json())
+            .then(data => {
+                ppTransactions = Array.isArray(data?.transactions) ? data.transactions
+                    : Array.isArray(data) ? data : [];
+                renderPaypack(ppTransactions);
+            })
+            .catch(() => {
+                body.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#ef4444;">Failed to load Paypack transactions.</td></tr>';
+            });
+    }
+
+    function renderPaypack(list) {
+        const body = document.getElementById('ppTableBody');
+        if (!list.length) {
+            body.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#64748b;">No transactions found.</td></tr>';
+            return;
+        }
+        body.innerHTML = list.map((tx, i) => {
+            const isSuccess = (tx.status || '').toLowerCase() === 'successful';
+            const statusClass = isSuccess ? 'success' : (tx.status || '').toLowerCase() === 'pending' ? 'pending' : 'error';
+            const date = tx.created_at ? new Date(tx.created_at).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+            const phone = tx.client || tx.number || '';
+            const network = detectNetwork(phone);
+            return `<tr data-pp="${(tx.ref||'').toLowerCase()} ${phone.toLowerCase()}">
+                <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
+                <td class="paypack-ref">${tx.ref || '—'}</td>
+                <td>${phone} ${network}</td>
+                <td>${formatCurrency(tx.amount || 0)}</td>
+                <td>${tx.kind || '—'}</td>
+                <td><span class="status-pill ${statusClass}">${tx.status || 'UNKNOWN'}</span></td>
+                <td>${date}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    function filterPaypack(q) {
+        const term = q.trim().toLowerCase();
+        document.querySelectorAll('#ppTableBody tr[data-pp]').forEach(row => {
+            row.style.display = !term || row.dataset.pp.includes(term) ? '' : 'none';
         });
     }
 

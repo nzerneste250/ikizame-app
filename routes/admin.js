@@ -1,7 +1,22 @@
 const express = require('express');
 const bcrypt  = require('bcrypt');
+const axios   = require('axios');
 const BCRYPT_ROUNDS = 10;
 const { requireAdminLogin, getAdminSessionState } = require('../middleware/auth');
+
+const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
+const PAYPACK_CLIENT = process.env.PAYPACK_CLIENT_ID;
+const PAYPACK_SECRET = process.env.PAYPACK_CLIENT_SECRET;
+let _cachedToken = null, _tokenExpires = 0;
+async function getAdminToken() {
+    if (_cachedToken && Date.now() < _tokenExpires - 30000) return _cachedToken;
+    const { data } = await axios.post(`${PAYPACK_BASE}/auth/agents/authorize`,
+        { client_id: PAYPACK_CLIENT, client_secret: PAYPACK_SECRET },
+        { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, timeout: 10000 }
+    );
+    _cachedToken = data.access; _tokenExpires = data.expires * 1000;
+    return _cachedToken;
+}
 
 module.exports = (db, loginLimiter) => {
     const router = express.Router();
@@ -61,7 +76,7 @@ module.exports = (db, loginLimiter) => {
     // GET all payment transactions
     router.get('/payment-transactions', requireAdminLogin, (req, res) => {
         db.query(
-            `SELECT id, phone_number, amount, plan_name, reference_id, status, total_exams, remaining_exams, price_per_exam, created_at FROM payment_transactions ORDER BY created_at DESC`,
+            `SELECT id, phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, created_at FROM payment_transactions ORDER BY created_at DESC`,
             (err, rows) => {
                 if (err) return res.status(500).json({ error: err.message });
                 res.json(rows);
@@ -297,6 +312,23 @@ module.exports = (db, loginLimiter) => {
                 });
             }
         );
+    });
+
+    // GET official Paypack merchant transactions (confirmed/successful)
+    router.get('/paypack-transactions', requireAdminLogin, async (req, res) => {
+        try {
+            const token = await getAdminToken();
+            const offset = parseInt(req.query.offset) || 0;
+            const limit  = parseInt(req.query.limit)  || 100;
+            const { data } = await axios.get(
+                `${PAYPACK_BASE}/transactions/list?offset=${offset}&limit=${limit}`,
+                { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }, timeout: 15000 }
+            );
+            res.json(data);
+        } catch (err) {
+            const msg = err.response?.data?.message || err.message || 'Paypack API error';
+            res.status(502).json({ error: msg });
+        }
     });
 
     // GET backup status — reads files from /var/backups/ikizame/Database/
