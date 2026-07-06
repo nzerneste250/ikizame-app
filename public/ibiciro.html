@@ -516,32 +516,31 @@
             const unitPrice = pricePerExamForPurchaseQuantity(qty);
 
             if(!phoneVal || phoneVal.length < 10) { alert('Injiza nomero ya telephone yuzuye.'); return; }
-            payBtn.disabled = true; btnText.textContent = 'Emeza PIN...'; btnIcon.className = 'fa-solid fa-spinner fa-spin';
+            payBtn.disabled = true; btnText.textContent = 'Gutegura...'; btnIcon.className = 'fa-solid fa-spinner fa-spin';
 
             fetch('/api/payments/momo-push', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phoneNumber: phoneVal, checkoutIntentType: 'PERSONAL', examQuantityVolume: qtyInput.value, pricePerExam: unitPrice })
+                body: JSON.stringify({
+                    phoneNumber: phoneVal,
+                    checkoutIntentType: 'PERSONAL',
+                    examQuantityVolume: qtyInput.value,
+                    pricePerExam: unitPrice,
+                    customerName: 'Ikizame Customer',
+                    customerEmail: 'customer@ikizame.rw'
+                })
             })
             .then(res => res.json())
             .then(data => {
-                if(data.success) {
-                    let iterations = 0;
-                    const pollingTimer = setInterval(() => {
-                        iterations++;
-                        fetch(`/api/payments/verify/${data.referenceId}`)
-                            .then(r => r.json())
-                            .then(statusLog => {
-                                if(statusLog.status === 'SUCCESS' || iterations >= 2) {
-                                    clearInterval(pollingTimer); closeTestPaymentModal();
-                                    document.getElementById('customAlertBoxTextContentMessage').textContent = `Kwishura byagenze neza! Konti yafunguwe.`;
-                                    document.getElementById('customBrandedSuccessAlertBoxModal').style.display = "flex";
-                                }
-                            });
-                    }, 2500);
+                if(data.success && data.paymentUrl) {
+                    // Redirect customer to RwandaPay hosted checkout page
+                    window.location.href = data.paymentUrl;
                 } else {
                     alert(data.error || 'Uburyo bwanze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
                 }
+            })
+            .catch(() => {
+                alert('Ikibazo cya internet. Ongera ugerageze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
             });
         };
         window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };
@@ -589,6 +588,24 @@
         };
 
         window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };
+
+        // Handle redirect back from RwandaPay after payment
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const ref    = params.get('ref');
+            const status = (params.get('status') || '').toLowerCase();
+            if (ref && (status === 'successful' || status === 'success' || status === 'completed')) {
+                fetch(`/api/payments/verify/${ref}`)
+                    .then(r => r.json())
+                    .then(d => {
+                        document.getElementById('customAlertBoxTextContentMessage').textContent =
+                            d.status === 'SUCCESS'
+                                ? 'Kwishura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.'
+                                : 'Kwishura birategerezwa. Niba warishuye, konti izafunguka vuba.';
+                        document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
+                    });
+            }
+        })();
     </script>
 </body>
 </html>
