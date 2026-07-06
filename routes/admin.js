@@ -326,9 +326,9 @@ module.exports = (db, loginLimiter) => {
             );
             const list = Array.isArray(data?.transactions) ? data.transactions
                 : Array.isArray(data) ? data : [];
-            // Normalize status field — pass raw value through, map colors only
-            const normalized = list.map(tx => ({ ...tx, status: tx.status || tx.Status || tx.state || 'unknown' }));
-            res.json({ transactions: normalized, total: data?.total || normalized.length });
+            // Log first item to see real field names from Paypack
+            if (list.length > 0) console.log('[Paypack TX sample]', JSON.stringify(list[0]));
+            res.json({ transactions: list, total: data?.total || list.length });
         } catch (err) {
             const msg = err.response?.data?.message || err.message || 'Paypack API error';
             res.status(502).json({ error: msg });
