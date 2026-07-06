@@ -488,6 +488,16 @@
     </button>
 
     <script>
+        // ── GUARD: redirect to amanota if no valid session data ──
+        (function() {
+            const phone = sessionStorage.getItem('phoneNumber');
+            const questions = sessionStorage.getItem('shuffledQuestionsReview');
+            const score = sessionStorage.getItem('latestScore');
+            if (!phone || !questions || score === null) {
+                window.location.replace('/amanota');
+            }
+        })();
+
         document.addEventListener('DOMContentLoaded', () => {
             // Back to top button
             const backToTopBtn = document.getElementById('backToTopBtn');
