@@ -90,7 +90,7 @@
         /* Summary Cards Grid container */
         .grid { 
             display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
+            grid-template-columns: repeat(5, 1fr); 
             gap: 20px; 
             flex-shrink: 0; 
         }
@@ -372,6 +372,14 @@
                             <input type="checkbox" id="duplicateToggleSwitch" name="duplicateToggleSwitch">
                             <span class="slider-toggle"></span>
                         </label>
+                    </div>
+                </div>
+                <!-- BACKUP CARD -->
+                <div class="summary-card" onclick="openBackupModal()" style="border-left:4px solid #0b698b;">
+                    <div class="badge-square" style="background:#e0f2fe; color:#0369a1;"><i class="fa-solid fa-database"></i></div>
+                    <div>
+                        <p id="cardBackupCount" style="color:#0b698b;">--</p>
+                        <h3 class="lbl-muted">DB Backups</h3>
                     </div>
                 </div>
             </div>
@@ -996,6 +1004,29 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     loadRepositoryQuestionsPool();
+
+    fetch('/api/admin/backup-status').then(r=>r.json()).then(d=>{
+        document.getElementById('cardBackupCount').textContent=d.total||0;
+    }).catch(()=>{});
+
+    window.openBackupModal=function(){
+        document.getElementById('backupModal').style.display='flex';
+        document.getElementById('bkpTableBody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:#64748b"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>';
+        fetch('/api/admin/backup-status').then(r=>r.json()).then(data=>{
+            const b=data.backups||[];
+            document.getElementById('bkpTotal').textContent=b.length;
+            document.getElementById('bkpLatest').textContent=b.length?new Date(b[0].date).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'No backups yet';
+            const tb=b.reduce((s,x)=>s+x.size,0);
+            document.getElementById('bkpSize').textContent=tb>1048576?(tb/1048576).toFixed(2)+' MB':(tb/1024).toFixed(1)+' KB';
+            const tbody=document.getElementById('bkpTableBody');
+            if(!b.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px">No backups found.</td></tr>';return;}
+            tbody.innerHTML=b.map((x,i)=>{
+                const sz=x.size>1048576?(x.size/1048576).toFixed(2)+' MB':(x.size/1024).toFixed(1)+' KB';
+                const dt=new Date(x.date).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+                return '<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:10px 8px;font-weight:700;color:#0b698b">'+(i+1)+'</td><td style="padding:10px 8px;font-family:monospace;font-size:11px">'+x.name+'</td><td style="padding:10px 8px;color:#475569">'+dt+'</td><td style="padding:10px 8px;text-align:right;font-weight:700">'+sz+'</td><td style="padding:10px 8px;text-align:center"><span style="background:#dcfce7;color:#166534;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px"><i class="fa-solid fa-circle-check"></i> OK</span></td></tr>';
+            }).join('');
+        }).catch(()=>{document.getElementById('bkpTableBody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:#ef4444">Failed to load.</td></tr>';});
+    };
 });
 </script>
 <!-- ==========================================================================
@@ -1038,6 +1069,49 @@ document.addEventListener('DOMContentLoaded', () => {
             <button onclick="closeAnswerSheetModal()" class="review-modal-close">Back</button>
         </div>
         <div class="review-modal-content" id="answerSheetBody">
+        </div>
+    </div>
+</div>
+
+<!-- BACKUP MODAL -->
+<div id="backupModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); z-index:9200; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:16px; width:92%; max-width:620px; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 24px 48px rgba(0,0,0,0.3);">
+        <div style="padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+            <div>
+                <h3 style="font-size:16px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-database" style="color:#0b698b;"></i> Database Backup Status</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin-top:2px;">Auto-runs daily at 2:00 AM &middot; Keeps last 7 &middot; Pushed to GitHub</p>
+            </div>
+            <button onclick="document.getElementById('backupModal').style.display='none'" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:16px; color:#64748b; font-weight:700;">&#x2715;</button>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:16px 24px; flex-shrink:0; border-bottom:1px solid var(--border);">
+            <div style="background:#f8fafc; border-radius:10px; padding:14px; text-align:center;">
+                <div style="font-size:1.6rem; font-weight:800; color:#0b698b;" id="bkpTotal">--</div>
+                <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-top:2px;">Total Backups</div>
+            </div>
+            <div style="background:#f8fafc; border-radius:10px; padding:14px; text-align:center;">
+                <div style="font-size:1rem; font-weight:800; color:#10b981;" id="bkpLatest">--</div>
+                <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-top:2px;">Latest Backup</div>
+            </div>
+            <div style="background:#f8fafc; border-radius:10px; padding:14px; text-align:center;">
+                <div style="font-size:1.6rem; font-weight:800; color:#6b21a8;" id="bkpSize">--</div>
+                <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-top:2px;">Total Storage</div>
+            </div>
+        </div>
+        <div style="flex:1; overflow-y:auto; padding:0 24px 20px;">
+            <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:12px;">
+                <thead>
+                    <tr style="border-bottom:2px solid var(--border); color:var(--text-muted); font-weight:700;">
+                        <th style="padding:10px 8px;">#</th>
+                        <th style="padding:10px 8px;">Filename</th>
+                        <th style="padding:10px 8px;">Date &amp; Time</th>
+                        <th style="padding:10px 8px; text-align:right;">Size</th>
+                        <th style="padding:10px 8px; text-align:center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="bkpTableBody">
+                    <tr><td colspan="5" style="text-align:center; padding:24px; color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

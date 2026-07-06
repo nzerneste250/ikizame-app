@@ -299,6 +299,25 @@ module.exports = (db, loginLimiter) => {
         );
     });
 
+    // GET backup status — reads files from /var/backups/ikizame/Database/
+    router.get('/backup-status', requireAdminLogin, (req, res) => {
+        const fs = require('fs');
+        const path = require('path');
+        const backupDir = '/var/backups/ikizame/Database';
+        try {
+            const files = fs.readdirSync(backupDir)
+                .filter(f => f.endsWith('.sql'))
+                .map(f => {
+                    const stat = fs.statSync(path.join(backupDir, f));
+                    return { name: f, size: stat.size, date: stat.mtime };
+                })
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+            res.json({ backups: files, total: files.length });
+        } catch (e) {
+            res.json({ backups: [], total: 0, error: e.message });
+        }
+    });
+
     return router;
 };
 
