@@ -529,19 +529,16 @@
                     phoneNumber: phoneVal,
                     checkoutIntentType: 'PERSONAL',
                     examQuantityVolume: qtyInput.value,
-                    pricePerExam: unitPrice,
-                    customerName: (document.getElementById('customerNameInput').value.trim() || 'Ikizame Customer'),
-                    customerEmail: 'customer@ikizame.rw'
+                    pricePerExam: unitPrice
                 })
             })
             .then(res => res.json())
             .then(data => {
-                if(data.success && data.paymentUrl) {
-                    // Open RwandaPay checkout in a popup window
-                    const popup = window.open(data.paymentUrl, 'rwandapay_checkout', 'width=480,height=680,top=100,left=' + Math.round((screen.width - 480) / 2));
-                    closeTestPaymentModal();
+                if(data.success) {
+                    // Direct USSD push sent — show waiting message and poll
+                    btnText.textContent = 'Emeza kuri telephone...';
+                    btnIcon.className = 'fa-solid fa-mobile-screen-button fa-beat';
 
-                    // Poll payment status while popup is open
                     let elapsed = 0;
                     const pollTimer = setInterval(() => {
                         elapsed += 3;
@@ -550,21 +547,20 @@
                             .then(d => {
                                 if (d.status === 'SUCCESS') {
                                     clearInterval(pollTimer);
-                                    if (popup && !popup.closed) popup.close();
+                                    closeTestPaymentModal();
                                     document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.';
                                     document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
-                                } else if (d.status === 'FAILED' || elapsed >= 180) {
+                                } else if (d.status === 'FAILED') {
                                     clearInterval(pollTimer);
-                                    if (popup && !popup.closed) popup.close();
-                                    if (elapsed >= 180) {
-                                        fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
-                                        alert('Igihe cyarangiye (iminota 3). Kwishura byahagaritswe. Ongera ugerageze.');
-                                    } else {
-                                        alert('Kwishura byanze. Ongera ugerageze.');
-                                    }
+                                    alert('Kwishura byanze. Ongera ugerageze.');
+                                    payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
+                                } else if (elapsed >= 180) {
+                                    clearInterval(pollTimer);
+                                    fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
+                                    alert('Igihe cyarangiye (iminuta 3). Ongera ugerageze.');
+                                    payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
                                 }
                             });
-                        if (popup && popup.closed) clearInterval(pollTimer);
                     }, 3000);
                 } else {
                     alert(data.error || 'Uburyo bwanze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';

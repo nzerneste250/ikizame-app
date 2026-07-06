@@ -2,19 +2,32 @@ const express = require('express');
 const axios   = require('axios');
 const crypto  = require('crypto');
 
-const BASE_URL       = 'https://pay.rwandapay.rw/api/v1';
-const SECRET_KEY     = process.env.RWANDAPAY_SECRET_KEY;
-const PUBLIC_KEY     = process.env.RWANDAPAY_PUBLIC_KEY;
-const WEBHOOK_SECRET = process.env.RWANDAPAY_WEBHOOK_SECRET;
-const REDIRECT_URL   = 'https://ikizame.rw/ibiciro';
-const WEBHOOK_URL    = 'https://ikizame.rw/api/payments/callback';
+const PAYPACK_BASE     = 'https://payments.paypack.rw/api';
+const PAYPACK_CLIENT   = process.env.PAYPACK_CLIENT_ID;
+const PAYPACK_SECRET   = process.env.PAYPACK_CLIENT_SECRET;
+const WEBHOOK_SECRET   = process.env.PAYPACK_WEBHOOK_SECRET;
+
+// ── Token cache (access token expires in ~15min) ──────────────────────────
+let cachedToken   = null;
+let tokenExpires  = 0;
+
+async function getAccessToken() {
+    if (cachedToken && Date.now() < tokenExpires - 30000) return cachedToken;
+    const { data } = await axios.post(`${PAYPACK_BASE}/auth/agents/authorize`,
+        { client_id: PAYPACK_CLIENT, client_secret: PAYPACK_SECRET },
+        { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, timeout: 10000 }
+    );
+    cachedToken  = data.access;
+    tokenExpires = data.expires * 1000;
+    return cachedToken;
+}
 
 module.exports = (db) => {
     const router = express.Router();
 
-    // POST — initiate hosted checkout session
+    // POST — initiate direct USSD push (no redirect, no popup)
     router.post('/momo-push', async (req, res) => {
-        const { phoneNumber, checkoutIntentType, examQuantityVolume, pricePerExam, customerName, customerEmail } = req.body;
+        const { phoneNumber, checkoutIntentType, examQuantityVolume, pricePerExam } = req.body;
 
         if (!phoneNumber || !checkoutIntentType)
             return res.status(400).json({ success: false, error: 'Missing mandatory payment fields.' });
@@ -38,7 +51,7 @@ module.exports = (db) => {
             planLabel = `Personal Tiered Pass (${qty} Exams Package)`;
         }
 
-        const txRef        = 'RWP_REF_' + Date.now();
+        const txRef        = 'PKP_REF_' + Date.now();
         const submittedPx  = Number(pricePerExam);
         const validPrices  = [100, 80, 70, 50];
         const priceToStore = validPrices.includes(submittedPx) ? submittedPx : getPricePerExam(examCount);
@@ -53,56 +66,42 @@ module.exports = (db) => {
                     return res.status(500).json({ success: false, error: 'Database Write Error: ' + insertErr.message });
 
                 try {
+                    const token = await getAccessToken();
+
                     const { data } = await axios.post(
-                        `${BASE_URL}/checkout/initialize`,
-                        {
-                            amount:       amount,
-                            currency:     'RWF',
-                            tx_ref:       txRef,
-                            description:  planLabel,
-                            redirect_url: REDIRECT_URL + '?ref=' + txRef,
-                            webhook_url:  WEBHOOK_URL,
-                            customer: {
-                                name:  customerName  || 'Ikizame Customer',
-                                email: customerEmail || 'customer@ikizame.rw',
-                                phone: phone
-                            }
-                        },
+                        `${PAYPACK_BASE}/transactions/cashin`,
+                        { amount, number: phone },
                         {
                             headers: {
-                                'X-Public-Key': PUBLIC_KEY,
-                                'X-Secret-Key': SECRET_KEY,
-                                'Content-Type': 'application/json',
-                                'Accept':       'application/json'
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type':  'application/json',
+                                'Accept':        'application/json',
+                                'X-Webhook-Mode': 'production'
                             },
                             timeout: 20000
                         }
                     );
 
-                    // Store RwandaPay transaction ID
-                    const rwTxId = data?.data?.id || data?.id || null;
-                    if (rwTxId) {
+                    // Store Paypack's transaction ref
+                    const paypackRef = data?.ref || null;
+                    if (paypackRef) {
                         db.query(
                             `UPDATE payment_transactions SET rwandapay_tx_id = ? WHERE reference_id = ?`,
-                            [String(rwTxId), txRef],
+                            [paypackRef, txRef],
                             () => {}
                         );
                     }
 
-                    // Return payment_url so frontend can redirect customer
-                    const paymentUrl = data?.data?.payment_url || data?.payment_url || null;
-                    if (!paymentUrl)
-                        return res.status(502).json({ success: false, error: 'RwandaPay did not return a payment URL.' });
-
-                    res.json({ success: true, referenceId: txRef, paymentUrl, allocatedPlan: planLabel });
+                    console.log(`✅ Paypack cashin initiated: ${txRef} → ${paypackRef}`);
+                    res.json({ success: true, referenceId: txRef, paypackRef, allocatedPlan: planLabel });
 
                 } catch (apiErr) {
                     const errMsg = apiErr.response?.data?.message
                         || apiErr.response?.data?.error
                         || apiErr.message
-                        || 'RwandaPay API error';
+                        || 'Paypack API error';
 
-                    console.error('❌ RwandaPay initiation error:', errMsg, apiErr.response?.data);
+                    console.error('❌ Paypack cashin error:', errMsg, apiErr.response?.data);
                     db.query(`UPDATE payment_transactions SET status = 'FAILED' WHERE reference_id = ?`, [txRef], () => {});
                     res.status(502).json({ success: false, error: 'Kwishyura byanze: ' + errMsg });
                 }
@@ -110,38 +109,40 @@ module.exports = (db) => {
         );
     });
 
-    // POST — RwandaPay webhook (server-to-server payment confirmation)
+    // POST — Paypack webhook callback
     router.post('/callback', (req, res) => {
+        // Verify signature
         if (WEBHOOK_SECRET) {
-            const signature = req.headers['x-rwandapay-signature'] || req.headers['x-webhook-signature'] || '';
-            const expected  = crypto.createHmac('sha256', WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('hex');
+            const signature = req.headers['x-paypack-signature'] || '';
+            const expected  = crypto.createHmac('sha256', WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('base64');
             if (signature && signature !== expected) {
-                console.warn('⚠️  Invalid webhook signature — rejected');
+                console.warn('⚠️  Invalid Paypack webhook signature — rejected');
                 return res.status(401).json({ ok: false });
             }
         }
 
         const body      = req.body;
-        const reference = body.tx_ref || body.reference || body.txRef;
-        const rawStatus = (body.status || '').toUpperCase();
-        const rwTxId    = body.id || body.transaction_id || null;
+        const eventKind = body.kind || '';
+        const txData    = body.data || body;
 
-        if (!reference) {
-            console.warn('⚠️  Callback received with no reference:', body);
-            return res.status(400).json({ ok: false });
+        // Only process transaction:processed events
+        if (eventKind !== 'transaction:processed' && !txData.ref) {
+            return res.status(200).json({ ok: true });
         }
 
-        const newStatus = ['SUCCESS', 'SUCCESSFUL', 'COMPLETED', 'PAID'].includes(rawStatus)
-            ? 'SUCCESS' : 'FAILED';
+        const paypackRef = txData.ref;
+        const rawStatus  = (txData.status || '').toLowerCase();
+        const newStatus  = rawStatus === 'successful' ? 'SUCCESS' : 'FAILED';
 
+        // Find our transaction by paypack ref and update it
         db.query(
             `UPDATE payment_transactions
-             SET status = ?, rwandapay_tx_id = COALESCE(?, rwandapay_tx_id)
-             WHERE reference_id = ?`,
-            [newStatus, rwTxId ? String(rwTxId) : null, reference],
-            (err) => {
+             SET status = ?
+             WHERE rwandapay_tx_id = ? AND status = 'PENDING'`,
+            [newStatus, paypackRef],
+            (err, result) => {
                 if (err) { console.error('❌ Callback DB error:', err.message); return res.status(500).json({ ok: false }); }
-                console.log(`✅ Payment callback: ${reference} → ${newStatus}`);
+                console.log(`✅ Paypack webhook: ${paypackRef} → ${newStatus} (${result.affectedRows} rows)`);
                 res.json({ ok: true });
             }
         );
