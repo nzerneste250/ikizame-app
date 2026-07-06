@@ -179,7 +179,6 @@
             <a href="system-performance" class="active" id="navLinkSysPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
             <a href="dashboard?view=analytics" id="navLinkPerformance"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
             <a href="upload-resource" id="navLinkResources"><i class="fa-solid fa-book-bookmark"></i> Upload Resources</a>
-            <a href="/system-performance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
             <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
         <div class="sidebar-footer">
@@ -217,6 +216,36 @@
                         <span class="lbl-green"><i class="fa-solid fa-arrow-trend-up"></i> <span id="perfVisitorsToday">—</span> today</span>
                     </div>
                 </div>
+            </section>
+
+            <!-- VISITOR BREAKDOWN PANEL -->
+            <section class="system-details-panel">
+                <div class="panel-heading">
+                    <i class="fa-solid fa-eye" style="color:var(--brand)"></i>
+                    <span>Website Visitors Breakdown</span>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:18px;">
+                    <div style="text-align:center; background:#f0f9ff; border:1px solid #bae6fd; border-radius:12px; padding:18px 10px;">
+                        <div style="font-size:2rem; font-weight:900; color:#0369a1;" id="visToday">—</div>
+                        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:6px;">Today</div>
+                    </div>
+                    <div style="text-align:center; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:18px 10px;">
+                        <div style="font-size:2rem; font-weight:900; color:#15803d;" id="visWeek">—</div>
+                        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:6px;">This Week</div>
+                    </div>
+                    <div style="text-align:center; background:#fdf4ff; border:1px solid #e9d5ff; border-radius:12px; padding:18px 10px;">
+                        <div style="font-size:2rem; font-weight:900; color:#7e22ce;" id="visMonth">—</div>
+                        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:6px;">This Month</div>
+                    </div>
+                    <div style="text-align:center; background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:18px 10px;">
+                        <div style="font-size:2rem; font-weight:900; color:#c2410c;" id="visYear">—</div>
+                        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:6px;">This Year</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CORE LIVE METRICS CARDS (latency, users, health) -->
+            <section class="grid-cards">
                 <!-- CARD 1: LATENCY -->
                 <div class="card" id="latencyCard">
                     <div class="card-header-row">
@@ -500,6 +529,10 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(d => {
             document.getElementById('perfVisitors').textContent = (d.total || 0).toLocaleString();
             document.getElementById('perfVisitorsToday').textContent = (d.today || 0).toLocaleString();
+            document.getElementById('visToday').textContent  = (d.today || 0).toLocaleString();
+            document.getElementById('visWeek').textContent   = (d.week  || 0).toLocaleString();
+            document.getElementById('visMonth').textContent  = (d.month || 0).toLocaleString();
+            document.getElementById('visYear').textContent   = (d.year  || 0).toLocaleString();
         })
         .catch(() => {});
 });

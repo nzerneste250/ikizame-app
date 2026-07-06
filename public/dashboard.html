@@ -313,6 +313,7 @@
             <a href="system-performance" id="navLinkSysPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
             <a href="#" id="navLinkPerformance" onclick="switchAdminControlView('analytics-view'); document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
             <a href="upload-resource" id="navLinkResources"><i class="fa-solid fa-book-bookmark"></i> Upload Resources</a>
+            <a href="/system-performance" id="navLinkSysPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
             <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
         <div class="sidebar-footer">
@@ -405,6 +406,7 @@
                  📊 DYNAMIC STUDENT PERFORMANCE ANALYTICS PANEL (GLASSMORPHIC VIEW SHEETS)
                  ========================================================================== -->
             <div id="analyticsWorkspaceViewSection" style="display: none; flex-direction: column; gap: 24px;">
+
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #10b981;">
                         <div style="background: #dcfce7; color: #15803d; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-graduation-cap"></i></div>

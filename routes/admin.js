@@ -225,13 +225,26 @@ module.exports = (db, loginLimiter) => {
         );
     });
 
-    // GET visitor count
+    // GET visitor count (day, week, month, year, total)
     router.get('/visitor-count', requireAdminLogin, (req, res) => {
-        db.query(
-            `SELECT COUNT(*) AS total, SUM(DATE(visited_at) = CURDATE()) AS today FROM site_visitors`,
+        db.query(`
+            SELECT
+                COUNT(*) AS total,
+                SUM(DATE(visited_at) = CURDATE()) AS today,
+                SUM(visited_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)) AS week,
+                SUM(visited_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)) AS month,
+                SUM(YEAR(visited_at) = YEAR(NOW())) AS year
+            FROM site_visitors`,
             (err, rows) => {
                 if (err) return res.status(500).json({ error: err.message });
-                res.json({ total: rows[0].total || 0, today: rows[0].today || 0 });
+                const r = rows[0];
+                res.json({
+                    today: r.today || 0,
+                    week:  r.week  || 0,
+                    month: r.month || 0,
+                    year:  r.year  || 0,
+                    total: r.total || 0
+                });
             }
         );
     });
