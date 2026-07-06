@@ -139,10 +139,6 @@
                 <h1>Payments Dashboard</h1>
                 <p>Manage payment transactions, revenue totals, and exam credit balances.</p>
             </div>
-            <button class="btn-primary" id="ppToggleBtn" onclick="togglePaypackSection()" style="display:flex; align-items:center; gap:8px; white-space:nowrap;">
-                <i class="fa-solid fa-building-columns"></i> Paypack Transactions
-                <span id="ppToggleIcon" style="font-size:11px; opacity:.8;">▼ Show</span>
-            </button>
         </div>
         <div class="form-scroll">
             <div class="grid">
@@ -195,64 +191,7 @@
                     </tbody>
                 </table>
             </div>
-            <!-- ═══ PAYPACK OFFICIAL CONFIRMED TRANSACTIONS ═══ -->
-            <div id="ppSection" style="display:none; flex-direction:column; gap:16px;">
-                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-                    <div class="section-title">
-                        <i class="fa-solid fa-circle-check" style="color:#10b981;"></i>
-                        Paypack Official Transactions
-                        <span>Live from paypack.rw</span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <div class="search-bar-wrap" style="min-width:220px;">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="ppSearch" placeholder="Search phone or ref..." oninput="filterPaypack(this.value)">
-                        </div>
-                        <button class="btn-primary" onclick="loadPaypackTransactions()" style="white-space:nowrap;"><i class="fa-solid fa-rotate"></i> Refresh</button>
-                    </div>
-                </div>
-                <!-- Totals bar -->
-                <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    <div class="summary-card" style="flex:1; min-width:140px; padding:14px 18px;">
-                        <div class="summary-badge bg-blue" style="width:36px;height:36px;font-size:14px;"><i class="fa-solid fa-list"></i></div>
-                        <div><p id="ppTotalCount" style="font-size:1.4rem;">—</p><h3>Total Txns</h3></div>
-                    </div>
-                    <div class="summary-card" style="flex:1; min-width:140px; padding:14px 18px;">
-                        <div class="summary-badge bg-green" style="width:36px;height:36px;font-size:14px;"><i class="fa-solid fa-circle-check"></i></div>
-                        <div><p id="ppSuccessCount" style="font-size:1.4rem;">—</p><h3>Successful</h3></div>
-                    </div>
-                    <div class="summary-card" style="flex:1; min-width:140px; padding:14px 18px;">
-                        <div class="summary-badge bg-yellow" style="width:36px;height:36px;font-size:14px;"><i class="fa-solid fa-clock"></i></div>
-                        <div><p id="ppPendingCount" style="font-size:1.4rem;">—</p><h3>Pending</h3></div>
-                    </div>
-                    <div class="summary-card" style="flex:1; min-width:140px; padding:14px 18px;">
-                        <div class="summary-badge" style="background:#ef4444;width:36px;height:36px;font-size:14px;"><i class="fa-solid fa-xmark"></i></div>
-                        <div><p id="ppFailedCount" style="font-size:1.4rem;">—</p><h3>Failed</h3></div>
-                    </div>
-                    <div class="summary-card" style="flex:1; min-width:160px; padding:14px 18px;">
-                        <div class="summary-badge bg-green" style="width:36px;height:36px;font-size:14px;"><i class="fa-solid fa-money-bill-wave"></i></div>
-                        <div><p id="ppTotalAmount" style="font-size:1.4rem;">—</p><h3>Total Confirmed</h3></div>
-                    </div>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>NO.</th>
-                                <th>Paypack Ref</th>
-                                <th>Phone</th>
-                                <th>Amount (RWF)</th>
-                                <th>Kind</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ppTableBody">
-                            <tr><td colspan="7" style="text-align:center; padding:30px; color:#64748b;">Click Refresh to load official Paypack transactions...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
         </div>
     </div>
 </div>
@@ -445,81 +384,6 @@
         })
         .catch(err => {
             alert(err.message || 'Update failed.');
-        });
-    }
-
-    let ppTransactions = [];
-
-    function togglePaypackSection() {
-        const sec = document.getElementById('ppSection');
-        const icon = document.getElementById('ppToggleIcon');
-        const open = sec.style.display === 'none';
-        sec.style.display = open ? 'flex' : 'none';
-        icon.textContent = open ? '▲ Hide' : '▼ Show';
-        if (open && !ppTransactions.length) loadPaypackTransactions();
-    }
-
-    function loadPaypackTransactions() {
-        const body = document.getElementById('ppTableBody');
-        body.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>';
-        fetch('/api/admin/paypack-transactions?limit=200')
-            .then(r => r.json())
-            .then(data => {
-                ppTransactions = Array.isArray(data?.transactions) ? data.transactions : [];
-                renderPaypack(ppTransactions);
-            })
-            .catch(() => {
-                body.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#ef4444;">Failed to load Paypack transactions.</td></tr>';
-            });
-    }
-
-    function renderPaypack(list) {
-        const body = document.getElementById('ppTableBody');
-        if (!list.length) {
-            body.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#64748b;">No transactions found.</td></tr>';
-            return;
-        }
-        // Compute totals
-        let successCount = 0, pendingCount = 0, failedCount = 0, totalAmount = 0;
-        list.forEach(tx => {
-            // Paypack only lists completed transactions — all are successful
-            successCount++;
-            totalAmount += Number(tx.amount || 0);
-        });
-        document.getElementById('ppTotalCount').textContent   = list.length;
-        document.getElementById('ppSuccessCount').textContent = successCount;
-        document.getElementById('ppPendingCount').textContent = pendingCount;
-        document.getElementById('ppFailedCount').textContent  = failedCount;
-        document.getElementById('ppTotalAmount').textContent  = formatCurrency(totalAmount);
-
-        body.innerHTML = list.map((tx, i) => {
-            // Paypack has no status field — listed txns are confirmed
-            const statusClass = 'success';
-            const statusLabel = 'Successful';
-            const date = tx.timestamp ? new Date(tx.timestamp).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
-            const phone = tx.client || '';
-            const provider = (tx.provider || '').toLowerCase();
-            const netBadge = provider === 'mtn' ? '<span class="net-mtn">MTN</span>'
-                : provider === 'airtel' ? '<span class="net-airtel">Airtel</span>'
-                : detectNetwork(phone);
-            const phone = tx.client || tx.number || '';
-            const network = detectNetwork(phone);
-            return `<tr data-pp="${(tx.ref||'').toLowerCase()} ${phone.toLowerCase()}">
-                <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
-                <td class="paypack-ref">${tx.ref || '—'}</td>
-                <td>${phone} ${netBadge}</td>
-                <td>${formatCurrency(tx.amount || 0)}</td>
-                <td>${tx.kind || '—'}</td>
-                <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
-                <td>${date}</td>
-            </tr>`;
-        }).join('');
-    }
-
-    function filterPaypack(q) {
-        const term = q.trim().toLowerCase();
-        document.querySelectorAll('#ppTableBody tr[data-pp]').forEach(row => {
-            row.style.display = !term || row.dataset.pp.includes(term) ? '' : 'none';
         });
     }
 
