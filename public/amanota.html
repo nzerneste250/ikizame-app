@@ -404,6 +404,16 @@
             const resultsScrollTarget = document.getElementById('resultsListScrollTarget');
             const backBtn = document.getElementById('backToLookupBtn');
 
+            // Reset any stuck "Mushake..." buttons when user returns to this page
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    document.querySelectorAll('.btn-open-review').forEach(btn => {
+                        btn.disabled = false;
+                        btn.textContent = 'Fungura';
+                    });
+                }
+            });
+
             // 🎯 AUTO-FIX: digit 1→0, digit 2→7, digit 3→8 if invalid
             if (lookupPhoneInp) {
                 lookupPhoneInp.addEventListener('input', function () {
