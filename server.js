@@ -230,7 +230,7 @@ app.get('*.html', (req, res) => res.status(403).send('Direct file access is not 
 app.use(express.static(path.join(__dirname, 'public'), {
     extensions: false,
     index: false,
-    maxAge: '7d',
+    maxAge: '1h',
     etag: true,
     lastModified: true
 }));
