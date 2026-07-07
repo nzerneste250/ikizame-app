@@ -183,6 +183,7 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
             res.json({ success: true, referenceId: paypackRef });
         } catch (apiErr) {
             const msg = apiErr.response?.data?.message || apiErr.message || 'Paypack API error';
+            try { require('../server').sendErrorAlert('School Cashin Failed', `School: ${schoolName}\nPhone: ${phone}\nError: ${msg}`); } catch(e) {}
             res.status(502).json({ success: false, error: 'Kwishyura byanze: ' + msg });
         }
     });

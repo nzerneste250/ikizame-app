@@ -84,6 +84,7 @@ module.exports = (db) => {
         } catch (apiErr) {
             const errMsg = apiErr.response?.data?.message || apiErr.response?.data?.error || apiErr.message || 'Paypack API error';
             console.error('❌ Paypack cashin error:', errMsg);
+            try { require('../server').sendErrorAlert('Paypack Cashin Failed', `Phone: ${phone}\nAmount: ${amount}\nError: ${errMsg}`); } catch(e) {}
             res.status(502).json({ success: false, error: 'Kwishyura byanze: ' + errMsg });
         }
     });
