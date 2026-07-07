@@ -375,11 +375,11 @@ function loadIpTable(date) {
 document.addEventListener('DOMContentLoaded', () => {
     const today = new Date().toISOString().slice(0, 10);
 
+    // Summary + chart + daily table
     Promise.all([
         fetch('/api/admin/visitor-count').then(r => r.json()),
-        fetch('/api/admin/visitor-daily').then(r => r.json()),
-        fetch('/api/admin/visitor-dates').then(r => r.json())
-    ]).then(([counts, daily, dates]) => {
+        fetch('/api/admin/visitor-daily').then(r => r.json())
+    ]).then(([counts, daily]) => {
         document.getElementById('visToday').textContent  = (counts.today || 0).toLocaleString();
         document.getElementById('visWeek').textContent   = (counts.week  || 0).toLocaleString();
         document.getElementById('visMonth').textContent  = (counts.month || 0).toLocaleString();
@@ -387,18 +387,30 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('visTotal').textContent  = (counts.total || 0).toLocaleString();
         buildChart(daily);
         buildTable(daily, today);
-
-        const sel = document.getElementById('ipDateSelect');
-        if (dates.length) {
-            sel.innerHTML = dates.map(d => '<option value="' + d + '"' + (d === today ? ' selected' : '') + '>' + formatDate(d) + '</option>').join('');
-            loadIpTable(dates.includes(today) ? today : dates[0]);
-        } else {
-            sel.innerHTML = '<option value="">No data yet</option>';
-        }
     }).catch(() => {
         document.getElementById('visitorTableBody').innerHTML =
             '<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:24px;">Failed to load visitor data.</td></tr>';
     });
+
+    // IP report — independent fetch so it never blocks the rest
+    fetch('/api/admin/visitor-dates')
+        .then(r => r.json())
+        .then(dates => {
+            const sel = document.getElementById('ipDateSelect');
+            if (dates.length) {
+                sel.innerHTML = dates.map(d => '<option value="' + d + '"' + (d === today ? ' selected' : '') + '>' + formatDate(d) + '</option>').join('');
+                loadIpTable(dates.includes(today) ? today : dates[0]);
+            } else {
+                sel.innerHTML = '<option value="">No data yet</option>';
+                document.getElementById('ipTableBody').innerHTML =
+                    '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:24px;">No visitor data yet.</td></tr>';
+            }
+        })
+        .catch(() => {
+            document.getElementById('ipDateSelect').innerHTML = '<option value="">Error loading dates</option>';
+            document.getElementById('ipTableBody').innerHTML =
+                '<tr><td colspan="4" style="text-align:center;color:#ef4444;padding:24px;">Failed to load IP report.</td></tr>';
+        });
 });
 </script>
 </body>
