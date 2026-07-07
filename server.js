@@ -79,7 +79,11 @@ console.log(`ℹ️  ${isProduction ? 'Production' : 'Local'} environment — co
 const db = mysql.createPool(dbConfig);
 
 db.getConnection((err, conn) => {
-    if (err) { console.error('❌ Database pool connection failure:', err.code, err.message); return; }
+    if (err) {
+        console.error('❌ Database pool connection failure:', err.code, err.message);
+        sendErrorAlert('Database Connection Failed', `Code: ${err.code}\n${err.message}`);
+        return;
+    }
     console.log(`✅ Database pool ready on [${dbConfig.host}]`);
     conn.release();
 });
@@ -125,19 +129,22 @@ emailTransport.verify((err) => {
 
 // ── VISITOR TRACKING (unique per IP per day) ────────────────────────────
 const TRACKED_PAGES = ['/', '/index', '/ifashanyigisho', '/ibiciro', '/ubufasha', '/amanota', '/exam-result', '/school-auth'];
+const EXCLUDED_IPS  = ['127.0.0.1', '197.157.145.186'];
 app.use((req, res, next) => {
     if (TRACKED_PAGES.includes(req.path)) {
         const ip = (req.ip || req.connection.remoteAddress || 'unknown')
             .replace(/^::ffff:/i, '')
             .replace(/^::1$/, '127.0.0.1')
             .trim();
-        // INSERT IGNORE relies on UNIQUE KEY (ip_address, visit_date)
-        db.query(
-            `INSERT IGNORE INTO site_visitors (ip_address, visit_date, visited_at, visit_count)
-             VALUES (?, CURDATE(), NOW(), 1)`,
-            [ip],
-            () => {}
-        );
+        if (!EXCLUDED_IPS.includes(ip)) {
+            // INSERT IGNORE relies on UNIQUE KEY (ip_address, visit_date)
+            db.query(
+                `INSERT IGNORE INTO site_visitors (ip_address, visit_date, visited_at, visit_count)
+                 VALUES (?, CURDATE(), NOW(), 1)`,
+                [ip],
+                () => {}
+            );
+        }
     }
     next();
 });
@@ -332,6 +339,43 @@ if (isProduction) {
     }, 14 * 60 * 1000);
 }
 
-// ── SERVER START ──────────────────────────────────────────────────────────
+// ── ERROR ALERT EMAIL ────────────────────────────────────────────────────
+const ALERT_EMAIL = process.env.ALERT_EMAIL || process.env.SMTP_USER;
+function sendErrorAlert(subject, body) {
+    if (!ALERT_EMAIL) return;
+    emailTransport.sendMail({
+        from: `"IKIZAME Alerts" <${process.env.SMTP_USER}>`,
+        to: ALERT_EMAIL,
+        subject: `🚨 IKIZAME: ${subject}`,
+        html: `<div style="font-family:monospace;background:#0f172a;color:#f8fafc;padding:24px;border-radius:8px;">
+            <h2 style="color:#ef4444;margin:0 0 12px;">🚨 ${subject}</h2>
+            <pre style="background:#1e293b;padding:16px;border-radius:6px;overflow:auto;font-size:13px;color:#e2e8f0;white-space:pre-wrap;">${body}</pre>
+            <p style="color:#64748b;font-size:11px;margin-top:16px;">Time: ${new Date().toISOString()} | Server: ikizame.rw</p>
+        </div>`
+    }, (err) => { if (err) console.error('⚠️  Alert email failed:', err.message); });
+}
+
+process.on('uncaughtException', (err) => {
+    console.error('❌ Uncaught Exception:', err);
+    sendErrorAlert('Uncaught Exception', `${err.message}\n\n${err.stack}`);
+});
+process.on('unhandledRejection', (reason) => {
+    console.error('❌ Unhandled Rejection:', reason);
+    sendErrorAlert('Unhandled Promise Rejection', String(reason?.stack || reason));
+});
+
+// Export for use in routes
+module.exports.sendErrorAlert = sendErrorAlert;
+
+// ── GLOBAL EXPRESS ERROR HANDLER ────────────────────────────────────────────────────
+app.use((err, req, res, next) => {
+    console.error('❌ Express error:', err);
+    sendErrorAlert(
+        `Express Error: ${err.message}`,
+        `Route: ${req.method} ${req.originalUrl}\nStatus: ${err.status || 500}\n\n${err.stack}`
+    );
+    res.status(err.status || 500).json({ error: 'Internal server error.' });
+});
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`🚀 IKIZAME Server running on port ${PORT}`));

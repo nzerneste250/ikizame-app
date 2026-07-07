@@ -240,6 +240,36 @@ module.exports = (db, loginLimiter) => {
         );
     });
 
+    // GET IP address list per day (last 30 days)
+    router.get('/visitor-ip-daily', requireAdminLogin, (req, res) => {
+        const date = req.query.date || new Date().toISOString().slice(0, 10);
+        db.query(
+            `SELECT ip_address, visited_at, visit_count
+             FROM site_visitors
+             WHERE visit_date = ?
+             ORDER BY visited_at DESC`,
+            [date],
+            (err, rows) => {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json(rows);
+            }
+        );
+    });
+
+    // GET available visit dates (last 30 days)
+    router.get('/visitor-dates', requireAdminLogin, (req, res) => {
+        db.query(
+            `SELECT DISTINCT DATE_FORMAT(visit_date, '%Y-%m-%d') AS day
+             FROM site_visitors
+             WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
+             ORDER BY day DESC`,
+            (err, rows) => {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json(rows.map(r => r.day));
+            }
+        );
+    });
+
     // GET daily visitor breakdown for last 30 days
     router.get('/visitor-daily', requireAdminLogin, (req, res) => {
         db.query(`

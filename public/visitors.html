@@ -89,6 +89,9 @@
         .badge-today { background: #dbeafe; color: #1d4ed8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
         .badge-high  { background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
         .badge-low   { background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+        .panel-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+        .date-select { padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: inherit; font-weight: 600; color: var(--text-main); background: #f8fafc; cursor: pointer; }
+        .ip-count-badge { background: #e0f2fe; color: #0369a1; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px; }
 
         .admin-footer { height: 44px; background: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; font-size: 11.5px; color: #64748b; flex-shrink: 0; }
         .admin-footer strong { color: #38bdf8; }
@@ -186,6 +189,35 @@
                     <div class="bar-chart" id="barChart">
                         <div style="color:var(--text-muted);font-size:13px;align-self:center;width:100%;text-align:center;">Loading chart...</div>
                     </div>
+                </div>
+            </div>
+
+            <!-- IP ADDRESS DAILY REPORT -->
+            <div class="panel">
+                <div class="panel-toolbar">
+                    <div class="panel-heading" style="margin-bottom:0">
+                        <i class="fa-solid fa-network-wired" style="color:var(--brand)"></i>
+                        IP Address Daily Report
+                        <span class="ip-count-badge" id="ipCountBadge">0 IPs</span>
+                    </div>
+                    <select class="date-select" id="ipDateSelect" onchange="loadIpTable(this.value)">
+                        <option value="">Loading dates...</option>
+                    </select>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>IP Address</th>
+                                <th>First Visit Time</th>
+                                <th>Page Hits</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ipTableBody">
+                            <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:24px;">Select a date above.</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -312,13 +344,42 @@ function buildTable(rows, todayStr) {
     }).join('');
 }
 
+function loadIpTable(date) {
+    if (!date) return;
+    const tbody = document.getElementById('ipTableBody');
+    const badge = document.getElementById('ipCountBadge');
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr>';
+    fetch('/api/admin/visitor-ip-daily?date=' + date)
+        .then(r => r.json())
+        .then(rows => {
+            badge.textContent = rows.length + ' IP' + (rows.length !== 1 ? 's' : '');
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:24px;">No visitors on this date.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = rows.map((r, i) => {
+                const t = r.visited_at ? new Date(r.visited_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+                return '<tr>' +
+                    '<td style="color:var(--text-muted)">' + (i + 1) + '</td>' +
+                    '<td><code style="background:#f1f5f9;padding:2px 8px;border-radius:6px;font-size:13px;font-weight:700;">' + r.ip_address + '</code></td>' +
+                    '<td style="color:var(--text-muted);font-weight:600;">' + t + '</td>' +
+                    '<td style="font-weight:800;color:var(--brand);">' + (r.visit_count || 1) + '</td>' +
+                    '</tr>';
+            }).join('');
+        })
+        .catch(() => {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#ef4444;padding:24px;">Failed to load IP data.</td></tr>';
+        });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const today = new Date().toISOString().slice(0, 10);
 
     Promise.all([
         fetch('/api/admin/visitor-count').then(r => r.json()),
-        fetch('/api/admin/visitor-daily').then(r => r.json())
-    ]).then(([counts, daily]) => {
+        fetch('/api/admin/visitor-daily').then(r => r.json()),
+        fetch('/api/admin/visitor-dates').then(r => r.json())
+    ]).then(([counts, daily, dates]) => {
         document.getElementById('visToday').textContent  = (counts.today || 0).toLocaleString();
         document.getElementById('visWeek').textContent   = (counts.week  || 0).toLocaleString();
         document.getElementById('visMonth').textContent  = (counts.month || 0).toLocaleString();
@@ -326,6 +387,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('visTotal').textContent  = (counts.total || 0).toLocaleString();
         buildChart(daily);
         buildTable(daily, today);
+
+        const sel = document.getElementById('ipDateSelect');
+        if (dates.length) {
+            sel.innerHTML = dates.map(d => '<option value="' + d + '"' + (d === today ? ' selected' : '') + '>' + formatDate(d) + '</option>').join('');
+            loadIpTable(dates.includes(today) ? today : dates[0]);
+        } else {
+            sel.innerHTML = '<option value="">No data yet</option>';
+        }
     }).catch(() => {
         document.getElementById('visitorTableBody').innerHTML =
             '<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:24px;">Failed to load visitor data.</td></tr>';
