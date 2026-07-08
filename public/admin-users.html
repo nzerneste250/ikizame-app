@@ -3,38 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>Manage Users | IKIZAME Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root { --brand:#0b698b; --brand-dark:#08536e; --border:#e2e8f0; --text:#0f172a; --muted:#64748b; --sidebar:#0f172a; }
+        :root { --brand:#0b698b; --brand-dark:#08536e; --border:#e2e8f0; --text:#0f172a; --muted:#64748b; --bg:#f8fafc; }
         * { margin:0; padding:0; box-sizing:border-box; }
-        html,body { height:100vh; font-family:'Inter',sans-serif; background:#f8fafc; color:var(--text); overflow:hidden; }
-        .shell { display:flex; height:calc(100vh - 44px); }
+        body,html { height:100%; font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); }
+        .shell { display:flex; min-height:100vh; }
 
-        .sidebar { width:220px; background:var(--sidebar); display:flex; flex-direction:column; flex-shrink:0; border-right:1px solid #1e293b; }
-        .sidebar-brand { padding:20px 16px; font-size:1rem; font-weight:800; color:#38bdf8; letter-spacing:2px; border-bottom:1px solid #1e293b; display:flex; align-items:center; gap:8px; }
-        .sidebar-nav { padding:12px 10px; display:flex; flex-direction:column; gap:4px; flex:1; }
-        .sidebar-nav a { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; color:#94a3b8; text-decoration:none; font-size:13px; font-weight:600; transition:all 0.15s; }
-        .sidebar-nav a:hover { color:#f8fafc; background:rgba(255,255,255,0.06); }
-        .sidebar-nav a.active { color:#f8fafc; background:rgba(56,189,248,0.12); border-left:3px solid #38bdf8; padding-left:9px; }
+        /* ── Sidebar (matches payments page) ── */
+        .sidebar { width:240px; background:#0f172a; display:flex; flex-direction:column; border-right:1px solid #1e293b; flex-shrink:0; }
+        .sidebar-brand { padding:24px 20px 20px; color:#38bdf8; font-family:'Black Han Sans',sans-serif; letter-spacing:2px; font-size:1.1rem; border-bottom:1px solid #1e293b; }
+        .sidebar-nav { padding:16px 12px; display:flex; flex-direction:column; gap:4px; flex:1; }
+        .sidebar-nav a { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:8px; color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:600; transition:all .15s; }
+        .sidebar-nav a:hover { color:#f8fafc; background:rgba(255,255,255,.06); }
+        .sidebar-nav a.active { color:#f8fafc; background:rgba(56,189,248,.12); border-left:3px solid #38bdf8; padding-left:11px; }
         .sidebar-nav a i { width:16px; text-align:center; }
-        .nav-logout { color:#ef4444 !important; }
-        .nav-logout:hover { background:rgba(239,68,68,0.1) !important; }
-        .sidebar-footer { padding:12px 14px; border-top:1px solid #1e293b; display:flex; align-items:center; gap:8px; }
-        .admin-avatar { width:30px; height:30px; border-radius:50%; background:var(--brand); display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:700; }
-        .admin-meta .admin-name { font-size:12px; font-weight:700; color:#f8fafc; }
-        .admin-meta .admin-role { font-size:10px; color:#94a3b8; }
+        .nav-logout { color:#ef4444 !important; font-weight:700; }
+        .nav-logout:hover { background:rgba(239,68,68,.1) !important; color:#dc2626 !important; }
+        .sidebar-footer { padding:14px 16px; border-top:1px solid #1e293b; display:flex; align-items:center; gap:10px; }
+        .admin-avatar { width:34px; height:34px; border-radius:50%; background:var(--brand); display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px; font-weight:700; }
+        .admin-meta { flex:1; min-width:0; }
+        .admin-name { font-size:12.5px; font-weight:700; color:#f8fafc; }
+        .admin-role { font-size:11px; color:var(--muted); }
+        .session-pill { font-size:10px; font-weight:700; background:rgba(56,189,248,0.15); color:#38bdf8; padding:2px 8px; border-radius:20px; white-space:nowrap; }
 
+        /* ── Session modal/toast ── */
+        #sessionModal { position:fixed; inset:0; background:rgba(15,23,42,0.75); display:none; align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(4px); }
+        #sessionModal.show { display:flex; }
+        .session-modal-box { background:#fff; border-radius:16px; padding:36px 32px; max-width:360px; width:90%; text-align:center; box-shadow:0 24px 48px rgba(0,0,0,0.25); }
+        .session-modal-box .modal-icon { width:60px; height:60px; background:#fef2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; color:#ef4444; margin:0 auto 16px; }
+        .session-modal-box h3 { font-size:17px; font-weight:800; margin-bottom:8px; }
+        .session-modal-box p { font-size:13.5px; color:var(--muted); line-height:1.5; margin-bottom:20px; }
+        .session-countdown { font-size:28px; font-weight:800; color:#ef4444; margin-bottom:16px; }
+        .btn-relogin { background:var(--brand); color:#fff; border:none; padding:12px 28px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; width:100%; }
+        #sessionToast { position:fixed; top:70px; right:20px; background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:10px; padding:12px 16px; font-size:13px; font-weight:600; display:none; align-items:center; gap:10px; z-index:9998; box-shadow:0 4px 12px rgba(0,0,0,0.1); max-width:320px; }
+        #sessionToast.show { display:flex; }
+
+        /* ── Workspace ── */
         .workspace { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-        .topbar { height:64px; background:#fff; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; flex-shrink:0; }
-        .topbar h1 { font-size:18px; font-weight:800; }
-        .topbar p { font-size:12px; color:var(--muted); margin-top:2px; }
+        .topbar { height:74px; background:#fff; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 32px; flex-shrink:0; }
+        .topbar h1 { font-size:22px; font-weight:800; letter-spacing:-0.5px; }
+        .topbar p { font-size:13px; color:var(--muted); margin-top:2px; }
+        .content { flex:1; display:grid; grid-template-columns:1fr 360px; gap:24px; padding:24px 32px; overflow:hidden; }
 
-        .content { flex:1; display:grid; grid-template-columns:1fr 360px; gap:24px; padding:24px 28px; overflow:hidden; }
-
-        /* Users table */
+        /* ── Table card ── */
         .table-card { background:#fff; border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column; overflow:hidden; }
         .table-card-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
         .table-card-header h3 { font-size:15px; font-weight:800; }
@@ -47,35 +62,98 @@
         .badge { font-size:10px; font-weight:800; padding:3px 9px; border-radius:20px; }
         .badge-super { background:#e0f2fe; color:#0369a1; }
         .badge-viewer { background:#fef3c7; color:#92400e; }
-        .btn-del { background:#fee2e2; color:#b91c1c; border:none; padding:5px 12px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; transition:background 0.15s; }
+        .badge-disabled { background:#f1f5f9; color:#94a3b8; }
+
+        /* ── Action buttons ── */
+        .actions { display:flex; gap:6px; flex-wrap:wrap; }
+        .btn-sm { border:none; padding:5px 10px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; }
+        .btn-edit { background:#e0f2fe; color:#0369a1; }
+        .btn-edit:hover { background:#bae6fd; }
+        .btn-disable { background:#fef3c7; color:#92400e; }
+        .btn-disable:hover { background:#fde68a; }
+        .btn-enable { background:#dcfce7; color:#166534; }
+        .btn-enable:hover { background:#bbf7d0; }
+        .btn-del { background:#fee2e2; color:#b91c1c; }
         .btn-del:hover { background:#fecaca; }
 
-        /* Add user form */
+        /* ── Add user form ── */
         .form-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:16px; align-self:start; }
-        .form-card h3 { font-size:15px; font-weight:800; margin-bottom:4px; }
+        .form-card h3 { font-size:15px; font-weight:800; }
         .form-card p { font-size:12px; color:var(--muted); }
         .field { display:flex; flex-direction:column; gap:5px; }
         .field label { font-size:10px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.6px; }
         .field-wrap { position:relative; }
         .field-wrap .ico { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:13px; pointer-events:none; }
-        .field-wrap .eye { position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:13px; cursor:pointer; }
-        .field input, .field select { width:100%; padding:10px 12px 10px 36px; border:2px solid var(--border); border-radius:8px; font-size:13px; font-weight:500; color:var(--text); outline:none; font-family:'Inter',sans-serif; background:#fafafa; transition:border-color 0.2s; }
+        .field input, .field select { width:100%; padding:10px 12px 10px 36px; border:2px solid var(--border); border-radius:8px; font-size:13px; font-weight:500; color:var(--text); outline:none; font-family:'Inter',sans-serif; background:#fafafa; transition:border-color .2s; }
         .field input:focus, .field select:focus { border-color:var(--brand); background:#fff; }
-        .field select { padding-left:36px; }
-        .btn-add { background:var(--brand); color:#fff; border:none; padding:11px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.15s; font-family:'Inter',sans-serif; }
+        .btn-add { background:var(--brand); color:#fff; border:none; padding:11px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-family:'Inter',sans-serif; }
         .btn-add:hover { background:var(--brand-dark); }
-        .btn-add:disabled { opacity:0.65; cursor:not-allowed; }
-
+        .btn-add:disabled { opacity:.65; cursor:not-allowed; }
         .alert { border-radius:8px; padding:9px 12px; font-size:12px; font-weight:600; display:none; align-items:center; gap:8px; }
         .alert.show { display:flex; }
         .alert.error { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
         .alert.success { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
 
-        .footer { height:44px; background:var(--sidebar); display:flex; align-items:center; justify-content:center; font-size:11px; color:#64748b; flex-shrink:0; }
-        .footer strong { color:#38bdf8; }
+        /* ── Edit modal ── */
+        .modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:9500; }
+        .modal-overlay.show { display:flex; }
+        .modal-card { width:100%; max-width:420px; background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 25px 60px rgba(15,23,42,.24); }
+        .modal-header { padding:18px 22px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+        .modal-header h3 { font-size:16px; font-weight:800; }
+        .modal-body { padding:20px 22px; display:flex; flex-direction:column; gap:14px; }
+        .modal-body label { font-size:10px; font-weight:800; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:4px; }
+        .modal-body input, .modal-body select { width:100%; padding:10px 12px; border:2px solid var(--border); border-radius:8px; font-size:13px; font-family:'Inter',sans-serif; outline:none; }
+        .modal-body input:focus, .modal-body select:focus { border-color:var(--brand); }
+        .modal-footer { padding:14px 22px 20px; display:flex; justify-content:flex-end; gap:10px; }
+        .btn-cancel { background:#f1f5f9; color:#475569; border:none; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
+        .btn-save { background:var(--brand); color:#fff; border:none; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
     </style>
 </head>
 <body>
+
+<!-- Session expired modal -->
+<div id="sessionModal">
+    <div class="session-modal-box">
+        <div class="modal-icon"><i class="fa-solid fa-clock"></i></div>
+        <h3>Session Expired</h3>
+        <p>You were idle for too long. Redirecting to login...</p>
+        <div class="session-countdown" id="modalCountdown">5</div>
+        <button class="btn-relogin" onclick="doLogout()"><i class="fa-solid fa-right-to-bracket"></i> Log In Again</button>
+    </div>
+</div>
+<div id="sessionToast">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span>Session expires in <span id="toastTimer">60</span>s — move the mouse to stay active.</span>
+</div>
+
+<!-- Edit user modal -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-user-pen" style="color:var(--brand);margin-right:8px;"></i>Edit User</h3>
+            <button class="btn-cancel" onclick="closeEdit()">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editId">
+            <div>
+                <label>Email Address</label>
+                <input type="email" id="editEmail" placeholder="user@email.com">
+            </div>
+            <div>
+                <label>Role</label>
+                <select id="editRole">
+                    <option value="viewer">Viewer — Read-only</option>
+                    <option value="superadmin">Super Admin — Full Access</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+            <button class="btn-save" onclick="saveEdit()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+        </div>
+    </div>
+</div>
+
 <div class="shell">
     <aside class="sidebar">
         <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
@@ -94,6 +172,7 @@
             <div class="admin-meta">
                 <div class="admin-role" id="sidebarAdminRole">Administrator</div>
             </div>
+            <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
         </div>
     </aside>
 
@@ -106,7 +185,6 @@
         </header>
 
         <div class="content">
-            <!-- Users list -->
             <div class="table-card">
                 <div class="table-card-header">
                     <h3><i class="fa-solid fa-users" style="color:var(--brand);margin-right:8px;"></i> All Admin Users</h3>
@@ -119,27 +197,25 @@
                                 <th>#</th>
                                 <th>Email</th>
                                 <th>Role</th>
+                                <th>Status</th>
                                 <th>Created</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
-                            <tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                            <tr><td colspan="6" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Add user form -->
             <div class="form-card">
                 <div>
                     <h3><i class="fa-solid fa-user-plus" style="color:var(--brand);margin-right:8px;"></i> Add New User</h3>
                     <p>Create a new admin or viewer account</p>
                 </div>
-
                 <div class="alert error" id="formAlert"><i class="fa-solid fa-circle-xmark"></i><span id="formAlertMsg"></span></div>
                 <div class="alert success" id="formSuccess"><i class="fa-solid fa-circle-check"></i><span id="formSuccessMsg"></span></div>
-
                 <div class="field">
                     <label>Email Address</label>
                     <div class="field-wrap">
@@ -152,18 +228,16 @@
                     <div class="field-wrap">
                         <i class="fa-solid fa-shield-halved ico"></i>
                         <select id="newRole">
-                            <option value="viewer">Viewer — Read-only (Payments & Schools)</option>
+                            <option value="viewer">Viewer — Read-only</option>
                             <option value="superadmin">Super Admin — Full Access</option>
                         </select>
                     </div>
                 </div>
-
                 <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--muted);">
                     <strong style="color:var(--text);">Role permissions:</strong><br>
-                    <span style="color:#0369a1;">● Viewer</span> — Can only view payment reports and school data. Cannot edit anything.<br>
-                    <span style="color:#166534;">● Super Admin</span> — Full access to all features including editing questions and managing users.
+                    <span style="color:#0369a1;">● Viewer</span> — View payments & schools only.<br>
+                    <span style="color:#166534;">● Super Admin</span> — Full access to all features.
                 </div>
-
                 <button class="btn-add" id="addBtn" onclick="addUser()">
                     <span id="addLabel"><i class="fa-solid fa-user-plus"></i> Create Account</span>
                 </button>
@@ -172,8 +246,6 @@
     </div>
 </div>
 
-<footer class="footer">&copy; 2026 IKIZAME &nbsp;<strong>Developed by Dotado Stationery Store Ltd</strong></footer>
-<script src="assets/js/admin-session.js"></script>
 <script>
 function showAlert(msg, type) {
     document.getElementById('formAlert').classList.remove('show');
@@ -183,85 +255,117 @@ function showAlert(msg, type) {
 }
 
 function loadUsers() {
-    fetch('/api/admin/users')
-        .then(r => r.json())
-        .then(users => {
-            document.getElementById('userCount').textContent = users.length + ' user(s)';
-            const tb = document.getElementById('usersTableBody');
-            if (!users.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#64748b;">No users found.</td></tr>'; return; }
-            tb.innerHTML = users.map((u, i) => `
-                <tr>
-                    <td style="font-weight:700;color:var(--brand);">${i+1}</td>
-                    <td style="font-weight:600;">${u.email || u.username}</td>
-                    <td><span class="badge ${u.role === 'superadmin' ? 'badge-super' : 'badge-viewer'}">${u.role === 'superadmin' ? 'Super Admin' : 'Viewer'}</span></td>
-                    <td style="color:#64748b;font-size:12px;">${u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
-                    <td>${u.role === 'superadmin' && i === 0 ? '<span style="font-size:11px;color:#94a3b8;">Protected</span>' : `<button class="btn-del" onclick="deleteUser(${u.id}, '${(u.email||u.username).replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i> Delete</button>`}</td>
-                </tr>`).join('');
-        })
-        .catch(() => {
-            document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#ef4444;">Failed to load users.</td></tr>';
-        });
+    fetch('/api/admin/users').then(r => r.json()).then(users => {
+        document.getElementById('userCount').textContent = users.length + ' user(s)';
+        const tb = document.getElementById('usersTableBody');
+        if (!users.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#64748b;">No users found.</td></tr>'; return; }
+        tb.innerHTML = users.map((u, i) => {
+            const isActive = u.is_active !== 0;
+            const isSelf = i === 0;
+            const actions = isSelf
+                ? '<span style="font-size:11px;color:#94a3b8;">Protected</span>'
+                : `<div class="actions">
+                    <button class="btn-sm btn-edit" onclick="openEdit(${u.id},'${(u.email||u.username).replace(/'/g,"\\'")}','${u.role}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                    <button class="btn-sm ${isActive ? 'btn-disable' : 'btn-enable'}" onclick="toggleStatus(${u.id},${isActive ? 0 : 1})">${isActive ? '<i class="fa-solid fa-ban"></i> Disable' : '<i class="fa-solid fa-check"></i> Enable'}</button>
+                    <button class="btn-sm btn-del" onclick="deleteUser(${u.id},'${(u.email||u.username).replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>
+                   </div>`;
+            return `<tr>
+                <td style="font-weight:700;color:var(--brand);">${i+1}</td>
+                <td style="font-weight:600;${!isActive ? 'opacity:.5;text-decoration:line-through;' : ''}">${u.email||u.username}</td>
+                <td><span class="badge ${u.role==='superadmin'?'badge-super':'badge-viewer'}">${u.role==='superadmin'?'Super Admin':'Viewer'}</span></td>
+                <td><span class="badge ${isActive?'badge-super':'badge-disabled'}">${isActive?'Active':'Disabled'}</span></td>
+                <td style="color:#64748b;font-size:12px;">${u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
+                <td>${actions}</td>
+            </tr>`;
+        }).join('');
+    }).catch(() => {
+        document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#ef4444;">Failed to load users.</td></tr>';
+    });
 }
 
 function addUser() {
     const email = document.getElementById('newEmail').value.trim();
     const role  = document.getElementById('newRole').value;
-
     if (!email) { showAlert('Injiza email.', 'error'); return; }
-
     const btn = document.getElementById('addBtn');
     btn.disabled = true;
     document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
+    fetch('/api/admin/users', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,role}) })
+        .then(r => r.json()).then(d => {
+            btn.disabled = false;
+            document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+            if (d.ok) { showAlert('Account yashyizweho neza!','success'); document.getElementById('newEmail').value=''; loadUsers(); }
+            else showAlert(d.error||'Gushyiraho byanze.','error');
+        }).catch(() => { btn.disabled=false; document.getElementById('addLabel').innerHTML='<i class="fa-solid fa-user-plus"></i> Create Account'; showAlert('Network error.','error'); });
+}
 
-    fetch('/api/admin/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role })
-    })
-    .then(r => r.json())
-    .then(d => {
-        btn.disabled = false;
-        document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
-        if (d.ok) {
-            showAlert('Account yashyizweho neza!', 'success');
-            document.getElementById('newEmail').value = '';
-            document.getElementById('newRole').value = 'viewer';
-            loadUsers();
-        } else {
-            showAlert(d.error || 'Gushyiraho byanze.', 'error');
-        }
-    })
-    .catch(() => {
-        btn.disabled = false;
-        document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
-        showAlert('Network error. Gerageza nanone.', 'error');
-    });
+function openEdit(id, email, role) {
+    document.getElementById('editId').value = id;
+    document.getElementById('editEmail').value = email;
+    document.getElementById('editRole').value = role;
+    document.getElementById('editModal').classList.add('show');
+}
+function closeEdit() { document.getElementById('editModal').classList.remove('show'); }
+
+function saveEdit() {
+    const id    = document.getElementById('editId').value;
+    const email = document.getElementById('editEmail').value.trim();
+    const role  = document.getElementById('editRole').value;
+    if (!email) { alert('Email irakenewe.'); return; }
+    fetch(`/api/admin/users/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,role}) })
+        .then(r => r.json()).then(d => {
+            if (d.ok) { closeEdit(); showAlert('Byavuguruwe neza!','success'); loadUsers(); }
+            else alert(d.error||'Guhindura byanze.');
+        }).catch(() => alert('Network error.'));
+}
+
+function toggleStatus(id, active) {
+    fetch(`/api/admin/users/${id}/status`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({active}) })
+        .then(r => r.json()).then(d => {
+            if (d.ok) { showAlert(active ? 'Konti yafunguwe.' : 'Konti yafunzwe.','success'); loadUsers(); }
+            else alert(d.error||'Byanze.');
+        }).catch(() => alert('Network error.'));
 }
 
 function deleteUser(id, email) {
     if (!confirm(`Urareba neza ko ushaka gusiba konti ya "${email}"?`)) return;
-    fetch(`/api/admin/users/${id}`, { method: 'DELETE' })
-        .then(r => r.json())
-        .then(d => {
-            if (d.ok) { showAlert('Konti yasibwe neza.', 'success'); loadUsers(); }
-            else showAlert(d.error || 'Gusiba byanze.', 'error');
-        })
-        .catch(() => showAlert('Network error.', 'error'));
+    fetch(`/api/admin/users/${id}`, { method:'DELETE' })
+        .then(r => r.json()).then(d => {
+            if (d.ok) { showAlert('Konti yasibwe neza.','success'); loadUsers(); }
+            else alert(d.error||'Gusiba byanze.');
+        }).catch(() => alert('Network error.'));
 }
 
 document.addEventListener('DOMContentLoaded', loadUsers);
-</script>
 
+/* ── 5-min session timeout ── */
+(function(){
+    const IDLE=5*60*1000, WARN=60*1000, REDIR='/admin-login';
+    let idleT, warnT, cdInt;
+    const modal=document.getElementById('sessionModal'), toast=document.getElementById('sessionToast');
+    const toastT=document.getElementById('toastTimer'), cdEl=document.getElementById('modalCountdown');
+    const sbVal=document.getElementById('sidebarTimerVal');
+    function fmt(ms){const s=Math.ceil(ms/1000),m=Math.floor(s/60);return m+':'+String(s%60).padStart(2,'0');}
+    window.doLogout=function(){clearTimeout(idleT);clearTimeout(warnT);clearInterval(cdInt);fetch('/api/admin/logout',{method:'POST'}).finally(()=>window.location.replace(REDIR));};
+    function expire(){toast.classList.remove('show');modal.classList.add('show');let c=5;cdEl.textContent=c;cdInt=setInterval(()=>{c--;cdEl.textContent=c;if(c<=0){clearInterval(cdInt);window.doLogout();}},1000);}
+    let start=Date.now(),rafId;
+    function tick(){const r=IDLE-(Date.now()-start);if(sbVal)sbVal.textContent=fmt(Math.max(0,r));if(r>0)rafId=requestAnimationFrame(tick);}
+    function reset(){
+        clearTimeout(idleT);clearTimeout(warnT);start=Date.now();cancelAnimationFrame(rafId);rafId=requestAnimationFrame(tick);
+        warnT=setTimeout(()=>{let s=Math.ceil((IDLE-(Date.now()-start))/1000);toastT.textContent=s;toast.classList.add('show');const iv=setInterval(()=>{s--;toastT.textContent=s;if(s<=0)clearInterval(iv);},1000);setTimeout(()=>toast.classList.remove('show'),IDLE-(Date.now()-start));},IDLE-WARN);
+        idleT=setTimeout(expire,IDLE);
+    }
+    ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(e=>document.addEventListener(e,reset,{passive:true}));
+    reset();
+})();
 
-
-<script>
-fetch('/api/admin/check-session').then(function(r){return r.json();}).then(function(d){
+/* ── Sidebar avatar ── */
+fetch('/api/admin/check-session').then(r=>r.json()).then(d=>{
     if(!d.ok) return;
-    var a=document.getElementById('sidebarAvatar');
-    var r=document.getElementById('sidebarAdminRole');
+    const a=document.getElementById('sidebarAvatar'), r=document.getElementById('sidebarAdminRole');
     if(a&&d.email) a.textContent=d.email[0].toUpperCase();
     if(r) r.textContent=d.role==='viewer'?'Manager':'Administrator';
-}).catch(function(){});
+}).catch(()=>{});
 </script>
 </body>
 </html>

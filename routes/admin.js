@@ -173,7 +173,7 @@ module.exports = (db, loginLimiter) => {
 
     // GET list all admin users
     router.get('/users', requireSuperAdmin, (req, res) => {
-        db.query('SELECT id, username, email, role, created_at FROM portal_admins ORDER BY id ASC', (err, rows) => {
+        db.query('SELECT id, username, email, role, is_active, created_at FROM portal_admins ORDER BY id ASC', (err, rows) => {
             if (err) return res.status(500).json({ error: err.message });
             res.json(rows);
         });
@@ -232,10 +232,42 @@ module.exports = (db, loginLimiter) => {
         });
     });
 
+    // PATCH edit user email/role
+    router.patch('/users/:id', requireSuperAdmin, (req, res) => {
+        const id = Number(req.params.id);
+        const { email, role } = req.body;
+        if (!email && !role) return res.json({ ok: false, error: 'Nta makuru yoherejwe.' });
+        db.query('SELECT email FROM portal_admins WHERE id = ?', [id], (err, rows) => {
+            if (err || !rows.length) return res.json({ ok: false, error: 'User ntabwo abonetse.' });
+            const updates = [];
+            const vals = [];
+            if (email) { updates.push('email=?'); vals.push(email); }
+            if (role)  { updates.push('role=?');  vals.push(role === 'viewer' ? 'viewer' : 'superadmin'); }
+            vals.push(id);
+            db.query(`UPDATE portal_admins SET ${updates.join(',')} WHERE id=?`, vals, (err2) => {
+                if (err2) return res.json({ ok: false, error: err2.message });
+                res.json({ ok: true });
+            });
+        });
+    });
+
+    // PATCH toggle user active status
+    router.patch('/users/:id/status', requireSuperAdmin, (req, res) => {
+        const id = Number(req.params.id);
+        const { active } = req.body;
+        db.query('SELECT email FROM portal_admins WHERE id = ?', [id], (err, rows) => {
+            if (err || !rows.length) return res.json({ ok: false, error: 'User ntabwo abonetse.' });
+            if (rows[0].email === req.session.adminEmail) return res.json({ ok: false, error: 'Ntushobora guhindura konti yawe.' });
+            db.query('UPDATE portal_admins SET is_active=? WHERE id=?', [active ? 1 : 0, id], (err2) => {
+                if (err2) return res.json({ ok: false, error: err2.message });
+                res.json({ ok: true });
+            });
+        });
+    });
+
     // DELETE admin user
     router.delete('/users/:id', requireSuperAdmin, (req, res) => {
         const id = Number(req.params.id);
-        // Prevent deleting self
         db.query('SELECT email FROM portal_admins WHERE id = ?', [id], (err, rows) => {
             if (err || !rows.length) return res.json({ ok: false, error: 'User ntabwo abonetse.' });
             if (rows[0].email === req.session.adminEmail) return res.json({ ok: false, error: 'Ntushobora gusiba konti yawe.' });
