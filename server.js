@@ -363,6 +363,7 @@ process.on('unhandledRejection', (reason) => {
 
 // Export for use in routes
 module.exports.sendErrorAlert = sendErrorAlert;
+app.set('emailTransport', emailTransport);
 
 // ── PAYMENT REPORT SCHEDULER ─────────────────────────────────────────────
 const { sendReport } = require('./routes/reports');

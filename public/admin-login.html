@@ -3,354 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- 🎯 BRANDING HEADER: LINKS DIRECTLY TO YOUR LOGO IN THE UPLOADS FOLDER -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>Admin Login | IKIZAME</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --brand: #0b698b;
-            --brand-dark: #08536e;
+            --brand: #0b698b; --brand-dark: #08536e;
             --brand-glow: rgba(11,105,139,0.18);
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --border: #cbd5e1;
-            --valid: #10b981;
-            --error: #ef4444;
-            --bg: #f0f4f8;
+            --text-dark: #0f172a; --text-muted: #64748b;
+            --border: #cbd5e1; --valid: #10b981; --error: #ef4444;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            background: var(--bg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
+            background: #f0f4f8;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 20px; overflow: hidden; position: relative;
         }
-
-        /* Decorative blobs */
         body::before, body::after {
-            content: '';
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 0.12;
+            content: ''; position: fixed; border-radius: 50%;
+            pointer-events: none; opacity: 0.1;
         }
-        body::before {
-            width: 500px; height: 500px;
-            background: var(--brand);
-            top: -150px; left: -150px;
-        }
-        body::after {
-            width: 400px; height: 400px;
-            background: var(--brand);
-            bottom: -120px; right: -120px;
-        }
+        body::before { width: 500px; height: 500px; background: var(--brand); top: -150px; left: -150px; }
+        body::after  { width: 400px; height: 400px; background: var(--brand); bottom: -120px; right: -120px; }
 
-        /* Top brand bar */
         .top-bar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 56px;
-            background: var(--brand);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
+            position: fixed; top: 0; left: 0; right: 0; height: 56px;
+            background: var(--brand); display: flex; align-items: center;
+            justify-content: center; z-index: 10;
         }
-        .top-bar-brand {
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.3rem;
-            color: #fff;
-            letter-spacing: 3px;
-        }
+        .top-bar-brand { font-family: 'Inter', sans-serif; font-size: 1.3rem; font-weight: 800; color: #fff; letter-spacing: 3px; }
 
-        /* Card */
         .card {
-            width: 100%;
-            max-width: 420px;
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 44px 36px 36px;
+            width: 100%; max-width: 420px; background: #fff;
+            border-radius: 20px; padding: 44px 36px 36px;
             box-shadow: 0 24px 48px -12px rgba(0,0,0,0.12);
-            position: relative;
-            z-index: 5;
+            position: relative; z-index: 5;
             animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
         }
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(30px); }
             to   { opacity: 1; transform: none; }
         }
-
         .card-icon {
-            width: 64px; height: 64px;
-            background: var(--brand);
-            border-radius: 16px;
+            width: 80px; height: 80px; border-radius: 50%; overflow: hidden;
+            padding: 6px; background: #fff; border: 3px solid var(--brand);
+            box-shadow: 0 8px 24px var(--brand-glow); margin: 0 auto 24px;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 26px;
-            margin: 0 auto 24px;
-            box-shadow: 0 8px 20px var(--brand-glow);
         }
+        .card-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+        .card h1 { font-size: 20px; font-weight: 800; color: var(--text-dark); text-align: center; margin-bottom: 6px; }
+        .card .sub { font-size: 13px; color: var(--text-muted); text-align: center; line-height: 1.5; margin-bottom: 28px; }
 
-        .card h1 {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--text-dark);
-            text-align: center;
-            margin-bottom: 6px;
+        .alert {
+            border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600;
+            margin-bottom: 18px; display: none; align-items: center; gap: 8px;
         }
-        .card p {
-            font-size: 13px;
-            color: var(--text-muted);
-            text-align: center;
-            line-height: 1.5;
-            margin-bottom: 32px;
-        }
+        .alert.show { display: flex; }
+        .alert.error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
+        .alert.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
 
-        /* Error alert */
-        .alert-error {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #b91c1c;
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-        }
-        .alert-error.show { display: flex; }
-
-        /* Form */
-        .form { display: flex; flex-direction: column; gap: 18px; }
-
+        .form { display: flex; flex-direction: column; gap: 16px; }
         .field { display: flex; flex-direction: column; gap: 6px; }
-        .field label {
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            transition: color 0.2s;
-        }
+        .field label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
         .field-wrap { position: relative; }
-        .field-wrap .ico-left {
-            position: absolute; left: 14px; top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 14px;
-            transition: color 0.2s;
-            pointer-events: none;
-        }
-        .field-wrap .ico-right {
-            position: absolute; right: 14px; top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 14px;
-            cursor: pointer;
-            transition: color 0.2s;
-            padding: 4px;
-        }
+        .field-wrap .ico-left { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; pointer-events: none; }
+        .field-wrap .ico-right { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; cursor: pointer; padding: 4px; }
         .field-wrap .ico-right:hover { color: var(--brand); }
-
         .field input {
-            width: 100%;
-            padding: 13px 44px;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-dark);
-            outline: none;
-            font-family: 'Inter', sans-serif;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            background: #fafafa;
+            width: 100%; padding: 13px 44px; border: 2px solid var(--border);
+            border-radius: 10px; font-size: 14px; font-weight: 500;
+            color: var(--text-dark); outline: none; font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s; background: #fafafa;
         }
-        .field input:focus {
-            border-color: var(--brand);
-            background: #fff;
-            box-shadow: 0 0 0 4px var(--brand-glow);
+        .field input:focus { border-color: var(--brand); background: #fff; box-shadow: 0 0 0 4px var(--brand-glow); }
+        .field:focus-within label, .field:focus-within .ico-left { color: var(--brand); }
+
+        /* OTP input */
+        .otp-input { letter-spacing: 8px; font-size: 22px; font-weight: 800; text-align: center; padding: 13px 16px !important; }
+
+        .btn {
+            padding: 13px; border: none; border-radius: 10px; font-size: 14px;
+            font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: background 0.2s, transform 0.15s;
         }
-        .field:focus-within label { color: var(--brand); }
-        .field:focus-within .ico-left { color: var(--brand); }
+        .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 4px 12px var(--brand-glow); }
+        .btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+        .btn-ghost { background: none; color: var(--text-muted); font-size: 13px; padding: 8px; }
+        .btn-ghost:hover { color: var(--brand); }
 
-        /* Valid state */
-        .field.valid input { border-color: var(--valid); }
-        .field.valid label { color: var(--valid); }
-        .field.valid .ico-left { color: var(--valid); }
-
-        /* Submit */
-        .btn-submit {
-            margin-top: 4px;
-            padding: 14px;
-            background: var(--brand);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px var(--brand-glow);
+        .forgot-link {
+            text-align: right; font-size: 12px; font-weight: 600;
+            color: var(--brand); cursor: pointer; margin-top: -8px;
         }
-        .btn-submit:hover { background: var(--brand-dark); transform: translateY(-1px); box-shadow: 0 8px 20px var(--brand-glow); }
-        .btn-submit:active { transform: translateY(0); }
-        .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+        .forgot-link:hover { text-decoration: underline; }
 
-        /* Back link */
+        .divider { text-align: center; font-size: 12px; color: var(--text-muted); margin: 4px 0; }
+
         .back-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            margin-top: 24px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.15s;
+            display: flex; align-items: center; justify-content: center;
+            gap: 7px; margin-top: 20px; font-size: 13px; font-weight: 600;
+            color: var(--text-muted); text-decoration: none;
         }
         .back-link:hover { color: var(--brand); }
 
-        /* Footer */
+        /* Panels */
+        .panel { display: none; }
+        .panel.active { display: block; }
+
         .footer {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 42px;
-            background: #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11.5px;
-            color: #64748b;
-            z-index: 10;
+            position: fixed; bottom: 0; left: 0; right: 0; height: 42px;
+            background: #0f172a; display: flex; align-items: center;
+            justify-content: center; font-size: 11.5px; color: #64748b; z-index: 10;
         }
         .footer strong { color: #38bdf8; }
 
         @media (max-width: 480px) {
             .card { padding: 36px 20px 28px; border-radius: 16px; }
-            .card h1 { font-size: 18px; }
         }
     </style>
 </head>
 <body>
+    <div class="top-bar"><span class="top-bar-brand">IKIZAME</span></div>
 
-    <div class="top-bar">
-        <span class="top-bar-brand">IKIZAME</span>
-    </div>
-        <div class="card">
-        <!-- 🎯 RECALIBRATED LOGO CELL: LARGER SIZE AND CIRCULAR BRANDED BORDER -->
-        <div class="card-icon" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; padding: 6px; background: #ffffff; border: 3px solid #0b698b; box-shadow: 0 8px 24px var(--brand-glow); margin: 0 auto 24px;">
-            <img src="assets/uploads/logo.png" alt="IKIZAME Admin" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-        </div>
-        <h1>Admin Control Panel</h1>
-        <p>Log in with your authorized credentials to manage exam questions and review student scores.</p>
+    <div class="card">
+        <div class="card-icon"><img src="assets/uploads/logo.png" alt="IKIZAME Admin"></div>
 
-        <div class="alert-error" id="alertBox">
+        <div class="alert error" id="alertBox">
             <i class="fa-solid fa-circle-xmark"></i>
-            <span id="alertMsg">Invalid username or password.</span>
+            <span id="alertMsg">Invalid credentials.</span>
+        </div>
+        <div class="alert success" id="successBox">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="successMsg">Done!</span>
         </div>
 
-        <!-- Backend logic unchanged: same action/method -->
-        <form action="/api/admin/auth" method="POST" class="form" id="loginForm" novalidate>
-
-            <div class="field" id="fieldUser">
-                <label for="username">Username</label>
-                <div class="field-wrap">
-                    <i class="fa-solid fa-user-shield ico-left"></i>
-                    <input type="text" id="username" name="username"
-                           required autocomplete="username"
-                           placeholder="Enter your username">
+        <!-- ── PANEL 1: Login ── -->
+        <div class="panel active" id="panelLogin">
+            <h1>Admin Control Panel</h1>
+            <p class="sub">Sign in with your admin email and password.</p>
+            <form action="/api/admin/auth" method="POST" class="form" id="loginForm" novalidate>
+                <div class="field">
+                    <label>Email Address</label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-envelope ico-left"></i>
+                        <input type="email" name="email" id="emailInput" placeholder="dotadostationarystore@gmail.com" required autocomplete="email">
+                    </div>
                 </div>
-            </div>
-
-            <div class="field" id="fieldPass">
-                <label for="password">Password</label>
-                <div class="field-wrap">
-                    <i class="fa-solid fa-lock ico-left"></i>
-                    <input type="password" id="password" name="password"
-                           required autocomplete="current-password"
-                           placeholder="Enter your password">
-                    <i class="fa-solid fa-eye ico-right" id="eyeBtn" title="Show password"></i>
+                <div class="field">
+                    <label>Password</label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-lock ico-left"></i>
+                        <input type="password" name="password" id="passInput" placeholder="Enter your password" required autocomplete="current-password">
+                        <i class="fa-solid fa-eye ico-right" id="eyeBtn"></i>
+                    </div>
                 </div>
+                <div class="forgot-link" onclick="showPanel('panelForgot')">Forgot password?</div>
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <span id="loginLabel">Access Dashboard</span>
+                    <i class="fa-solid fa-arrow-right-to-bracket" id="loginIcon"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- ── PANEL 2: Forgot Password (enter email) ── -->
+        <div class="panel" id="panelForgot">
+            <h1>Forgot Password</h1>
+            <p class="sub">Enter your admin email. We'll send a 6-digit OTP code.</p>
+            <div class="form">
+                <div class="field">
+                    <label>Admin Email</label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-envelope ico-left"></i>
+                        <input type="email" id="forgotEmail" placeholder="dotadostationarystore@gmail.com">
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="sendOtpBtn" onclick="sendOtp()">
+                    <span id="sendOtpLabel">Send OTP Code</span>
+                    <i class="fa-solid fa-paper-plane" id="sendOtpIcon"></i>
+                </button>
+                <button class="btn btn-ghost" onclick="showPanel('panelLogin')">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Login
+                </button>
             </div>
+        </div>
 
-            <button type="submit" class="btn-submit" id="submitBtn">
-                <span id="submitLabel">Access Dashboard</span>
-                <i class="fa-solid fa-arrow-right-to-bracket" id="submitIcon"></i>
-            </button>
+        <!-- ── PANEL 3: Enter OTP + New Password ── -->
+        <div class="panel" id="panelReset">
+            <h1>Reset Password</h1>
+            <p class="sub">Enter the 6-digit OTP sent to your email and set a new password.</p>
+            <div class="form">
+                <div class="field">
+                    <label>OTP Code</label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-key ico-left"></i>
+                        <input type="text" id="otpInput" class="otp-input" placeholder="000000" maxlength="6" inputmode="numeric">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>New Password</label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-lock ico-left"></i>
+                        <input type="password" id="newPassInput" placeholder="Min. 8 characters">
+                        <i class="fa-solid fa-eye ico-right" id="eyeBtn2"></i>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Confirm Password</label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-lock ico-left"></i>
+                        <input type="password" id="confirmPassInput" placeholder="Repeat new password">
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="resetBtn" onclick="resetPassword()">
+                    <span id="resetLabel">Reset Password</span>
+                    <i class="fa-solid fa-shield-halved" id="resetIcon"></i>
+                </button>
+                <button class="btn btn-ghost" onclick="showPanel('panelForgot')">
+                    <i class="fa-solid fa-arrow-left"></i> Resend OTP
+                </button>
+            </div>
+        </div>
 
-        </form>
-
-        <a href="/" class="back-link">
-            <i class="fa-solid fa-arrow-left"></i> Back to Main Website
-        </a>
+        <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Main Website</a>
     </div>
 
-    <footer class="footer">
-        &copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong>
-    </footer>
+    <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
 
     <script>
-        const eyeBtn   = document.getElementById('eyeBtn');
-        const passInput = document.getElementById('password');
-        const userInput = document.getElementById('username');
-        const fieldUser = document.getElementById('fieldUser');
-        const fieldPass = document.getElementById('fieldPass');
-        const loginForm = document.getElementById('loginForm');
-        const submitBtn = document.getElementById('submitBtn');
         const alertBox  = document.getElementById('alertBox');
         const alertMsg  = document.getElementById('alertMsg');
+        const successBox = document.getElementById('successBox');
+        const successMsg = document.getElementById('successMsg');
 
-        /* Password visibility toggle */
-        eyeBtn.addEventListener('click', () => {
-            const show = passInput.type === 'password';
-            passInput.type = show ? 'text' : 'password';
-            eyeBtn.className = show ? 'fa-solid fa-eye-slash ico-right' : 'fa-solid fa-eye ico-right';
-            eyeBtn.title = show ? 'Hide password' : 'Show password';
-        });
+        function showAlert(msg, type = 'error') {
+            alertBox.classList.remove('show');
+            successBox.classList.remove('show');
+            if (type === 'success') { successMsg.textContent = msg; successBox.classList.add('show'); }
+            else { alertMsg.textContent = msg; alertBox.classList.add('show'); }
+        }
+        function hideAlerts() { alertBox.classList.remove('show'); successBox.classList.remove('show'); }
 
-        /* Real-time field validation feedback */
-        userInput.addEventListener('input', () => {
-            fieldUser.classList.toggle('valid', userInput.value.trim().length >= 3);
-        });
-        passInput.addEventListener('input', () => {
-            fieldPass.classList.toggle('valid', passInput.value.length >= 4);
-        });
-
-        /* Show server-side error if redirected back with ?error=1 */
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('error')) {
-            alertBox.classList.add('show');
-            alertMsg.textContent = 'Invalid username or password. Please try again.';
+        function showPanel(id) {
+            hideAlerts();
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        /* Loading state on submit */
-        loginForm.addEventListener('submit', (e) => {
-            if (!userInput.value.trim() || !passInput.value) {
-                e.preventDefault();
-                alertBox.classList.add('show');
-                alertMsg.textContent = 'Please fill in all fields.';
-                return;
-            }
-            submitBtn.disabled = true;
-            document.getElementById('submitLabel').textContent = 'Authenticating...';
-            document.getElementById('submitIcon').className = 'fa-solid fa-spinner fa-spin';
+        // Password toggle — login
+        document.getElementById('eyeBtn').addEventListener('click', () => {
+            const p = document.getElementById('passInput');
+            const show = p.type === 'password';
+            p.type = show ? 'text' : 'password';
+            document.getElementById('eyeBtn').className = show ? 'fa-solid fa-eye-slash ico-right' : 'fa-solid fa-eye ico-right';
+        });
+        // Password toggle — reset
+        document.getElementById('eyeBtn2').addEventListener('click', () => {
+            const p = document.getElementById('newPassInput');
+            const show = p.type === 'password';
+            p.type = show ? 'text' : 'password';
+            document.getElementById('eyeBtn2').className = show ? 'fa-solid fa-eye-slash ico-right' : 'fa-solid fa-eye ico-right';
+        });
+
+        // Show error from redirect
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('error')) showAlert('Invalid email or password. Please try again.');
+
+        // Login form loading state
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            const email = document.getElementById('emailInput').value.trim();
+            const pass  = document.getElementById('passInput').value;
+            if (!email || !pass) { e.preventDefault(); showAlert('Please fill in all fields.'); return; }
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            document.getElementById('loginLabel').textContent = 'Authenticating...';
+            document.getElementById('loginIcon').className = 'fa-solid fa-spinner fa-spin';
+        });
+
+        // Send OTP
+        function sendOtp() {
+            const email = document.getElementById('forgotEmail').value.trim();
+            if (!email) { showAlert('Injiza email yawe.'); return; }
+            const btn = document.getElementById('sendOtpBtn');
+            btn.disabled = true;
+            document.getElementById('sendOtpLabel').textContent = 'Kohereza...';
+            document.getElementById('sendOtpIcon').className = 'fa-solid fa-spinner fa-spin';
+
+            fetch('/api/admin/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            })
+            .then(r => r.json())
+            .then(d => {
+                btn.disabled = false;
+                document.getElementById('sendOtpLabel').textContent = 'Send OTP Code';
+                document.getElementById('sendOtpIcon').className = 'fa-solid fa-paper-plane';
+                if (d.ok) {
+                    showAlert('OTP yoherejwe kuri email yawe. Reba inbox.', 'success');
+                    setTimeout(() => showPanel('panelReset'), 1500);
+                } else {
+                    showAlert(d.error || 'Kohereza byanze.');
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                document.getElementById('sendOtpLabel').textContent = 'Send OTP Code';
+                document.getElementById('sendOtpIcon').className = 'fa-solid fa-paper-plane';
+                showAlert('Ikibazo cya network. Gerageza nanone.');
+            });
+        }
+
+        // Reset password
+        function resetPassword() {
+            const email   = document.getElementById('forgotEmail').value.trim();
+            const otp     = document.getElementById('otpInput').value.trim();
+            const newPass = document.getElementById('newPassInput').value;
+            const confirm = document.getElementById('confirmPassInput').value;
+
+            if (!otp || otp.length !== 6) { showAlert('Injiza OTP ya imibare 6.'); return; }
+            if (newPass.length < 8) { showAlert('Password igomba kuba nibura inyuguti 8.'); return; }
+            if (newPass !== confirm) { showAlert('Passwords ntizuye. Gerageza nanone.'); return; }
+
+            const btn = document.getElementById('resetBtn');
+            btn.disabled = true;
+            document.getElementById('resetLabel').textContent = 'Guhindura...';
+            document.getElementById('resetIcon').className = 'fa-solid fa-spinner fa-spin';
+
+            fetch('/api/admin/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp, newPassword: newPass })
+            })
+            .then(r => r.json())
+            .then(d => {
+                btn.disabled = false;
+                document.getElementById('resetLabel').textContent = 'Reset Password';
+                document.getElementById('resetIcon').className = 'fa-solid fa-shield-halved';
+                if (d.ok) {
+                    showAlert('Password yahindutse neza! Injira ukoresheje password nshya.', 'success');
+                    setTimeout(() => showPanel('panelLogin'), 2000);
+                } else {
+                    showAlert(d.error || 'Guhindura byanze.');
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                document.getElementById('resetLabel').textContent = 'Reset Password';
+                document.getElementById('resetIcon').className = 'fa-solid fa-shield-halved';
+                showAlert('Ikibazo cya network. Gerageza nanone.');
+            });
+        }
+
+        // OTP digits only
+        document.getElementById('otpInput').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').substring(0, 6);
         });
     </script>
 </body>

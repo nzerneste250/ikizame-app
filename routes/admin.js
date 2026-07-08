@@ -21,32 +21,31 @@ async function getAdminToken() {
 module.exports = (db, loginLimiter) => {
     const router = express.Router();
 
-    // POST admin login (rate limited)
-    router.post('/auth', loginLimiter, (req, res) => {
-        const { username, password } = req.body;
-        if (!username || !password)
-            return res.send('<script>alert("Injiza username na password."); window.location.href="/admin-login";</script>');
+    // In-memory OTP store: email -> { otp, expires }
+    const otpStore = new Map();
 
-        db.query('SELECT * FROM portal_admins WHERE username = ?', [username], (err, results) => {
+    // POST admin login — uses email instead of username
+    router.post('/auth', loginLimiter, (req, res) => {
+        const { email, password } = req.body;
+        if (!email || !password)
+            return res.redirect('/admin-login?error=missing');
+
+        db.query('SELECT * FROM portal_admins WHERE email = ? OR username = ?', [email, email], (err, results) => {
             if (err) return res.status(500).send('Database Auth Error: ' + err.message);
             if (!results || results.length === 0)
-                return res.send('<script>alert("Invalid Admin Credentials!"); window.location.href="/admin-login";</script>');
+                return res.redirect('/admin-login?error=invalid');
 
             const admin = results[0];
             const storedPassword = admin.password;
             const isHashed = storedPassword && storedPassword.startsWith('$2');
 
             const handleMatch = (match) => {
-                if (!match)
-                    return res.send('<script>alert("Invalid Admin Credentials!"); window.location.href="/admin-login";</script>');
-
-                // Auto-upgrade plain-text password to bcrypt on first login
+                if (!match) return res.redirect('/admin-login?error=invalid');
                 if (!isHashed) {
                     bcrypt.hash(storedPassword, BCRYPT_ROUNDS, (hashErr, hash) => {
                         if (!hashErr) db.query('UPDATE portal_admins SET password = ? WHERE id = ?', [hash, admin.id], () => {});
                     });
                 }
-
                 req.session.isAdminAuthenticated = true;
                 req.session.lastAdminActivity    = Date.now();
                 res.redirect('/dashboard');
@@ -54,6 +53,73 @@ module.exports = (db, loginLimiter) => {
 
             if (isHashed) bcrypt.compare(password, storedPassword, (cmpErr, match) => handleMatch(!cmpErr && match));
             else handleMatch(password === storedPassword);
+        });
+    });
+
+    // POST forgot password — send OTP to admin email
+    router.post('/forgot-password', loginLimiter, (req, res) => {
+        const { email } = req.body;
+        if (!email) return res.json({ ok: false, error: 'Email irakenewe.' });
+
+        const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
+        if (email.toLowerCase() !== adminEmail.toLowerCase())
+            return res.json({ ok: false, error: 'Iyi email ntabwo izwi nk\'iy\'umunyamabanga.' });
+
+        const otp     = Math.floor(100000 + Math.random() * 900000).toString();
+        const expires = Date.now() + 10 * 60 * 1000; // 10 min
+        otpStore.set(email.toLowerCase(), { otp, expires });
+
+        const transport = req.app.get('emailTransport');
+        if (!transport) return res.json({ ok: false, error: 'Email service ntabwo itangiye.' });
+
+        transport.sendMail({
+            from: `"IKIZAME Security" <${process.env.SMTP_USER}>`,
+            to:   adminEmail,
+            subject: '🔐 IKIZAME Admin — OTP Code yo Guhindura Password',
+            html: `<div style="font-family:Inter,sans-serif;max-width:420px;margin:0 auto;background:#f8fafc;padding:24px;border-radius:12px;">
+                <div style="background:#0b698b;padding:16px 20px;border-radius:8px;margin-bottom:20px;text-align:center;">
+                    <h2 style="color:#fff;margin:0;font-size:20px;">🔐 IKIZAME Admin</h2>
+                    <p style="color:#bae6fd;margin:4px 0 0;font-size:13px;">Password Reset OTP</p>
+                </div>
+                <p style="color:#475569;font-size:14px;margin-bottom:16px;">Warasabye guhindura password. Koresha OTP ikurikira:</p>
+                <div style="background:#0f172a;color:#38bdf8;font-size:36px;font-weight:900;letter-spacing:10px;text-align:center;padding:20px;border-radius:8px;margin-bottom:16px;font-family:monospace;">${otp}</div>
+                <p style="color:#94a3b8;font-size:12px;">Iyi code izarangira mu minota 10. Niba utayisabye, irengageze.</p>
+            </div>`
+        }, (err) => {
+            if (err) return res.json({ ok: false, error: 'Kohereza email byanze. Gerageza nanone.' });
+            res.json({ ok: true });
+        });
+    });
+
+    // POST verify OTP + reset password
+    router.post('/reset-password', loginLimiter, (req, res) => {
+        const { email, otp, newPassword } = req.body;
+        if (!email || !otp || !newPassword)
+            return res.json({ ok: false, error: 'Amakuru yose arakenewe.' });
+        if (newPassword.length < 8)
+            return res.json({ ok: false, error: 'Password igomba kuba nibura inyuguti 8.' });
+
+        const record = otpStore.get(email.toLowerCase());
+        if (!record) return res.json({ ok: false, error: 'Nta OTP yoherejwe kuri iyi email.' });
+        if (Date.now() > record.expires) {
+            otpStore.delete(email.toLowerCase());
+            return res.json({ ok: false, error: 'OTP yarangiye. Saba indi.' });
+        }
+        if (record.otp !== otp.trim())
+            return res.json({ ok: false, error: 'OTP ntabwo ari yo. Gerageza nanone.' });
+
+        otpStore.delete(email.toLowerCase());
+
+        bcrypt.hash(newPassword, BCRYPT_ROUNDS, (hashErr, hash) => {
+            if (hashErr) return res.json({ ok: false, error: 'Hashage yabuze.' });
+            const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
+            db.query('UPDATE portal_admins SET password = ? WHERE email = ? OR username = ?',
+                [hash, adminEmail, adminEmail],
+                (err) => {
+                    if (err) return res.json({ ok: false, error: err.message });
+                    res.json({ ok: true });
+                }
+            );
         });
     });
 
