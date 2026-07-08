@@ -193,14 +193,14 @@
             </div>
 
             <!-- IP ADDRESS DAILY REPORT -->
-            <div class="panel">
-                <div class="panel-toolbar">
-                    <div class="panel-heading" style="margin-bottom:0">
+            <div class="panel" style="flex-shrink:0">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+                    <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;">
                         <i class="fa-solid fa-network-wired" style="color:var(--brand)"></i>
                         IP Address Daily Report
-                        <span class="ip-count-badge" id="ipCountBadge">0 IPs</span>
+                        <span id="ipCountBadge" style="background:#e0f2fe;color:#0369a1;font-size:12px;font-weight:800;padding:4px 12px;border-radius:20px;">0 IPs</span>
                     </div>
-                    <select class="date-select" id="ipDateSelect" onchange="loadIpTable(this.value)">
+                    <select id="ipDateSelect" onchange="loadIpTable(this.value)" style="padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;font-weight:600;color:var(--text-main);background:#f8fafc;cursor:pointer;">
                         <option value="">Loading dates...</option>
                     </select>
                 </div>
