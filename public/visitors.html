@@ -1,201 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>Visitors | IKIZAME Admin</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --brand:#0b698b; --brand-dark:#08536e;
-            --bg:#f8fafc; --white:#fff;
-            --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
-            --sidebar:#0f172a; --sidebar-border:#1e293b; --sidebar-muted:#94a3b8;
-        }
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
-        a{text-decoration:none;}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="icon" type="image/png" href="assets/uploads/logo.png">
+<title>Visitors v3 | IKIZAME Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#0f172a;}
+a{text-decoration:none;color:inherit;}
 
-        /* LAYOUT */
-        .layout{display:flex;min-height:100vh;}
-        .sidebar{width:240px;background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
-        .sb-brand{padding:22px 20px;font-family:'Black Han Sans',sans-serif;font-size:1.1rem;color:#38bdf8;letter-spacing:2px;border-bottom:1px solid var(--sidebar-border);display:flex;align-items:center;gap:10px;}
-        .sb-nav{padding:14px 12px;display:flex;flex-direction:column;gap:3px;flex:1;}
-        .sb-nav a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:8px;color:var(--sidebar-muted);font-size:13px;font-weight:600;transition:.15s;}
-        .sb-nav a:hover{color:#f8fafc;background:rgba(255,255,255,.06);}
-        .sb-nav a.active{color:#f8fafc;background:rgba(56,189,248,.12);border-left:3px solid #38bdf8;padding-left:11px;}
-        .sb-nav a i{width:16px;text-align:center;}
-        .sb-nav a.logout{color:#ef4444!important;}
-        .sb-nav a.logout:hover{background:rgba(239,68,68,.1)!important;}
-        .sb-foot{padding:14px 16px;border-top:1px solid var(--sidebar-border);display:flex;align-items:center;gap:10px;}
-        .sb-avatar{width:34px;height:34px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;}
-        .sb-meta{flex:1;min-width:0;}
-        .sb-name{font-size:12px;font-weight:700;color:#f8fafc;}
-        .sb-role{font-size:11px;color:var(--sidebar-muted);}
-        .sb-timer{font-size:10px;font-weight:700;background:rgba(56,189,248,.15);color:#38bdf8;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+/* LAYOUT */
+.wrap{display:flex;min-height:100vh;}
+.side{width:240px;background:#0f172a;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;flex-shrink:0;}
+.side-logo{padding:22px 20px;font-family:'Black Han Sans',sans-serif;font-size:1.1rem;color:#38bdf8;letter-spacing:2px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:10px;}
+.side-nav{padding:14px 12px;display:flex;flex-direction:column;gap:3px;flex:1;overflow-y:auto;}
+.side-nav a{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:8px;color:#94a3b8;font-size:13px;font-weight:600;transition:.15s;}
+.side-nav a:hover{color:#f8fafc;background:rgba(255,255,255,.07);}
+.side-nav a.on{color:#f8fafc;background:rgba(56,189,248,.13);border-left:3px solid #38bdf8;padding-left:10px;}
+.side-nav a i{width:15px;text-align:center;}
+.side-nav a.out{color:#ef4444!important;}
+.side-nav a.out:hover{background:rgba(239,68,68,.1)!important;}
+.side-foot{padding:13px 15px;border-top:1px solid #1e293b;display:flex;align-items:center;gap:10px;}
+.ava{width:33px;height:33px;border-radius:50%;background:#0b698b;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;}
+.ava-info{flex:1;min-width:0;}
+.ava-name{font-size:12px;font-weight:700;color:#f8fafc;}
+.ava-role{font-size:10.5px;color:#94a3b8;}
+.timer-pill{font-size:10px;font-weight:700;background:rgba(56,189,248,.15);color:#38bdf8;padding:2px 8px;border-radius:20px;white-space:nowrap;}
 
-        .main{flex:1;display:flex;flex-direction:column;min-width:0;}
-        .topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;min-height:76px;display:flex;align-items:center;position:sticky;top:0;z-index:10;}
-        .topbar h1{font-size:21px;font-weight:800;}
-        .topbar p{font-size:12.5px;color:var(--muted);margin-top:3px;}
-        .content{padding:28px 32px;display:flex;flex-direction:column;gap:24px;}
+.page{flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 30px;min-height:74px;display:flex;align-items:center;position:sticky;top:0;z-index:10;}
+.topbar h1{font-size:20px;font-weight:800;}
+.topbar p{font-size:12px;color:#64748b;margin-top:3px;}
+.body{padding:26px 30px;display:flex;flex-direction:column;gap:22px;}
 
-        /* CARDS */
-        .cards{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
-        .card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(15,23,42,.05);}
-        .card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;}
-        .card.today::before{background:#0369a1;}
-        .card.week::before{background:#15803d;}
-        .card.month::before{background:#7e22ce;}
-        .card.year::before{background:#c2410c;}
-        .card.total::before{background:var(--brand);}
-        .card-label{font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
-        .card-val{font-size:2rem;font-weight:900;line-height:1;}
-        .card.today .card-val{color:#0369a1;}
-        .card.week  .card-val{color:#15803d;}
-        .card.month .card-val{color:#7e22ce;}
-        .card.year  .card-val{color:#c2410c;}
-        .card.total .card-val{color:var(--brand);}
-        .card-sub{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:6px;}
+/* STAT CARDS */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+.stat{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px 16px;position:relative;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.04);}
+.stat::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;}
+.stat.s1::before{background:#0369a1;}
+.stat.s2::before{background:#15803d;}
+.stat.s3::before{background:#7e22ce;}
+.stat.s4::before{background:#c2410c;}
+.stat.s5::before{background:#0b698b;}
+.stat-lbl{font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;}
+.stat-val{font-size:1.9rem;font-weight:900;line-height:1;}
+.stat.s1 .stat-val{color:#0369a1;}
+.stat.s2 .stat-val{color:#15803d;}
+.stat.s3 .stat-val{color:#7e22ce;}
+.stat.s4 .stat-val{color:#c2410c;}
+.stat.s5 .stat-val{color:#0b698b;}
+.stat-sub{font-size:11px;color:#64748b;font-weight:600;margin-top:5px;}
 
-        /* PANEL */
-        .panel{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(15,23,42,.05);}
-        .panel-head{font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:18px;}
-        .panel-head i{color:var(--brand);}
+/* PANEL */
+.panel{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:22px;box-shadow:0 1px 8px rgba(0,0,0,.04);}
+.ph{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.ph i{color:#0b698b;}
 
-        /* BAR CHART */
-        .chart-scroll{overflow-x:auto;}
-        .bar-chart{display:flex;align-items:flex-end;gap:5px;height:160px;min-width:500px;}
-        .bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
-        .bar-num{font-size:9px;font-weight:700;color:var(--muted);}
-        .bar-rect{width:100%;background:var(--brand);border-radius:5px 5px 0 0;min-height:4px;position:relative;cursor:default;transition:height .4s;}
-        .bar-rect:hover{background:var(--brand-dark);}
-        .bar-tip{display:none;position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;white-space:nowrap;pointer-events:none;}
-        .bar-rect:hover .bar-tip{display:block;}
-        .bar-lbl{font-size:8.5px;color:var(--muted);font-weight:600;writing-mode:vertical-rl;transform:rotate(180deg);height:36px;}
+/* CHART */
+.chart-box{overflow-x:auto;}
+.bars{display:flex;align-items:flex-end;gap:5px;height:150px;min-width:480px;}
+.bc{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.bn{font-size:9px;font-weight:700;color:#64748b;}
+.br{width:100%;background:#0b698b;border-radius:4px 4px 0 0;min-height:4px;position:relative;cursor:default;}
+.br:hover{background:#08536e;}
+.bt{display:none;position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;font-size:10px;font-weight:700;padding:3px 7px;border-radius:5px;white-space:nowrap;pointer-events:none;}
+.br:hover .bt{display:block;}
+.bl{font-size:8px;color:#64748b;font-weight:600;writing-mode:vertical-rl;transform:rotate(180deg);height:34px;}
 
-        /* TABLE */
-        .tbl-wrap{overflow-x:auto;}
-        table{width:100%;border-collapse:collapse;font-size:13px;}
-        thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
-        tbody tr{border-bottom:1px solid var(--border);}
-        tbody tr:last-child{border-bottom:none;}
-        tbody td{padding:11px 14px;font-weight:500;}
-        tbody tr:hover td{background:#f8fafc;}
-        .badge{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px;}
-        .badge-today{background:#dbeafe;color:#1d4ed8;}
-        .badge-peak{background:#dcfce7;color:#15803d;}
-        .badge-low{background:#f1f5f9;color:#64748b;}
-        .badge-ip{background:#f0fdf4;color:#15803d;font-family:monospace;}
+/* TABLE */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{background:#f8fafc;padding:10px 13px;text-align:left;font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;}
+tbody tr{border-bottom:1px solid #f1f5f9;}
+tbody tr:last-child{border-bottom:none;}
+tbody td{padding:10px 13px;font-weight:500;}
+tbody tr:hover td{background:#f8fafc;}
 
-        /* IP PANEL TOOLBAR */
-        .ip-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px;}
-        .ip-title{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;}
-        .ip-count{background:#e0f2fe;color:#0369a1;font-size:11.5px;font-weight:800;padding:3px 12px;border-radius:20px;}
-        .date-sel{padding:7px 13px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;font-weight:600;color:var(--text);background:#f8fafc;cursor:pointer;}
+/* IP PANEL */
+.ip-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+.ip-left{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;}
+.ip-left i{color:#0b698b;}
+.ip-badge{background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:800;padding:3px 11px;border-radius:20px;}
+.ip-sel{padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:12.5px;font-family:inherit;font-weight:600;color:#0f172a;background:#f8fafc;cursor:pointer;}
 
-        footer{background:var(--sidebar);text-align:center;padding:14px;font-size:11px;color:#64748b;}
-        footer strong{color:#38bdf8;}
+/* BADGES */
+.b{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.b-today{background:#dbeafe;color:#1d4ed8;}
+.b-peak{background:#dcfce7;color:#15803d;}
+.b-norm{background:#f1f5f9;color:#64748b;}
 
-        @media(max-width:1200px){.cards{grid-template-columns:repeat(3,1fr);}}
-        @media(max-width:1024px){.sidebar{display:none;}}
-        @media(max-width:640px){.cards{grid-template-columns:1fr 1fr;}.content{padding:16px;}}
-    </style>
+footer{background:#0f172a;text-align:center;padding:13px;font-size:11px;color:#64748b;}
+footer strong{color:#38bdf8;}
+
+@media(max-width:1100px){.stats{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:960px){.side{display:none;}}
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr;}.body{padding:14px;}}
+</style>
 </head>
 <body>
 
 <!-- SESSION MODAL -->
-<div id="sessionModal" style="position:fixed;inset:0;background:rgba(15,23,42,.75);display:none;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(4px);">
-    <div style="background:#fff;border-radius:16px;padding:36px 32px;max-width:360px;width:90%;text-align:center;">
-        <div style="width:56px;height:56px;background:#fef2f2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#ef4444;margin:0 auto 14px;"><i class="fa-solid fa-clock"></i></div>
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">Session Expired</h3>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">You were idle too long. Redirecting to login...</p>
-        <div id="cdNum" style="font-size:28px;font-weight:800;color:#ef4444;margin-bottom:14px;">5</div>
-        <button onclick="doLogout()" style="background:var(--brand);color:#fff;border:none;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;"><i class="fa-solid fa-right-to-bracket"></i> Log In Again</button>
+<div id="sModal" style="position:fixed;inset:0;background:rgba(15,23,42,.8);display:none;align-items:center;justify-content:center;z-index:9999;">
+    <div style="background:#fff;border-radius:14px;padding:32px;max-width:340px;width:90%;text-align:center;">
+        <div style="width:52px;height:52px;background:#fef2f2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#ef4444;margin:0 auto 12px;"><i class="fa-solid fa-clock"></i></div>
+        <h3 style="font-size:15px;font-weight:800;margin-bottom:7px;">Session Expired</h3>
+        <p style="font-size:12.5px;color:#64748b;margin-bottom:16px;">Redirecting to login...</p>
+        <div id="cdN" style="font-size:26px;font-weight:800;color:#ef4444;margin-bottom:12px;">5</div>
+        <button onclick="doLogout()" style="background:#0b698b;color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;">Log In Again</button>
     </div>
 </div>
-<div id="sessionToast" style="position:fixed;top:70px;right:20px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:10px;padding:11px 15px;font-size:12.5px;font-weight:600;display:none;align-items:center;gap:10px;z-index:9998;max-width:300px;">
+<div id="sToast" style="position:fixed;top:68px;right:18px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:9px;padding:10px 14px;font-size:12px;font-weight:600;display:none;align-items:center;gap:9px;z-index:9998;">
     <i class="fa-solid fa-triangle-exclamation"></i>
-    <span>Session expires in <span id="toastTimer">60</span>s</span>
+    <span>Session expires in <span id="tTimer">60</span>s</span>
 </div>
 
-<div class="layout">
-    <aside class="sidebar">
-        <div class="sb-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
-        <nav class="sb-nav">
+<div class="wrap">
+    <aside class="side">
+        <div class="side-logo"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <nav class="side-nav">
             <a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
             <a href="/add-exam"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
             <a href="/admin-payments"><i class="fa-solid fa-credit-card"></i> Payments</a>
             <a href="/upload-resource"><i class="fa-solid fa-book-bookmark"></i> Upload Resources</a>
             <a href="/dashboard?view=analytics"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
-            <a href="/visitors" class="active"><i class="fa-solid fa-users-viewfinder"></i> Visitors</a>
+            <a href="/visitors" class="on"><i class="fa-solid fa-users-viewfinder"></i> Visitors</a>
             <a href="/system-performance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
-            <a href="/api/admin/logout" class="logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+            <a href="/api/admin/logout" class="out"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
-        <div class="sb-foot">
-            <div class="sb-avatar">A</div>
-            <div class="sb-meta"><div class="sb-name">Admin</div><div class="sb-role">Administrator</div></div>
-            <div class="sb-timer"><span id="sbTimer">5:00</span></div>
+        <div class="side-foot">
+            <div class="ava">A</div>
+            <div class="ava-info"><div class="ava-name">Admin</div><div class="ava-role">Administrator</div></div>
+            <div class="timer-pill"><span id="sbT">5:00</span></div>
         </div>
     </aside>
 
-    <div class="main">
+    <div class="page">
         <header class="topbar">
             <div>
-                <h1><i class="fa-solid fa-users-viewfinder" style="color:var(--brand);margin-right:8px;"></i>Website Visitors</h1>
-                <p>Unique IP addresses tracked per day — server IP excluded, no double-counting.</p>
+                <h1><i class="fa-solid fa-users-viewfinder" style="color:#0b698b;margin-right:7px;"></i>Website Visitors</h1>
+                <p>Each IP address counted once per day — server IP excluded.</p>
             </div>
         </header>
 
-        <div class="content">
+        <div class="body">
 
-            <!-- SUMMARY CARDS -->
-            <div class="cards">
-                <div class="card today"><div class="card-label">Today</div><div class="card-val" id="vToday">—</div><div class="card-sub">unique visitors</div></div>
-                <div class="card week"><div class="card-label">This Week</div><div class="card-val" id="vWeek">—</div><div class="card-sub">last 7 days</div></div>
-                <div class="card month"><div class="card-label">This Month</div><div class="card-val" id="vMonth">—</div><div class="card-sub">last 30 days</div></div>
-                <div class="card year"><div class="card-label">This Year</div><div class="card-val" id="vYear">—</div><div class="card-sub">calendar year</div></div>
-                <div class="card total"><div class="card-label">All Time</div><div class="card-val" id="vTotal">—</div><div class="card-sub">since launch</div></div>
+            <!-- STATS -->
+            <div class="stats">
+                <div class="stat s1"><div class="stat-lbl">Today</div><div class="stat-val" id="vT">—</div><div class="stat-sub">unique visitors</div></div>
+                <div class="stat s2"><div class="stat-lbl">This Week</div><div class="stat-val" id="vW">—</div><div class="stat-sub">last 7 days</div></div>
+                <div class="stat s3"><div class="stat-lbl">This Month</div><div class="stat-val" id="vM">—</div><div class="stat-sub">last 30 days</div></div>
+                <div class="stat s4"><div class="stat-lbl">This Year</div><div class="stat-val" id="vY">—</div><div class="stat-sub">calendar year</div></div>
+                <div class="stat s5"><div class="stat-lbl">All Time</div><div class="stat-val" id="vA">—</div><div class="stat-sub">since launch</div></div>
             </div>
 
             <!-- BAR CHART -->
             <div class="panel">
-                <div class="panel-head"><i class="fa-solid fa-chart-column"></i> Daily Unique Visitors — Last 30 Days</div>
-                <div class="chart-scroll"><div class="bar-chart" id="barChart"><div style="color:var(--muted);font-size:13px;align-self:center;width:100%;text-align:center;">Loading...</div></div></div>
+                <div class="ph"><i class="fa-solid fa-chart-column"></i> Daily Unique Visitors — Last 30 Days</div>
+                <div class="chart-box"><div class="bars" id="bars"><div style="color:#64748b;font-size:13px;align-self:center;width:100%;text-align:center;">Loading...</div></div></div>
             </div>
 
-            <!-- IP ADDRESS DAILY REPORT -->
+            <!-- IP DAILY REPORT -->
             <div class="panel">
-                <div class="ip-toolbar">
-                    <div class="ip-title">
-                        <i class="fa-solid fa-network-wired"></i>
-                        IP Address Daily Report
-                        <span class="ip-count" id="ipCount">0 IPs</span>
-                    </div>
-                    <select class="date-sel" id="ipDateSel" onchange="loadIpTable(this.value)">
-                        <option value="">Loading dates...</option>
-                    </select>
+                <div class="ip-head">
+                    <div class="ip-left"><i class="fa-solid fa-network-wired"></i> IP Address Report <span class="ip-badge" id="ipBadge">0 IPs</span></div>
+                    <select class="ip-sel" id="ipSel" onchange="loadIPs(this.value)"><option value="">Loading...</option></select>
                 </div>
-                <div class="tbl-wrap">
+                <div class="tw">
                     <table>
-                        <thead><tr><th>#</th><th>IP Address</th><th>Date</th><th>First Visit</th><th>Page Hits</th></tr></thead>
-                        <tbody id="ipBody"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px;">Select a date above.</td></tr></tbody>
+                        <thead><tr><th>#</th><th>IP Address</th><th>Date</th><th>First Visit</th><th>Visits</th></tr></thead>
+                        <tbody id="ipTb"><tr><td colspan="5" style="text-align:center;color:#64748b;padding:22px;">Select a date.</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
             <!-- DAILY BREAKDOWN -->
             <div class="panel">
-                <div class="panel-head"><i class="fa-solid fa-table"></i> Daily Breakdown</div>
-                <div class="tbl-wrap">
+                <div class="ph"><i class="fa-solid fa-table-list"></i> Daily Breakdown</div>
+                <div class="tw">
                     <table>
                         <thead><tr><th>#</th><th>Date</th><th>Day</th><th>Unique Visitors</th><th>Total Visits</th><th>Status</th></tr></thead>
-                        <tbody id="dailyBody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;">Loading...</td></tr></tbody>
+                        <tbody id="dayTb"><tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">Loading...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -207,75 +197,75 @@
 <footer>&copy; 2026 IKIZAME &nbsp;<strong>Developed by Dotado Stationery Store Ltd</strong></footer>
 
 <script>
-/* SESSION TIMEOUT */
+/* SESSION */
 (function(){
     const IDLE=5*60*1000,WARN=60*1000;
-    let idleT,warnT,cdInt;
-    const modal=document.getElementById('sessionModal');
-    const toast=document.getElementById('sessionToast');
-    const toastT=document.getElementById('toastTimer');
-    const cdEl=document.getElementById('cdNum');
-    const sbVal=document.getElementById('sbTimer');
+    let iT,wT,cI;
+    const mod=document.getElementById('sModal'),tst=document.getElementById('sToast'),tTm=document.getElementById('tTimer'),cdN=document.getElementById('cdN'),sbT=document.getElementById('sbT');
     function fmt(ms){const s=Math.ceil(ms/1000),m=Math.floor(s/60);return m+':'+String(s%60).padStart(2,'0');}
-    window.doLogout=function(){clearTimeout(idleT);clearTimeout(warnT);clearInterval(cdInt);fetch('/api/admin/logout',{method:'POST'}).finally(()=>window.location.replace('/admin-login'));};
-    function expire(){toast.style.display='none';modal.style.display='flex';let c=5;cdEl.textContent=c;cdInt=setInterval(()=>{c--;cdEl.textContent=c;if(c<=0){clearInterval(cdInt);window.doLogout();}},1000);}
-    let start=Date.now(),raf;
-    function tick(){const r=IDLE-(Date.now()-start);if(sbVal)sbVal.textContent=fmt(Math.max(0,r));if(r>0)raf=requestAnimationFrame(tick);}
+    window.doLogout=function(){clearTimeout(iT);clearTimeout(wT);clearInterval(cI);fetch('/api/admin/logout',{method:'POST'}).finally(()=>location.replace('/admin-login'));};
+    function expire(){tst.style.display='none';mod.style.display='flex';let c=5;cdN.textContent=c;cI=setInterval(()=>{c--;cdN.textContent=c;if(c<=0){clearInterval(cI);doLogout();}},1000);}
+    let s0=Date.now(),rf;
+    function tick(){const r=IDLE-(Date.now()-s0);if(sbT)sbT.textContent=fmt(Math.max(0,r));if(r>0)rf=requestAnimationFrame(tick);}
     function reset(){
-        clearTimeout(idleT);clearTimeout(warnT);start=Date.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(tick);
-        warnT=setTimeout(()=>{let s=Math.ceil((IDLE-(Date.now()-start))/1000);toastT.textContent=s;toast.style.display='flex';const iv=setInterval(()=>{s--;toastT.textContent=s;if(s<=0)clearInterval(iv);},1000);setTimeout(()=>toast.style.display='none',IDLE-(Date.now()-start));},IDLE-WARN);
-        idleT=setTimeout(expire,IDLE);
+        clearTimeout(iT);clearTimeout(wT);s0=Date.now();cancelAnimationFrame(rf);rf=requestAnimationFrame(tick);
+        wT=setTimeout(()=>{let s=Math.ceil((IDLE-(Date.now()-s0))/1000);tTm.textContent=s;tst.style.display='flex';const iv=setInterval(()=>{s--;tTm.textContent=s;if(s<=0)clearInterval(iv);},1000);setTimeout(()=>tst.style.display='none',IDLE-(Date.now()-s0));},IDLE-WARN);
+        iT=setTimeout(expire,IDLE);
     }
     ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(e=>document.addEventListener(e,reset,{passive:true}));
     reset();
 })();
 
-const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-function fmtDate(s){return new Date(s+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function fd(s){return new Date(s+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
 
 function buildChart(rows){
-    const el=document.getElementById('barChart');
-    if(!rows.length){el.innerHTML='<div style="color:var(--muted);font-size:13px;align-self:center;width:100%;text-align:center;">No data yet.</div>';return;}
-    const max=Math.max(...rows.map(r=>r.unique_visitors),1);
+    const el=document.getElementById('bars');
+    if(!rows.length){el.innerHTML='<div style="color:#64748b;font-size:13px;align-self:center;width:100%;text-align:center;">No data yet.</div>';return;}
+    const mx=Math.max(...rows.map(r=>r.unique_visitors),1);
     el.innerHTML='';
     rows.forEach(r=>{
-        const h=Math.round((r.unique_visitors/max)*140);
+        const h=Math.max(4,Math.round((r.unique_visitors/mx)*130));
         const d=new Date(r.day+'T00:00:00');
-        const lbl=(d.getMonth()+1)+'/'+d.getDate();
-        const col=document.createElement('div');col.className='bar-col';
-        col.innerHTML='<div class="bar-num">'+r.unique_visitors+'</div><div class="bar-rect" style="height:'+h+'px"><div class="bar-tip">'+fmtDate(r.day)+': '+r.unique_visitors+' visitor'+(r.unique_visitors!==1?'s':'')+'</div></div><div class="bar-lbl">'+lbl+'</div>';
-        el.appendChild(col);
+        const c=document.createElement('div');c.className='bc';
+        c.innerHTML='<div class="bn">'+r.unique_visitors+'</div><div class="br" style="height:'+h+'px"><div class="bt">'+fd(r.day)+': '+r.unique_visitors+' visitor'+(r.unique_visitors!==1?'s':'')+'</div></div><div class="bl">'+(d.getMonth()+1)+'/'+d.getDate()+'</div>';
+        el.appendChild(c);
     });
 }
 
 function buildDaily(rows,today){
-    const tb=document.getElementById('dailyBody');
-    if(!rows.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;">No data.</td></tr>';return;}
-    const max=Math.max(...rows.map(r=>r.unique_visitors));
+    const tb=document.getElementById('dayTb');
+    if(!rows.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">No data.</td></tr>';return;}
+    const mx=Math.max(...rows.map(r=>r.unique_visitors));
     tb.innerHTML=[...rows].reverse().map((r,i)=>{
-        const isToday=r.day===today;
+        const isT=r.day===today;
         const d=new Date(r.day+'T00:00:00');
-        let badge=isToday?'<span class="badge badge-today"><i class="fa-solid fa-circle" style="font-size:7px"></i> Today</span>':r.unique_visitors===max?'<span class="badge badge-peak"><i class="fa-solid fa-arrow-trend-up"></i> Peak</span>':'<span class="badge badge-low">Normal</span>';
-        return '<tr><td style="color:var(--muted)">'+(i+1)+'</td><td style="font-weight:700">'+fmtDate(r.day)+'</td><td>'+DAYS[d.getDay()]+'</td><td style="font-weight:800;font-size:15px">'+r.unique_visitors+'</td><td style="font-weight:700;color:var(--brand)">'+(Number(r.total_visits)||0)+'</td><td>'+badge+'</td></tr>';
+        const b=isT?'<span class="b b-today">● Today</span>':r.unique_visitors===mx?'<span class="b b-peak">↑ Peak</span>':'<span class="b b-norm">Normal</span>';
+        return '<tr><td style="color:#64748b">'+(i+1)+'</td><td style="font-weight:700">'+fd(r.day)+'</td><td>'+WD[d.getDay()]+'</td><td style="font-weight:800;font-size:15px">'+r.unique_visitors+'</td><td style="font-weight:700;color:#0b698b">'+(Number(r.total_visits)||0)+'</td><td>'+b+'</td></tr>';
     }).join('');
 }
 
-function loadIpTable(date){
+function loadIPs(date){
     if(!date)return;
-    const tb=document.getElementById('ipBody');
-    const badge=document.getElementById('ipCount');
-    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px;">Loading...</td></tr>';
+    const tb=document.getElementById('ipTb'),bg=document.getElementById('ipBadge');
+    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#64748b;padding:22px;">Loading...</td></tr>';
     fetch('/api/admin/visitor-ip-daily?date='+date)
         .then(r=>r.json())
         .then(rows=>{
-            badge.textContent=rows.length+' IP'+(rows.length!==1?'s':'');
-            if(!rows.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px;">No visitors on this date.</td></tr>';return;}
+            bg.textContent=rows.length+' IP'+(rows.length!==1?'s':'');
+            if(!rows.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#64748b;padding:22px;">No visitors on this date.</td></tr>';return;}
             tb.innerHTML=rows.map((r,i)=>{
                 const t=r.visited_at?new Date(r.visited_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';
-                return '<tr><td style="color:var(--muted)">'+(i+1)+'</td><td><code style="background:#f1f5f9;padding:2px 8px;border-radius:6px;font-size:12.5px;font-weight:700;">'+r.ip_address+'</code></td><td style="color:var(--muted)">'+fmtDate(date)+'</td><td style="color:var(--muted);font-weight:600;">'+t+'</td><td style="font-weight:800;color:var(--brand);">'+(r.visit_count||1)+'</td></tr>';
+                return '<tr>'
+                    +'<td style="color:#64748b">'+(i+1)+'</td>'
+                    +'<td><code style="background:#f1f5f9;padding:2px 9px;border-radius:6px;font-size:12.5px;font-weight:700;letter-spacing:.3px;">'+r.ip_address+'</code></td>'
+                    +'<td style="color:#64748b">'+fd(date)+'</td>'
+                    +'<td style="color:#64748b;font-weight:600;">'+t+'</td>'
+                    +'<td><span style="background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:800;padding:2px 9px;border-radius:20px;">'+( r.visit_count||1)+' visit'+(( r.visit_count||1)!==1?'s':'')+'</span></td>'
+                    +'</tr>';
             }).join('');
         })
-        .catch(()=>{tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#ef4444;padding:24px;">Failed to load.</td></tr>';});
+        .catch(()=>{tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#ef4444;padding:22px;">Failed to load.</td></tr>';});
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
@@ -284,34 +274,34 @@ document.addEventListener('DOMContentLoaded',()=>{
     Promise.all([
         fetch('/api/admin/visitor-count').then(r=>r.json()),
         fetch('/api/admin/visitor-daily').then(r=>r.json())
-    ]).then(([c,daily])=>{
-        document.getElementById('vToday').textContent=(c.today||0).toLocaleString();
-        document.getElementById('vWeek').textContent=(c.week||0).toLocaleString();
-        document.getElementById('vMonth').textContent=(c.month||0).toLocaleString();
-        document.getElementById('vYear').textContent=(c.year||0).toLocaleString();
-        document.getElementById('vTotal').textContent=(c.total||0).toLocaleString();
-        buildChart(daily);
-        buildDaily(daily,today);
+    ]).then(([c,d])=>{
+        document.getElementById('vT').textContent=(c.today||0).toLocaleString();
+        document.getElementById('vW').textContent=(c.week||0).toLocaleString();
+        document.getElementById('vM').textContent=(c.month||0).toLocaleString();
+        document.getElementById('vY').textContent=(c.year||0).toLocaleString();
+        document.getElementById('vA').textContent=(c.total||0).toLocaleString();
+        buildChart(d);
+        buildDaily(d,today);
     }).catch(()=>{
-        document.getElementById('dailyBody').innerHTML='<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:24px;">Failed to load.</td></tr>';
+        document.getElementById('dayTb').innerHTML='<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:22px;">Failed to load.</td></tr>';
     });
 
     fetch('/api/admin/visitor-dates')
         .then(r=>{if(!r.ok)throw new Error(r.status);return r.json();})
         .then(dates=>{
-            const sel=document.getElementById('ipDateSel');
+            const sel=document.getElementById('ipSel');
             if(Array.isArray(dates)&&dates.length){
-                sel.innerHTML=dates.map(d=>'<option value="'+d+'"'+(d===today?' selected':'')+'>'+fmtDate(d)+'</option>').join('');
-                loadIpTable(dates.includes(today)?today:dates[0]);
+                sel.innerHTML=dates.map(d=>'<option value="'+d+'"'+(d===today?' selected':'')+'>'+fd(d)+'</option>').join('');
+                loadIPs(dates.includes(today)?today:dates[0]);
             } else {
                 sel.innerHTML='<option value="">No data yet</option>';
-                document.getElementById('ipCount').textContent='0 IPs';
-                document.getElementById('ipBody').innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px;">No visitor data yet.</td></tr>';
+                document.getElementById('ipBadge').textContent='0 IPs';
+                document.getElementById('ipTb').innerHTML='<tr><td colspan="5" style="text-align:center;color:#64748b;padding:22px;">No visitor data yet.</td></tr>';
             }
         })
         .catch(err=>{
-            document.getElementById('ipDateSel').innerHTML='<option value="">Error: '+err.message+'</option>';
-            document.getElementById('ipBody').innerHTML='<tr><td colspan="5" style="text-align:center;color:#ef4444;padding:24px;">Failed to load IP report.</td></tr>';
+            document.getElementById('ipSel').innerHTML='<option value="">Error '+err.message+'</option>';
+            document.getElementById('ipTb').innerHTML='<tr><td colspan="5" style="text-align:center;color:#ef4444;padding:22px;">Failed to load IP report.</td></tr>';
         });
 });
 </script>
