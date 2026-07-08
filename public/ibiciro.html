@@ -555,9 +555,13 @@
             payBtn.disabled = true; btnText.textContent = 'Gutegura...'; btnIcon.className = 'fa-solid fa-spinner fa-spin';
             document.getElementById('ussdHintBox').style.display = 'none';
 
+            const abortCtrl = new AbortController();
+            const fetchTimeout = setTimeout(() => abortCtrl.abort(), 25000);
+
             fetch('/api/payments/momo-push', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                signal: abortCtrl.signal,
                 body: JSON.stringify({
                     phoneNumber: phoneVal,
                     checkoutIntentType: 'PERSONAL',
@@ -565,7 +569,7 @@
                     pricePerExam: unitPrice
                 })
             })
-            .then(res => res.json())
+            .then(res => { clearTimeout(fetchTimeout); return res.json(); })
             .then(data => {
                 if(data.success) {
                     btnText.textContent = 'Emeza kuri telephone...';
@@ -614,8 +618,12 @@
                     alert(data.error || 'Uburyo bwanze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
                 }
             })
-            .catch(() => {
-                alert('Ikibazo cya internet. Ongera ugerageze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
+            .catch(err => {
+                clearTimeout(fetchTimeout);
+                const msg = err.name === 'AbortError'
+                    ? 'Igihe cyarangiye. Reba internet yawe hanyuma ongera ugerageze.'
+                    : 'Ikibazo cya internet. Reba connexion yawe hanyuma ongera ugerageze.';
+                alert(msg); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
             });
         };
         window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };

@@ -9,16 +9,30 @@ const WEBHOOK_SECRET   = process.env.PAYPACK_WEBHOOK_SECRET;
 
 let cachedToken  = null;
 let tokenExpires = 0;
+let tokenRefreshPromise = null;
 async function getAccessToken() {
-    if (cachedToken && Date.now() < tokenExpires - 30000) return cachedToken;
-    const { data } = await axios.post(`${PAYPACK_BASE}/auth/agents/authorize`,
+    if (cachedToken && Date.now() < tokenExpires - 60000) return cachedToken;
+    // Deduplicate concurrent token refresh calls
+    if (tokenRefreshPromise) return tokenRefreshPromise;
+    tokenRefreshPromise = axios.post(`${PAYPACK_BASE}/auth/agents/authorize`,
         { client_id: PAYPACK_CLIENT, client_secret: PAYPACK_SECRET },
-        { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, timeout: 10000 }
-    );
-    cachedToken  = data.access;
-    tokenExpires = data.expires * 1000;
-    return cachedToken;
+        { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, timeout: 8000 }
+    ).then(({ data }) => {
+        cachedToken  = data.access;
+        tokenExpires = data.expires * 1000;
+        tokenRefreshPromise = null;
+        return cachedToken;
+    }).catch(err => {
+        tokenRefreshPromise = null;
+        throw err;
+    });
+    return tokenRefreshPromise;
 }
+
+// Pre-warm token on startup
+setTimeout(() => getAccessToken().catch(() => {}), 2000);
+// Refresh token every 50 minutes to keep it warm
+setInterval(() => getAccessToken().catch(() => {}), 50 * 60 * 1000);
 
 function calcTieredAmount(qty) {
     if (qty <= 9)  return qty * 100;
@@ -78,7 +92,7 @@ module.exports = (db) => {
                         'Accept':        'application/json',
                         'X-Webhook-Mode': 'production'
                     },
-                    timeout: 20000
+                    timeout: 15000
                 }
             );
 
