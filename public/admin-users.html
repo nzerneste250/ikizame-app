@@ -255,7 +255,11 @@ function showAlert(msg, type) {
 }
 
 function loadUsers() {
-    fetch('/api/admin/users').then(r => r.json()).then(data => {
+    fetch('/api/admin/users').then(r => {
+        if (r.status === 401 || r.status === 403) { window.location.replace('/admin-login'); return null; }
+        return r.json();
+    }).then(data => {
+        if (!data) return;
         const users = Array.isArray(data) ? data : [];
         document.getElementById('userCount').textContent = users.length + ' user(s)';
         const tb = document.getElementById('usersTableBody');

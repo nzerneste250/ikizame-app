@@ -166,8 +166,9 @@ module.exports = (db, loginLimiter) => {
 
     // ── USER MANAGEMENT (superadmin only) ────────────────────────────────
     function requireSuperAdmin(req, res, next) {
-        if (!getAdminSessionState(req)) return res.status(401).json({ error: 'Unauthorized' });
+        if (!req.session || !req.session.isAdminAuthenticated) return res.status(401).json({ error: 'Unauthorized' });
         if ((req.session.adminRole || 'superadmin') !== 'superadmin') return res.status(403).json({ error: 'Superadmin only.' });
+        req.session.lastAdminActivity = Date.now();
         next();
     }
 
