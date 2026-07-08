@@ -364,6 +364,9 @@ process.on('unhandledRejection', (reason) => {
 // Export for use in routes
 module.exports.sendErrorAlert = sendErrorAlert;
 
+// ── PAYMENT REPORT SCHEDULER ─────────────────────────────────────────────
+require('./routes/reports')(db, emailTransport);
+
 // ── GLOBAL EXPRESS ERROR HANDLER ────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
     console.error('❌ Express error:', err);
