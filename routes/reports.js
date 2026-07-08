@@ -159,3 +159,5 @@ module.exports = function startReportScheduler(db, transport) {
     cron.schedule('0 7 1 1 *', () => sendReport(db, transport, 'yearly').catch(e => console.error('❌ Yearly report failed:', e.message)));
     console.log('✅ Report scheduler started (weekly Mon, monthly 1st, yearly Jan 1st)');
 };
+
+module.exports.sendReport = sendReport;

@@ -365,7 +365,17 @@ process.on('unhandledRejection', (reason) => {
 module.exports.sendErrorAlert = sendErrorAlert;
 
 // ── PAYMENT REPORT SCHEDULER ─────────────────────────────────────────────
+const { sendReport } = require('./routes/reports');
 require('./routes/reports')(db, emailTransport);
+
+// Test endpoint — admin only
+app.get('/api/admin/test-report/:type', (req, res) => {
+    if (!getAdminSessionState(req)) return res.status(401).json({ error: 'Unauthorized' });
+    const type = ['weekly','monthly','yearly'].includes(req.params.type) ? req.params.type : 'weekly';
+    sendReport(db, emailTransport, type)
+        .then(() => res.json({ ok: true, message: `${type} report sent to ${process.env.REPORT_EMAIL || process.env.ALERT_EMAIL}` }))
+        .catch(e => res.status(500).json({ ok: false, error: e.message }));
+});
 
 // ── GLOBAL EXPRESS ERROR HANDLER ────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
