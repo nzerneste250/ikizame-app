@@ -36,21 +36,21 @@ function buildPDF(rows, summary, period, from, to) {
         doc.fillColor('#ffffff').fontSize(22).font('Helvetica-Bold')
            .text('IKIZAME', 40, 20);
         doc.fontSize(10).font('Helvetica')
-           .text('Raporo y\'Amafaranga Yinjiye', 40, 46);
+           .text('Payment Revenue Report', 40, 46);
         doc.fillColor('#ffffff').fontSize(10)
-           .text(`Igihe: ${period.toUpperCase()} | ${fmt(from)} → ${fmt(to)}`, 40, 58, { align: 'right' });
+           .text(`Period: ${period.toUpperCase()} | ${fmt(from)} → ${fmt(to)}`, 40, 58, { align: 'right' });
 
         doc.moveDown(3);
 
         // Summary boxes
-        doc.fillColor(brand).fontSize(12).font('Helvetica-Bold').text('Incamake / Summary', 40, 90);
+        doc.fillColor(brand).fontSize(12).font('Helvetica-Bold').text('Summary', 40, 90);
         doc.moveTo(40, 106).lineTo(555, 106).strokeColor(brand).lineWidth(1).stroke();
 
         const boxY = 115;
         const boxes = [
-            { label: 'Amafaranga Yose', value: `${Number(summary.total_amount || 0).toLocaleString()} RWF` },
-            { label: 'Ibikorwa Byose',  value: summary.total_tx || 0 },
-            { label: 'Ibizamini Byaguriwe', value: summary.total_exams || 0 },
+            { label: 'Total Revenue',      value: `${Number(summary.total_amount || 0).toLocaleString()} RWF` },
+            { label: 'Total Transactions', value: summary.total_tx || 0 },
+            { label: 'Total Exams Sold',   value: summary.total_exams || 0 },
         ];
         boxes.forEach((b, i) => {
             const x = 40 + i * 175;
@@ -61,33 +61,35 @@ function buildPDF(rows, summary, period, from, to) {
 
         doc.moveDown(5);
 
-        // Table header
+        // Table
         const tableTop = boxY + 75;
-        const cols = [40, 130, 260, 370, 460];
-        const headers = ['Telephone', 'Amafaranga', 'Serivisi', 'Ibizamini', 'Itariki'];
+        const colX     = [40,  140, 245, 430, 490];
+        const colW     = [95,  100, 180,  55,  65];
+        const headers  = ['Phone', 'Amount (RWF)', 'Plan / Package', 'Exams', 'Date'];
 
-        doc.rect(40, tableTop, 515, 20).fill('#0b698b');
+        // Table header row
+        doc.rect(40, tableTop, 515, 22).fill('#0b698b');
         doc.fillColor('#ffffff').fontSize(9).font('Helvetica-Bold');
-        headers.forEach((h, i) => doc.text(h, cols[i] + 4, tableTop + 5, { width: 90 }));
+        headers.forEach((h, i) => doc.text(h, colX[i] + 4, tableTop + 6, { width: colW[i], ellipsis: true }));
 
-        let y = tableTop + 20;
+        let y = tableTop + 22;
         rows.forEach((row, idx) => {
-            if (y > 750) { doc.addPage(); y = 40; }
+            if (y > 740) { doc.addPage(); y = 40; }
             const bg = idx % 2 === 0 ? '#f8fafc' : '#ffffff';
-            doc.rect(40, y, 515, 18).fill(bg);
+            doc.rect(40, y, 515, 20).fill(bg);
             doc.fillColor('#0f172a').fontSize(8).font('Helvetica');
-            doc.text(row.phone_number || '', cols[0] + 4, y + 4, { width: 85 });
-            doc.text(`${Number(row.amount || 0).toLocaleString()} RWF`, cols[1] + 4, y + 4, { width: 125 });
-            doc.text((row.plan_name || '').substring(0, 28), cols[2] + 4, y + 4, { width: 105 });
-            doc.text(String(row.total_exams || 0), cols[3] + 4, y + 4, { width: 85 });
-            doc.text(row.paid_at ? String(row.paid_at).slice(0, 10) : '', cols[4] + 4, y + 4, { width: 90 });
-            y += 18;
+            doc.text(row.phone_number || '',                          colX[0] + 4, y + 5, { width: colW[0], lineBreak: false });
+            doc.text(`${Number(row.amount||0).toLocaleString()} RWF`, colX[1] + 4, y + 5, { width: colW[1], lineBreak: false });
+            doc.text(row.plan_name || '',                             colX[2] + 4, y + 5, { width: colW[2], lineBreak: false, ellipsis: true });
+            doc.text(String(row.total_exams || 0),                   colX[3] + 4, y + 5, { width: colW[3], lineBreak: false });
+            doc.text(row.paid_at ? String(row.paid_at).slice(0,10) : '', colX[4] + 4, y + 5, { width: colW[4], lineBreak: false });
+            y += 20;
         });
 
         // Footer
         doc.moveTo(40, y + 10).lineTo(555, y + 10).strokeColor('#e2e8f0').lineWidth(0.5).stroke();
         doc.fillColor('#94a3b8').fontSize(8).font('Helvetica')
-           .text(`Raporo yakozwe: ${new Date().toISOString().slice(0, 19).replace('T', ' ')} | IKIZAME © ${new Date().getFullYear()} Dotado Stationery Store Ltd`, 40, y + 16, { align: 'center' });
+           .text(`Generated: ${new Date().toISOString().slice(0,19).replace('T',' ')} | IKIZAME © ${new Date().getFullYear()} Dotado Stationery Store Ltd`, 40, y + 16, { align: 'center' });
 
         doc.end();
     });
@@ -122,8 +124,8 @@ async function sendReport(db, transport, type) {
     const { rows, summary } = await queryReport(db, from, to);
     const pdfBuf = await buildPDF(rows, summary, type, from, to);
 
-    const periodLabel = type === 'weekly' ? 'Icyumweru' : type === 'monthly' ? 'Ukwezi' : 'Umwaka';
-    const subject = `📊 IKIZAME Raporo y'${periodLabel} — ${fmt(from)} hasi ${fmt(to)}`;
+    const periodLabel = type === 'weekly' ? 'Weekly' : type === 'monthly' ? 'Monthly' : 'Yearly';
+    const subject = `📊 IKIZAME ${periodLabel} Payment Report — ${fmt(from)} to ${fmt(to)}`;
 
     await transport.sendMail({
         from: `"IKIZAME Reports" <${process.env.SMTP_USER}>`,
@@ -131,18 +133,18 @@ async function sendReport(db, transport, type) {
         subject,
         html: `<div style="font-family:Inter,sans-serif;background:#f8fafc;padding:24px;border-radius:8px;max-width:500px;">
             <div style="background:#0b698b;padding:16px 20px;border-radius:6px;margin-bottom:16px;">
-                <h2 style="color:#fff;margin:0;font-size:18px;">📊 IKIZAME — Raporo y'Amafaranga</h2>
-                <p style="color:#bae6fd;margin:4px 0 0;font-size:12px;">${periodLabel}: ${fmt(from)} → ${fmt(to)}</p>
+                <h2 style="color:#fff;margin:0;font-size:18px;">📊 IKIZAME — ${periodLabel} Payment Report</h2>
+                <p style="color:#bae6fd;margin:4px 0 0;font-size:12px;">Period: ${fmt(from)} → ${fmt(to)}</p>
             </div>
             <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-                <tr><td style="padding:8px;background:#e0f2fe;font-weight:700;border-radius:4px;">Amafaranga Yose</td><td style="padding:8px;font-size:18px;font-weight:800;color:#0b698b;">${Number(summary.total_amount||0).toLocaleString()} RWF</td></tr>
-                <tr><td style="padding:8px;">Ibikorwa Byose</td><td style="padding:8px;font-weight:700;">${summary.total_tx}</td></tr>
-                <tr><td style="padding:8px;">Ibizamini Byaguriwe</td><td style="padding:8px;font-weight:700;">${summary.total_exams}</td></tr>
+                <tr><td style="padding:8px;background:#e0f2fe;font-weight:700;border-radius:4px;">Total Revenue</td><td style="padding:8px;font-size:18px;font-weight:800;color:#0b698b;">${Number(summary.total_amount||0).toLocaleString()} RWF</td></tr>
+                <tr><td style="padding:8px;">Total Transactions</td><td style="padding:8px;font-weight:700;">${summary.total_tx}</td></tr>
+                <tr><td style="padding:8px;">Total Exams Sold</td><td style="padding:8px;font-weight:700;">${summary.total_exams}</td></tr>
             </table>
-            <p style="color:#64748b;font-size:12px;">Reba PDF iyometseho kugira ngo ubone amakuru yose.</p>
+            <p style="color:#64748b;font-size:12px;">See the attached PDF for full transaction details.</p>
         </div>`,
         attachments: [{
-            filename: `ikizame-raporo-${type}-${fmt(from)}.pdf`,
+            filename: `ikizame-report-${type}-${fmt(from)}.pdf`,
             content:  pdfBuf,
             contentType: 'application/pdf'
         }]
