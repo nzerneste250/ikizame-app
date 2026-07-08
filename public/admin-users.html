@@ -255,7 +255,8 @@ function showAlert(msg, type) {
 }
 
 function loadUsers() {
-    fetch('/api/admin/users').then(r => r.json()).then(users => {
+    fetch('/api/admin/users').then(r => r.json()).then(data => {
+        const users = Array.isArray(data) ? data : [];
         document.getElementById('userCount').textContent = users.length + ' user(s)';
         const tb = document.getElementById('usersTableBody');
         if (!users.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#64748b;">No users found.</td></tr>'; return; }

@@ -85,6 +85,10 @@ db.getConnection((err, conn) => {
         return;
     }
     console.log(`✅ Database pool ready on [${dbConfig.host}]`);
+    conn.query(`ALTER TABLE portal_admins ADD COLUMN IF NOT EXISTS is_active TINYINT(1) NOT NULL DEFAULT 1`, (e) => {
+        if (e) console.warn('⚠️  is_active migration skipped:', e.message);
+        else   console.log('✅ portal_admins.is_active column ready');
+    });
     conn.release();
 });
 

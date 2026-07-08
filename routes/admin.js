@@ -173,7 +173,7 @@ module.exports = (db, loginLimiter) => {
 
     // GET list all admin users
     router.get('/users', requireSuperAdmin, (req, res) => {
-        db.query('SELECT id, username, email, role, is_active, created_at FROM portal_admins ORDER BY id ASC', (err, rows) => {
+        db.query('SELECT id, username, email, role, COALESCE(is_active, 1) AS is_active, created_at FROM portal_admins ORDER BY id ASC', (err, rows) => {
             if (err) return res.status(500).json({ error: err.message });
             res.json(rows);
         });
