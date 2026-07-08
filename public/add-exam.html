@@ -309,9 +309,9 @@
             <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
         <div class="sidebar-footer">
-            <div class="admin-avatar">A</div>
+            <div class="admin-avatar" id="sidebarAvatar">A</div>
             <div class="admin-meta">
-                <div class="admin-name">Admin</div>
+                <div class="admin-name" id="sidebarAdminEmail">Admin</div>
                 <div class="admin-role">Administrator</div>
             </div>
             <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
@@ -598,6 +598,17 @@ document.addEventListener('DOMContentLoaded', () => {
         isImg ? makeImageOptions() : makeTextOptions();
     });
 });
+</script>
+
+<script>
+fetch('/api/admin/check-session').then(r=>r.json()).then(d=>{
+    if(d.ok&&d.email){
+        var a=document.getElementById('sidebarAvatar');
+        var n=document.getElementById('sidebarAdminEmail');
+        if(a)a.textContent=d.email[0].toUpperCase();
+        if(n)n.textContent=d.email;
+    }
+}).catch(function(){});
 </script>
 </body>
 </html>

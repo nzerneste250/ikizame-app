@@ -114,9 +114,9 @@
             <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
         <div class="sidebar-footer" style="padding:14px 16px; border-top:1px solid var(--sidebar-border); display:flex; align-items:center; gap:10px;">
-            <div style="width:34px;height:34px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;">A</div>
+            <div style="width:34px;height:34px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;"><span id="sidebarAvatar">A</span></div>
             <div style="flex:1;min-width:0;">
-                <div style="font-size:12.5px;font-weight:700;color:#f8fafc;">Admin</div>
+                <div style="font-size:12.5px;font-weight:700;color:#f8fafc;"><span id="sidebarAdminEmail">Admin</span></div>
                 <div style="font-size:11px;color:var(--sidebar-muted);">Administrator</div>
             </div>
             <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
@@ -305,6 +305,17 @@ document.addEventListener('DOMContentLoaded', () => {
     ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(e=>document.addEventListener(e,reset,{passive:true}));
     reset();
 })();
+</script>
+
+<script>
+fetch('/api/admin/check-session').then(r=>r.json()).then(d=>{
+    if(d.ok&&d.email){
+        var a=document.getElementById('sidebarAvatar');
+        var n=document.getElementById('sidebarAdminEmail');
+        if(a)a.textContent=d.email[0].toUpperCase();
+        if(n)n.textContent=d.email;
+    }
+}).catch(function(){});
 </script>
 </body>
 </html>
