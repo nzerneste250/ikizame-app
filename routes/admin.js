@@ -362,23 +362,31 @@ module.exports = (db, loginLimiter) => {
     // GET grouped students list
     router.get('/students', requireAdminLogin, (req, res) => {
         db.query(`
-            SELECT phone_number,
-                (SELECT student_name FROM exam_attempts ea2 WHERE ea2.phone_number = ea.phone_number ORDER BY ea2.id DESC LIMIT 1) AS student_name,
+            SELECT
+                phone_number,
                 COUNT(*) AS totalExams,
                 AVG(score) AS averageScore,
-                MAX(created_at) AS lastAttemptDate
+                MAX(created_at) AS lastAttemptDate,
+                (SELECT student_name FROM exam_attempts ea2 WHERE ea2.phone_number = ea.phone_number ORDER BY ea2.id DESC LIMIT 1) AS latestName,
+                (SELECT GROUP_CONCAT(DISTINCT student_name ORDER BY student_name SEPARATOR ', ') FROM exam_attempts ea3 WHERE ea3.phone_number = ea.phone_number) AS allNames
             FROM exam_attempts ea
             GROUP BY phone_number
             ORDER BY lastAttemptDate DESC`,
             (err, results) => {
                 if (err) return res.status(500).json({ error: err.message });
-                res.json(results.map(r => ({
-                    phoneNumber:     r.phone_number,
-                    studentName:     r.student_name,
-                    totalExams:      r.totalExams,
-                    averageScore:    r.averageScore ? parseFloat(r.averageScore).toFixed(1) : '0.0',
-                    lastAttemptDate: r.lastAttemptDate
-                })));
+                res.json(results.map(r => {
+                    const names = (r.allNames || '').split(', ').filter(Boolean);
+                    const uniqueNames = [...new Set(names)];
+                    return {
+                        phoneNumber:     r.phone_number,
+                        studentName:     r.latestName || 'Unknown',
+                        allNames:        uniqueNames,
+                        hasMultipleNames: uniqueNames.length > 1,
+                        totalExams:      r.totalExams,
+                        averageScore:    r.averageScore ? parseFloat(r.averageScore).toFixed(1) : '0.0',
+                        lastAttemptDate: r.lastAttemptDate
+                    };
+                }));
             }
         );
     });
@@ -386,7 +394,7 @@ module.exports = (db, loginLimiter) => {
     // GET all attempts for a single student
     router.get('/student-attempts/:phone', requireAdminLogin, (req, res) => {
         db.query(
-            `SELECT id, score, total_questions, created_at FROM exam_attempts WHERE phone_number = ? ORDER BY created_at DESC`,
+            `SELECT id, student_name, score, total_questions, created_at FROM exam_attempts WHERE phone_number = ? ORDER BY created_at DESC`,
             [req.params.phone],
             (err, results) => {
                 if (err) return res.status(500).json({ error: err.message });
