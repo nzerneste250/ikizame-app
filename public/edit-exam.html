@@ -204,7 +204,7 @@
             <div class="admin-avatar" id="sidebarAvatar">A</div>
             <div class="admin-meta">
                 <div class="admin-name" id="sidebarAdminEmail">Admin</div>
-                <div class="admin-role">Administrator</div>
+                <div class="admin-role" id="sidebarAdminRole">Administrator</div>
             </div>
             <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
         </div>
@@ -445,14 +445,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+
 <script>
-fetch('/api/admin/check-session').then(r=>r.json()).then(d=>{
-    if(d.ok&&d.email){
-        var a=document.getElementById('sidebarAvatar');
-        var n=document.getElementById('sidebarAdminEmail');
-        if(a)a.textContent=d.email[0].toUpperCase();
-        if(n)n.textContent=d.email;
-    }
+fetch('/api/admin/check-session').then(function(r){return r.json();}).then(function(d){
+    if(!d.ok) return;
+    var a=document.getElementById('sidebarAvatar');
+    var n=document.getElementById('sidebarAdminEmail');
+    var r=document.getElementById('sidebarAdminRole');
+    if(a&&d.email) a.textContent=d.email[0].toUpperCase();
+    if(n&&d.email) n.textContent=d.email;
+    if(r) r.textContent=d.role==='viewer'?'Manager':'Administrator';
 }).catch(function(){});
 </script>
 </body>

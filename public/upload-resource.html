@@ -117,7 +117,7 @@
             <div style="width:34px;height:34px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;"><span id="sidebarAvatar">A</span></div>
             <div style="flex:1;min-width:0;">
                 <div style="font-size:12.5px;font-weight:700;color:#f8fafc;"><span id="sidebarAdminEmail">Admin</span></div>
-                <div style="font-size:11px;color:var(--sidebar-muted);">Administrator</div>
+                <div style="font-size:11px;color:var(--sidebar-muted);" id="sidebarAdminRole">Administrator</div>
             </div>
             <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
         </div>
@@ -307,14 +307,16 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 
+
 <script>
-fetch('/api/admin/check-session').then(r=>r.json()).then(d=>{
-    if(d.ok&&d.email){
-        var a=document.getElementById('sidebarAvatar');
-        var n=document.getElementById('sidebarAdminEmail');
-        if(a)a.textContent=d.email[0].toUpperCase();
-        if(n)n.textContent=d.email;
-    }
+fetch('/api/admin/check-session').then(function(r){return r.json();}).then(function(d){
+    if(!d.ok) return;
+    var a=document.getElementById('sidebarAvatar');
+    var n=document.getElementById('sidebarAdminEmail');
+    var r=document.getElementById('sidebarAdminRole');
+    if(a&&d.email) a.textContent=d.email[0].toUpperCase();
+    if(n&&d.email) n.textContent=d.email;
+    if(r) r.textContent=d.role==='viewer'?'Manager':'Administrator';
 }).catch(function(){});
 </script>
 </body>
