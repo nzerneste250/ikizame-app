@@ -93,8 +93,10 @@ const MySQLStore = require('express-mysql-session')(session);
 const sessionStore = new MySQLStore({
     expiration:          4 * 60 * 60 * 1000,
     createDatabaseTable: false,
-    connectionLimit:     2,
-    endConnectionOnClose: true
+    connectionLimit:     5,
+    endConnectionOnClose: true,
+    clearExpired:        true,
+    checkExpirationInterval: 15 * 60 * 1000
 }, db.promise());
 
 app.use(session({
