@@ -550,11 +550,11 @@ module.exports = (db, loginLimiter) => {
     router.get('/visitor-count', requireAdminLogin, (req, res) => {
         db.query(`
             SELECT
-                (SELECT COUNT(*) FROM site_visitors WHERE visit_date = CURDATE()) AS today,
-                (SELECT COUNT(*) FROM site_visitors WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)) AS week,
-                (SELECT COUNT(*) FROM site_visitors WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)) AS month,
-                (SELECT COUNT(*) FROM site_visitors WHERE YEAR(visit_date) = YEAR(CURDATE())) AS year,
-                (SELECT COUNT(*) FROM site_visitors) AS total`,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE visit_date = CURDATE()) AS today,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)) AS week,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)) AS month,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE YEAR(visit_date) = YEAR(CURDATE())) AS year,
+                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors) AS total`,
             (err, rows) => {
                 if (err) return res.status(500).json({ error: err.message });
                 const r = rows[0];
