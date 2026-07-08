@@ -212,12 +212,7 @@ app.get('/system-performance', (req, res) => {
 });
 
 app.get('/visitors', (req, res) => {
-    if (getAdminSessionState(req)) {
-        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-        return res.sendFile(path.join(__dirname, 'public', 'visitors.html'));
-    }
+    if (getAdminSessionState(req)) return res.sendFile(path.join(__dirname, 'public', 'visitors.html'));
     redirectToAdminLogin(req, res);
 });
 
