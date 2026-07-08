@@ -190,6 +190,23 @@ app.get('/dashboard', (req, res) => {
     redirectToAdminLogin(req, res);
 });
 
+app.get('/viewer-dashboard', (req, res) => {
+    if (getAdminSessionState(req)) return res.sendFile(path.join(__dirname, 'public', 'viewer-dashboard.html'));
+    redirectToAdminLogin(req, res);
+});
+
+app.get('/admin-users', (req, res) => {
+    if (getAdminSessionState(req) && req.session.adminRole === 'superadmin')
+        return res.sendFile(path.join(__dirname, 'public', 'admin-users.html'));
+    redirectToAdminLogin(req, res);
+});
+
+app.get('/change-password', (req, res) => {
+    if (getAdminSessionState(req))
+        return res.sendFile(path.join(__dirname, 'public', 'change-password.html'));
+    redirectToAdminLogin(req, res);
+});
+
 app.get('/add-exam', (req, res) => {
     if (getAdminSessionState(req)) return res.sendFile(path.join(__dirname, 'public', 'add-exam.html'));
     redirectToAdminLogin(req, res);

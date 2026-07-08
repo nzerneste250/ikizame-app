@@ -314,12 +314,13 @@
             <a href="#" id="navLinkPerformance" onclick="switchAdminControlView('analytics-view'); document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
             <a href="/visitors" id="navLinkVisitors"><i class="fa-solid fa-users-viewfinder"></i> Visitors</a>
             <a href="system-performance" id="navLinkSysPerformance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="/admin-users" id="navLinkUsers"><i class="fa-solid fa-users-gear"></i> Manage Users</a>
             <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
         <div class="sidebar-footer">
-            <div class="admin-avatar">A</div>
+            <div class="admin-avatar" id="sidebarAvatar">A</div>
             <div class="admin-meta">
-                <div class="admin-name">Admin</div>
+                <div class="admin-name" id="sidebarAdminEmail">Admin</div>
                 <div class="admin-role">Administrator</div>
             </div>
             <div class="session-pill"><span id="sidebarTimerVal">5:00</span></div>
@@ -1002,6 +1003,17 @@ document.addEventListener('DOMContentLoaded', () => {
     window.closeAnswerSheetModal = function() {
         document.getElementById('answerSheetModal').style.display = 'none';
     };
+
+    // sidebar email
+    fetch('/api/admin/check-session').then(r=>r.json()).then(d=>{
+        if(d.ok){
+            var e=document.getElementById('sidebarAdminEmail');
+            var a=document.getElementById('sidebarAvatar');
+            if(e&&d.email)e.textContent=d.email;
+            if(a&&d.email)a.textContent=d.email[0].toUpperCase();
+            if(d.role!=='superadmin'){var u=document.getElementById('navLinkUsers');if(u)u.style.display='none';}
+        }
+    }).catch(function(){});
 
     loadRepositoryQuestionsPool();
 

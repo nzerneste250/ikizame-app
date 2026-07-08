@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Manage Users | IKIZAME Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --brand:#0b698b; --brand-dark:#08536e; --border:#e2e8f0; --text:#0f172a; --muted:#64748b; --sidebar:#0f172a; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html,body { height:100vh; font-family:'Inter',sans-serif; background:#f8fafc; color:var(--text); overflow:hidden; }
+        .shell { display:flex; height:calc(100vh - 44px); }
+
+        .sidebar { width:220px; background:var(--sidebar); display:flex; flex-direction:column; flex-shrink:0; border-right:1px solid #1e293b; }
+        .sidebar-brand { padding:20px 16px; font-size:1rem; font-weight:800; color:#38bdf8; letter-spacing:2px; border-bottom:1px solid #1e293b; display:flex; align-items:center; gap:8px; }
+        .sidebar-nav { padding:12px 10px; display:flex; flex-direction:column; gap:4px; flex:1; }
+        .sidebar-nav a { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; color:#94a3b8; text-decoration:none; font-size:13px; font-weight:600; transition:all 0.15s; }
+        .sidebar-nav a:hover { color:#f8fafc; background:rgba(255,255,255,0.06); }
+        .sidebar-nav a.active { color:#f8fafc; background:rgba(56,189,248,0.12); border-left:3px solid #38bdf8; padding-left:9px; }
+        .sidebar-nav a i { width:16px; text-align:center; }
+        .nav-logout { color:#ef4444 !important; }
+        .nav-logout:hover { background:rgba(239,68,68,0.1) !important; }
+        .sidebar-footer { padding:12px 14px; border-top:1px solid #1e293b; display:flex; align-items:center; gap:8px; }
+        .admin-avatar { width:30px; height:30px; border-radius:50%; background:var(--brand); display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:700; }
+        .admin-meta .admin-name { font-size:12px; font-weight:700; color:#f8fafc; }
+        .admin-meta .admin-role { font-size:10px; color:#94a3b8; }
+
+        .workspace { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+        .topbar { height:64px; background:#fff; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; flex-shrink:0; }
+        .topbar h1 { font-size:18px; font-weight:800; }
+        .topbar p { font-size:12px; color:var(--muted); margin-top:2px; }
+
+        .content { flex:1; display:grid; grid-template-columns:1fr 360px; gap:24px; padding:24px 28px; overflow:hidden; }
+
+        /* Users table */
+        .table-card { background:#fff; border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column; overflow:hidden; }
+        .table-card-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+        .table-card-header h3 { font-size:15px; font-weight:800; }
+        .table-wrap { overflow-y:auto; flex:1; }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        thead th { position:sticky; top:0; background:#f8fafc; color:var(--muted); font-weight:700; padding:11px 14px; border-bottom:2px solid var(--border); white-space:nowrap; z-index:5; }
+        tbody tr { border-bottom:1px solid #f1f5f9; }
+        tbody tr:hover { background:#f8fafc; }
+        tbody td { padding:12px 14px; vertical-align:middle; }
+        .badge { font-size:10px; font-weight:800; padding:3px 9px; border-radius:20px; }
+        .badge-super { background:#e0f2fe; color:#0369a1; }
+        .badge-viewer { background:#fef3c7; color:#92400e; }
+        .btn-del { background:#fee2e2; color:#b91c1c; border:none; padding:5px 12px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; transition:background 0.15s; }
+        .btn-del:hover { background:#fecaca; }
+
+        /* Add user form */
+        .form-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:16px; align-self:start; }
+        .form-card h3 { font-size:15px; font-weight:800; margin-bottom:4px; }
+        .form-card p { font-size:12px; color:var(--muted); }
+        .field { display:flex; flex-direction:column; gap:5px; }
+        .field label { font-size:10px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.6px; }
+        .field-wrap { position:relative; }
+        .field-wrap .ico { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:13px; pointer-events:none; }
+        .field-wrap .eye { position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:13px; cursor:pointer; }
+        .field input, .field select { width:100%; padding:10px 12px 10px 36px; border:2px solid var(--border); border-radius:8px; font-size:13px; font-weight:500; color:var(--text); outline:none; font-family:'Inter',sans-serif; background:#fafafa; transition:border-color 0.2s; }
+        .field input:focus, .field select:focus { border-color:var(--brand); background:#fff; }
+        .field select { padding-left:36px; }
+        .btn-add { background:var(--brand); color:#fff; border:none; padding:11px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.15s; font-family:'Inter',sans-serif; }
+        .btn-add:hover { background:var(--brand-dark); }
+        .btn-add:disabled { opacity:0.65; cursor:not-allowed; }
+
+        .alert { border-radius:8px; padding:9px 12px; font-size:12px; font-weight:600; display:none; align-items:center; gap:8px; }
+        .alert.show { display:flex; }
+        .alert.error { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
+        .alert.success { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
+
+        .footer { height:44px; background:var(--sidebar); display:flex; align-items:center; justify-content:center; font-size:11px; color:#64748b; flex-shrink:0; }
+        .footer strong { color:#38bdf8; }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <nav class="sidebar-nav">
+            <a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="/admin-payments"><i class="fa-solid fa-credit-card"></i> Payments</a>
+            <a href="/admin-users" class="active"><i class="fa-solid fa-users-gear"></i> Manage Users</a>
+            <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="admin-avatar">A</div>
+            <div class="admin-meta">
+                <div class="admin-name">Super Admin</div>
+                <div class="admin-role">Full Access</div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="workspace">
+        <header class="topbar">
+            <div>
+                <h1>Manage Admin Users</h1>
+                <p>Create viewer accounts and manage admin access levels</p>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Users list -->
+            <div class="table-card">
+                <div class="table-card-header">
+                    <h3><i class="fa-solid fa-users" style="color:var(--brand);margin-right:8px;"></i> All Admin Users</h3>
+                    <span id="userCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Created</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Add user form -->
+            <div class="form-card">
+                <div>
+                    <h3><i class="fa-solid fa-user-plus" style="color:var(--brand);margin-right:8px;"></i> Add New User</h3>
+                    <p>Create a new admin or viewer account</p>
+                </div>
+
+                <div class="alert error" id="formAlert"><i class="fa-solid fa-circle-xmark"></i><span id="formAlertMsg"></span></div>
+                <div class="alert success" id="formSuccess"><i class="fa-solid fa-circle-check"></i><span id="formSuccessMsg"></span></div>
+
+                <div class="field">
+                    <label>Email Address</label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-envelope ico"></i>
+                        <input type="email" id="newEmail" placeholder="user@email.com">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Role</label>
+                    <div class="field-wrap">
+                        <i class="fa-solid fa-shield-halved ico"></i>
+                        <select id="newRole">
+                            <option value="viewer">Viewer — Read-only (Payments & Schools)</option>
+                            <option value="superadmin">Super Admin — Full Access</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--muted);">
+                    <strong style="color:var(--text);">Role permissions:</strong><br>
+                    <span style="color:#0369a1;">● Viewer</span> — Can only view payment reports and school data. Cannot edit anything.<br>
+                    <span style="color:#166534;">● Super Admin</span> — Full access to all features including editing questions and managing users.
+                </div>
+
+                <button class="btn-add" id="addBtn" onclick="addUser()">
+                    <span id="addLabel"><i class="fa-solid fa-user-plus"></i> Create Account</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">&copy; 2026 IKIZAME &nbsp;<strong>Developed by Dotado Stationery Store Ltd</strong></footer>
+<script src="assets/js/admin-session.js"></script>
+<script>
+function showAlert(msg, type) {
+    document.getElementById('formAlert').classList.remove('show');
+    document.getElementById('formSuccess').classList.remove('show');
+    if (type === 'success') { document.getElementById('formSuccessMsg').textContent = msg; document.getElementById('formSuccess').classList.add('show'); }
+    else { document.getElementById('formAlertMsg').textContent = msg; document.getElementById('formAlert').classList.add('show'); }
+}
+
+function loadUsers() {
+    fetch('/api/admin/users')
+        .then(r => r.json())
+        .then(users => {
+            document.getElementById('userCount').textContent = users.length + ' user(s)';
+            const tb = document.getElementById('usersTableBody');
+            if (!users.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#64748b;">No users found.</td></tr>'; return; }
+            tb.innerHTML = users.map((u, i) => `
+                <tr>
+                    <td style="font-weight:700;color:var(--brand);">${i+1}</td>
+                    <td style="font-weight:600;">${u.email || u.username}</td>
+                    <td><span class="badge ${u.role === 'superadmin' ? 'badge-super' : 'badge-viewer'}">${u.role === 'superadmin' ? 'Super Admin' : 'Viewer'}</span></td>
+                    <td style="color:#64748b;font-size:12px;">${u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
+                    <td>${u.role === 'superadmin' && i === 0 ? '<span style="font-size:11px;color:#94a3b8;">Protected</span>' : `<button class="btn-del" onclick="deleteUser(${u.id}, '${(u.email||u.username).replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i> Delete</button>`}</td>
+                </tr>`).join('');
+        })
+        .catch(() => {
+            document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#ef4444;">Failed to load users.</td></tr>';
+        });
+}
+
+function addUser() {
+    const email = document.getElementById('newEmail').value.trim();
+    const role  = document.getElementById('newRole').value;
+
+    if (!email) { showAlert('Injiza email.', 'error'); return; }
+
+    const btn = document.getElementById('addBtn');
+    btn.disabled = true;
+    document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
+
+    fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, role })
+    })
+    .then(r => r.json())
+    .then(d => {
+        btn.disabled = false;
+        document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+        if (d.ok) {
+            showAlert('Account yashyizweho neza!', 'success');
+            document.getElementById('newEmail').value = '';
+            document.getElementById('newRole').value = 'viewer';
+            loadUsers();
+        } else {
+            showAlert(d.error || 'Gushyiraho byanze.', 'error');
+        }
+    })
+    .catch(() => {
+        btn.disabled = false;
+        document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+        showAlert('Network error. Gerageza nanone.', 'error');
+    });
+}
+
+function deleteUser(id, email) {
+    if (!confirm(`Urareba neza ko ushaka gusiba konti ya "${email}"?`)) return;
+    fetch(`/api/admin/users/${id}`, { method: 'DELETE' })
+        .then(r => r.json())
+        .then(d => {
+            if (d.ok) { showAlert('Konti yasibwe neza.', 'success'); loadUsers(); }
+            else showAlert(d.error || 'Gusiba byanze.', 'error');
+        })
+        .catch(() => showAlert('Network error.', 'error'));
+}
+
+document.addEventListener('DOMContentLoaded', loadUsers);
+</script>
+</body>
+</html>

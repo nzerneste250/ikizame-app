@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Reports Dashboard | IKIZAME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --brand:#0b698b; --brand-dark:#08536e; --border:#e2e8f0; --text:#0f172a; --muted:#64748b; --sidebar:#0f172a; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html,body { height:100vh; font-family:'Inter',sans-serif; background:#f8fafc; color:var(--text); overflow:hidden; }
+        .shell { display:flex; height:calc(100vh - 44px); }
+
+        /* Sidebar */
+        .sidebar { width:220px; background:var(--sidebar); display:flex; flex-direction:column; flex-shrink:0; border-right:1px solid #1e293b; }
+        .sidebar-brand { padding:20px 16px; font-size:1rem; font-weight:800; color:#38bdf8; letter-spacing:2px; border-bottom:1px solid #1e293b; display:flex; align-items:center; gap:8px; }
+        .sidebar-nav { padding:12px 10px; display:flex; flex-direction:column; gap:4px; flex:1; }
+        .sidebar-nav a { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; color:#94a3b8; text-decoration:none; font-size:13px; font-weight:600; transition:all 0.15s; }
+        .sidebar-nav a:hover { color:#f8fafc; background:rgba(255,255,255,0.06); }
+        .sidebar-nav a.active { color:#f8fafc; background:rgba(56,189,248,0.12); border-left:3px solid #38bdf8; padding-left:9px; }
+        .sidebar-nav a i { width:16px; text-align:center; }
+        .nav-logout { color:#ef4444 !important; }
+        .nav-logout:hover { background:rgba(239,68,68,0.1) !important; }
+        .sidebar-footer { padding:12px 14px; border-top:1px solid #1e293b; display:flex; align-items:center; gap:8px; }
+        .admin-avatar { width:30px; height:30px; border-radius:50%; background:var(--brand); display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:700; }
+        .admin-meta .admin-name { font-size:12px; font-weight:700; color:#f8fafc; }
+        .admin-meta .admin-role { font-size:10px; color:#94a3b8; }
+        .viewer-badge { font-size:9px; font-weight:800; background:rgba(245,158,11,0.2); color:#fbbf24; padding:2px 7px; border-radius:10px; margin-left:auto; }
+
+        /* Workspace */
+        .workspace { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+        .topbar { height:64px; background:#fff; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; flex-shrink:0; }
+        .topbar h1 { font-size:18px; font-weight:800; color:#0d1b2a; }
+        .topbar p { font-size:12px; color:var(--muted); margin-top:2px; }
+        .readonly-badge { display:inline-flex; align-items:center; gap:6px; background:#fef3c7; color:#92400e; font-size:11px; font-weight:700; padding:5px 12px; border-radius:20px; border:1px solid #fde68a; }
+
+        .content { flex:1; display:flex; flex-direction:column; gap:20px; padding:20px 28px; overflow:hidden; }
+
+        /* Summary cards */
+        .summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; flex-shrink:0; }
+        .s-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px 18px; display:flex; align-items:center; gap:14px; }
+        .s-icon { width:40px; height:40px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+        .s-card .val { font-size:22px; font-weight:800; color:var(--text); line-height:1; }
+        .s-card .lbl { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-top:3px; }
+
+        /* Table */
+        .table-wrap { background:#fff; border:1px solid var(--border); border-radius:12px; overflow:auto; flex:1; }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        thead th { position:sticky; top:0; background:#f8fafc; color:var(--muted); font-weight:700; padding:12px 14px; border-bottom:2px solid var(--border); white-space:nowrap; z-index:10; }
+        tbody tr { border-bottom:1px solid #f1f5f9; transition:background 0.1s; }
+        tbody tr:hover { background:#f8fafc; }
+        tbody td { padding:11px 14px; vertical-align:middle; }
+        .badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:4px; }
+        .badge-green { background:#dcfce7; color:#166534; }
+        .badge-blue { background:#e0f2fe; color:#0369a1; }
+        .badge-purple { background:#f3e8ff; color:#6b21a8; }
+
+        /* Tabs */
+        .tabs { display:flex; gap:4px; flex-shrink:0; }
+        .tab { padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; border:none; background:#f1f5f9; color:var(--muted); transition:all 0.15s; }
+        .tab.active { background:var(--brand); color:#fff; }
+
+        .footer { height:44px; background:var(--sidebar); display:flex; align-items:center; justify-content:center; font-size:11px; color:#64748b; flex-shrink:0; }
+        .footer strong { color:#38bdf8; }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-chart-bar"></i> IKIZAME</div>
+        <nav class="sidebar-nav">
+            <a href="#" class="active" onclick="showTab('payments')"><i class="fa-solid fa-credit-card"></i> Payments Report</a>
+            <a href="#" onclick="showTab('schools')"><i class="fa-solid fa-school"></i> Schools Report</a>
+            <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="admin-avatar">V</div>
+            <div class="admin-meta">
+                <div class="admin-name" id="viewerEmail">Viewer</div>
+                <div class="admin-role">Read-Only Access</div>
+            </div>
+            <span class="viewer-badge">VIEWER</span>
+        </div>
+    </aside>
+
+    <div class="workspace">
+        <header class="topbar">
+            <div>
+                <h1 id="pageTitle">Payments Report</h1>
+                <p id="pageSub">View-only access — payment transactions and school data</p>
+            </div>
+            <div class="readonly-badge"><i class="fa-solid fa-eye"></i> Read-Only Mode</div>
+        </header>
+
+        <div class="content">
+            <div class="summary-grid">
+                <div class="s-card">
+                    <div class="s-icon" style="background:#e0f2fe;color:#0369a1;"><i class="fa-solid fa-money-bill-wave"></i></div>
+                    <div><div class="val" id="sumRevenue">--</div><div class="lbl">Total Revenue (RWF)</div></div>
+                </div>
+                <div class="s-card">
+                    <div class="s-icon" style="background:#dcfce7;color:#166534;"><i class="fa-solid fa-receipt"></i></div>
+                    <div><div class="val" id="sumTx">--</div><div class="lbl">Total Transactions</div></div>
+                </div>
+                <div class="s-card">
+                    <div class="s-icon" style="background:#f3e8ff;color:#6b21a8;"><i class="fa-solid fa-file-pen"></i></div>
+                    <div><div class="val" id="sumExams">--</div><div class="lbl">Exams Sold</div></div>
+                </div>
+                <div class="s-card">
+                    <div class="s-icon" style="background:#ffedd5;color:#c2410c;"><i class="fa-solid fa-school"></i></div>
+                    <div><div class="val" id="sumSchools">--</div><div class="lbl">Active Schools</div></div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" id="tabPayments" onclick="showTab('payments')"><i class="fa-solid fa-credit-card"></i> Payments</button>
+                <button class="tab" id="tabSchools" onclick="showTab('schools')"><i class="fa-solid fa-school"></i> Schools</button>
+            </div>
+
+            <div class="table-wrap">
+                <!-- Payments table -->
+                <table id="paymentsTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Phone</th>
+                            <th>Amount (RWF)</th>
+                            <th>Plan</th>
+                            <th>Exams</th>
+                            <th>Remaining</th>
+                            <th>School</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsBody">
+                        <tr><td colspan="9" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                    </tbody>
+                </table>
+
+                <!-- Schools table -->
+                <table id="schoolsTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>School Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schoolsBody">
+                        <tr><td colspan="7" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">&copy; 2026 IKIZAME &nbsp;<strong>Developed by Dotado Stationery Store Ltd</strong></footer>
+
+<script src="assets/js/admin-session.js"></script>
+<script>
+let loaded = false;
+
+function showTab(tab) {
+    document.getElementById('paymentsTable').style.display = tab === 'payments' ? 'table' : 'none';
+    document.getElementById('schoolsTable').style.display  = tab === 'schools'  ? 'table' : 'none';
+    document.getElementById('tabPayments').classList.toggle('active', tab === 'payments');
+    document.getElementById('tabSchools').classList.toggle('active', tab === 'schools');
+    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('pageTitle').textContent = tab === 'payments' ? 'Payments Report' : 'Schools Report';
+
+    if (!loaded) { loadData(); loaded = true; }
+}
+
+function loadData() {
+    fetch('/api/admin/viewer-data')
+        .then(r => r.json())
+        .then(data => {
+            const s = data.summary || {};
+            document.getElementById('sumRevenue').textContent  = Number(s.total_revenue || 0).toLocaleString();
+            document.getElementById('sumTx').textContent       = s.total_tx || 0;
+            document.getElementById('sumExams').textContent    = s.total_exams || 0;
+            document.getElementById('sumSchools').textContent  = data.totalSchools || 0;
+
+            const pb = document.getElementById('paymentsBody');
+            const rows = data.transactions || [];
+            if (!rows.length) { pb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:#64748b;">No transactions found.</td></tr>'; }
+            else pb.innerHTML = rows.map((r, i) => `
+                <tr>
+                    <td style="font-weight:700;color:var(--brand);">${i+1}</td>
+                    <td>${r.phone_number}</td>
+                    <td style="font-weight:700;">${Number(r.amount).toLocaleString()}</td>
+                    <td style="font-size:12px;color:#475569;">${r.plan_name || '--'}</td>
+                    <td style="text-align:center;">${r.total_exams}</td>
+                    <td style="text-align:center;">${r.remaining_exams}</td>
+                    <td>${r.school_name ? `<span class="badge badge-purple">${r.school_name}</span>` : '<span style="color:#cbd5e1;">—</span>'}</td>
+                    <td style="color:#64748b;font-size:12px;">${new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</td>
+                    <td><span class="badge badge-green">SUCCESS</span></td>
+                </tr>`).join('');
+        })
+        .catch(() => {
+            document.getElementById('paymentsBody').innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:#ef4444;">Failed to load data.</td></tr>';
+        });
+
+    fetch('/api/school/list-all')
+        .then(r => r.json())
+        .then(schools => {
+            const sb = document.getElementById('schoolsBody');
+            if (!schools || !schools.length) { sb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#64748b;">No schools found.</td></tr>'; return; }
+            sb.innerHTML = schools.map((s, i) => `
+                <tr>
+                    <td style="font-weight:700;color:var(--brand);">${i+1}</td>
+                    <td style="font-weight:700;">${s.school_name}</td>
+                    <td>${s.phone_number || '--'}</td>
+                    <td style="font-size:12px;">${s.email || '--'}</td>
+                    <td>${s.location || '--'}</td>
+                    <td><span class="badge ${s.is_verified ? 'badge-green' : 'badge-blue'}">${s.is_verified ? 'Verified' : 'Pending'}</span></td>
+                    <td style="color:#64748b;font-size:12px;">${s.created_at ? new Date(s.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
+                </tr>`).join('');
+        })
+        .catch(() => {
+            document.getElementById('schoolsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#ef4444;">Failed to load schools.</td></tr>';
+        });
+}
+
+// Load on start
+document.addEventListener('DOMContentLoaded', () => { loadData(); loaded = true; });
+</script>
+</body>
+</html>

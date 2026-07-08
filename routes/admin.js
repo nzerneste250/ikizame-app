@@ -47,7 +47,13 @@ module.exports = (db, loginLimiter) => {
                     });
                 }
                 req.session.isAdminAuthenticated = true;
+                req.session.adminRole            = admin.role || 'superadmin';
+                req.session.adminEmail           = admin.email || admin.username;
+                req.session.adminId              = admin.id;
+                req.session.mustChangePassword   = !!admin.must_change_password;
                 req.session.lastAdminActivity    = Date.now();
+                if (req.session.mustChangePassword) return res.redirect('/change-password');
+                if (req.session.adminRole === 'viewer') return res.redirect('/viewer-dashboard');
                 res.redirect('/dashboard');
             };
 
@@ -123,6 +129,25 @@ module.exports = (db, loginLimiter) => {
         });
     });
 
+    // POST change password (first login)
+    router.post('/change-password', (req, res) => {
+        if (!getAdminSessionState(req)) return res.status(401).json({ ok: false, error: 'Unauthorized' });
+        const { newPassword } = req.body;
+        if (!newPassword || newPassword.length < 8)
+            return res.json({ ok: false, error: 'Password igomba kuba nibura inyuguti 8.' });
+        bcrypt.hash(newPassword, BCRYPT_ROUNDS, (hashErr, hash) => {
+            if (hashErr) return res.json({ ok: false, error: 'Hash yabuze.' });
+            db.query('UPDATE portal_admins SET password=?, must_change_password=0 WHERE id=?',
+                [hash, req.session.adminId],
+                (err) => {
+                    if (err) return res.json({ ok: false, error: err.message });
+                    req.session.mustChangePassword = false;
+                    res.json({ ok: true, role: req.session.adminRole });
+                }
+            );
+        });
+    });
+
     // POST logout
     router.post('/logout', (req, res) => {
         req.session.destroy(() => res.json({ success: true }));
@@ -135,8 +160,117 @@ module.exports = (db, loginLimiter) => {
 
     // GET check session liveness
     router.get('/check-session', (req, res) => {
-        if (getAdminSessionState(req)) return res.json({ ok: true });
+        if (getAdminSessionState(req)) return res.json({ ok: true, role: req.session.adminRole || 'superadmin', email: req.session.adminEmail || '' });
         res.status(401).json({ ok: false });
+    });
+
+    // ── USER MANAGEMENT (superadmin only) ────────────────────────────────
+    function requireSuperAdmin(req, res, next) {
+        if (!getAdminSessionState(req)) return res.status(401).json({ error: 'Unauthorized' });
+        if ((req.session.adminRole || 'superadmin') !== 'superadmin') return res.status(403).json({ error: 'Superadmin only.' });
+        next();
+    }
+
+    // GET list all admin users
+    router.get('/users', requireSuperAdmin, (req, res) => {
+        db.query('SELECT id, username, email, role, created_at FROM portal_admins ORDER BY id ASC', (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json(rows);
+        });
+    });
+
+    // POST create new admin user — generates temp password, sends welcome email
+    router.post('/users', requireSuperAdmin, (req, res) => {
+        const { email, role } = req.body;
+        if (!email) return res.json({ ok: false, error: 'Email irakenewe.' });
+        const userRole = role === 'viewer' ? 'viewer' : 'superadmin';
+
+        db.query('SELECT id FROM portal_admins WHERE email = ?', [email], (err, rows) => {
+            if (err) return res.json({ ok: false, error: err.message });
+            if (rows.length > 0) return res.json({ ok: false, error: 'Iyi email isanzwe ikoreshwa.' });
+
+            // Generate random temp password
+            const tempPass = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-4).toUpperCase() + '!';
+
+            bcrypt.hash(tempPass, BCRYPT_ROUNDS, (hashErr, hash) => {
+                if (hashErr) return res.json({ ok: false, error: 'Hash yabuze.' });
+                db.query(
+                    'INSERT INTO portal_admins (username, email, password, role, must_change_password) VALUES (?, ?, ?, ?, 1)',
+                    [email.split('@')[0], email, hash, userRole],
+                    (err2) => {
+                        if (err2) return res.json({ ok: false, error: err2.message });
+
+                        // Send welcome email with temp password
+                        const transport = req.app.get('emailTransport');
+                        if (transport) {
+                            transport.sendMail({
+                                from: `"IKIZAME Admin" <${process.env.SMTP_USER}>`,
+                                to: email,
+                                subject: '🎉 IKIZAME — Your Admin Account Has Been Created',
+                                html: `<div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;background:#f8fafc;padding:24px;border-radius:12px;">
+                                    <div style="background:#0b698b;padding:20px;border-radius:8px;margin-bottom:20px;text-align:center;">
+                                        <h2 style="color:#fff;margin:0;font-size:20px;">🎉 Welcome to IKIZAME</h2>
+                                        <p style="color:#bae6fd;margin:4px 0 0;font-size:13px;">Your ${userRole === 'viewer' ? 'Viewer (Read-Only)' : 'Super Admin'} account is ready</p>
+                                    </div>
+                                    <p style="color:#475569;font-size:14px;margin-bottom:16px;">Your account has been created. Use the credentials below to log in:</p>
+                                    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin-bottom:16px;">
+                                        <div style="margin-bottom:10px;"><span style="font-size:11px;font-weight:800;color:#64748b;text-transform:uppercase;">Email</span><br><span style="font-size:15px;font-weight:700;color:#0f172a;">${email}</span></div>
+                                        <div><span style="font-size:11px;font-weight:800;color:#64748b;text-transform:uppercase;">Temporary Password</span><br><span style="font-size:20px;font-weight:900;color:#0b698b;font-family:monospace;letter-spacing:2px;">${tempPass}</span></div>
+                                    </div>
+                                    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:12px;margin-bottom:16px;">
+                                        <p style="color:#92400e;font-size:13px;font-weight:600;margin:0;">⚠️ You will be required to create a new strong password on your first login.</p>
+                                    </div>
+                                    <a href="https://ikizame.rw/admin-login" style="display:block;background:#0b698b;color:#fff;text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">Login to IKIZAME →</a>
+                                    <p style="color:#94a3b8;font-size:11px;margin-top:16px;text-align:center;">If you did not expect this email, please ignore it.</p>
+                                </div>`
+                            }, () => {});
+                        }
+                        res.json({ ok: true, email, role: userRole });
+                    }
+                );
+            });
+        });
+    });
+
+    // DELETE admin user
+    router.delete('/users/:id', requireSuperAdmin, (req, res) => {
+        const id = Number(req.params.id);
+        // Prevent deleting self
+        db.query('SELECT email FROM portal_admins WHERE id = ?', [id], (err, rows) => {
+            if (err || !rows.length) return res.json({ ok: false, error: 'User ntabwo abonetse.' });
+            if (rows[0].email === req.session.adminEmail) return res.json({ ok: false, error: 'Ntushobora gusiba konti yawe.' });
+            db.query('DELETE FROM portal_admins WHERE id = ?', [id], (err2) => {
+                if (err2) return res.json({ ok: false, error: err2.message });
+                res.json({ ok: true });
+            });
+        });
+    });
+
+    // GET viewer dashboard data — payments + schools summary (read-only)
+    router.get('/viewer-data', requireAdminLogin, (req, res) => {
+        db.query(`
+            SELECT pt.id, pt.phone_number, pt.amount, pt.plan_name, pt.status,
+                   pt.total_exams, pt.remaining_exams, pt.created_at,
+                   ds.school_name
+            FROM payment_transactions pt
+            LEFT JOIN driving_schools ds ON pt.school_id = ds.id
+            WHERE pt.status = 'SUCCESS'
+            ORDER BY pt.id DESC LIMIT 500`,
+            (err, rows) => {
+                if (err) return res.status(500).json({ error: err.message });
+                db.query(`SELECT COUNT(*) AS total_tx, COALESCE(SUM(amount),0) AS total_revenue,
+                          COALESCE(SUM(total_exams),0) AS total_exams
+                          FROM payment_transactions WHERE status='SUCCESS'`, (e2, sum) => {
+                    db.query(`SELECT COUNT(*) AS total_schools FROM driving_schools WHERE is_verified=1`, (e3, sch) => {
+                        res.json({
+                            transactions: rows,
+                            summary: sum ? sum[0] : {},
+                            totalSchools: sch ? sch[0].total_schools : 0
+                        });
+                    });
+                });
+            }
+        );
     });
 
     // GET all payment transactions
