@@ -87,17 +87,6 @@ tbody tr:hover td{background:#f8fafc;}
 .ip-left{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;}
 .ip-left i{color:#0b698b;}
 .ip-badge{background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:800;padding:3px 11px;border-radius:20px;}
-.ip-sel{padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:12.5px;font-family:inherit;font-weight:600;color:#0f172a;background:#f8fafc;cursor:pointer;}
-.rank-badge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:800;}
-.rank-1{background:#fef3c7;color:#92400e;}
-.rank-2{background:#f1f5f9;color:#475569;}
-.rank-3{background:#fce7f3;color:#9d174d;}
-.rank-n{background:#f1f5f9;color:#94a3b8;}
-.activity-bar{height:6px;border-radius:3px;background:#e2e8f0;overflow:hidden;min-width:80px;}
-.activity-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#0b698b,#38bdf8);transition:width .4s;}
-.pg-btn{padding:5px 11px;border:1px solid #e2e8f0;border-radius:7px;background:#f8fafc;font-size:12px;font-weight:700;cursor:pointer;color:#0f172a;}
-.pg-btn:disabled{opacity:.4;cursor:default;}
-.pg-info{font-size:12px;font-weight:700;color:#64748b;white-space:nowrap;}
 
 /* BADGES */
 .b{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
@@ -174,25 +163,6 @@ footer strong{color:#38bdf8;}
             <div class="panel">
                 <div class="ph"><i class="fa-solid fa-chart-column"></i> Daily Unique Visitors — Last 30 Days</div>
                 <div class="chart-box"><div class="bars" id="bars"><div style="color:#64748b;font-size:13px;align-self:center;width:100%;text-align:center;">Loading...</div></div></div>
-            </div>
-
-            <!-- TOP IPs REPORT -->
-            <div class="panel">
-                <div class="ip-head">
-                    <div class="ip-left"><i class="fa-solid fa-network-wired"></i> Top Returning Visitors <span class="ip-badge" id="ipBadge">0 IPs</span></div>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <input id="ipSearch" type="text" placeholder="Search IP..." oninput="renderTopIPs()" style="padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:12.5px;font-family:inherit;width:160px;outline:none;">
-                        <button class="pg-btn" onclick="changeIPPage(-1)" id="ipPrev">&#8592;</button>
-                        <span class="pg-info" id="ipPageInfo">1 / 1</span>
-                        <button class="pg-btn" onclick="changeIPPage(1)" id="ipNext">&#8594;</button>
-                    </div>
-                </div>
-                <div class="tw">
-                    <table>
-                        <thead><tr><th>Rank</th><th>IP Address</th><th>Days Active</th><th>Total Visits</th><th>Last Seen</th><th>Visit Share</th></tr></thead>
-                        <tbody id="ipTb"><tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">Loading...</td></tr></tbody>
-                    </table>
-                </div>
             </div>
 
             <!-- DAILY SUMMARY -->
@@ -300,57 +270,6 @@ function renderSummary(){
 
 function changePage(d){_sumPage+=d;renderSummary();}
 
-let _ipData=[], _ipPage=1;
-const IP_PER_PAGE=15;
-
-function loadTopIPs(daily){
-    const ipMap={};
-    daily.forEach(r=>{
-        (r.ips||[]).forEach(entry=>{
-            const ip=entry.ip||entry.ip_address||'';
-            if(!ip)return;
-            if(!ipMap[ip])ipMap[ip]={ip,days:0,visits:0,lastSeen:''};
-            ipMap[ip].days++;
-            ipMap[ip].visits+=(entry.count||1);
-            if(!ipMap[ip].lastSeen||r.day>ipMap[ip].lastSeen)ipMap[ip].lastSeen=r.day;
-        });
-    });
-    _ipData=Object.values(ipMap).sort((a,b)=>b.visits-a.visits);
-    _ipPage=1;
-    renderTopIPs();
-}
-
-function renderTopIPs(){
-    const q=(document.getElementById('ipSearch').value||'').toLowerCase();
-    const filtered=_ipData.filter(r=>!q||r.ip.includes(q));
-    const maxVisits=filtered.length?filtered[0].visits:1;
-    const pages=Math.max(1,Math.ceil(filtered.length/IP_PER_PAGE));
-    if(_ipPage>pages)_ipPage=pages;
-    document.getElementById('ipPageInfo').textContent=_ipPage+' / '+pages;
-    document.getElementById('ipPrev').disabled=_ipPage<=1;
-    document.getElementById('ipNext').disabled=_ipPage>=pages;
-    document.getElementById('ipBadge').textContent=filtered.length+' IP'+(filtered.length!==1?'s':'');
-    const slice=filtered.slice((_ipPage-1)*IP_PER_PAGE,_ipPage*IP_PER_PAGE);
-    const start=(_ipPage-1)*IP_PER_PAGE;
-    if(!slice.length){document.getElementById('ipTb').innerHTML='<tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">No results.</td></tr>';return;}
-    document.getElementById('ipTb').innerHTML=slice.map((r,i)=>{
-        const rank=start+i+1;
-        const rankCls=rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'rank-n';
-        const pct=Math.round((r.visits/maxVisits)*100);
-        const lastSeen=r.lastSeen?fd(r.lastSeen):'—';
-        return '<tr>'
-            +'<td><span class="rank-badge '+rankCls+'">'+rank+'</span></td>'
-            +'<td><code style="background:#f1f5f9;padding:3px 10px;border-radius:6px;font-size:12.5px;font-weight:700;letter-spacing:.3px;">'+r.ip+'</code></td>'
-            +'<td><span style="background:#dcfce7;color:#15803d;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;">'+r.days+' day'+(r.days!==1?'s':'')+'</span></td>'
-            +'<td><span style="background:#e0f2fe;color:#0369a1;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;">'+r.visits+' visit'+(r.visits!==1?'s':'')+'</span></td>'
-            +'<td style="color:#475569;font-weight:600;">'+lastSeen+'</td>'
-            +'<td><div class="activity-bar"><div class="activity-fill" style="width:'+pct+'%"></div></div><span style="font-size:11px;color:#64748b;font-weight:600;margin-left:6px;">'+pct+'%</span></td>'
-            +'</tr>';
-    }).join('');
-}
-
-function changeIPPage(d){_ipPage+=d;renderTopIPs();}
-
 document.addEventListener('DOMContentLoaded',()=>{
     const today=new Date().toISOString().slice(0,10);
 
@@ -366,9 +285,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         document.getElementById('vA').textContent=(c.total||0).toLocaleString();
         buildChart(chart);
         buildSummary(daily,today);
-        loadTopIPs(daily);
     }).catch(()=>{
-        document.getElementById('ipTb').innerHTML='<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:22px;">Failed to load visitor data.</td></tr>';
         document.getElementById('sumTb').innerHTML='<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:22px;">Failed to load.</td></tr>';
     });
 });
