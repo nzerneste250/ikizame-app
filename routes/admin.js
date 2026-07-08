@@ -270,8 +270,8 @@ module.exports = (db, loginLimiter) => {
         );
     });
 
-    // GET daily visitor breakdown for last 30 days
-    router.get('/visitor-daily', requireAdminLogin, (req, res) => {
+    // GET chart data — daily aggregates for last 30 days
+    router.get('/visitor-chart', requireAdminLogin, (req, res) => {
         db.query(`
             SELECT DATE_FORMAT(visit_date, '%Y-%m-%d') AS day,
                    COUNT(DISTINCT ip_address) AS unique_visitors,
@@ -282,6 +282,33 @@ module.exports = (db, loginLimiter) => {
             (err, rows) => {
                 if (err) return res.status(500).json({ error: err.message });
                 res.json(rows);
+            }
+        );
+    });
+
+    // GET daily visitor breakdown for last 30 days with IP list
+    router.get('/visitor-daily', requireAdminLogin, (req, res) => {
+        db.query(`
+            SELECT DATE_FORMAT(visit_date, '%Y-%m-%d') AS day,
+                   ip_address,
+                   visited_at,
+                   visit_count
+            FROM site_visitors
+            WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
+            ORDER BY visit_date DESC, visited_at ASC`,
+            (err, rows) => {
+                if (err) return res.status(500).json({ error: err.message });
+                // group by day
+                const map = {};
+                rows.forEach(r => {
+                    if (!map[r.day]) map[r.day] = { day: r.day, ips: [] };
+                    map[r.day].ips.push({
+                        ip: r.ip_address,
+                        time: r.visited_at,
+                        count: r.visit_count
+                    });
+                });
+                res.json(Object.values(map));
             }
         );
     });

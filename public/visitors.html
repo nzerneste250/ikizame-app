@@ -181,10 +181,10 @@ footer strong{color:#38bdf8;}
 
             <!-- DAILY BREAKDOWN -->
             <div class="panel">
-                <div class="ph"><i class="fa-solid fa-table-list"></i> Daily Breakdown</div>
+                <div class="ph"><i class="fa-solid fa-table-list"></i> Daily Breakdown — IP Addresses &amp; Visit Times</div>
                 <div class="tw">
                     <table>
-                        <thead><tr><th>#</th><th>Date</th><th>Day</th><th>Unique Visitors</th><th>Total Visits</th><th>Status</th></tr></thead>
+                        <thead><tr><th>#</th><th>Date</th><th>Day</th><th>IP Address</th><th>Visit Time</th><th>Visits</th></tr></thead>
                         <tbody id="dayTb"><tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">Loading...</td></tr></tbody>
                     </table>
                 </div>
@@ -236,13 +236,30 @@ function buildChart(rows){
 function buildDaily(rows,today){
     const tb=document.getElementById('dayTb');
     if(!rows.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">No data.</td></tr>';return;}
-    const mx=Math.max(...rows.map(r=>r.unique_visitors));
-    tb.innerHTML=[...rows].reverse().map((r,i)=>{
-        const isT=r.day===today;
+    let html='',n=0;
+    rows.forEach(r=>{
         const d=new Date(r.day+'T00:00:00');
-        const b=isT?'<span class="b b-today">● Today</span>':r.unique_visitors===mx?'<span class="b b-peak">↑ Peak</span>':'<span class="b b-norm">Normal</span>';
-        return '<tr><td style="color:#64748b">'+(i+1)+'</td><td style="font-weight:700">'+fd(r.day)+'</td><td>'+WD[d.getDay()]+'</td><td style="font-weight:800;font-size:15px">'+r.unique_visitors+'</td><td style="font-weight:700;color:#0b698b">'+(Number(r.total_visits)||0)+'</td><td>'+b+'</td></tr>';
-    }).join('');
+        const dayName=WD[d.getDay()];
+        const isToday=r.day===today;
+        const dateLbl='<span style="font-weight:700">'+(isToday?'<span class="b b-today" style="margin-right:5px;">● Today</span>':'')+fd(r.day)+'</span>';
+        (r.ips||[]).forEach((ip,j)=>{
+            n++;
+            const t=ip.time?new Date(ip.time).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';
+            html+='<tr>';
+            if(j===0){
+                html+='<td style="color:#64748b;vertical-align:top" rowspan="'+(r.ips.length)+'">'+n+'</td>';
+                html+='<td style="vertical-align:top" rowspan="'+(r.ips.length)+'">'+dateLbl+'</td>';
+                html+='<td style="vertical-align:top" rowspan="'+(r.ips.length)+'">'+dayName+'</td>';
+                n--;
+            }
+            n++;
+            html+='<td><code style="background:#f1f5f9;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;">'+ip.ip+'</code></td>';
+            html+='<td style="color:#64748b;font-weight:600;">'+t+'</td>';
+            html+='<td><span style="background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;">'+(ip.count||1)+' visit'+(( ip.count||1)!==1?'s':'')+'</span></td>';
+            html+='</tr>';
+        });
+    });
+    tb.innerHTML=html||'<tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">No data.</td></tr>';
 }
 
 function loadIPs(date){
@@ -273,15 +290,16 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     Promise.all([
         fetch('/api/admin/visitor-count').then(r=>r.json()),
+        fetch('/api/admin/visitor-chart').then(r=>r.json()),
         fetch('/api/admin/visitor-daily').then(r=>r.json())
-    ]).then(([c,d])=>{
+    ]).then(([c,chart,daily])=>{
         document.getElementById('vT').textContent=(c.today||0).toLocaleString();
         document.getElementById('vW').textContent=(c.week||0).toLocaleString();
         document.getElementById('vM').textContent=(c.month||0).toLocaleString();
         document.getElementById('vY').textContent=(c.year||0).toLocaleString();
         document.getElementById('vA').textContent=(c.total||0).toLocaleString();
-        buildChart(d);
-        buildDaily(d,today);
+        buildChart(chart);
+        buildDaily(daily,today);
     }).catch(()=>{
         document.getElementById('dayTb').innerHTML='<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:22px;">Failed to load.</td></tr>';
     });
