@@ -127,22 +127,19 @@ emailTransport.verify((err) => {
     else     console.log('✅ SMTP transport ready on port 587 TLS');
 });
 
-// ── VISITOR TRACKING (unique per IP per day) ────────────────────────────
-const TRACKED_PAGES = ['/', '/index', '/ifashanyigisho', '/ibiciro', '/ubufasha', '/amanota', '/exam-result', '/school-auth'];
-const EXCLUDED_IPS  = ['127.0.0.1', '197.157.145.186'];
+// ── VISITOR TRACKING (unique per IP per day, visit_count increments on refresh) ──
+const PUBLIC_PAGES = ['/', '/index', '/ifashanyigisho', '/ibiciro', '/ubufasha', '/amanota', '/exam-result', '/school-auth', '/exam', '/exam-score'];
+const EXCLUDED_IPS = ['127.0.0.1', '197.157.145.186'];
 app.use((req, res, next) => {
-    if (TRACKED_PAGES.includes(req.path)) {
+    if (req.method === 'GET' && PUBLIC_PAGES.includes(req.path)) {
         const ip = (req.ip || req.connection.remoteAddress || 'unknown')
-            .replace(/^::ffff:/i, '')
-            .replace(/^::1$/, '127.0.0.1')
-            .trim();
+            .replace(/^::ffff:/i, '').replace(/^::1$/, '127.0.0.1').trim();
         if (!EXCLUDED_IPS.includes(ip)) {
-            // INSERT IGNORE relies on UNIQUE KEY (ip_address, visit_date)
             db.query(
-                `INSERT IGNORE INTO site_visitors (ip_address, visit_date, visited_at, visit_count)
-                 VALUES (?, CURDATE(), NOW(), 1)`,
-                [ip],
-                () => {}
+                `INSERT INTO site_visitors (ip_address, visit_date, visited_at, visit_count)
+                 VALUES (?, CURDATE(), NOW(), 1)
+                 ON DUPLICATE KEY UPDATE visit_count = visit_count + 1`,
+                [ip], () => {}
             );
         }
     }
