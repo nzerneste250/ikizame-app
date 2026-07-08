@@ -23,7 +23,7 @@ db.connect(err => {
             db.query("SELECT COUNT(*) AS total FROM portal_admins", (e3, cnt) => {
                 console.log('👥 Total rows:', cnt[0].total);
 
-                db.query("SELECT id, email, username, role, is_active FROM portal_admins LIMIT 10", (e4, rows) => {
+                db.query("SELECT id, email, username, role, COALESCE(is_active, 1) AS is_active FROM portal_admins LIMIT 10", (e4, rows) => {
                     if (e4) console.error('❌ Query error:', e4.message);
                     else console.log('📄 Users:', JSON.stringify(rows, null, 2));
                     db.end();

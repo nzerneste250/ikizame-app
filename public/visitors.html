@@ -180,13 +180,21 @@ footer strong{color:#38bdf8;}
                 </div>
             </div>
 
-            <!-- DAILY BREAKDOWN -->
+            <!-- DAILY SUMMARY -->
             <div class="panel">
-                <div class="ph"><i class="fa-solid fa-table-list"></i> Daily Breakdown — IP Addresses &amp; Visit Times</div>
+                <div class="ip-head">
+                    <div class="ip-left"><i class="fa-solid fa-table-list"></i> Daily Visitor Summary <span class="ip-badge" id="sumBadge">0 days</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <input id="sumSearch" type="text" placeholder="Search date..." oninput="renderSummary()" style="padding:7px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:12.5px;font-family:inherit;width:160px;">
+                        <button onclick="changePage(-1)" id="btnPrev" style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:12px;font-weight:700;cursor:pointer;">&#8592;</button>
+                        <span id="pageInfo" style="font-size:12px;font-weight:700;color:#64748b;">1/1</span>
+                        <button onclick="changePage(1)" id="btnNext" style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:12px;font-weight:700;cursor:pointer;">&#8594;</button>
+                    </div>
+                </div>
                 <div class="tw">
                     <table>
-                        <thead><tr><th>#</th><th>Date</th><th>Day</th><th>IP Address</th><th>Visit Time</th><th>Visits</th></tr></thead>
-                        <tbody id="dayTb"><tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">Loading...</td></tr></tbody>
+                        <thead><tr><th>#</th><th>Date</th><th>Day</th><th>Unique IPs</th><th>Total Visits</th><th>Peak IP</th></tr></thead>
+                        <tbody id="sumTb"><tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">Loading...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -234,34 +242,48 @@ function buildChart(rows){
     });
 }
 
-function buildDaily(rows,today){
-    const tb=document.getElementById('dayTb');
-    if(!rows.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">No data.</td></tr>';return;}
-    let html='',n=0;
-    rows.forEach(r=>{
-        const d=new Date(r.day+'T00:00:00');
-        const dayName=WD[d.getDay()];
-        const isToday=r.day===today;
-        const dateLbl='<span style="font-weight:700">'+(isToday?'<span class="b b-today" style="margin-right:5px;">● Today</span>':'')+fd(r.day)+'</span>';
-        (r.ips||[]).forEach((ip,j)=>{
-            n++;
-            const t=ip.time?new Date(ip.time).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';
-            html+='<tr>';
-            if(j===0){
-                html+='<td style="color:#64748b;vertical-align:top" rowspan="'+(r.ips.length)+'">'+n+'</td>';
-                html+='<td style="vertical-align:top" rowspan="'+(r.ips.length)+'">'+dateLbl+'</td>';
-                html+='<td style="vertical-align:top" rowspan="'+(r.ips.length)+'">'+dayName+'</td>';
-                n--;
-            }
-            n++;
-            html+='<td><code style="background:#f1f5f9;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;">'+ip.ip+'</code></td>';
-            html+='<td style="color:#64748b;font-weight:600;">'+t+'</td>';
-            html+='<td><span style="background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;">'+(ip.count||1)+' visit'+(( ip.count||1)!==1?'s':'')+'</span></td>';
-            html+='</tr>';
-        });
+let _summaryData=[], _sumPage=1;
+const SUM_PER_PAGE=15;
+
+function buildSummary(daily,today){
+    _summaryData=daily.map(r=>{
+        const ips=r.ips||[];
+        const totalVisits=ips.reduce((a,ip)=>a+(ip.count||1),0);
+        const peak=ips.reduce((a,ip)=>(ip.count||1)>(a.count||1)?ip:a,ips[0]||{});
+        return{day:r.day,unique:ips.length,totalVisits,peakIp:peak.ip||'—'};
     });
-    tb.innerHTML=html||'<tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">No data.</td></tr>';
+    _sumPage=1;
+    renderSummary();
 }
+
+function renderSummary(){
+    const q=(document.getElementById('sumSearch').value||'').toLowerCase();
+    const filtered=_summaryData.filter(r=>!q||r.day.includes(q));
+    const pages=Math.max(1,Math.ceil(filtered.length/SUM_PER_PAGE));
+    if(_sumPage>pages)_sumPage=pages;
+    document.getElementById('pageInfo').textContent=_sumPage+'/'+pages;
+    document.getElementById('btnPrev').disabled=_sumPage<=1;
+    document.getElementById('btnNext').disabled=_sumPage>=pages;
+    document.getElementById('sumBadge').textContent=filtered.length+' day'+(filtered.length!==1?'s':'');
+    const today=new Date().toISOString().slice(0,10);
+    const slice=filtered.slice((_sumPage-1)*SUM_PER_PAGE,_sumPage*SUM_PER_PAGE);
+    if(!slice.length){document.getElementById('sumTb').innerHTML='<tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">No data.</td></tr>';return;}
+    const start=(_sumPage-1)*SUM_PER_PAGE;
+    document.getElementById('sumTb').innerHTML=slice.map((r,i)=>{
+        const d=new Date(r.day+'T00:00:00');
+        const isToday=r.day===today;
+        return '<tr>'
+            +'<td style="color:#64748b">'+(start+i+1)+'</td>'
+            +'<td style="font-weight:700;">'+(isToday?'<span class="b b-today" style="margin-right:5px;">Today</span>':'')+fd(r.day)+'</td>'
+            +'<td style="color:#64748b;font-weight:600;">'+WD[d.getDay()]+'</td>'
+            +'<td><span style="background:#dcfce7;color:#15803d;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;">'+r.unique+'</span></td>'
+            +'<td><span style="background:#e0f2fe;color:#0369a1;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;">'+r.totalVisits+'</span></td>'
+            +'<td><code style="background:#f1f5f9;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;">'+r.peakIp+'</code></td>'
+            +'</tr>';
+    }).join('');
+}
+
+function changePage(d){_sumPage+=d;renderSummary();}
 
 function loadIPs(date){
     if(!date)return;
@@ -300,7 +322,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         document.getElementById('vY').textContent=(c.year||0).toLocaleString();
         document.getElementById('vA').textContent=(c.total||0).toLocaleString();
         buildChart(chart);
-        buildDaily(daily,today);
+        buildSummary(daily,today);
     }).catch(()=>{
         document.getElementById('dayTb').innerHTML='<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:22px;">Failed to load.</td></tr>';
     });
