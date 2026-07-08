@@ -38,7 +38,7 @@ function buildPDF(rows, summary, period, from, to) {
         doc.fontSize(10).font('Helvetica')
            .text('Payment Revenue Report', 40, 46);
         doc.fillColor('#ffffff').fontSize(10)
-           .text(`Period: ${period.toUpperCase()} | ${fmt(from)} → ${fmt(to)}`, 40, 58, { align: 'right' });
+           .text(`Period: ${period.toUpperCase()} | ${fmt(from)} to ${fmt(to)}`, 40, 58, { align: 'right' });
 
         doc.moveDown(3);
 
