@@ -576,13 +576,16 @@
                         setTimeout(() => {
                             document.getElementById('ussdCodeDisplay').textContent = ussdCode + (isMTN ? '  (MTN MoMo)' : '  (Airtel Money)');
                             document.getElementById('ussdHintBox').style.display = 'block';
-                        }, 5000);
+                        }, 3000);
                     }
 
                     activeReferenceId = data.referenceId;
                     let elapsed = 0;
+                    const maxWait = 120;
                     activePollTimer = setInterval(() => {
-                        elapsed += 3;
+                        elapsed += 2;
+                        const remaining = maxWait - elapsed;
+                        btnText.textContent = `Tegereza... (${remaining}s)`;
                         fetch(`/api/payments/verify/${data.referenceId}`)
                             .then(r => r.json())
                             .then(d => {
@@ -590,23 +593,23 @@
                                     clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     closeTestPaymentModal();
-                                    document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.';
+                                    document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishyura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.';
                                     document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
                                 } else if (d.status === 'FAILED') {
                                     clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
-                                    alert('Kwishura byanze. Ongera ugerageze.');
+                                    alert('Kwishyura byanze. Ongera ugerageze.');
                                     payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
-                                } else if (elapsed >= 180) {
+                                } else if (elapsed >= maxWait) {
                                     clearInterval(activePollTimer); activePollTimer = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
                                     activeReferenceId = null;
-                                    alert('Igihe cyarangiye (iminuta 3). Ongera ugerageze.');
+                                    alert('Igihe cyarangiye (iminuta 2). Ongera ugerageze.');
                                     payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
                                 }
                             });
-                    }, 3000);
+                    }, 2000);
                 } else {
                     alert(data.error || 'Uburyo bwanze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
                 }

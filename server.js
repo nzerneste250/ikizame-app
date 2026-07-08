@@ -91,17 +91,11 @@ db.getConnection((err, conn) => {
 // ── SESSION STORE ────────────────────────────────────────────────
 const MySQLStore = require('express-mysql-session')(session);
 const sessionStore = new MySQLStore({
-    host:                isProduction ? (process.env.PROD_DB_HOST || 'localhost') : (process.env.LOCAL_DB_HOST || 'localhost'),
-    user:                isProduction ? process.env.PROD_DB_USER : (process.env.LOCAL_DB_USER || 'root'),
-    password:            isProduction ? process.env.PROD_DB_PASSWORD : (process.env.LOCAL_DB_PASSWORD || ''),
-    database:            isProduction ? process.env.PROD_DB_NAME : (process.env.LOCAL_DB_NAME || 'driving_db'),
-    port:                parseInt(isProduction ? (process.env.PROD_DB_PORT || '3306') : (process.env.LOCAL_DB_PORT || '3306'), 10),
     expiration:          4 * 60 * 60 * 1000,
     createDatabaseTable: false,
-    connectionLimit:     3,
-    clearExpired:        true,
-    checkExpirationInterval: 15 * 60 * 1000
-});
+    connectionLimit:     2,
+    endConnectionOnClose: true
+}, db.promise());
 
 app.use(session({
     secret:            process.env.SESSION_SECRET || 'fallback_dev_secret_change_me',

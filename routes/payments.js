@@ -10,18 +10,38 @@ const WEBHOOK_SECRET   = process.env.PAYPACK_WEBHOOK_SECRET;
 let cachedToken  = null;
 let tokenExpires = 0;
 async function getAccessToken() {
-    if (cachedToken && Date.now() < tokenExpires - 30000) return cachedToken;
+    if (cachedToken && Date.now() < tokenExpires - 60000) return cachedToken;
     const { data } = await axios.post(`${PAYPACK_BASE}/auth/agents/authorize`,
         { client_id: PAYPACK_CLIENT, client_secret: PAYPACK_SECRET },
-        { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, timeout: 10000 }
+        { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, timeout: 8000 }
     );
     cachedToken  = data.access;
     tokenExpires = data.expires * 1000;
+    console.log('🔑 Paypack token refreshed, expires:', new Date(tokenExpires).toISOString());
     return cachedToken;
+}
+
+// Warm token on startup so first payment is instant
+if (PAYPACK_CLIENT && PAYPACK_SECRET) {
+    getAccessToken().catch(e => console.warn('⚠️  Paypack token warm-up failed:', e.message));
 }
 
 // In-memory map: paypackRef -> pending tx data (cleared on webhook)
 const pendingMap = new Map();
+
+function calcTieredAmount(qty) {
+    if (qty <= 9)  return qty * 100;
+    if (qty <= 14) return 900 + (qty - 9) * 80;
+    if (qty <= 20) return 1300 + (qty - 14) * 70;
+    return 1720 + (qty - 20) * 50;
+}
+
+function getPricePerExam(qty) {
+    if (qty <= 9)  return 100;
+    if (qty <= 14) return 80;
+    if (qty <= 20) return 70;
+    return 50;
+}
 
 module.exports = (db) => {
     const router = express.Router();
@@ -64,7 +84,7 @@ module.exports = (db) => {
                         'Accept':        'application/json',
                         'X-Webhook-Mode': 'production'
                     },
-                    timeout: 20000
+                    timeout: 12000
                 }
             );
 
