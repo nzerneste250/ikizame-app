@@ -550,20 +550,36 @@ module.exports = (db, loginLimiter) => {
     router.get('/visitor-count', requireAdminLogin, (req, res) => {
         db.query(`
             SELECT
-                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE visit_date = CURDATE()) AS today,
-                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)) AS week,
-                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)) AS month,
-                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors WHERE YEAR(visit_date) = YEAR(CURDATE())) AS year,
-                (SELECT COUNT(DISTINCT ip_address) FROM site_visitors) AS total`,
+                visit_date,
+                ip_address
+            FROM site_visitors`,
             (err, rows) => {
                 if (err) return res.status(500).json({ error: err.message });
-                const r = rows[0];
+                const now   = new Date();
+                const today = now.toISOString().slice(0, 10);
+                const d = (n) => { const d = new Date(now); d.setDate(d.getDate() - n); return d.toISOString().slice(0,10); };
+                const week  = d(6);
+                const month = d(29);
+                const year  = String(now.getFullYear());
+
+                const sets = { today: new Set(), week: new Set(), month: new Set(), year: new Set(), total: new Set() };
+                rows.forEach(r => {
+                    const day = r.visit_date instanceof Date
+                        ? r.visit_date.toISOString().slice(0,10)
+                        : String(r.visit_date).slice(0,10);
+                    const ip = r.ip_address;
+                    sets.total.add(ip);
+                    if (day.startsWith(year))          sets.year.add(ip);
+                    if (day >= month)                  sets.month.add(ip);
+                    if (day >= week)                   sets.week.add(ip);
+                    if (day === today)                 sets.today.add(ip);
+                });
                 res.json({
-                    today: Number(r.today) || 0,
-                    week:  Number(r.week)  || 0,
-                    month: Number(r.month) || 0,
-                    year:  Number(r.year)  || 0,
-                    total: Number(r.total) || 0
+                    today: sets.today.size,
+                    week:  sets.week.size,
+                    month: sets.month.size,
+                    year:  sets.year.size,
+                    total: sets.total.size
                 });
             }
         );
