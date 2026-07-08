@@ -46,7 +46,7 @@ function getPricePerExam(qty) {
 module.exports = (db) => {
     const router = express.Router();
 
-    // POST — initiate USSD push, do NOT write to DB yet
+    // POST — initiate USSD push: respond instantly, call Paypack in background
     router.post('/momo-push', async (req, res) => {
         const { phoneNumber, checkoutIntentType, examQuantityVolume, pricePerExam } = req.body;
 
@@ -72,41 +72,55 @@ module.exports = (db) => {
         const validPrices  = [100, 80, 70, 50];
         const priceToStore = validPrices.includes(submittedPx) ? submittedPx : getPricePerExam(examCount);
 
-        try {
-            const token = await getAccessToken();
-            const { data } = await axios.post(
-                `${PAYPACK_BASE}/transactions/cashin`,
-                { amount, number: phone },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type':  'application/json',
-                        'Accept':        'application/json',
-                        'X-Webhook-Mode': 'production'
-                    },
-                    timeout: 12000
+        // Generate a local ref immediately and respond to browser right away
+        const localRef = 'loc_' + crypto.randomBytes(10).toString('hex');
+        pendingMap.set(localRef, {
+            phone, amount, planLabel, examCount, priceToStore,
+            school_id: null, paypackRef: null, status: 'INITIATING',
+            expires: Date.now() + 5 * 60 * 1000
+        });
+
+        // Respond instantly — browser starts polling immediately
+        res.json({ success: true, referenceId: localRef, allocatedPlan: planLabel });
+
+        // Call Paypack in background — no await blocking the response
+        (async () => {
+            try {
+                const token = await getAccessToken();
+                const { data } = await axios.post(
+                    `${PAYPACK_BASE}/transactions/cashin`,
+                    { amount, number: phone },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type':  'application/json',
+                            'Accept':        'application/json',
+                            'X-Webhook-Mode': 'production'
+                        },
+                        timeout: 15000
+                    }
+                );
+                const paypackRef = data?.ref;
+                if (!paypackRef) throw new Error('No ref returned from Paypack');
+
+                // Update pending entry with real Paypack ref
+                const entry = pendingMap.get(localRef);
+                if (entry) {
+                    entry.paypackRef = paypackRef;
+                    entry.status     = 'PENDING';
+                    pendingMap.set(localRef, entry);
+                    // Also index by paypackRef so webhook can find it
+                    pendingMap.set(paypackRef, entry);
                 }
-            );
-
-            const paypackRef = data?.ref;
-            if (!paypackRef) throw new Error('No ref returned from Paypack');
-
-            // Store pending data in memory — DB insert happens only on successful webhook
-            pendingMap.set(paypackRef, {
-                phone, amount, planLabel, examCount, priceToStore,
-                school_id: null,
-                expires: Date.now() + 5 * 60 * 1000 // 5 min TTL
-            });
-
-            console.log(`✅ Paypack cashin initiated: ${paypackRef}`);
-            res.json({ success: true, referenceId: paypackRef, paypackRef, allocatedPlan: planLabel });
-
-        } catch (apiErr) {
-            const errMsg = apiErr.response?.data?.message || apiErr.response?.data?.error || apiErr.message || 'Paypack API error';
-            console.error('❌ Paypack cashin error:', errMsg);
-            try { require('../server').sendErrorAlert('Paypack Cashin Failed', `Phone: ${phone}\nAmount: ${amount}\nError: ${errMsg}`); } catch(e) {}
-            res.status(502).json({ success: false, error: 'Kwishyura byanze: ' + errMsg });
-        }
+                console.log(`✅ Paypack cashin initiated: ${paypackRef} (localRef: ${localRef})`);
+            } catch (apiErr) {
+                const errMsg = apiErr.response?.data?.message || apiErr.response?.data?.error || apiErr.message || 'Paypack API error';
+                console.error('❌ Paypack cashin error:', errMsg);
+                const entry = pendingMap.get(localRef);
+                if (entry) { entry.status = 'FAILED'; pendingMap.set(localRef, entry); }
+                try { require('../server').sendErrorAlert('Paypack Cashin Failed', `Phone: ${phone}\nAmount: ${amount}\nError: ${errMsg}`); } catch(e) {}
+            }
+        })();
     });
 
     // POST — Paypack webhook: insert to DB only on successful
@@ -159,17 +173,23 @@ module.exports = (db) => {
         );
     });
 
-    // GET — poll payment status (check if webhook has inserted the record)
+    // GET — poll payment status
     router.get('/verify/:refId', (req, res) => {
         const ref = req.params.refId;
+
+        // Check in-memory first (covers localRef and paypackRef)
+        const entry = pendingMap.get(ref);
+        if (entry) {
+            if (entry.status === 'FAILED') return res.json({ status: 'FAILED' });
+            return res.json({ status: 'PENDING' }); // INITIATING or PENDING
+        }
+
+        // Check DB (webhook already fired)
         db.query(
             `SELECT status, plan_name FROM payment_transactions WHERE reference_id = ? OR rwandapay_tx_id = ?`,
             [ref, ref],
             (err, results) => {
-                if (err || !results || results.length === 0) {
-                    // Still pending in memory
-                    return res.json({ status: pendingMap.has(ref) ? 'PENDING' : 'PENDING' });
-                }
+                if (err || !results || results.length === 0) return res.json({ status: 'PENDING' });
                 res.json({ status: results[0].status, plan: results[0].plan_name });
             }
         );
