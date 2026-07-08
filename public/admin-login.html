@@ -105,7 +105,9 @@
         }
         .forgot-link:hover { text-decoration: underline; }
 
-        .divider { text-align: center; font-size: 12px; color: var(--text-muted); margin: 4px 0; }
+        /* Panels */
+        .panel { display: none; }
+        .panel.active { display: block; }
 
         .back-link {
             display: flex; align-items: center; justify-content: center;
@@ -114,9 +116,55 @@
         }
         .back-link:hover { color: var(--brand); }
 
-        /* Panels */
-        .panel { display: none; }
-        .panel.active { display: block; }
+        /* Steps tracker */
+        .steps-tracker {
+            display: flex; align-items: center; justify-content: center;
+            gap: 0; margin-bottom: 24px;
+        }
+        .step-dot {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .step-dot .dot {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 800;
+            background: #e2e8f0; color: #94a3b8;
+            transition: all 0.3s;
+        }
+        .step-dot .dot-label {
+            font-size: 10px; font-weight: 700; color: #94a3b8;
+            text-transform: uppercase; letter-spacing: 0.4px;
+            transition: color 0.3s; white-space: nowrap;
+        }
+        .step-dot.active .dot { background: var(--brand); color: #fff; box-shadow: 0 0 0 4px var(--brand-glow); }
+        .step-dot.active .dot-label { color: var(--brand); }
+        .step-dot.done .dot { background: var(--valid); color: #fff; }
+        .step-dot.done .dot-label { color: var(--valid); }
+        .step-line {
+            width: 48px; height: 2px; background: #e2e8f0;
+            margin-bottom: 18px; transition: background 0.3s;
+        }
+        .step-line.done { background: var(--valid); }
+
+        /* Password strength */
+        .strength-bar {
+            display: flex; gap: 4px; margin-top: 6px;
+        }
+        .strength-bar span {
+            flex: 1; height: 4px; border-radius: 2px;
+            background: #e2e8f0; transition: background 0.3s;
+        }
+        .strength-label { font-size: 11px; font-weight: 700; margin-top: 4px; }
+        .strength-label.weak   { color: #ef4444; }
+        .strength-label.fair   { color: #f59e0b; }
+        .strength-label.good   { color: #3b82f6; }
+        .strength-label.strong { color: #10b981; }
+
+        /* Password rules */
+        .pass-rules { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+        .pass-rule { font-size: 11px; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .pass-rule.met { color: var(--valid); }
+        .pass-rule i { font-size: 10px; }
 
         .footer {
             position: fixed; bottom: 0; left: 0; right: 0; height: 42px;
@@ -175,6 +223,22 @@
 
         <!-- ── PANEL 2: Forgot Password (enter email) ── -->
         <div class="panel" id="panelForgot">
+            <div class="steps-tracker">
+                <div class="step-dot active" id="step1">
+                    <div class="dot">1</div>
+                    <div class="dot-label">Email</div>
+                </div>
+                <div class="step-line" id="line1"></div>
+                <div class="step-dot" id="step2">
+                    <div class="dot">2</div>
+                    <div class="dot-label">OTP</div>
+                </div>
+                <div class="step-line" id="line2"></div>
+                <div class="step-dot" id="step3">
+                    <div class="dot">3</div>
+                    <div class="dot-label">Password</div>
+                </div>
+            </div>
             <h1>Forgot Password</h1>
             <p class="sub">Enter your admin email. We'll send a 6-digit OTP code.</p>
             <div class="form">
@@ -197,6 +261,22 @@
 
         <!-- ── PANEL 3: Enter OTP + New Password ── -->
         <div class="panel" id="panelReset">
+            <div class="steps-tracker">
+                <div class="step-dot done" id="step1r">
+                    <div class="dot"><i class="fa-solid fa-check" style="font-size:11px;"></i></div>
+                    <div class="dot-label">Email</div>
+                </div>
+                <div class="step-line done"></div>
+                <div class="step-dot active" id="step2r">
+                    <div class="dot">2</div>
+                    <div class="dot-label">OTP</div>
+                </div>
+                <div class="step-line" id="line2r"></div>
+                <div class="step-dot" id="step3r">
+                    <div class="dot">3</div>
+                    <div class="dot-label">Password</div>
+                </div>
+            </div>
             <h1>Reset Password</h1>
             <p class="sub">Enter the 6-digit OTP sent to your email and set a new password.</p>
             <div class="form">
@@ -211,16 +291,29 @@
                     <label>New Password</label>
                     <div class="field-wrap">
                         <i class="fa-solid fa-lock ico-left"></i>
-                        <input type="password" id="newPassInput" placeholder="Min. 8 characters">
+                        <input type="password" id="newPassInput" placeholder="Min. 8 characters" oninput="checkStrength()">
                         <i class="fa-solid fa-eye ico-right" id="eyeBtn2"></i>
+                    </div>
+                    <div class="strength-bar">
+                        <span id="sb1"></span><span id="sb2"></span>
+                        <span id="sb3"></span><span id="sb4"></span>
+                    </div>
+                    <div class="strength-label" id="strengthLabel"></div>
+                    <div class="pass-rules">
+                        <div class="pass-rule" id="rule-len"><i class="fa-solid fa-circle"></i> At least 8 characters</div>
+                        <div class="pass-rule" id="rule-upper"><i class="fa-solid fa-circle"></i> One uppercase letter (A-Z)</div>
+                        <div class="pass-rule" id="rule-num"><i class="fa-solid fa-circle"></i> One number (0-9)</div>
+                        <div class="pass-rule" id="rule-special"><i class="fa-solid fa-circle"></i> One special character (!@#...)</div>
                     </div>
                 </div>
                 <div class="field">
                     <label>Confirm Password</label>
                     <div class="field-wrap">
                         <i class="fa-solid fa-lock ico-left"></i>
-                        <input type="password" id="confirmPassInput" placeholder="Repeat new password">
+                        <input type="password" id="confirmPassInput" placeholder="Repeat new password" oninput="checkMatch()">
+                        <i class="fa-solid fa-eye ico-right" id="eyeBtn3"></i>
                     </div>
+                    <div class="pass-rule" id="rule-match" style="margin-top:4px;"><i class="fa-solid fa-circle"></i> Passwords match</div>
                 </div>
                 <button class="btn btn-primary" id="resetBtn" onclick="resetPassword()">
                     <span id="resetLabel">Reset Password</span>
@@ -264,13 +357,71 @@
             p.type = show ? 'text' : 'password';
             document.getElementById('eyeBtn').className = show ? 'fa-solid fa-eye-slash ico-right' : 'fa-solid fa-eye ico-right';
         });
-        // Password toggle — reset
+        // Password toggle — reset new
         document.getElementById('eyeBtn2').addEventListener('click', () => {
             const p = document.getElementById('newPassInput');
             const show = p.type === 'password';
             p.type = show ? 'text' : 'password';
             document.getElementById('eyeBtn2').className = show ? 'fa-solid fa-eye-slash ico-right' : 'fa-solid fa-eye ico-right';
         });
+        // Password toggle — reset confirm
+        document.getElementById('eyeBtn3').addEventListener('click', () => {
+            const p = document.getElementById('confirmPassInput');
+            const show = p.type === 'password';
+            p.type = show ? 'text' : 'password';
+            document.getElementById('eyeBtn3').className = show ? 'fa-solid fa-eye-slash ico-right' : 'fa-solid fa-eye ico-right';
+        });
+
+        // Password strength checker
+        function checkStrength() {
+            const v = document.getElementById('newPassInput').value;
+            const rules = {
+                len:     v.length >= 8,
+                upper:   /[A-Z]/.test(v),
+                num:     /[0-9]/.test(v),
+                special: /[^A-Za-z0-9]/.test(v)
+            };
+            // Update rules
+            Object.keys(rules).forEach(k => {
+                const el = document.getElementById('rule-' + k);
+                if (!el) return;
+                el.classList.toggle('met', rules[k]);
+                el.querySelector('i').className = rules[k] ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle';
+            });
+            // Strength score
+            const score = Object.values(rules).filter(Boolean).length;
+            const bars  = ['sb1','sb2','sb3','sb4'];
+            const colors = ['#ef4444','#f59e0b','#3b82f6','#10b981'];
+            const labels = ['','Weak','Fair','Good','Strong'];
+            const labelClasses = ['','weak','fair','good','strong'];
+            bars.forEach((id, i) => {
+                document.getElementById(id).style.background = i < score ? colors[score - 1] : '#e2e8f0';
+            });
+            const lbl = document.getElementById('strengthLabel');
+            lbl.textContent = score > 0 ? labels[score] : '';
+            lbl.className = 'strength-label ' + (score > 0 ? labelClasses[score] : '');
+            // Activate step 3 when password field is touched
+            if (v.length > 0) activateStep3();
+            checkMatch();
+        }
+
+        function checkMatch() {
+            const p1 = document.getElementById('newPassInput').value;
+            const p2 = document.getElementById('confirmPassInput').value;
+            const el = document.getElementById('rule-match');
+            const match = p1.length > 0 && p1 === p2;
+            el.classList.toggle('met', match);
+            el.querySelector('i').className = match ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle';
+        }
+
+        function activateStep3() {
+            const s2 = document.getElementById('step2r');
+            const s3 = document.getElementById('step3r');
+            const l2 = document.getElementById('line2r');
+            if (s2) { s2.classList.remove('active'); s2.classList.add('done'); s2.querySelector('.dot').innerHTML = '<i class="fa-solid fa-check" style="font-size:11px;"></i>'; }
+            if (s3) s3.classList.add('active');
+            if (l2) l2.classList.add('done');
+        }
 
         // Show error from redirect
         const params = new URLSearchParams(window.location.search);
