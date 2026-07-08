@@ -555,6 +555,14 @@
             payBtn.disabled = true; btnText.textContent = 'Gutegura...'; btnIcon.className = 'fa-solid fa-spinner fa-spin';
             document.getElementById('ussdHintBox').style.display = 'none';
 
+            // Show progress messages so user knows it's working
+            const progressMsgs = ['Gutegura...', 'Connecting...', 'Ohereza ibisabwa...', 'Tegereza gato...'];
+            let pIdx = 0;
+            const progressTimer = setInterval(() => {
+                pIdx = (pIdx + 1) % progressMsgs.length;
+                if (btnText.textContent !== 'Emeza kuri telephone...') btnText.textContent = progressMsgs[pIdx];
+            }, 3000);
+
             const abortCtrl = new AbortController();
             const fetchTimeout = setTimeout(() => abortCtrl.abort(), 25000);
 
@@ -569,7 +577,7 @@
                     pricePerExam: unitPrice
                 })
             })
-            .then(res => { clearTimeout(fetchTimeout); return res.json(); })
+            .then(res => { clearTimeout(fetchTimeout); clearInterval(progressTimer); return res.json(); })
             .then(data => {
                 if(data.success) {
                     btnText.textContent = 'Emeza kuri telephone...';
@@ -619,7 +627,7 @@
                 }
             })
             .catch(err => {
-                clearTimeout(fetchTimeout);
+                clearTimeout(fetchTimeout); clearInterval(progressTimer);
                 const msg = err.name === 'AbortError'
                     ? 'Igihe cyarangiye. Reba internet yawe hanyuma ongera ugerageze.'
                     : 'Ikibazo cya internet. Reba connexion yawe hanyuma ongera ugerageze.';
