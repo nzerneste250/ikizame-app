@@ -394,22 +394,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // IP report — independent fetch so it never blocks the rest
     fetch('/api/admin/visitor-dates')
-        .then(r => r.json())
+        .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then(dates => {
             const sel = document.getElementById('ipDateSelect');
-            if (dates.length) {
+            if (Array.isArray(dates) && dates.length) {
                 sel.innerHTML = dates.map(d => '<option value="' + d + '"' + (d === today ? ' selected' : '') + '>' + formatDate(d) + '</option>').join('');
                 loadIpTable(dates.includes(today) ? today : dates[0]);
             } else {
                 sel.innerHTML = '<option value="">No data yet</option>';
+                document.getElementById('ipCountBadge').textContent = '0 IPs';
                 document.getElementById('ipTableBody').innerHTML =
                     '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:24px;">No visitor data yet.</td></tr>';
             }
         })
-        .catch(() => {
-            document.getElementById('ipDateSelect').innerHTML = '<option value="">Error loading dates</option>';
+        .catch(err => {
+            document.getElementById('ipDateSelect').innerHTML = '<option value="">Error: ' + err.message + '</option>';
             document.getElementById('ipTableBody').innerHTML =
-                '<tr><td colspan="4" style="text-align:center;color:#ef4444;padding:24px;">Failed to load IP report.</td></tr>';
+                '<tr><td colspan="4" style="text-align:center;color:#ef4444;padding:24px;">Failed to load IP report (error ' + err.message + ').</td></tr>';
         });
 });
 </script>
