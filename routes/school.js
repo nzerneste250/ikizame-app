@@ -335,7 +335,7 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
 
     // GET all schools (for viewer/admin reports)
     router.get('/list-all', (req, res) => {
-        db.query('SELECT id, school_name, phone_number, email, location, is_verified, created_at FROM driving_schools ORDER BY id DESC', (err, rows) => {
+        db.query('SELECT id, school_name, phone_number, email, is_verified, created_at FROM driving_schools ORDER BY id DESC', (err, rows) => {
             if (err) return res.status(500).json({ error: err.message });
             res.json(rows || []);
         });
