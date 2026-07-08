@@ -368,9 +368,11 @@ module.exports.sendErrorAlert = sendErrorAlert;
 const { sendReport } = require('./routes/reports');
 require('./routes/reports')(db, emailTransport);
 
-// Test endpoint — admin only
+// Test endpoint — admin session OR secret key
 app.get('/api/admin/test-report/:type', (req, res) => {
-    if (!getAdminSessionState(req)) return res.status(401).json({ error: 'Unauthorized' });
+    const isAdmin = getAdminSessionState(req);
+    const keyOk   = req.query.key === (process.env.REPORT_TEST_KEY || 'ikizame-report-test');
+    if (!isAdmin && !keyOk) return res.status(401).json({ error: 'Unauthorized' });
     const type = ['weekly','monthly','yearly'].includes(req.params.type) ? req.params.type : 'weekly';
     sendReport(db, emailTransport, type)
         .then(() => res.json({ ok: true, message: `${type} report sent to ${process.env.REPORT_EMAIL || process.env.ALERT_EMAIL}` }))
