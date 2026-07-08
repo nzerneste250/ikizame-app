@@ -136,7 +136,7 @@ footer strong{color:#38bdf8;}
         </nav>
         <div class="side-foot">
             <div class="ava">A</div>
-            <div class="ava-info"><div class="ava-name">Admin</div><div class="ava-role" id="sidebarAdminRole">Administrator</div></div>
+            <div class="ava-info"><div class="ava-role" id="sidebarAdminRole">Administrator</div></div>
             <div class="timer-pill"><span id="sbT">5:00</span></div>
         </div>
     </aside>
@@ -325,14 +325,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
+
 <script>
 fetch('/api/admin/check-session').then(function(r){return r.json();}).then(function(d){
     if(!d.ok) return;
     var a=document.getElementById('sidebarAvatar');
-    var n=document.getElementById('sidebarAdminEmail');
     var r=document.getElementById('sidebarAdminRole');
     if(a&&d.email) a.textContent=d.email[0].toUpperCase();
-    if(n&&d.email) n.textContent=d.email;
     if(r) r.textContent=d.role==='viewer'?'Manager':'Administrator';
 }).catch(function(){});
 </script>
