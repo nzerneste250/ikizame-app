@@ -47,6 +47,8 @@
             z-index: 0;
             overflow: hidden;
             pointer-events: none;
+            opacity: 0.35;
+            filter: blur(1.5px);
             background: linear-gradient(180deg, #060e1a 0%, #0a1628 40%, #0d2236 70%, #0a1f10 100%);
         }
         /* stars */
@@ -55,25 +57,25 @@
             position: absolute;
             inset: 0;
             background-image:
-                radial-gradient(1px 1px at 8%  12%, rgba(255,255,255,0.55) 0%, transparent 100%),
-                radial-gradient(1px 1px at 22% 6%,  rgba(255,255,255,0.4)  0%, transparent 100%),
-                radial-gradient(1px 1px at 38% 18%, rgba(255,255,255,0.35) 0%, transparent 100%),
-                radial-gradient(1px 1px at 55% 4%,  rgba(255,255,255,0.5)  0%, transparent 100%),
-                radial-gradient(1px 1px at 70% 14%, rgba(255,255,255,0.4)  0%, transparent 100%),
-                radial-gradient(1px 1px at 85% 9%,  rgba(255,255,255,0.3)  0%, transparent 100%),
-                radial-gradient(1px 1px at 14% 32%, rgba(255,255,255,0.25) 0%, transparent 100%),
-                radial-gradient(1px 1px at 48% 26%, rgba(255,255,255,0.3)  0%, transparent 100%),
-                radial-gradient(1px 1px at 78% 22%, rgba(255,255,255,0.2)  0%, transparent 100%),
-                radial-gradient(1px 1px at 92% 30%, rgba(255,255,255,0.25) 0%, transparent 100%);
+                radial-gradient(1px 1px at 8%  12%, rgba(255,255,255,0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 22% 6%,  rgba(255,255,255,0.2) 0%, transparent 100%),
+                radial-gradient(1px 1px at 38% 18%, rgba(255,255,255,0.2) 0%, transparent 100%),
+                radial-gradient(1px 1px at 55% 4%,  rgba(255,255,255,0.25) 0%, transparent 100%),
+                radial-gradient(1px 1px at 70% 14%, rgba(255,255,255,0.2) 0%, transparent 100%),
+                radial-gradient(1px 1px at 85% 9%,  rgba(255,255,255,0.15) 0%, transparent 100%),
+                radial-gradient(1px 1px at 14% 32%, rgba(255,255,255,0.12) 0%, transparent 100%),
+                radial-gradient(1px 1px at 48% 26%, rgba(255,255,255,0.15) 0%, transparent 100%),
+                radial-gradient(1px 1px at 78% 22%, rgba(255,255,255,0.1) 0%, transparent 100%),
+                radial-gradient(1px 1px at 92% 30%, rgba(255,255,255,0.12) 0%, transparent 100%);
         }
         /* ===== ROAD STRIP ===== */
         .road-strip {
             position: absolute;
             left: 0; right: 0;
             height: 160px;
-            background: rgba(20,20,20,0.18);
-            border-top: 5px solid rgba(232,184,0,0.18);
-            border-bottom: 5px solid rgba(232,184,0,0.18);
+            background: rgba(20,20,20,0.1);
+            border-top: 5px solid rgba(232,184,0,0.08);
+            border-bottom: 5px solid rgba(232,184,0,0.08);
         }
         .road-strip::after {
             content: '';
@@ -83,10 +85,10 @@
             margin-top: -2px;
             background: repeating-linear-gradient(
                 to right,
-                rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 60px,
+                rgba(255,255,255,0.07) 0px, rgba(255,255,255,0.07) 60px,
                 transparent 60px, transparent 110px
             );
-            animation: dashRTL 0.7s linear infinite;
+            animation: dashRTL 1.2s linear infinite;
         }
         @keyframes dashRTL {
             from { background-position: 0 0; }
@@ -95,16 +97,15 @@
         /* ===== CARS RIGHT-TO-LEFT ===== */
         .car-rtl {
             position: absolute;
-            opacity: 0.18;
+            opacity: 0.08;
             animation: driveRTL linear infinite;
         }
         @keyframes driveRTL {
             0%   { right: -220px; }
             100% { right: 105vw; }
         }
-        /* ===== SIGN POLES opacity ===== */
-        .sign-pole { opacity: 0.18; }
-        /* ===== SIGN POLES scrolling with bottom road ===== */
+        /* ===== SIGN POLES ===== */
+        .sign-pole { opacity: 0.08; }
         .sign-pole {
             position: absolute;
             display: flex;
