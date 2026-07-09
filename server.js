@@ -395,9 +395,12 @@ app.get('/api/admin/test-report/:type', (req, res) => {
     const isAdmin = getAdminSessionState(req);
     const keyOk   = req.query.key === (process.env.REPORT_TEST_KEY || 'ikizame-report-test');
     if (!isAdmin && !keyOk) return res.status(401).json({ error: 'Unauthorized' });
-    const type = ['weekly','monthly','yearly'].includes(req.params.type) ? req.params.type : 'weekly';
-    sendReport(db, emailTransport, type)
-        .then(() => res.json({ ok: true, message: `${type} report sent to ${process.env.REPORT_EMAIL || process.env.ALERT_EMAIL}` }))
+    const type = ['weekly','monthly','yearly','daily'].includes(req.params.type) ? req.params.type : 'daily';
+    const runner = type === 'daily'
+        ? require('./routes/reports').sendDailyReport(db, emailTransport)
+        : sendReport(db, emailTransport, type);
+    runner
+        .then(() => res.json({ ok: true, message: `${type} report sent` }))
         .catch(e => res.status(500).json({ ok: false, error: e.message }));
 });
 
