@@ -240,27 +240,14 @@
             const key = el.getAttribute('data-i18n-ph');
             if (t[key] !== undefined) el.placeholder = t[key];
         });
-        // Update all lang dropdowns
         document.querySelectorAll('.lang-badge').forEach(badge => {
-            badge.innerHTML = `
-                ${FLAGS[lang]}
-                <span>${lang === 'rw' ? 'Kinyarwanda' : 'English'}</span>
-                <svg class="lang-chevron" viewBox="0 0 10 6" width="10" height="6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
-                <div class="lang-dropdown">
-                    <div class="lang-option ${lang==='rw'?'active':''}" onclick="event.stopPropagation();window.ikizameSetLang('rw')">
-                        <svg viewBox="0 0 4 3" width="20" height="14" style="border-radius:2px;border:1px solid #e2e8f0;flex-shrink:0"><rect width="4" height="1.1" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
-                        Kinyarwanda
-                    </div>
-                    <div class="lang-option ${lang==='en'?'active':''}" onclick="event.stopPropagation();window.ikizameSetLang('en')">
-                        <svg viewBox="0 0 60 30" width="20" height="14" style="border-radius:2px;flex-shrink:0"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4"/><path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/><path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/></svg>
-                        English
-                    </div>
-                </div>`;
-            badge.style.cursor = 'pointer';
-            badge.style.position = 'relative';
+            badge.innerHTML = `${FLAGS[lang]}<span>${lang === 'rw' ? 'Kinyarwanda' : 'English'}</span><svg class="lang-chevron" viewBox="0 0 10 6" width="10" height="6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg><div class="lang-dropdown"><div class="lang-option${lang==='rw'?' active':''}" data-lang="rw"><svg viewBox="0 0 4 3" width="20" height="14"><rect width="4" height="1.1" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>Kinyarwanda</div><div class="lang-option${lang==='en'?' active':''}" data-lang="en"><svg viewBox="0 0 60 30" width="20" height="14"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4"/><path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/><path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/></svg>English</div></div>`;
+            badge.style.cssText += ';cursor:pointer;position:relative;';
             badge.onclick = (e) => { e.stopPropagation(); badge.classList.toggle('open'); };
+            badge.querySelectorAll('.lang-option').forEach(opt => {
+                opt.onclick = (e) => { e.stopPropagation(); window.ikizameSetLang(opt.dataset.lang); };
+            });
         });
-        // Close dropdown on outside click
         document.onclick = () => document.querySelectorAll('.lang-badge.open').forEach(b => b.classList.remove('open'));
         document.documentElement.lang = lang === 'rw' ? 'rw' : 'en';
     }
