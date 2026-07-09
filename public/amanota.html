@@ -433,7 +433,8 @@
                     lookupPhoneHint.textContent = 'Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079';
                     lookupPhoneHint.className = 'hint';
                     submitLookupBtn.disabled = false;
-                    submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Shakisha Amanota`;
+                    const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
+                    submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> ${_t==='en'?'Search Scores':'Shakisha Amanota'}`;
 
                     resultsListView.style.display = 'none';
                     const container = document.querySelector('.workspace-scroll-container');
@@ -573,7 +574,9 @@
                         lookupPhoneHint.className = "hint error";
                     } finally {
                         submitLookupBtn.disabled = false;
+                        const _t2 = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
                         submitLookupBtn.innerHTML = `Shakisha Amanota <i class="fa-solid fa-magnifying-glass"></i>`;
+                        if (_t2 === 'en') submitLookupBtn.innerHTML = `Search Scores <i class="fa-solid fa-magnifying-glass"></i>`;
                     }
                 });
             }

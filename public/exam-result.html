@@ -405,7 +405,7 @@
                     <div class="status-pill" id="statusPill">---</div>
                     <div class="progress-bar-wrap">
                         <div class="progress-label">
-                            <span>Amanota yawe</span>
+                            <span data-i18n="result_progress_lbl">Amanota yawe</span>
                             <span id="progressPct">0%</span>
                         </div>
                         <div class="progress-bar">
@@ -527,9 +527,10 @@
 
             // Pill
             const pill = document.getElementById('statusPill');
+            const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
             pill.innerHTML = isPassed
-                ? '<i class="fa-solid fa-trophy"></i> YATSINZE'
-                : '<i class="fa-solid fa-rotate-right"></i> NTIYATSINZE';
+                ? `<i class="fa-solid fa-trophy"></i> ${_t==='en'?'PASSED':'YATSINZE'}`
+                : `<i class="fa-solid fa-rotate-right"></i> ${_t==='en'?'FAILED':'NTIYATSINZE'}`;
             pill.classList.add(isPassed ? 'pass' : 'fail');
 
             // Progress
@@ -566,11 +567,12 @@
 
                 const cardClass  = isSkipped ? 'skipped-card' : isCorrect ? 'correct-card' : 'wrong-card';
                 const badgeClass = isSkipped ? 'skipped' : isCorrect ? 'correct' : 'wrong';
+                const _lang = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
                 const badgeText  = isSkipped
-                    ? '<i class="fa-solid fa-minus"></i> WASIMBUTSE'
+                    ? `<i class="fa-solid fa-minus"></i> ${_lang==='en'?'SKIPPED':'WASIMBUTSE'}`
                     : isCorrect
-                        ? '<i class="fa-solid fa-check"></i> WAGIKOZE NEZA'
-                        : '<i class="fa-solid fa-xmark"></i> WAGISUBIJE NABI';
+                        ? `<i class="fa-solid fa-check"></i> ${_lang==='en'?'CORRECT':'WAGIKOZE NEZA'}`
+                        : `<i class="fa-solid fa-xmark"></i> ${_lang==='en'?'WRONG':'WAGISUBIJE NABI'}`;
 
                 let imgHtml = '';
                 const rawImg = q.image_path || q.image_url;
@@ -596,7 +598,7 @@
                         <div class="q-bar">
                             <div class="q-num">
                                 <div class="num-circle">${idx + 1}</div>
-                                Ikibazo cya ${idx + 1}
+                                ${(window.ikizameGetLang&&window.ikizameGetLang()==='en'?'Question':'Ikibazo cya')} ${idx + 1}
                             </div>
                             <span class="q-badge ${badgeClass}">${badgeText}</span>
                         </div>

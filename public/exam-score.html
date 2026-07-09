@@ -240,16 +240,20 @@
                      stroke-linecap="round"/>
            </svg>`;
 
-    /* ── Score line — denominator always 20 ── */
-    const t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-    document.getElementById('scoreLine').textContent =
-        (t==='en' ? `Your score: ${score} / ${TOTAL}` : `Amanota wagize: ${score} / ${TOTAL}`);
+    /* ── Score line & Verdict — re-applied on lang switch ── */
+    function applyScoreTranslation() {
+        const t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
+        document.getElementById('scoreLine').textContent =
+            (t==='en' ? `Your score: ${score} / ${TOTAL}` : `Amanota wagize: ${score} / ${TOTAL}`);
+        const verdict = document.getElementById('verdictText');
+        verdict.textContent = t==='en' ? (passed ? 'PASSED' : 'FAILED') : (passed ? 'WATSINZE' : 'WATSINZWE');
+    }
+    applyScoreTranslation();
+    document.getElementById('verdictText').classList.add(passed ? 'verdict-pass' : 'verdict-fail');
 
-    /* ── Verdict ── */
-    const verdict = document.getElementById('verdictText');
-    const lang2 = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-    verdict.textContent = lang2==='en' ? (passed ? 'PASSED' : 'FAILED') : (passed ? 'WATSINZE' : 'WATSINZWE');
-    verdict.classList.add(passed ? 'verdict-pass' : 'verdict-fail');
+    /* Re-apply on language switch */
+    const _origSwitch = window.ikizameSwitchLang;
+    window.ikizameSwitchLang = function() { _origSwitch(); applyScoreTranslation(); };
 
     /* ── Confetti on pass ── */
     if (passed) {

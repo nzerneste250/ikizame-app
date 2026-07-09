@@ -397,6 +397,9 @@ function clearSearch() {
 }
 
 function buildCard(doc) {
+    const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
+    const readLabel = _t === 'en' ? 'Read Now' : 'Soma Hano';
+    const dlLabel   = _t === 'en' ? 'Download' : 'Gukura';
     const ext = doc.file_path.split('.').pop().toLowerCase();
     const isPdf = ext === 'pdf';
     const isWord = ['doc','docx'].includes(ext);
@@ -407,7 +410,7 @@ function buildCard(doc) {
     const tagLabel = ext.toUpperCase();
 
     const dlBtn = doc.allow_download === 1
-        ? `<a href="/${doc.file_path}" download class="btn-download"><i class="fa-solid fa-download"></i> Gukura</a>`
+        ? `<a href="/${doc.file_path}" download class="btn-download"><i class="fa-solid fa-download"></i> ${dlLabel}</a>`
         : `<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>`;
 
     const desc = doc.description ? `<p>${doc.description}</p>` : '';
@@ -426,7 +429,7 @@ function buildCard(doc) {
         </div>
         <div class="doc-actions" onclick="event.stopPropagation()">
             <button class="btn-read" onclick="openViewer(${JSON.stringify(doc).replace(/"/g, '&quot;')})">
-                <i class="fa-solid fa-book-open"></i> Soma Hano
+                <i class="fa-solid fa-book-open"></i> ${readLabel}
             </button>
             ${dlBtn}
         </div>

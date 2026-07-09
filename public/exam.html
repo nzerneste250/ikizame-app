@@ -511,10 +511,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         prevBtn.style.visibility = idx === 0 ? 'hidden' : 'visible';
         if (idx === questions.length - 1) {
-            nextBtn.innerHTML = 'Soza Ikizamini &#10003;';
+            const t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
+            nextBtn.innerHTML = (t === 'en' ? 'Finish Exam &#10003;' : 'Soza Ikizamini &#10003;');
             nextBtn.className = 'btn btn-submit';
         } else {
-            nextBtn.innerHTML = 'Komeza &#8594;';
+            const t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
+            nextBtn.innerHTML = (t === 'en' ? 'Next &#8594;' : 'Komeza &#8594;');
             nextBtn.className = 'btn btn-next';
         }
     }
