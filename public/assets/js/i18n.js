@@ -172,7 +172,11 @@
         if (!t) return;
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (t[key] !== undefined) el.textContent = t[key];
+            if (t[key] === undefined) return;
+            // Only set textContent if element has no child elements (preserve inner HTML like <strong>)
+            if (el.children.length === 0) {
+                el.textContent = t[key];
+            }
         });
         document.querySelectorAll('[data-i18n-ph]').forEach(el => {
             const key = el.getAttribute('data-i18n-ph');
