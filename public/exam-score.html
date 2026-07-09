@@ -176,6 +176,7 @@
             .btn { padding: 11px 20px; font-size: 0.88rem; }
         }
     </style>
+<script src="assets/js/i18n.js"></script>
 </head>
 <body>
 
@@ -273,6 +274,5 @@
         fetch('/api/clear-session', { method: 'POST' })
             .finally(() => { window.location.replace('/'); });
     }
-<script src="assets/js/i18n.js"></script>
 </body>
 </html>

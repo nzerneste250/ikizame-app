@@ -137,12 +137,8 @@
         applyLang(next);
     };
 
-    // Apply immediately if DOM ready, else wait
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => applyLang(getLang()));
-    } else {
-        applyLang(getLang());
-    }
+    // Always wait for DOM — script is now in <head>
+    document.addEventListener('DOMContentLoaded', () => applyLang(getLang()));
     window.ikizameApplyLang = applyLang;
     window.ikizameGetLang = getLang;
 })();
