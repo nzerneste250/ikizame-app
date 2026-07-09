@@ -6,6 +6,30 @@ const PAYPACK_BASE     = 'https://payments.paypack.rw/api';
 const PAYPACK_CLIENT   = process.env.PAYPACK_CLIENT_ID;
 const PAYPACK_SECRET   = process.env.PAYPACK_CLIENT_SECRET;
 const WEBHOOK_SECRET   = process.env.PAYPACK_WEBHOOK_SECRET;
+const NOTIFY_EMAIL     = 'dotadostationarystore@gmail.com';
+
+function sendPaymentNotification(transport, { phone, amount, planLabel, examCount, paypackRef, type }) {
+    if (!transport) return;
+    transport.sendMail({
+        from: `"IKIZAME Payments" <${process.env.SMTP_USER}>`,
+        to:   NOTIFY_EMAIL,
+        subject: `💳 New Payment — ${Number(amount).toLocaleString()} RWF (${type})`,
+        html: `<div style="font-family:Inter,sans-serif;background:#f8fafc;padding:24px;max-width:480px;">
+            <div style="background:#0b698b;padding:16px 20px;border-radius:8px;margin-bottom:16px;">
+                <h2 style="color:#fff;margin:0;font-size:17px;">💳 New Payment Received</h2>
+                <p style="color:#bae6fd;margin:4px 0 0;font-size:12px;">${new Date().toLocaleString('en-GB')}</p>
+            </div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <tr style="background:#dcfce7;"><td colspan="2" style="padding:8px 12px;font-weight:800;color:#15803d;font-size:16px;">✅ ${Number(amount).toLocaleString()} RWF</td></tr>
+                <tr><td style="padding:7px 12px;color:#64748b;">Phone</td><td style="padding:7px 12px;font-weight:700;">${phone}</td></tr>
+                <tr style="background:#f8fafc;"><td style="padding:7px 12px;color:#64748b;">Plan</td><td style="padding:7px 12px;font-weight:700;">${planLabel}</td></tr>
+                <tr><td style="padding:7px 12px;color:#64748b;">Exams</td><td style="padding:7px 12px;font-weight:700;">${examCount}</td></tr>
+                <tr style="background:#f8fafc;"><td style="padding:7px 12px;color:#64748b;">Type</td><td style="padding:7px 12px;font-weight:700;">${type}</td></tr>
+                <tr><td style="padding:7px 12px;color:#64748b;">Reference</td><td style="padding:7px 12px;font-family:monospace;font-size:11px;">${paypackRef}</td></tr>
+            </table>
+        </div>`
+    }, (err) => { if (err) console.error('⚠️  Payment notification email failed:', err.message); });
+}
 
 let cachedToken  = null;
 let tokenExpires = 0;
@@ -162,6 +186,11 @@ module.exports = (db) => {
             (err) => {
                 if (err) { console.error('❌ Webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
                 console.log(`✅ Paypack webhook: ${paypackRef} → SUCCESS (inserted)`);
+                sendPaymentNotification(req.app.get('emailTransport'), {
+                    phone: pending.phone, amount: pending.amount,
+                    planLabel: pending.planLabel, examCount: pending.examCount,
+                    paypackRef, type: 'Self Payment'
+                });
                 res.json({ ok: true });
             }
         );
@@ -210,6 +239,11 @@ function handleSchoolWebhook(db, paypackRef, txData, res) {
         (err) => {
             if (err) { console.error('❌ School webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
             console.log(`✅ School webhook: ${paypackRef} → SUCCESS (inserted)`);
+            sendPaymentNotification(res.req.app.get('emailTransport'), {
+                phone: pending.phone, amount: 10000,
+                planLabel, examCount: 9999,
+                paypackRef, type: 'School Payment'
+            });
             res.json({ ok: true });
         }
     );
