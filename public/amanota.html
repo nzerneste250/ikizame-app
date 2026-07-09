@@ -6,9 +6,9 @@
     <!-- 🎯 BRANDING HEADER ICON BINDING -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>Amanota | IKIZAME - Reba Amanota Yawe</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root { 
@@ -241,7 +241,6 @@
             .results-header-row h4 { font-size: 0.95rem; }
         }
     </style>
-<script src="assets/js/i18n.js?v=7"></script>
 </head>
 <body>
 
@@ -253,16 +252,16 @@
         </a>
         <nav>
             <ul class="navbar-links">
-                <li><a href="/" data-i18n="nav_home">Ahabanza</a></li>
-                <li><a href="ubufasha" data-i18n="nav_help">Ubufasha</a></li>
-                <li><a href="ifashanyigisho" data-i18n="nav_resources">Imfashanyigisho</a></li>
-                <li><a href="ibiciro" data-i18n="nav_pricing">Ibiciro</a></li>
-                <li><a href="school-auth" data-i18n="nav_school">Amashuri (School Portal)</a></li>
-                <li><a href="amanota" class="active" data-i18n="nav_scores">Amanota</a></li>
+                <li><a href="/">Ahabanza</a></li>
+                <li><a href="ubufasha">Ubufasha</a></li>
+                <li><a href="ifashanyigisho">Imfashanyigisho</a></li>
+                <li><a href="ibiciro">Ibiciro</a></li>
+                <li><a href="school-auth">Amashuri (School Portal)</a></li>
+                <li><a href="amanota" class="active">Amanota</a></li>
             </ul>
         </nav>
-        <div class="lang-badge" style="cursor:pointer;" onclick="window.ikizameSwitchLang()">
-            <svg class="rw-flag-svg lang-flag" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
             <span>Kinyarwanda</span>
         </div>
     </header>
@@ -283,16 +282,16 @@
                     <rect x="88" y="26" width="7" height="5" rx="1" fill="#fef08a"/>
                 </svg>
             </div>
-            <h2 data-i18n="lookup_title">Reba Amanota Yawe</h2>
-            <p data-i18n="lookup_desc">Injiza numero ya telefoni yakoreshejwe mu kizamini kugira ngo urebe amateka yawe yose.</p>
-            <div class="phone-field-label"><i class="fa-solid fa-sim-card"></i> <span data-i18n="lookup_label">Numero ya Telefoni</span></div>
+            <h2>Reba Amanota Yawe</h2>
+            <p>Injiza numero ya telefoni yakoreshejwe mu kizamini kugira ngo urebe amateka yawe yose.</p>
+            <div class="phone-field-label"><i class="fa-solid fa-sim-card"></i> Numero ya Telefoni</div>
             <div class="phone-input-row">
                 <div class="phone-prefix"><i class="fa-solid fa-phone"></i>&nbsp;+25</div>
-                <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" data-i18n-ph="lookup_ph" maxlength="10">
+                <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" maxlength="10">
             </div>
-            <div id="lookupPhoneHint" class="hint" data-i18n="lookup_hint">Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079</div>
+            <div id="lookupPhoneHint" class="hint">Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079</div>
             <button class="btn-submit-lookup" id="submitLookupBtn">
-                <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="amanota_search_btn">Shakisha Amanota</span>
+                <i class="fa-solid fa-magnifying-glass"></i> Shakisha Amanota
             </button>
         </div>
 
@@ -300,8 +299,8 @@
         <div class="amanota-card-box" id="amanotaResultsListView" style="display:none;">
             <div class="results-inner">
                 <div class="results-header-row">
-                    <h4 id="dashboardTitle" data-i18n="amanota_exams_done">Ibizamini Byakozwe</h4>
-                    <button class="btn-back-link" id="backToLookupBtn"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="amanota_back">Subira inyuma</span></button>
+                    <h4 id="dashboardTitle">Ibizamini Byakozwe</h4>
+                    <button class="btn-back-link" id="backToLookupBtn"><i class="fa-solid fa-arrow-left"></i> Subira inyuma</button>
                 </div>
 
                 <!-- Student identity -->
@@ -320,12 +319,12 @@
                 <!-- Remaining Exams Panel -->
                 <div class="remaining-panel">
                     <div class="remaining-panel-header">
-                        <div class="rph-title"><i class="fa-solid fa-ticket"></i> <span data-i18n="amanota_remaining_title">Ibizamini Bisigaye — Byishyuwe</span></div>
+                        <div class="rph-title"><i class="fa-solid fa-ticket"></i> Ibizamini Bisigaye — Byishyuwe</div>
                     </div>
                     <div class="remaining-panel-body">
                         <div class="rem-big-num" id="remBigNum">—</div>
                         <div class="rem-info">
-                            <div class="rem-label" data-i18n="amanota_remaining_label">Ibizamini Bisigaye mu Byishyuwe</div>
+                            <div class="rem-label">Ibizamini Bisigaye mu Byishyuwe</div>
                             <div class="rem-desc" id="remDesc">Iri gushakisha...</div>
                             <div class="rem-progress-wrap">
                                 <div class="rem-progress-track"><div class="rem-progress-fill" id="remProgressFill" style="width:0%"></div></div>
@@ -340,27 +339,27 @@
                 <div class="stats-grid">
                     <div class="stat-tile">
                         <div class="st-val" id="statTotal">0</div>
-                        <div class="st-lbl" data-i18n="amanota_stat_total">Ibizamini Byose</div>
+                        <div class="st-lbl">Ibizamini Byose</div>
                     </div>
                     <div class="stat-tile pass-tile">
                         <div class="st-val" id="statPassed">0</div>
-                        <div class="st-lbl" data-i18n="amanota_stat_passed">Yatsinze</div>
+                        <div class="st-lbl">Yatsinze</div>
                     </div>
                     <div class="stat-tile fail-tile">
                         <div class="st-val" id="statFailed">0</div>
-                        <div class="st-lbl" data-i18n="amanota_stat_failed">Watsinzwe</div>
+                        <div class="st-lbl">Watsinzwe</div>
                     </div>
                     <div class="stat-tile avg-tile">
                         <div class="st-val" id="statAvg">0/20</div>
-                        <div class="st-lbl" data-i18n="amanota_stat_avg">Amanota Hagati</div>
+                        <div class="st-lbl">Amanota Hagati</div>
                     </div>
                     <div class="stat-tile">
                         <div class="st-val" id="statBest">0/20</div>
-                        <div class="st-lbl" data-i18n="amanota_stat_best">Amanota Menshi</div>
+                        <div class="st-lbl">Amanota Menshi</div>
                     </div>
                     <div class="stat-tile">
                         <div class="st-val" id="statPassMark">12/20</div>
-                        <div class="st-lbl" data-i18n="amanota_stat_pass_mark">Amanota Asabwa</div>
+                        <div class="st-lbl">Amanota Asabwa</div>
                     </div>
                 </div>
 
@@ -375,9 +374,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Code</th>
-                                        <th data-i18n="amanota_tbl_date">Itariki</th>
-                                        <th data-i18n="amanota_tbl_status">Imimerere</th>
-                                        <th data-i18n="amanota_tbl_score">Amanota</th>
+                                        <th>Itariki</th>
+                                        <th>Imimerere</th>
+                                        <th>Amanota</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -433,8 +432,7 @@
                     lookupPhoneHint.textContent = 'Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079';
                     lookupPhoneHint.className = 'hint';
                     submitLookupBtn.disabled = false;
-                    const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-                    submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> ${_t==='en'?'Search Scores':'Shakisha Amanota'}`;
+                    submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Shakisha Amanota`;
 
                     resultsListView.style.display = 'none';
                     const container = document.querySelector('.workspace-scroll-container');
@@ -478,8 +476,7 @@
                             lookupPhoneHint.textContent = "Nta kizamini na kimwe cyabonetse kuri iyi numero!";
                             lookupPhoneHint.className = "hint error";
                             submitLookupBtn.disabled = false;
-                            const _t3 = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-                            submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> <span>${_t3==='en'?'Search Scores':'Shakisha Amanota'}</span>`;
+                            submitLookupBtn.innerHTML = `Shakisha Amanota <i class="fa-solid fa-magnifying-glass"></i>`;
                             return;
                         }
 
@@ -575,9 +572,7 @@
                         lookupPhoneHint.className = "hint error";
                     } finally {
                         submitLookupBtn.disabled = false;
-                        const _t2 = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-                        const _btnLabel = _t2 === 'en' ? 'Search Scores' : 'Shakisha Amanota';
-                        submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> <span>${_btnLabel}</span>`;
+                        submitLookupBtn.innerHTML = `Shakisha Amanota <i class="fa-solid fa-magnifying-glass"></i>`;
                     }
                 });
             }
@@ -622,9 +617,6 @@
                 }
             };
         });
-    </body>
+    </script>
+</body>
 </html>
-
-
-
-

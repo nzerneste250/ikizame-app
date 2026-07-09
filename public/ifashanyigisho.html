@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>Imfashanyigisho v2 | IKIZAME - Inyigisho z'Amategeko y'Umuhanda</title>
+    <title>Imfashanyigisho | IKIZAME - Inyigisho z'Amategeko y'Umuhanda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -361,7 +361,7 @@ function loadDocs() {
 
             allDocs = docs;
             badge.textContent = docs.length + ' inyandiko';
-            grid.innerHTML = allDocs.map((doc, i) => buildCard(doc, i)).join('');
+            grid.innerHTML = docs.map(doc => buildCard(doc)).join('');
         })
         .catch(() => {
             const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
@@ -382,7 +382,7 @@ function filterDocs(q) {
     const term = q.trim().toLowerCase();
     clearBtn.classList.toggle('show', term.length > 0);
     if (!term) {
-        grid.innerHTML = allDocs.map((doc, i) => buildCard(doc, i)).join('');
+        grid.innerHTML = allDocs.map(doc => buildCard(doc)).join('');
         badge.textContent = allDocs.length + ' inyandiko';
         return;
     }
@@ -392,7 +392,7 @@ function filterDocs(q) {
     );
     badge.textContent = filtered.length + ' ibisubizo';
     grid.innerHTML = filtered.length
-        ? filtered.map(doc => buildCard(doc, allDocs.indexOf(doc))).join('')
+        ? filtered.map(doc => buildCard(doc)).join('')
         : `<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zibonetse zifite "${q}"</p></div>`;
 }
 
@@ -403,17 +403,21 @@ function clearSearch() {
     input.focus();
 }
 
-function buildCard(doc, idx) {
+function buildCard(doc) {
     const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
     const readLabel = _t === 'en' ? 'Read Now' : 'Soma Hano';
     const dlLabel   = _t === 'en' ? 'Download' : 'Gukura';
     const ext = (doc.file_path || '').split('.').pop().toLowerCase();
     const isPdf = ext === 'pdf';
     const isWord = ['doc','docx'].includes(ext);
+
     const iconClass = isPdf ? 'icon-pdf' : isWord ? 'icon-word' : 'icon-img';
     const iconFA    = isPdf ? 'fa-file-pdf' : isWord ? 'fa-file-word' : 'fa-file-image';
     const tagClass  = isPdf ? 'tag-pdf' : 'tag-word';
     const tagLabel  = ext.toUpperCase();
+
+    // Store doc safely in a data attribute to avoid quote issues in onclick
+    const idx = allDocs.indexOf(doc);
 
     const dlBtn = doc.allow_download === 1
         ? `<a href="/${doc.file_path}" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> ${dlLabel}</a>`

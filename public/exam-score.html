@@ -176,7 +176,6 @@
             .btn { padding: 11px 20px; font-size: 0.88rem; }
         }
     </style>
-<script src="assets/js/i18n.js?v=7"></script>
 </head>
 <body>
 
@@ -202,8 +201,12 @@
 
             <!-- Buttons -->
             <div class="btn-row">
-                <button class="btn btn-review" onclick="window.location.href='/exam-result'" data-i18n="btn_review">Reba ibisubizo</button>
-                <button class="btn btn-home" onclick="clearSessionAndGoHome()" data-i18n="btn_home">Jya Ahabanza</button>
+                <button class="btn btn-review" onclick="window.location.href='/exam-result'">
+                    Reba ibisubizo
+                </button>
+                <button class="btn btn-home" onclick="clearSessionAndGoHome()">
+                    Jya Ahabanza
+                </button>
             </div>
 
         </div>
@@ -240,20 +243,14 @@
                      stroke-linecap="round"/>
            </svg>`;
 
-    /* ── Score line & Verdict — re-applied on lang switch ── */
-    function applyScoreTranslation() {
-        const t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-        document.getElementById('scoreLine').textContent =
-            (t==='en' ? `Your score: ${score} / ${TOTAL}` : `Amanota wagize: ${score} / ${TOTAL}`);
-        const verdict = document.getElementById('verdictText');
-        verdict.textContent = t==='en' ? (passed ? 'PASSED' : 'FAILED') : (passed ? 'WATSINZE' : 'WATSINZWE');
-    }
-    applyScoreTranslation();
-    document.getElementById('verdictText').classList.add(passed ? 'verdict-pass' : 'verdict-fail');
+    /* ── Score line — denominator always 20 ── */
+    document.getElementById('scoreLine').textContent =
+        `Amanota wagize: ${score} / ${TOTAL}`;
 
-    /* Re-apply on language switch */
-    const _origSwitch = window.ikizameSwitchLang;
-    window.ikizameSwitchLang = function() { _origSwitch(); applyScoreTranslation(); };
+    /* ── Verdict ── */
+    const verdict = document.getElementById('verdictText');
+    verdict.textContent = passed ? 'WATSINZE' : 'WATSINZWE';
+    verdict.classList.add(passed ? 'verdict-pass' : 'verdict-fail');
 
     /* ── Confetti on pass ── */
     if (passed) {
@@ -278,7 +275,6 @@
         fetch('/api/clear-session', { method: 'POST' })
             .finally(() => { window.location.replace('/'); });
     }
+</script>
 </body>
 </html>
-
-

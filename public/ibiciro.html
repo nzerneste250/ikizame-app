@@ -6,9 +6,9 @@
     <!-- 🎯 BRANDING HEADER ICON BINDING -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>Ibiciro | IKIZAME - Gura Ikizamini</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root { 
@@ -292,7 +292,6 @@
             .ussd-commands-grid { flex-direction: column; gap: 10px; }
         }
     </style>
-<script src="assets/js/i18n.js?v=7"></script>
 </head>
 <body>
         <header class="navbar">
@@ -302,27 +301,27 @@
         </a>
         <nav>
             <ul class="navbar-links">
-                <li><a href="/" data-i18n="nav_home">Ahabanza</a></li>
-                <li><a href="ubufasha" data-i18n="nav_help">Ubufasha</a></li>
-                <li><a href="ifashanyigisho" data-i18n="nav_resources">Imfashanyigisho</a></li>
-                <li><a href="ibiciro" class="active" data-i18n="nav_pricing">Ibiciro</a></li>
-                <li><a href="school-auth" data-i18n="nav_school">Amashuri (School Portal)</a></li>
-                <li><a href="amanota" data-i18n="nav_scores">Amanota</a></li>
+                <li><a href="/">Ahabanza</a></li>
+                <li><a href="ubufasha">Ubufasha</a></li>
+                <li><a href="ifashanyigisho">Imfashanyigisho</a></li>
+                <li><a href="ibiciro" class="active">Ibiciro</a></li>
+                <li><a href="school-auth">Amashuri (School Portal)</a></li>
+                <li><a href="amanota">Amanota</a></li>
             </ul>
         </nav>
-        <div class="lang-badge" style="cursor:pointer;" onclick="window.ikizameSwitchLang()">
-            <svg class="rw-flag-svg lang-flag" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
             <span>Kinyarwanda</span>
         </div>
     </header>
     <div class="workspace-scroll-container">
         <main class="workspace-inner">
             <section class="section-header-meta">
-                <h2 data-i18n="pricing_h2">Gura Ibizamini Byoroshye kandi Bihendutse</h2>
-                <p data-i18n="pricing_p">Urahawe uburyo bwihuse bwo kugura amasomo y'ikizamini, kureba ibisigaye ku nomero yawe, no kwishyura ukoresheje MTN MoMo cyangwa Airtel Money.</p>
+                <h2>Gura Ibizamini Byoroshye kandi Bihendutse</h2>
+                <p>Urahawe uburyo bwihuse bwo kugura amasomo y'ikizamini, kureba ibisigaye ku nomero yawe, no kwishyura ukoresheje MTN MoMo cyangwa Airtel Money.</p>
                 
                 <div class="channel-support-banner" style="margin-top: 12px;">
-                    <span data-i18n="pricing_accepted">Uburyo bwemewe:</span>
+                    <span>Uburyo bwemewe:</span>
                     <div class="channel-inline-row">
                         <div class="carrier-logo-square-box" style="width: 22px; height: 22px; border-radius: 3px;"><img src="assets/uploads/mtn.jpg" alt="MTN"></div>
                         <div class="carrier-logo-square-box" style="width: 22px; height: 22px; border-radius: 3px;"><img src="assets/uploads/airtel.png" alt="Airtel"></div>
@@ -334,69 +333,69 @@
                 <div class="cards-column">
                     <div class="resource-glass-card">
                         <div class="resource-card-body">
-                            <h3 data-i18n="pricing_starter_title">Starter Pack</h3>
-                            <div class="price-badge-row">100 <span data-i18n="pricing_starter_sub">RWF / Ikizamini</span></div>
+                            <h3>Starter Pack</h3>
+                            <div class="price-badge-row">100 <span>RWF / Ikizamini</span></div>
                             <ul class="perk-list">
-                                <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="pricing_starter_p1">1 - 9 Ibizamini</span></li>
-                                <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="pricing_starter_p2">Bidashobora guteza umunaniro</span></li>
-                                <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="pricing_starter_p3">Ntugure byinshi niba uri gutoza</span></li>
+                                <li><i class="fa-solid fa-circle-check"></i> 1 - 9 Ibizamini</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Bidashobora guteza umunaniro</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Ntugure byinshi niba uri gutoza</li>
                             </ul>
                         </div>
-                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)" data-i18n="pricing_pay_now">Ishyura Ubu</button>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)">Ishyura Ubu</button>
                     </div>
 
                     <div class="resource-glass-card featured">
-                        <div class="featured-tag" data-i18n="pricing_best_tag">Inzira nziza</div>
+                        <div class="featured-tag">Inzira nziza</div>
                         <div class="resource-card-body">
-                            <h3 data-i18n="pricing_best_title">Best Value Pack</h3>
-                            <div class="price-badge-row" data-i18n="pricing_best_sub">Amahitamo Yoroheje</div>
+                            <h3>Best Value Pack</h3>
+                            <div class="price-badge-row">Amahitamo Yoroheje</div>
                             <ul class="perk-list">
-                                <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="pricing_best_p1">10 - 14 Ibizamini: 80 RWF / imwe</span></li>
-                                <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="pricing_best_p2">15 - 20 Ibizamini: 70 RWF / imwe</span></li>
-                                <li><i class="fa-solid fa-circle-check"></i> <span data-i18n="pricing_best_p3">21+ ibizamini: 50 RWF / imwe</span></li>
+                                <li><i class="fa-solid fa-circle-check"></i> 10 - 14 Ibizamini: 80 RWF / imwe</li>
+                                <li><i class="fa-solid fa-circle-check"></i> 15 - 20 Ibizamini: 70 RWF / imwe</li>
+                                <li><i class="fa-solid fa-circle-check"></i> 21+ ibizamini: 50 RWF / imwe</li>
                             </ul>
                         </div>
-                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)" data-i18n="pricing_pay_now">Ishyura Ubu</button>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)">Ishyura Ubu</button>
                     </div>
                 </div>
 
                 <section class="payment-guide-container">
                     <div class="guide-card-header">
-                        <h3><i class="fa-solid fa-circle-info"></i> <span data-i18n="pricing_guide_title">Ibikurikira mbere yo Kwishyura</span></h3>
-                        <p data-i18n="pricing_guide_desc">Reba ibisigaye kuri nomero yawe mbere yo kugura. Ukoreshe neza credits zawe, ukanahita ubona uko amahitamo yawe ahagaze.</p>
+                        <h3><i class="fa-solid fa-circle-info"></i> Ibikurikira mbere yo Kwishyura</h3>
+                        <p>Reba ibisigaye kuri nomero yawe mbere yo kugura. Ukoreshe neza credits zawe, ukanahita ubona uko amahitamo yawe ahagaze.</p>
                     </div>
 
                     <div class="balance-check-block" style="margin-bottom: 18px;">
                         <div class="input-form-field">
-                            <label data-i18n="pricing_balance_label">Reba ibisigaye kuri telephone</label>
+                            <label>Reba ibisigaye kuri telephone</label>
                             <input type="tel" id="balancePhoneInput" placeholder="0788000000" oninput="sanitizeBalancePhoneInput()">
                         </div>
-                        <button class="btn-pay-trigger" id="balanceCheckBtn" style="margin-bottom: 12px;" onclick="fetchRemainingExamBalance()" data-i18n="pricing_balance_btn">Reba ibisigaye</button>
+                        <button class="btn-pay-trigger" id="balanceCheckBtn" style="margin-bottom: 12px;" onclick="fetchRemainingExamBalance()">Reba ibisigaye</button>
                         <div id="balanceStatusPanel" style="min-height: 60px; color: #e2e8f0; font-size: 0.95rem; line-height: 1.5; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;"></div>
                     </div>
 
                     <div class="diagram-flow-row">
                         <div class="diagram-step">
                             <div class="step-icon">1</div>
-                            <h4 data-i18n="pricing_step1_h">Injiza phone yawe</h4>
-                            <p data-i18n="pricing_step1_p">Andika nomero ya MTN cyangwa Airtel mu murongo ugendanwa.</p>
+                            <h4>Injiza phone yawe</h4>
+                            <p>Andika nomero ya MTN cyangwa Airtel mu murongo ugendanwa.</p>
                         </div>
                         <div class="diagram-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                         <div class="diagram-step">
                             <div class="step-icon">2</div>
-                            <h4 data-i18n="pricing_step2_h">Hitamo umubare</h4>
-                            <p data-i18n="pricing_step2_p">Hitamo igihe cy'ibizamini ukeneye. Igiciro kiragabanuka uko ugura byinshi.</p>
+                            <h4>Hitamo umubare</h4>
+                            <p>Hitamo igihe cy'ibizamini ukeneye. Igiciro kiragabanuka uko ugura byinshi.</p>
                         </div>
                         <div class="diagram-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                         <div class="diagram-step">
                             <div class="step-icon">3</div>
-                            <h4 data-i18n="pricing_step3_h">Kora Kwishyura</h4>
-                            <p data-i18n="pricing_step3_p">Injiza PIN ya MoMo hanyuma umenye ko konti yawe yahise ifunguka.</p>
+                            <h4>Kora Kwishyura</h4>
+                            <p>Injiza PIN ya MoMo hanyuma umenye ko konti yawe yahise ifunguka.</p>
                         </div>
                     </div>
 
                     <div class="ussd-fallback-box">
-                        <h4><i class="fa-solid fa-mobile-screen-button"></i> <span data-i18n="pricing_ussd_title">Mu gihe PIN Push itaje (USSD Code Drop):</span></h4>
+                        <h4><i class="fa-solid fa-mobile-screen-button"></i> Mu gihe PIN Push itaje (USSD Code Drop):</h4>
                         <div class="ussd-commands-grid">
                             <div class="ussd-card">
                                 <div class="ussd-meta-wrap">
@@ -425,8 +424,8 @@
 
     <div class="payment-modal-overlay" id="sandboxPaymentModal">
         <div class="modal-container-box">
-            <h3 data-i18n="pricing_modal_title">Kwishura Kuri Telephone</h3>
-            <p data-i18n="pricing_modal_desc">Andika amakuru yawe hano n'umubare w'ibizamini:</p>
+            <h3>Kwishura Kuri Telephone</h3>
+            <p>Andika amakuru yawe hano n'umubare w'ibizamini:</p>
             
             <div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 20px;">
                 <div class="carrier-logo-square-box modal-badge"><img src="assets/uploads/mtn.jpg" alt="MTN Inside Form"></div>
@@ -434,25 +433,25 @@
             </div>
 
             <div class="input-form-field">
-                <label data-i18n="pricing_qty_label">Umubare w'Ibizamini</label>
+                <label>Umubare w'Ibizamini</label>
                 <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
                 <div id="dynamicPricingHelperLabel" style="font-size: 10px; margin-top: 2px; font-weight: 600;"></div>
                 <div id="pricePerExamLabel" style="font-size: 0.95rem; margin-top: 8px; font-weight: 700; color: #f8fafc;">Igiciro cya buri kizamini: 100 RWF</div>
             </div>
             <div class="input-form-field">
-                <label data-i18n="pricing_phone_label">Nomero ya Telephone</label>
+                <label>Nomero ya Telephone</label>
                 <input type="tel" id="momoPhoneNumberInput" placeholder="e.g., 0788000000">
             </div>
             <div class="live-amount-strip" id="liveAmountBreakdownDisplayStrip">Ayishyurwa: 100 RWF</div>
             <button class="btn-submit-payment" id="momoSubmitPaymentBtn" onclick="dispatchAdaptivePaymentQueryPacket()">
-                <span id="momoBtnTextLabel" data-i18n="pricing_pay_btn">Ishyura</span> <i class="fa-solid fa-credit-card" id="momoBtnIcon"></i>
+                <span id="momoBtnTextLabel">Ishyura</span> <i class="fa-solid fa-credit-card" id="momoBtnIcon"></i>
             </button>
             <div id="ussdHintBox" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 12px; text-align:left;">
                 <div style="font-size:11px; font-weight:800; color:#166534; margin-bottom:6px;"><i class="fa-solid fa-mobile-screen-button"></i> Niba USSD itaje, koresha:</div>
                 <div id="ussdCodeDisplay" style="font-size:1.1rem; font-weight:800; color:#0f172a; font-family:monospace; letter-spacing:1px;"></div>
                 <div style="font-size:10px; color:#64748b; margin-top:4px;">Kanda iyo code kuri telephone yawe hanyuma emeza kwishyura.</div>
             </div>
-                <button class="btn-pay-trigger" style="color:#64748b; margin-top:8px; border:none; background:none;" onclick="closeTestPaymentModal()" data-i18n="pricing_cancel_btn">Hagarika</button>
+                        <button class="btn-pay-trigger" style="color:#64748b; margin-top:8px; border:none; background:none;" onclick="closeTestPaymentModal()">Hagarika</button>
         </div>
     </div>
 
@@ -460,7 +459,7 @@
     <div class="payment-modal-overlay" id="customBrandedSuccessAlertBoxModal" style="background: rgba(15, 23, 42, 0.6); z-index: 6000;">
         <div style="background: #ffffff; width: 100%; max-width: 360px; border-radius: 12px; padding: 24px; text-align: center;">
             <div style="width: 44px; height: 44px; background: #dcfce7; color: #166534; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 12px;"><i class="fa-solid fa-circle-check"></i></div>
-            <h3 style="color: #0f172a; font-size: 1.1rem; font-weight: 800; margin-bottom: 4px;" data-i18n="pricing_success_title">Byakunze Neza!</h3>
+            <h3 style="color: #0f172a; font-size: 1.1rem; font-weight: 800; margin-bottom: 4px;">Byakunze Neza!</h3>
             <p id="customAlertBoxTextContentMessage" style="color: #475569; font-size: 13px; line-height: 1.4; margin-bottom: 16px;">Message...</p>
             <button onclick="handleCustomAlertBoxConfirmationRedirect()" style="background: var(--brand); color: #ffffff; border: none; padding: 10px; width: 100%; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">OK</button>
         </div>
@@ -698,8 +697,6 @@
                     });
             }
         })();
-    </body>
+    </script>
+</body>
 </html>
-
-
-

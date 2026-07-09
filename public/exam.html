@@ -270,7 +270,6 @@
             .btn { padding: 10px 14px; font-size: 0.82rem; }
         }
     </style>
-<script src="assets/js/i18n.js?v=7"></script>
 </head>
 <body>
 
@@ -278,7 +277,7 @@
 
     <!-- Timer -->
     <div class="timer-card">
-        <div class="timer-label" data-i18n="exam_timer_label">IGIHE MUSIGARANYE:</div>
+        <div class="timer-label">IGIHE MUSIGARANYE:</div>
         <div class="timer-val" id="examCountdown">20:00</div>
     </div>
 
@@ -311,7 +310,7 @@
         <div class="nav-bar">
             <div class="q-counter" id="qCounter">&lt; 1 / 20 &gt;</div>
             <div class="nav-btns">
-                <button class="btn btn-back" id="prevBtn" data-i18n="exam_prev">&#8592; Inyuma</button>
+                <button class="btn btn-back" id="prevBtn">&#8592; Inyuma</button>
                 <button class="btn btn-next" id="nextBtn">Komeza &#8594;</button>
             </div>
         </div>
@@ -332,14 +331,14 @@
                 <line x1="12" y1="7" x2="12" y2="13" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round"/>
                 <circle cx="12" cy="16.5" r="1.1" fill="#f59e0b"/>
             </svg>
-            <span style="font-size:1rem;font-weight:800;color:#111827;font-family:inherit;" data-i18n="exam_confirm">Ese koko urashaka gusoza ikizami?</span>
+            <span style="font-size:1rem;font-weight:800;color:#111827;font-family:inherit;">Ese koko urashaka gusoza ikizami?</span>
         </div>
         <!-- Subtitle -->
-        <p style="font-size:0.88rem;color:#6b7280;line-height:1.5;margin-bottom:22px;padding-left:34px;" data-i18n="exam_confirm">Ese koko urashaka gusoza ikizami?</p>
+        <p style="font-size:0.88rem;color:#6b7280;line-height:1.5;margin-bottom:22px;padding-left:34px;">Ese koko urashaka gusoza ikizami?</p>
         <!-- Buttons -->
         <div style="display:flex;justify-content:flex-end;gap:10px;">
-            <button id="modalCancel" style="padding:10px 22px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;color:#374151;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;" data-i18n="exam_no">Oya</button>
-            <button id="modalConfirm" style="padding:10px 22px;border:none;border-radius:8px;background:#1a56db;color:#fff;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;" data-i18n="exam_yes">Yego, Soza</button>
+            <button id="modalCancel" style="padding:10px 22px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;color:#374151;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;">Oya</button>
+            <button id="modalConfirm" style="padding:10px 22px;border:none;border-radius:8px;background:#1a56db;color:#fff;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Yego, Soza</button>
         </div>
     </div>
 </div>
@@ -511,12 +510,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         prevBtn.style.visibility = idx === 0 ? 'hidden' : 'visible';
         if (idx === questions.length - 1) {
-            const t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-            nextBtn.innerHTML = (t === 'en' ? 'Finish Exam &#10003;' : 'Soza Ikizamini &#10003;');
+            nextBtn.innerHTML = 'Soza Ikizamini &#10003;';
             nextBtn.className = 'btn btn-submit';
         } else {
-            const t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-            nextBtn.innerHTML = (t === 'en' ? 'Next &#8594;' : 'Komeza &#8594;');
+            nextBtn.innerHTML = 'Komeza &#8594;';
             nextBtn.className = 'btn btn-next';
         }
     }
@@ -590,7 +587,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100);
         });
 });
+</script>
 </body>
 </html>
-
-

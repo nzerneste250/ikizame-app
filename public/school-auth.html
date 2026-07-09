@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="assets/js/i18n.js?v=7"></script>
     <style>
         :root {
             --brand: #0b698b;
@@ -215,16 +214,16 @@
         </a>
         <nav>
             <ul class="navbar-links">
-                <li><a href="/" data-i18n="nav_home">Ahabanza</a></li>
-                <li><a href="ubufasha" data-i18n="nav_help">Ubufasha</a></li>
-                <li><a href="ifashanyigisho" data-i18n="nav_resources">Imfashanyigisho</a></li>
-                <li><a href="ibiciro" data-i18n="nav_pricing">Ibiciro</a></li>
-                <li><a href="school-auth" class="active" data-i18n="nav_school">Amashuri (School Portal)</a></li>
-                <li><a href="amanota" data-i18n="nav_scores">Amanota</a></li>
+                <li><a href="/">Ahabanza</a></li>
+                <li><a href="ubufasha">Ubufasha</a></li>
+                <li><a href="ifashanyigisho">Imfashanyigisho</a></li>
+                <li><a href="ibiciro">Ibiciro</a></li>
+                <li><a href="school-auth"  class="active">Amashuri (School Portal)</a></li>
+                <li><a href="amanota">Amanota</a></li>
             </ul>
         </nav>
-        <div class="lang-badge" style="cursor:pointer;" onclick="window.ikizameSwitchLang()">
-            <svg class="rw-flag-svg lang-flag" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
             <span>Kinyarwanda</span>
         </div>
     </header>
@@ -252,25 +251,25 @@
             <!-- ====== ENGINE PANEL A: SCHOOL LOGIN MODE ====== -->
             <div class="auth-wizard-view-step active" id="viewSectionSchoolLogin">
                 <div class="auth-heading-block">
-                    <h2 data-i18n="school_login_title">Kwinjira k'Ishuri</h2>
-                    <p data-i18n="school_login_desc">Injiza amakuru ya Konti y'ishuri ryawe utangire gukurikirana abanyeshuri.</p>
+                    <h2>Kwinjira k'Ishuri</h2>
+                    <p>Injiza amakuru ya Konti y'ishuri ryawe utangire gukurikirana abanyeshuri.</p>
                 </div>
                 <div class="input-form-field">
-                    <label data-i18n="school_email_label">Email y'Ishuri</label>
+                    <label>Email y'Ishuri</label>
                     <input type="email" id="loginEmailInput" placeholder="school@example.com">
                 </div>
                 <div class="input-form-field">
-                    <label data-i18n="school_pw_label">Password</label>
+                    <label>Password</label>
                     <div class="pw-wrap">
                         <input type="password" id="loginPasswordInput" placeholder="••••••••">
                         <button type="button" class="pw-eye" onclick="togglePw('loginPasswordInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
                     </div>
                 </div>
                 <button class="btn-auth-submit" id="loginSubmitBtn" onclick="handleSchoolPortalLoginRequest()">
-                    <span data-i18n="school_login_btn">Injira</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <span>Injira</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
-                <div class="switch-mode-anchor" style="margin-top:12px;"><span onclick="switchAuthWizardView('FORGOT')" data-i18n="school_forgot">Wibagiwe Password?</span></div>
-                <div class="switch-mode-anchor"><span data-i18n="school_no_account">Ntabwo mufite Konti?</span> <span onclick="switchAuthWizardView('REGISTER')" data-i18n="school_register_link">Fungura Konti Hano</span></div>
+                <div class="switch-mode-anchor" style="margin-top:12px;"><span onclick="switchAuthWizardView('FORGOT')">Wibagiwe Password?</span></div>
+                <div class="switch-mode-anchor">Ntabwo mufite Konti? <span onclick="switchAuthWizardView('REGISTER')">Fungura Konti Hano</span></div>
             </div>
 
             <!-- ====== ENGINE PANEL B: REGISTER INITIAL DATA ====== -->
@@ -604,5 +603,3 @@
     </script>
 </body>
 </html>
-
-

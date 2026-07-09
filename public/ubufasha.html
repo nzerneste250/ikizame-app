@@ -154,7 +154,6 @@
         footer { text-align: center; padding: 20px; font-size: 0.75rem; color: #475569; border-top: 1px solid var(--border); }
         footer strong { color: var(--cyan); }
     </style>
-<script src="assets/js/i18n.js?v=7"></script>
 </head>
 <body>
     <header class="navbar">
@@ -164,16 +163,16 @@
         </a>
         <nav>
             <ul class="navbar-links">
-                <li><a href="/" data-i18n="nav_home">Ahabanza</a></li>
-                <li><a href="ubufasha" class="active" data-i18n="nav_help">Ubufasha</a></li>
-                <li><a href="ifashanyigisho" data-i18n="nav_resources">Imfashanyigisho</a></li>
-                <li><a href="ibiciro" data-i18n="nav_pricing">Ibiciro</a></li>
-                <li><a href="school-auth" data-i18n="nav_school">Amashuri (School Portal)</a></li>
-                <li><a href="amanota" data-i18n="nav_scores">Amanota</a></li>
+                <li><a href="/">Ahabanza</a></li>
+                <li><a href="ubufasha" class="active">Ubufasha</a></li>
+                <li><a href="ifashanyigisho">Imfashanyigisho</a></li>
+                <li><a href="ibiciro">Ibiciro</a></li>
+                <li><a href="school-auth">Amashuri (School Portal)</a></li>
+                <li><a href="amanota">Amanota</a></li>
             </ul>
         </nav>
-        <div class="lang-badge" style="cursor:pointer;" onclick="window.ikizameSwitchLang()">
-            <svg class="rw-flag-svg lang-flag" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+        <div class="lang-badge">
+            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
             <span>Kinyarwanda</span>
         </div>
     </header>
@@ -184,23 +183,23 @@
         <div class="hero">
             <div class="hero-pill">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                <span data-i18n="help_hero_pill">Twandikire · Turakwitabira</span>
+                Twandikire · Turakwitabira
             </div>
-            <h1><span data-i18n="help_hero_h1">Dufashe Gukora</span><br><span data-i18n="help_hero_span">Ikizamini Neza</span></h1>
-            <p data-i18n="help_hero_p">Ufite ikibazo? Twandikire kuri WhatsApp cyangwa utubone ku mbuga nkoranyambaga. Turakwitabira vuba kandi neza.</p>
-            <p style="font-size:0.78rem; color:rgba(148,163,184,0.5); margin-top:10px;" data-i18n="help_human">Ubufasha bw'abantu nyabo, si AI.</p>
+            <h1>Dufashe Gukora<br><span>Ikizamini Neza</span></h1>
+            <p>Ufite ikibazo? Twandikire kuri WhatsApp cyangwa utubone ku mbuga nkoranyambaga. Turakwitabira vuba kandi neza.</p>
+            <p style="font-size:0.78rem; color:rgba(148,163,184,0.5); margin-top:10px;">Ubufasha bw'abantu nyabo, si AI.</p>
         </div>
 
         <div class="section">
 
             <!-- 24/7 BANNER -->
             <div class="support-banner">
-                <div class="badge-247" data-i18n="help_247_badge">24 / 7</div>
-                <p><strong data-i18n="help_247_title">Ubufasha buhari igihe cyose.</strong><br><span data-i18n="help_247_desc">Turakwitabira ku masaha yose — ku manywa, nijoro, n'iminsi y'ikiruhuko.</span></p>
+                <div class="badge-247">24 / 7</div>
+                <p><strong>Ubufasha buhari igihe cyose.</strong><br>Turakwitabira ku masaha yose — ku manywa, nijoro, n'iminsi y'ikiruhuko.</p>
             </div>
 
             <!-- CONTACT -->
-            <div class="section-title" data-i18n="help_contact_title">Tutuganire</div>
+            <div class="section-title">Tutuganire</div>
             <div class="contact-grid" style="grid-template-columns: repeat(5, 1fr);">
                 <a href="https://wa.me/250786663377?text=Muraho!%20Ndashaka%20ubufasha." target="_blank" rel="noopener" class="contact-card wa">
                     <div class="contact-icon">
@@ -208,7 +207,7 @@
                     </div>
                     <h4>WhatsApp</h4>
                     <p>0786 663 377</p>
-                    <span class="contact-badge" data-i18n="help_wa_badge">Arasubiza vuba</span>
+                    <span class="contact-badge">Arasubiza vuba</span>
                 </a>
 
                 <a href="https://instagram.com/ikizame_portal" target="_blank" rel="noopener" class="contact-card ig">
@@ -217,7 +216,7 @@
                     </div>
                     <h4>Instagram</h4>
                     <p>@ikizame_portal</p>
-                    <span class="contact-badge" data-i18n="help_follow">Dukurikire</span>
+                    <span class="contact-badge">Dukurikire</span>
                 </a>
 
                 <a href="https://facebook.com" target="_blank" rel="noopener" class="contact-card fb">
@@ -226,7 +225,7 @@
                     </div>
                     <h4>Facebook</h4>
                     <p>IKIZAME Platform</p>
-                    <span class="contact-badge" data-i18n="help_follow">Dukurikire</span>
+                    <span class="contact-badge">Dukurikire</span>
                 </a>
 
                 <a href="https://x.com/ikizame_rw" target="_blank" rel="noopener" class="contact-card tw">
@@ -235,7 +234,7 @@
                     </div>
                     <h4>X (Twitter)</h4>
                     <p>@ikizame_rw</p>
-                    <span class="contact-badge" data-i18n="help_follow">Dukurikire</span>
+                    <span class="contact-badge">Dukurikire</span>
                 </a>
 
                 <!-- CALL CARD -->
@@ -243,9 +242,9 @@
                     <div class="contact-icon">
                         <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.08 6.08l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                     </div>
-                    <h4 data-i18n="help_phone_title">Telefoni</h4>
+                    <h4>Telefoni</h4>
                     <p>0786 663 377</p>
-                    <span class="contact-badge green" data-i18n="help_online">● Arahari 24/7</span>
+                    <span class="contact-badge green">● Arahari 24/7</span>
                 </a>
             </div>
 
@@ -254,34 +253,34 @@
 
                 <!-- TIMELINE -->
                 <div>
-                    <div class="section-title" data-i18n="help_steps_title">Intambwe z'Ikizamini</div>
+                    <div class="section-title">Intambwe z'Ikizamini</div>
                     <div class="timeline">
                         <div class="tl-item">
                             <div class="tl-num">1</div>
                             <div class="tl-body">
-                                <h4 data-i18n="help_s1_title">Kwiyandikisha</h4>
-                                <p data-i18n="help_s1_p">Injiza amazina yawe yose n'inomero ya telefone itangira na 078 / 079 / 073 kuri paji ya mbere.</p>
+                                <h4>Kwiyandikisha</h4>
+                                <p>Injiza amazina yawe yose n'inomero ya telefone itangira na 078 / 079 / 073 kuri paji ya mbere.</p>
                             </div>
                         </div>
                         <div class="tl-item">
                             <div class="tl-num">2</div>
                             <div class="tl-body">
-                                <h4 data-i18n="help_s2_title">Igenzura rya Konti</h4>
-                                <p data-i18n="help_s2_p">Sisitemu igenzura niba ufite inshuro z'ibizamini. Niba ari ntabwo, ujye ku Ibiciro ugure ukoresheje MoMo.</p>
+                                <h4>Igenzura rya Konti</h4>
+                                <p>Sisitemu igenzura niba ufite inshuro z'ibizamini. Niba ari ntabwo, ujye ku Ibiciro ugure ukoresheje MoMo.</p>
                             </div>
                         </div>
                         <div class="tl-item">
                             <div class="tl-num">3</div>
                             <div class="tl-body">
-                                <h4 data-i18n="help_s3_title">Gukora Ikizamini</h4>
-                                <p data-i18n="help_s3_p">Subiza ibibazo 20 by'amategeko y'umuhanda mu minota 20. Buri kibazo gifite ishusho cyangwa imvugo.</p>
+                                <h4>Gukora Ikizamini</h4>
+                                <p>Subiza ibibazo 20 by'amategeko y'umuhanda mu minota 20. Buri kibazo gifite ishusho cyangwa imvugo.</p>
                             </div>
                         </div>
                         <div class="tl-item">
                             <div class="tl-num">4</div>
                             <div class="tl-body">
-                                <h4 data-i18n="help_s4_title">Amanota & Ibisubizo</h4>
-                                <p data-i18n="help_s4_p">Nyuma yo gusoza, amanota yawe agaragara ako kanya hamwe n'ibisubizo byose birambuye.</p>
+                                <h4>Amanota & Ibisubizo</h4>
+                                <p>Nyuma yo gusoza, amanota yawe agaragara ako kanya hamwe n'ibisubizo byose birambuye.</p>
                             </div>
                         </div>
                     </div>
@@ -289,42 +288,42 @@
 
                 <!-- FAQ -->
                 <div>
-                    <div class="section-title" data-i18n="help_faq_title">Ibibazo Bikunze Kubazwa</div>
+                    <div class="section-title">Ibibazo Bikunze Kubazwa</div>
                     <div class="faq">
                         <div class="faq-item">
                             <button class="faq-q" onclick="toggleFaq(this)">
-                                <span data-i18n="help_faq1_q">Ikizamini cya mbere ni ubuntu?</span>
+                                Ikizamini cya mbere ni ubuntu?
                                 <span class="faq-arrow">▾</span>
                             </button>
-                            <div class="faq-a"><p data-i18n="help_faq1_a">Yego, umukandida mushya ahabwa ikizamini kimwe cy'ubuntu. Nyuma y'icyo, agomba kugura inshuro zo gukomeza.</p></div>
+                            <div class="faq-a"><p>Yego, umukandida mushya ahabwa ikizamini kimwe cy'ubuntu. Nyuma y'icyo, agomba kugura inshuro zo gukomeza.</p></div>
                         </div>
                         <div class="faq-item">
                             <button class="faq-q" onclick="toggleFaq(this)">
-                                <span data-i18n="help_faq2_q">Nishyura gute ikizamini?</span>
+                                Nishyura gute ikizamini?
                                 <span class="faq-arrow">▾</span>
                             </button>
-                            <div class="faq-a"><p data-i18n="help_faq2_a">Ujye ku gice cy'Ibiciro, hitamo package, hanyuma wishyure ukoresheje MTN MoMo cyangwa Airtel Money. Inshuro zifunguka ako kanya.</p></div>
+                            <div class="faq-a"><p>Ujye ku gice cy'Ibiciro, hitamo package, hanyuma wishyure ukoresheje MTN MoMo cyangwa Airtel Money. Inshuro zifunguka ako kanya.</p></div>
                         </div>
                         <div class="faq-item">
                             <button class="faq-q" onclick="toggleFaq(this)">
-                                <span data-i18n="help_faq3_q">Nshobora kureba amanota yanjye nyuma?</span>
+                                Nshobora kureba amanota yanjye nyuma?
                                 <span class="faq-arrow">▾</span>
                             </button>
-                            <div class="faq-a"><p data-i18n="help_faq3_a">Yego. Jya ku gice cy'Amanota, injiza inomero ya telefone yawe, ubone amanota y'ibizamini byose wakoze.</p></div>
+                            <div class="faq-a"><p>Yego. Jya ku gice cy'Amanota, injiza inomero ya telefone yawe, ubone amanota y'ibizamini byose wakoze.</p></div>
                         </div>
                         <div class="faq-item">
                             <button class="faq-q" onclick="toggleFaq(this)">
-                                <span data-i18n="help_faq4_q">Ishuri ryanjye rishobora gukoresha IKIZAME?</span>
+                                Ishuri ryanjye rishobora gukoresha IKIZAME?
                                 <span class="faq-arrow">▾</span>
                             </button>
-                            <div class="faq-a"><p data-i18n="help_faq4_a">Yego. Amashuri y'abatwara imodoka ashobora kwiyandikisha kuri School Portal kugira ngo akurikire abanyeshuri bayo.</p></div>
+                            <div class="faq-a"><p>Yego. Amashuri y'abatwara imodoka ashobora kwiyandikisha kuri School Portal kugira ngo akurikire abanyeshuri bayo.</p></div>
                         </div>
                         <div class="faq-item">
                             <button class="faq-q" onclick="toggleFaq(this)">
-                                <span data-i18n="help_faq5_q">Nifuza ubufasha bwihuse, nkore iki?</span>
+                                Nifuza ubufasha bwihuse, nkore iki?
                                 <span class="faq-arrow">▾</span>
                             </button>
-                            <div class="faq-a"><p data-i18n="help_faq5_a">Twandikire kuri WhatsApp kuri 0786 663 377. Turakwitabira mu gihe gito.</p></div>
+                            <div class="faq-a"><p>Twandikire kuri WhatsApp kuri 0786 663 377. Turakwitabira mu gihe gito.</p></div>
                         </div>
                     </div>
                 </div>
@@ -333,7 +332,7 @@
         </div>
     </div>
 
-    <footer>&copy; 2026 IKIZAME &mdash; Developed by <strong>Dotado Stationery Store Ltd</strong></footer>
+    <footer>&copy; 2026 IKIZAME — Developed by <strong>Dotado Stationery Store Ltd</strong></footer>
 
     <script>
         function toggleFaq(btn) {
@@ -342,7 +341,6 @@
             document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
             if (!isOpen) item.classList.add('open');
         }
-    </body>
+    </script>
+</body>
 </html>
-
-
