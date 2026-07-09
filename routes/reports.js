@@ -12,7 +12,7 @@ function getPeriodRange(type) {
     } else if (type === 'monthly') {
         from = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         to   = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
-    } else { // yearly
+    } else {
         from = new Date(now.getFullYear() - 1, 0, 1);
         to   = new Date(now.getFullYear() - 1, 11, 31, 23, 59, 59);
     }
@@ -33,18 +33,13 @@ function buildPDF(rows, summary, period, from, to) {
 
         const brand = '#0b698b';
 
-        // Header
         doc.rect(0, 0, doc.page.width, 70).fill(brand);
-        doc.fillColor('#ffffff').fontSize(22).font('Helvetica-Bold')
-           .text('IKIZAME', 40, 20);
-        doc.fontSize(10).font('Helvetica')
-           .text('Payment Revenue Report', 40, 46);
-        doc.fillColor('#ffffff').fontSize(10)
-           .text(`Period: ${period.toUpperCase()} | ${fmt(from)} to ${fmt(to)}`, 40, 58, { align: 'right' });
+        doc.fillColor('#ffffff').fontSize(22).font('Helvetica-Bold').text('IKIZAME', 40, 20);
+        doc.fontSize(10).font('Helvetica').text('Payment Revenue Report', 40, 46);
+        doc.fillColor('#ffffff').fontSize(10).text(`Period: ${period.toUpperCase()} | ${fmt(from)} to ${fmt(to)}`, 40, 58, { align: 'right' });
 
         doc.moveDown(3);
 
-        // Summary boxes
         doc.fillColor(brand).fontSize(12).font('Helvetica-Bold').text('Summary', 40, 90);
         doc.moveTo(40, 106).lineTo(555, 106).strokeColor(brand).lineWidth(1).stroke();
 
@@ -63,13 +58,11 @@ function buildPDF(rows, summary, period, from, to) {
 
         doc.moveDown(5);
 
-        // Table
         const tableTop = boxY + 75;
-        const colX     = [40,  140, 245, 430, 490];
-        const colW     = [95,  100, 180,  55,  65];
+        const colX     = [40, 140, 245, 430, 490];
+        const colW     = [95, 100, 180,  55,  65];
         const headers  = ['Phone', 'Amount (RWF)', 'Plan / Package', 'Exams', 'Date'];
 
-        // Table header row
         doc.rect(40, tableTop, 515, 22).fill('#0b698b');
         doc.fillColor('#ffffff').fontSize(9).font('Helvetica-Bold');
         headers.forEach((h, i) => doc.text(h, colX[i] + 4, tableTop + 6, { width: colW[i], ellipsis: true }));
@@ -80,15 +73,14 @@ function buildPDF(rows, summary, period, from, to) {
             const bg = idx % 2 === 0 ? '#f8fafc' : '#ffffff';
             doc.rect(40, y, 515, 20).fill(bg);
             doc.fillColor('#0f172a').fontSize(8).font('Helvetica');
-            doc.text(row.phone_number || '',                          colX[0] + 4, y + 5, { width: colW[0], lineBreak: false });
-            doc.text(`${Number(row.amount||0).toLocaleString()} RWF`, colX[1] + 4, y + 5, { width: colW[1], lineBreak: false });
-            doc.text(row.plan_name || '',                             colX[2] + 4, y + 5, { width: colW[2], lineBreak: false, ellipsis: true });
-            doc.text(String(row.total_exams || 0),                   colX[3] + 4, y + 5, { width: colW[3], lineBreak: false });
+            doc.text(row.phone_number || '',                           colX[0] + 4, y + 5, { width: colW[0], lineBreak: false });
+            doc.text(`${Number(row.amount||0).toLocaleString()} RWF`,  colX[1] + 4, y + 5, { width: colW[1], lineBreak: false });
+            doc.text(row.plan_name || '',                              colX[2] + 4, y + 5, { width: colW[2], lineBreak: false, ellipsis: true });
+            doc.text(String(row.total_exams || 0),                    colX[3] + 4, y + 5, { width: colW[3], lineBreak: false });
             doc.text(row.paid_at ? String(row.paid_at).slice(0,10) : '', colX[4] + 4, y + 5, { width: colW[4], lineBreak: false });
             y += 20;
         });
 
-        // Footer
         doc.moveTo(40, y + 10).lineTo(555, y + 10).strokeColor('#e2e8f0').lineWidth(0.5).stroke();
         doc.fillColor('#94a3b8').fontSize(8).font('Helvetica')
            .text(`Generated: ${new Date().toISOString().slice(0,19).replace('T',' ')} | IKIZAME © ${new Date().getFullYear()} Dotado Stationery Store Ltd`, 40, y + 16, { align: 'center' });
@@ -139,7 +131,7 @@ async function sendReport(db, transport, type) {
                 <p style="color:#bae6fd;margin:4px 0 0;font-size:12px;">Period: ${fmt(from)} → ${fmt(to)}</p>
             </div>
             <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-                <tr><td style="padding:8px;background:#e0f2fe;font-weight:700;border-radius:4px;">Total Revenue</td><td style="padding:8px;font-size:18px;font-weight:800;color:#0b698b;">${Number(summary.total_amount||0).toLocaleString()} RWF</td></tr>
+                <tr><td style="padding:8px;background:#e0f2fe;font-weight:700;">Total Revenue</td><td style="padding:8px;font-size:18px;font-weight:800;color:#0b698b;">${Number(summary.total_amount||0).toLocaleString()} RWF</td></tr>
                 <tr><td style="padding:8px;">Total Transactions</td><td style="padding:8px;font-weight:700;">${summary.total_tx}</td></tr>
                 <tr><td style="padding:8px;">Total Exams Sold</td><td style="padding:8px;font-weight:700;">${summary.total_exams}</td></tr>
             </table>
@@ -155,33 +147,27 @@ async function sendReport(db, transport, type) {
 }
 
 async function sendDailyReport(db, transport) {
-    const today     = new Date();
-    const dateStr   = fmt(today);
-    const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
-    const dayStart  = `${dateStr} 00:00:00`;
-    const dayEnd    = `${dateStr} 23:59:59`;
+    const today    = new Date();
+    const dateStr  = fmt(today);
+    const dayStart = `${dateStr} 00:00:00`;
+    const dayEnd   = `${dateStr} 23:59:59`;
 
-    // Run all queries in parallel
     const [selfRevenue, schoolRevenue, visitors, exams] = await Promise.all([
-        // Self payments (no school_id)
         new Promise((res, rej) => db.query(
             `SELECT COUNT(*) AS tx, COALESCE(SUM(amount),0) AS revenue, COALESCE(SUM(total_exams),0) AS exams_sold
              FROM payment_transactions WHERE status='SUCCESS' AND school_id IS NULL AND created_at BETWEEN ? AND ?`,
             [dayStart, dayEnd], (e, r) => e ? rej(e) : res(r[0])
         )),
-        // School payments
         new Promise((res, rej) => db.query(
-            `SELECT COUNT(*) AS tx, COALESCE(SUM(pt.amount),0) AS revenue, COALESCE(SUM(pt.total_exams),0) AS exams_sold
-             FROM payment_transactions pt WHERE pt.status='SUCCESS' AND pt.school_id IS NOT NULL AND pt.created_at BETWEEN ? AND ?`,
+            `SELECT COUNT(*) AS tx, COALESCE(SUM(amount),0) AS revenue, COALESCE(SUM(total_exams),0) AS exams_sold
+             FROM payment_transactions WHERE status='SUCCESS' AND school_id IS NOT NULL AND created_at BETWEEN ? AND ?`,
             [dayStart, dayEnd], (e, r) => e ? rej(e) : res(r[0])
         )),
-        // Visitors today
         new Promise((res, rej) => db.query(
             `SELECT COUNT(DISTINCT ip_address) AS unique_visitors, COALESCE(SUM(visit_count),0) AS total_visits
              FROM site_visitors WHERE visit_date = ?`,
             [dateStr], (e, r) => e ? rej(e) : res(r[0])
         )),
-        // Exams today
         new Promise((res, rej) => db.query(
             `SELECT COUNT(*) AS total, COALESCE(AVG(score),0) AS avg_score,
              SUM(CASE WHEN score >= 12 THEN 1 ELSE 0 END) AS passed
@@ -191,7 +177,6 @@ async function sendDailyReport(db, transport) {
     ]);
 
     const totalRevenue   = Number(selfRevenue.revenue) + Number(schoolRevenue.revenue);
-    const totalTx        = Number(selfRevenue.tx) + Number(schoolRevenue.tx);
     const totalExamsSold = Number(selfRevenue.exams_sold) + Number(schoolRevenue.exams_sold);
     const totalExamsDone = Number(exams.total) || 0;
     const avgScore       = parseFloat(exams.avg_score || 0).toFixed(1);
@@ -199,10 +184,9 @@ async function sendDailyReport(db, transport) {
     const uniqueVisitors = Number(visitors.unique_visitors) || 0;
     const totalVisits    = Number(visitors.total_visits) || 0;
 
-    // Build PDF
     const pdfBuf = await buildDailyPDF({
         dateStr, selfRevenue, schoolRevenue,
-        totalRevenue, totalTx, totalExamsSold,
+        totalRevenue, totalExamsSold,
         totalExamsDone, avgScore, passRate,
         uniqueVisitors, totalVisits
     });
@@ -211,8 +195,7 @@ async function sendDailyReport(db, transport) {
         from: `"IKIZAME Reports" <${process.env.SMTP_USER}>`,
         to:   DAILY_REPORT_EMAIL,
         subject: `📋 IKIZAME Daily Report — ${dateStr}`,
-        html: `
-        <div style="font-family:Inter,sans-serif;background:#f8fafc;padding:24px;max-width:560px;">
+        html: `<div style="font-family:Inter,sans-serif;background:#f8fafc;padding:24px;max-width:560px;">
             <div style="background:#0b698b;padding:18px 22px;border-radius:8px;margin-bottom:18px;">
                 <h2 style="color:#fff;margin:0;font-size:18px;">📋 IKIZAME Daily Report</h2>
                 <p style="color:#bae6fd;margin:4px 0 0;font-size:12px;">${dateStr}</p>
@@ -223,17 +206,15 @@ async function sendDailyReport(db, transport) {
                 <tr style="background:#f8fafc;"><td style="padding:7px 12px;">School Payments</td><td style="padding:7px 12px;font-weight:700;">${Number(schoolRevenue.revenue).toLocaleString()} RWF (${schoolRevenue.tx} tx)</td></tr>
                 <tr style="background:#dcfce7;"><td style="padding:7px 12px;font-weight:800;">Total Revenue</td><td style="padding:7px 12px;font-weight:800;color:#15803d;font-size:15px;">${totalRevenue.toLocaleString()} RWF</td></tr>
                 <tr><td style="padding:7px 12px;">Exams Sold</td><td style="padding:7px 12px;font-weight:700;">${totalExamsSold}</td></tr>
-
                 <tr style="background:#e0f2fe;"><td colspan="2" style="padding:8px 12px;font-weight:800;color:#0b698b;">📝 Exam Activity</td></tr>
                 <tr><td style="padding:7px 12px;">Exams Taken Today</td><td style="padding:7px 12px;font-weight:700;">${totalExamsDone}</td></tr>
                 <tr style="background:#f8fafc;"><td style="padding:7px 12px;">Average Score</td><td style="padding:7px 12px;font-weight:700;">${avgScore}/20</td></tr>
                 <tr><td style="padding:7px 12px;">Pass Rate</td><td style="padding:7px 12px;font-weight:700;color:${passRate>=60?'#15803d':'#b91c1c'}">${passRate}%</td></tr>
-
                 <tr style="background:#e0f2fe;"><td colspan="2" style="padding:8px 12px;font-weight:800;color:#0b698b;">👥 Visitors</td></tr>
                 <tr><td style="padding:7px 12px;">Unique Visitors</td><td style="padding:7px 12px;font-weight:700;">${uniqueVisitors}</td></tr>
                 <tr style="background:#f8fafc;"><td style="padding:7px 12px;">Total Page Visits</td><td style="padding:7px 12px;font-weight:700;">${totalVisits}</td></tr>
             </table>
-            <p style="color:#94a3b8;font-size:11px;margin-top:16px;">Full PDF report attached. Generated at ${new Date().toLocaleTimeString('en-GB')} server time.</p>
+            <p style="color:#94a3b8;font-size:11px;margin-top:16px;">Full PDF report attached.</p>
         </div>`,
         attachments: [{
             filename: `ikizame-daily-${dateStr}.pdf`,
@@ -255,7 +236,6 @@ function buildDailyPDF(d) {
         const brand = '#0b698b';
         const W = doc.page.width;
 
-        // Header
         doc.rect(0, 0, W, 72).fill(brand);
         doc.fillColor('#fff').fontSize(24).font('Helvetica-Bold').text('IKIZAME', 40, 18);
         doc.fontSize(11).font('Helvetica').text('Daily Operations Report', 40, 46);
@@ -276,28 +256,24 @@ function buildDailyPDF(d) {
             return yPos + 20;
         }
 
-        // Revenue section
-        y = sectionTitle('💰 Revenue', y);
+        y = sectionTitle('Revenue', y);
         y = row('Self Payments', `${Number(d.selfRevenue.revenue).toLocaleString()} RWF  (${d.selfRevenue.tx} transactions)`, y, false);
         y = row('School Payments', `${Number(d.schoolRevenue.revenue).toLocaleString()} RWF  (${d.schoolRevenue.tx} transactions)`, y, true);
         y = row('Total Revenue', `${d.totalRevenue.toLocaleString()} RWF`, y, false);
         y = row('Exams Sold', String(d.totalExamsSold), y, true);
         y += 14;
 
-        // Exam activity
-        y = sectionTitle('📝 Exam Activity', y);
+        y = sectionTitle('Exam Activity', y);
         y = row('Exams Taken Today', String(d.totalExamsDone), y, false);
         y = row('Average Score', `${d.avgScore} / 20`, y, true);
-        y = row('Pass Rate (≥12/20)', `${d.passRate}%`, y, false);
+        y = row('Pass Rate (>=12/20)', `${d.passRate}%`, y, false);
         y += 14;
 
-        // Visitors
-        y = sectionTitle('👥 Website Visitors', y);
+        y = sectionTitle('Website Visitors', y);
         y = row('Unique Visitors', String(d.uniqueVisitors), y, false);
         y = row('Total Page Visits', String(d.totalVisits), y, true);
         y += 20;
 
-        // Footer
         doc.moveTo(40, y).lineTo(W - 40, y).strokeColor('#e2e8f0').lineWidth(0.5).stroke();
         doc.fillColor('#94a3b8').fontSize(8).font('Helvetica')
            .text(`Generated: ${new Date().toISOString().slice(0,19).replace('T',' ')} | IKIZAME © ${new Date().getFullYear()} Dotado Stationery Store Ltd`, 40, y + 8, { align: 'center' });
@@ -306,14 +282,10 @@ function buildDailyPDF(d) {
     });
 }
 
-
-    // Daily — every day at 07:00
+module.exports = function startReportScheduler(db, transport) {
     cron.schedule('0 7 * * *', () => sendDailyReport(db, transport).catch(e => console.error('❌ Daily report failed:', e.message)));
-    // Weekly — every Monday at 07:00
     cron.schedule('0 7 * * 1', () => sendReport(db, transport, 'weekly').catch(e => console.error('❌ Weekly report failed:', e.message)));
-    // Monthly — 1st of every month at 07:00
     cron.schedule('0 7 1 * *', () => sendReport(db, transport, 'monthly').catch(e => console.error('❌ Monthly report failed:', e.message)));
-    // Yearly — Jan 1st at 07:00
     cron.schedule('0 7 1 1 *', () => sendReport(db, transport, 'yearly').catch(e => console.error('❌ Yearly report failed:', e.message)));
     console.log('✅ Report scheduler started (daily 7AM, weekly Mon, monthly 1st, yearly Jan 1st)');
 };
