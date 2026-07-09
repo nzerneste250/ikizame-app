@@ -49,6 +49,38 @@
             help_247_desc: "Turakwitabira ku masaha yose — ku manywa, nijoro, n'iminsi y'ikiruhuko.",
             help_contact_title: 'Tutuganire',
             help_wa_badge: 'Arasubiza vuba', help_follow: 'Dukurikire', help_online: '● Arahari 24/7', help_phone_title: 'Telefoni',
+            // ibiciro
+            pricing_accepted: 'Uburyo bwemewe:', pricing_pay_now: 'Ishyura Ubu', pricing_best_tag: 'Inzira nziza',
+            pricing_starter_title: 'Starter Pack', pricing_starter_sub: 'RWF / Ikizamini',
+            pricing_starter_p1: '1 - 9 Ibizamini', pricing_starter_p2: 'Bidashobora guteza umunaniro', pricing_starter_p3: 'Ntugure byinshi niba uri gutoza',
+            pricing_best_title: 'Best Value Pack', pricing_best_sub: 'Amahitamo Yoroheje',
+            pricing_best_p1: '10 - 14 Ibizamini: 80 RWF / imwe', pricing_best_p2: '15 - 20 Ibizamini: 70 RWF / imwe', pricing_best_p3: '21+ ibizamini: 50 RWF / imwe',
+            pricing_guide_title: 'Ibikurikira mbere yo Kwishyura',
+            pricing_guide_desc: 'Reba ibisigaye kuri nomero yawe mbere yo kugura. Ukoreshe neza credits zawe, ukanahita ubona uko amahitamo yawe ahagaze.',
+            pricing_balance_label: 'Reba ibisigaye kuri telephone', pricing_balance_btn: 'Reba ibisigaye',
+            pricing_step1_h: 'Injiza phone yawe', pricing_step1_p: 'Andika nomero ya MTN cyangwa Airtel mu murongo ugendanwa.',
+            pricing_step2_h: 'Hitamo umubare', pricing_step2_p: "Hitamo igihe cy'ibizamini ukeneye. Igiciro kiragabanuka uko ugura byinshi.",
+            pricing_step3_h: 'Kora Kwishyura', pricing_step3_p: 'Injiza PIN ya MoMo hanyuma umenye ko konti yawe yahise ifunguka.',
+            pricing_ussd_title: 'Mu gihe PIN Push itaje (USSD Code Drop):',
+            pricing_modal_title: 'Kwishura Kuri Telephone', pricing_modal_desc: "Andika amakuru yawe hano n'umubare w'ibizamini:",
+            pricing_qty_label: "Umubare w'Ibizamini", pricing_phone_label: 'Nomero ya Telephone',
+            pricing_pay_btn: 'Ishyura', pricing_cancel_btn: 'Hagarika',
+            pricing_ussd_hint: 'Niba USSD itaje, koresha:', pricing_ussd_note: 'Kanda iyo code kuri telephone yawe hanyuma emeza kwishyura.',
+            pricing_success_title: 'Byakunze Neza!',
+            // amanota results
+            amanota_exams_done: 'Ibizamini Byakozwe', amanota_back: 'Subira inyuma',
+            amanota_remaining_title: 'Ibizamini Bisigaye — Byishyuwe',
+            amanota_remaining_label: 'Ibizamini Bisigaye mu Byishyuwe',
+            amanota_buy_btn: 'Gura Ibizamini',
+            amanota_stat_total: 'Ibizamini Byose', amanota_stat_passed: 'Yatsinze', amanota_stat_failed: 'Watsinzwe',
+            amanota_stat_avg: 'Amanota Hagati', amanota_stat_best: 'Amanota Menshi', amanota_stat_pass_mark: 'Amanota Asabwa',
+            amanota_tbl_date: 'Itariki', amanota_tbl_status: 'Imimerere', amanota_tbl_score: 'Amanota',
+            amanota_open_btn: 'Fungura', amanota_search_btn: 'Shakisha Amanota',
+            // school-auth
+            school_login_title: "Kwinjira k'Ishuri", school_login_desc: "Injiza amakuru ya Konti y'ishuri ryawe utangire gukurikirana abanyeshuri.",
+            school_email_label: "Email y'Ishuri", school_pw_label: 'Password',
+            school_login_btn: 'Injira', school_forgot: 'Wibagiwe Password?',
+            school_no_account: 'Ntabwo mufite Konti?', school_register_link: 'Fungura Konti Hano',
             help_steps_title: "Intambwe z'Ikizamini",
             help_s1_title: 'Kwiyandikisha', help_s1_p: "Injiza amazina yawe yose n'inomero ya telefone itangira na 078 / 079 / 073 kuri paji ya mbere.",
             help_s2_title: 'Igenzura rya Konti', help_s2_p: "Sisitemu igenzura niba ufite inshuro z'ibizamini. Niba ari ntabwo, ujye ku Ibiciro ugure ukoresheje MoMo.",
@@ -126,6 +158,35 @@
             help_247_desc: 'We respond at all hours — morning, night, and weekends.',
             help_contact_title: 'Get In Touch',
             help_wa_badge: 'Responds fast', help_follow: 'Follow us', help_online: '● Available 24/7', help_phone_title: 'Phone',
+            pricing_accepted: 'Accepted methods:', pricing_pay_now: 'Pay Now', pricing_best_tag: 'Best choice',
+            pricing_starter_title: 'Starter Pack', pricing_starter_sub: 'RWF / Exam',
+            pricing_starter_p1: '1 - 9 Exams', pricing_starter_p2: 'No risk of overspending', pricing_starter_p3: "Don't buy too many if you're just practicing",
+            pricing_best_title: 'Best Value Pack', pricing_best_sub: 'Flexible Options',
+            pricing_best_p1: '10 - 14 Exams: 80 RWF each', pricing_best_p2: '15 - 20 Exams: 70 RWF each', pricing_best_p3: '21+ Exams: 50 RWF each',
+            pricing_guide_title: 'Before You Pay',
+            pricing_guide_desc: 'Check your balance before buying. Use your credits wisely and see your options instantly.',
+            pricing_balance_label: 'Check balance for phone', pricing_balance_btn: 'Check Balance',
+            pricing_step1_h: 'Enter your phone', pricing_step1_p: 'Type your MTN or Airtel number in the field.',
+            pricing_step2_h: 'Choose quantity', pricing_step2_p: 'Select how many exams you need. Price drops as you buy more.',
+            pricing_step3_h: 'Complete Payment', pricing_step3_p: 'Enter your MoMo PIN and your account unlocks instantly.',
+            pricing_ussd_title: 'If PIN Push does not arrive (USSD fallback):',
+            pricing_modal_title: 'Pay via Phone', pricing_modal_desc: 'Enter your details and number of exams:',
+            pricing_qty_label: 'Number of Exams', pricing_phone_label: 'Phone Number',
+            pricing_pay_btn: 'Pay', pricing_cancel_btn: 'Cancel',
+            pricing_ussd_hint: 'If USSD does not arrive, use:', pricing_ussd_note: 'Dial this code on your phone then confirm payment.',
+            pricing_success_title: 'Success!',
+            amanota_exams_done: 'Exams Taken', amanota_back: 'Go back',
+            amanota_remaining_title: 'Remaining Exams — Purchased',
+            amanota_remaining_label: 'Remaining Purchased Exams',
+            amanota_buy_btn: 'Buy Exams',
+            amanota_stat_total: 'Total Exams', amanota_stat_passed: 'Passed', amanota_stat_failed: 'Failed',
+            amanota_stat_avg: 'Average Score', amanota_stat_best: 'Best Score', amanota_stat_pass_mark: 'Pass Mark',
+            amanota_tbl_date: 'Date', amanota_tbl_status: 'Status', amanota_tbl_score: 'Score',
+            amanota_open_btn: 'Open', amanota_search_btn: 'Search Scores',
+            school_login_title: 'School Login', school_login_desc: 'Enter your school account details to start tracking students.',
+            school_email_label: 'School Email', school_pw_label: 'Password',
+            school_login_btn: 'Login', school_forgot: 'Forgot Password?',
+            school_no_account: "Don't have an account?", school_register_link: 'Register Here',
             help_steps_title: 'How The Exam Works',
             help_s1_title: 'Register', help_s1_p: 'Enter your full name and phone number starting with 078 / 079 / 073 on the home page.',
             help_s2_title: 'Account Check', help_s2_p: 'The system checks if you have exam attempts. If not, go to Pricing and buy using MoMo.',
@@ -173,32 +234,78 @@
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (t[key] === undefined) return;
-            // Only set textContent if element has no child elements (preserve inner HTML like <strong>)
-            if (el.children.length === 0) {
-                el.textContent = t[key];
-            }
+            if (el.children.length === 0) el.textContent = t[key];
         });
         document.querySelectorAll('[data-i18n-ph]').forEach(el => {
             const key = el.getAttribute('data-i18n-ph');
             if (t[key] !== undefined) el.placeholder = t[key];
         });
-        // Update all lang badges on page
+        // Update all lang dropdowns
         document.querySelectorAll('.lang-badge').forEach(badge => {
-            badge.innerHTML = `${FLAGS[lang]}<span>${lang === 'rw' ? 'Kinyarwanda' : 'English'}</span>`;
+            badge.innerHTML = `
+                ${FLAGS[lang]}
+                <span>${lang === 'rw' ? 'Kinyarwanda' : 'English'}</span>
+                <svg class="lang-chevron" viewBox="0 0 10 6" width="10" height="6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                <div class="lang-dropdown">
+                    <div class="lang-option ${lang==='rw'?'active':''}" onclick="event.stopPropagation();window.ikizameSetLang('rw')">
+                        <svg viewBox="0 0 4 3" width="20" height="14" style="border-radius:2px;border:1px solid #e2e8f0;flex-shrink:0"><rect width="4" height="1.1" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+                        Kinyarwanda
+                    </div>
+                    <div class="lang-option ${lang==='en'?'active':''}" onclick="event.stopPropagation();window.ikizameSetLang('en')">
+                        <svg viewBox="0 0 60 30" width="20" height="14" style="border-radius:2px;flex-shrink:0"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4"/><path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/><path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/></svg>
+                        English
+                    </div>
+                </div>`;
             badge.style.cursor = 'pointer';
-            badge.onclick = window.ikizameSwitchLang;
+            badge.style.position = 'relative';
+            badge.onclick = (e) => { e.stopPropagation(); badge.classList.toggle('open'); };
         });
+        // Close dropdown on outside click
+        document.onclick = () => document.querySelectorAll('.lang-badge.open').forEach(b => b.classList.remove('open'));
         document.documentElement.lang = lang === 'rw' ? 'rw' : 'en';
     }
 
+    window.ikizameSetLang = function(lang) {
+        setLang(lang);
+        applyLang(lang);
+        document.querySelectorAll('.lang-badge.open').forEach(b => b.classList.remove('open'));
+    };
+
     window.ikizameSwitchLang = function () {
         const next = getLang() === 'rw' ? 'en' : 'rw';
-        setLang(next);
-        applyLang(next);
+        setLang(next); applyLang(next);
     };
 
     // Always wait for DOM — script is now in <head>
-    document.addEventListener('DOMContentLoaded', () => applyLang(getLang()));
+    document.addEventListener('DOMContentLoaded', () => {
+        // Inject dropdown styles once
+        if (!document.getElementById('ikizame-lang-style')) {
+            const s = document.createElement('style');
+            s.id = 'ikizame-lang-style';
+            s.textContent = `
+                .lang-badge { position:relative; }
+                .lang-chevron { margin-left:2px; transition:transform .2s; }
+                .lang-badge.open .lang-chevron { transform:rotate(180deg); }
+                .lang-dropdown {
+                    display:none; position:absolute; top:calc(100% + 6px); right:0;
+                    background:#fff; border:1px solid #e2e8f0; border-radius:10px;
+                    box-shadow:0 8px 24px rgba(0,0,0,0.12); min-width:160px; z-index:9999;
+                    overflow:hidden;
+                }
+                .lang-badge.open .lang-dropdown { display:block; }
+                .lang-option {
+                    display:flex; align-items:center; gap:10px;
+                    padding:10px 14px; font-size:0.82rem; font-weight:700;
+                    color:#1e293b; cursor:pointer; transition:background .12s;
+                }
+                .lang-option:hover { background:#f0f9ff; }
+                .lang-option.active { background:#e0f2fe; color:#0b698b; }
+                .lang-flag { border-radius:2px; border:1px solid #e2e8f0; flex-shrink:0; width:20px; height:14px; }
+            `;
+            document.head.appendChild(s);
+        }
+        applyLang(getLang());
+    });
     window.ikizameApplyLang = applyLang;
     window.ikizameGetLang = getLang;
 })();

@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/i18n.js?v=5"></script>
     <style>
         :root {
             --brand: #0b698b;
@@ -252,25 +252,25 @@
             <!-- ====== ENGINE PANEL A: SCHOOL LOGIN MODE ====== -->
             <div class="auth-wizard-view-step active" id="viewSectionSchoolLogin">
                 <div class="auth-heading-block">
-                    <h2>Kwinjira k'Ishuri</h2>
-                    <p>Injiza amakuru ya Konti y'ishuri ryawe utangire gukurikirana abanyeshuri.</p>
+                    <h2 data-i18n="school_login_title">Kwinjira k'Ishuri</h2>
+                    <p data-i18n="school_login_desc">Injiza amakuru ya Konti y'ishuri ryawe utangire gukurikirana abanyeshuri.</p>
                 </div>
                 <div class="input-form-field">
-                    <label>Email y'Ishuri</label>
+                    <label data-i18n="school_email_label">Email y'Ishuri</label>
                     <input type="email" id="loginEmailInput" placeholder="school@example.com">
                 </div>
                 <div class="input-form-field">
-                    <label>Password</label>
+                    <label data-i18n="school_pw_label">Password</label>
                     <div class="pw-wrap">
                         <input type="password" id="loginPasswordInput" placeholder="••••••••">
                         <button type="button" class="pw-eye" onclick="togglePw('loginPasswordInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
                     </div>
                 </div>
                 <button class="btn-auth-submit" id="loginSubmitBtn" onclick="handleSchoolPortalLoginRequest()">
-                    <span>Injira</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <span data-i18n="school_login_btn">Injira</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
-                <div class="switch-mode-anchor" style="margin-top:12px;"><span onclick="switchAuthWizardView('FORGOT')">Wibagiwe Password?</span></div>
-                <div class="switch-mode-anchor">Ntabwo mufite Konti? <span onclick="switchAuthWizardView('REGISTER')">Fungura Konti Hano</span></div>
+                <div class="switch-mode-anchor" style="margin-top:12px;"><span onclick="switchAuthWizardView('FORGOT')" data-i18n="school_forgot">Wibagiwe Password?</span></div>
+                <div class="switch-mode-anchor"><span data-i18n="school_no_account">Ntabwo mufite Konti?</span> <span onclick="switchAuthWizardView('REGISTER')" data-i18n="school_register_link">Fungura Konti Hano</span></div>
             </div>
 
             <!-- ====== ENGINE PANEL B: REGISTER INITIAL DATA ====== -->

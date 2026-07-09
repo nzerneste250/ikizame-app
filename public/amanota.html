@@ -292,7 +292,7 @@
             </div>
             <div id="lookupPhoneHint" class="hint" data-i18n="lookup_hint">Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079</div>
             <button class="btn-submit-lookup" id="submitLookupBtn">
-                <i class="fa-solid fa-magnifying-glass"></i> Shakisha Amanota
+                <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="amanota_search_btn">Shakisha Amanota</span>
             </button>
         </div>
 
@@ -300,8 +300,8 @@
         <div class="amanota-card-box" id="amanotaResultsListView" style="display:none;">
             <div class="results-inner">
                 <div class="results-header-row">
-                    <h4 id="dashboardTitle">Ibizamini Byakozwe</h4>
-                    <button class="btn-back-link" id="backToLookupBtn"><i class="fa-solid fa-arrow-left"></i> Subira inyuma</button>
+                    <h4 id="dashboardTitle" data-i18n="amanota_exams_done">Ibizamini Byakozwe</h4>
+                    <button class="btn-back-link" id="backToLookupBtn"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="amanota_back">Subira inyuma</span></button>
                 </div>
 
                 <!-- Student identity -->
@@ -320,12 +320,12 @@
                 <!-- Remaining Exams Panel -->
                 <div class="remaining-panel">
                     <div class="remaining-panel-header">
-                        <div class="rph-title"><i class="fa-solid fa-ticket"></i> Ibizamini Bisigaye — Byishyuwe</div>
+                        <div class="rph-title"><i class="fa-solid fa-ticket"></i> <span data-i18n="amanota_remaining_title">Ibizamini Bisigaye — Byishyuwe</span></div>
                     </div>
                     <div class="remaining-panel-body">
                         <div class="rem-big-num" id="remBigNum">—</div>
                         <div class="rem-info">
-                            <div class="rem-label">Ibizamini Bisigaye mu Byishyuwe</div>
+                            <div class="rem-label" data-i18n="amanota_remaining_label">Ibizamini Bisigaye mu Byishyuwe</div>
                             <div class="rem-desc" id="remDesc">Iri gushakisha...</div>
                             <div class="rem-progress-wrap">
                                 <div class="rem-progress-track"><div class="rem-progress-fill" id="remProgressFill" style="width:0%"></div></div>
@@ -340,27 +340,27 @@
                 <div class="stats-grid">
                     <div class="stat-tile">
                         <div class="st-val" id="statTotal">0</div>
-                        <div class="st-lbl">Ibizamini Byose</div>
+                        <div class="st-lbl" data-i18n="amanota_stat_total">Ibizamini Byose</div>
                     </div>
                     <div class="stat-tile pass-tile">
                         <div class="st-val" id="statPassed">0</div>
-                        <div class="st-lbl">Yatsinze</div>
+                        <div class="st-lbl" data-i18n="amanota_stat_passed">Yatsinze</div>
                     </div>
                     <div class="stat-tile fail-tile">
                         <div class="st-val" id="statFailed">0</div>
-                        <div class="st-lbl">Watsinzwe</div>
+                        <div class="st-lbl" data-i18n="amanota_stat_failed">Watsinzwe</div>
                     </div>
                     <div class="stat-tile avg-tile">
                         <div class="st-val" id="statAvg">0/20</div>
-                        <div class="st-lbl">Amanota Hagati</div>
+                        <div class="st-lbl" data-i18n="amanota_stat_avg">Amanota Hagati</div>
                     </div>
                     <div class="stat-tile">
                         <div class="st-val" id="statBest">0/20</div>
-                        <div class="st-lbl">Amanota Menshi</div>
+                        <div class="st-lbl" data-i18n="amanota_stat_best">Amanota Menshi</div>
                     </div>
                     <div class="stat-tile">
                         <div class="st-val" id="statPassMark">12/20</div>
-                        <div class="st-lbl">Amanota Asabwa</div>
+                        <div class="st-lbl" data-i18n="amanota_stat_pass_mark">Amanota Asabwa</div>
                     </div>
                 </div>
 
@@ -375,9 +375,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Code</th>
-                                        <th>Itariki</th>
-                                        <th>Imimerere</th>
-                                        <th>Amanota</th>
+                                        <th data-i18n="amanota_tbl_date">Itariki</th>
+                                        <th data-i18n="amanota_tbl_status">Imimerere</th>
+                                        <th data-i18n="amanota_tbl_score">Amanota</th>
                                         <th></th>
                                     </tr>
                                 </thead>
