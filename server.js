@@ -178,7 +178,9 @@ app.get('/',               (req, res) => res.sendFile(path.join(__dirname, 'publ
 app.get('/index',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/admin-login',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
 app.get('/ifashanyigisho', (req, res) => {
-    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     res.sendFile(path.join(__dirname, 'public', 'ifashanyigisho.html'));
 });
 app.get('/ibiciro',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'ibiciro.html')));
