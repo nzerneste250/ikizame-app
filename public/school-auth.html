@@ -230,6 +230,23 @@
     <div class="workspace-scroll-container">
         <div class="auth-card-frame">
             
+            <!-- ====== ACCESS DENIED CARD ====== -->
+            <div class="auth-wizard-view-step" id="viewSectionAccessDenied">
+                <div style="text-align:center;">
+                    <div style="width:64px;height:64px;background:#fef2f2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:#ef4444;margin:0 auto 16px;"><i class="fa-solid fa-ban"></i></div>
+                    <h2 style="font-size:1.4rem;font-weight:800;color:#ef4444;margin-bottom:8px;">Kwinjira Byanzwe</h2>
+                    <p style="color:#94a3b8;font-size:0.9rem;line-height:1.6;margin-bottom:20px;">Konti y'ishuri ryawe ihagaritswe n'ubutegetsi. Ntushobora kwinjira ubu.</p>
+                    <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:16px 20px;text-align:left;">
+                        <div style="font-size:12px;font-weight:800;color:#ef4444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;"><i class="fa-solid fa-headset"></i> Vugana na Support</div>
+                        <div style="font-size:13px;color:#94a3b8;line-height:1.7;">
+                            <div><i class="fa-solid fa-envelope" style="width:16px;color:#38bdf8;"></i> <a href="mailto:dotadostationarystore@gmail.com" style="color:#38bdf8;text-decoration:none;">dotadostationarystore@gmail.com</a></div>
+                            <div style="margin-top:4px;"><i class="fa-solid fa-circle-info" style="width:16px;color:#64748b;"></i> Tanga izina ry'ishuri ryawe n'email mu butumwa.</div>
+                        </div>
+                    </div>
+                    <button onclick="switchAuthWizardView('LOGIN')" style="margin-top:20px;background:none;border:1px solid rgba(255,255,255,0.15);color:#94a3b8;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;"><i class="fa-solid fa-arrow-left"></i> Subira Inyuma</button>
+                </div>
+            </div>
+
             <!-- ====== ENGINE PANEL A: SCHOOL LOGIN MODE ====== -->
             <div class="auth-wizard-view-step active" id="viewSectionSchoolLogin">
                 <div class="auth-heading-block">
@@ -411,12 +428,13 @@
 
         window.switchAuthWizardView = function(targetMode) {
             document.querySelectorAll('.auth-wizard-view-step').forEach(el => el.classList.remove('active'));
-            if(targetMode === 'REGISTER')    document.getElementById('viewSectionSchoolRegister').classList.add('active');
-            else if(targetMode === 'OTP')    document.getElementById('viewSectionVerifyOtp').classList.add('active');
+            if(targetMode === 'REGISTER')      document.getElementById('viewSectionSchoolRegister').classList.add('active');
+            else if(targetMode === 'OTP')      document.getElementById('viewSectionVerifyOtp').classList.add('active');
             else if(targetMode === 'PASSWORD') document.getElementById('viewSectionSetPassword').classList.add('active');
-            else if(targetMode === 'FORGOT') document.getElementById('viewSectionForgotPassword').classList.add('active');
+            else if(targetMode === 'FORGOT')   document.getElementById('viewSectionForgotPassword').classList.add('active');
             else if(targetMode === 'FORGOT_OTP') document.getElementById('viewSectionForgotOtp').classList.add('active');
-            else if(targetMode === 'RESET') document.getElementById('viewSectionResetPassword').classList.add('active');
+            else if(targetMode === 'RESET')    document.getElementById('viewSectionResetPassword').classList.add('active');
+            else if(targetMode === 'ACCESS_DENIED') document.getElementById('viewSectionAccessDenied').classList.add('active');
             else document.getElementById('viewSectionSchoolLogin').classList.add('active');
         };
 
@@ -576,6 +594,8 @@
                 btn.disabled = false;
                 if(data.success) {
                     window.location.href = data.redirect;
+                } else if(data.error === 'ACCESS_DENIED') {
+                    switchAuthWizardView('ACCESS_DENIED');
                 } else { alert(data.error); }
             });
         };

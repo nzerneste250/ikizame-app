@@ -589,6 +589,36 @@ module.exports = (db, loginLimiter) => {
         );
     });
 
+    // GET all schools
+    router.get('/schools', requireAdminLogin, (req, res) => {
+        db.query(
+            `SELECT id, school_name, email, phone_number, is_verified, COALESCE(is_active,1) AS is_active, created_at FROM driving_schools ORDER BY id DESC`,
+            (err, rows) => {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json(rows || []);
+            }
+        );
+    });
+
+    // PATCH toggle school access
+    router.patch('/schools/:id/status', requireSuperAdmin, (req, res) => {
+        const id = Number(req.params.id);
+        const { active } = req.body;
+        db.query('UPDATE driving_schools SET is_active = ? WHERE id = ?', [active ? 1 : 0, id], (err) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            res.json({ ok: true });
+        });
+    });
+
+    // DELETE school
+    router.delete('/schools/:id', requireSuperAdmin, (req, res) => {
+        const id = Number(req.params.id);
+        db.query('DELETE FROM driving_schools WHERE id = ?', [id], (err) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            res.json({ ok: true });
+        });
+    });
+
     // GET system stats
     router.get('/system-stats', requireAdminLogin, (req, res) => {
         db.query(`

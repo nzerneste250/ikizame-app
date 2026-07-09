@@ -115,12 +115,13 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
         const { email, password } = req.body;
         if (!email || !password) return res.status(400).json({ success: false, error: 'Andika Email na Password.' });
 
-        db.query(`SELECT id, school_name, email, is_verified, password_hash FROM driving_schools WHERE email = ?`, [email.trim().toLowerCase()], (err, results) => {
+        db.query(`SELECT id, school_name, email, is_verified, is_active, password_hash FROM driving_schools WHERE email = ?`, [email.trim().toLowerCase()], (err, results) => {
             if (err) return res.status(500).json({ success: false, error: err.message });
             if (!results || results.length === 0) return res.status(401).json({ success: false, error: 'Email cyangwa Password ntabwo ari byo.' });
 
             const school = results[0];
             if (school.is_verified !== 1) return res.status(403).json({ success: false, error: 'Konti yawe ntabwo iratungana.' });
+            if (school.is_active === 0) return res.status(403).json({ success: false, error: 'ACCESS_DENIED' });
 
             bcrypt.compare(password.trim(), school.password_hash, (cmpErr, match) => {
                 if (cmpErr || !match) return res.status(401).json({ success: false, error: 'Email cyangwa Password ntabwo ari byo.' });
