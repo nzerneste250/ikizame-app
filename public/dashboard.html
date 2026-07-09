@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderCellContentHTML(val) {
         if (!val || !val.trim()) return `<span style="color:#94a3b8; font-style:italic;">None</span>`;
         if (checkIsGraphicAssetString(val)) {
-            return `<img src="assets/uploads/${val.trim()}" class="cell-img" alt="Option image" onerror="this.outerHTML='<span class=\'fallback-filename-txt\'>${val}</span>'">`;
+            return `<img src="assets/uploads/${val.trim()}" class="cell-img" alt="Option image" title="Click to preview" onclick="showImgPreview('assets/uploads/${val.trim()}')" onerror="this.outerHTML='<span class=\'fallback-filename-txt\'>${val}</span>'">`;
         }
         return `<span>${val}</span>`;
     }
