@@ -38,7 +38,20 @@ async function sendPasswordExpiryReminder(transport) {
                 <tr><td style="padding:7px 12px;color:#64748b;">Scope</td><td style="padding:7px 12px;font-weight:700;">Server & Database Credentials</td></tr>
             </table>
             <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;margin-top:16px;">
-                <p style="color:#b91c1c;font-size:13px;font-weight:600;margin:0;">Please update your server and database passwords before the expiry date, then update <strong>PASS_CHANGED_AT</strong> in the .env file to today's date.</p>
+                <p style="color:#b91c1c;font-size:13px;font-weight:600;margin:0 0 12px;">Please update your server and database passwords before the expiry date, then update <strong>PASS_CHANGED_AT</strong> in the .env file to today's date.</p>
+                <div style="background:#0f172a;border-radius:6px;padding:14px;font-family:monospace;font-size:12px;color:#e2e8f0;line-height:1.8;">
+                    <div style="color:#94a3b8;margin-bottom:6px;"># 1. Change the database user password</div>
+                    <div style="color:#38bdf8;">mysql -u root -p -e "ALTER USER 'ikizame_user'@'localhost' IDENTIFIED BY 'NewStrongPassword@2026';"</div>
+                    <br>
+                    <div style="color:#94a3b8;"># 2. Update the password in .env</div>
+                    <div style="color:#38bdf8;">sed -i 's/PROD_DB_PASSWORD=.*/PROD_DB_PASSWORD=NewStrongPassword@2026/' /var/www/ikizame/.env</div>
+                    <br>
+                    <div style="color:#94a3b8;"># 3. Update the change date to today</div>
+                    <div style="color:#38bdf8;">sed -i 's/PASS_CHANGED_AT=.*/PASS_CHANGED_AT=${new Date().toISOString().slice(0,10)}/' /var/www/ikizame/.env</div>
+                    <br>
+                    <div style="color:#94a3b8;"># 4. Restart the server with new env</div>
+                    <div style="color:#38bdf8;">pm2 restart all --update-env</div>
+                </div>
             </div>
         </div>`
     });
