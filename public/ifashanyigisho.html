@@ -269,7 +269,7 @@
 <main class="main">
     <div class="section-head">
         <h2><i class="fa-solid fa-folder-open"></i> <span data-i18n="res_docs_available">Inyandiko Zihari</span></h2>
-        <span class="doc-count-badge" id="docCountBadge" data-i18n="res_loading">Irimo gushaka...</span>
+        <span class="doc-count-badge" id="docCountBadge">...</span>
     </div>
     <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass s-icon"></i>
@@ -338,14 +338,13 @@ let allDocs = [];
 document.addEventListener('DOMContentLoaded', loadDocs);
 
 function loadDocs() {
+    const grid = document.getElementById('cardsGrid');
     const badge = document.getElementById('docCountBadge');
-    const _t = () => window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
+    const lang = () => window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
+    badge.textContent = lang() === 'en' ? 'Loading...' : 'Irimo gushaka...';
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
-
-    fetch('/api/public/documents', { signal: controller.signal })
-        .then(r => { clearTimeout(timeout); return r.json(); })
+    fetch('/api/public/documents')
+        .then(r => r.json())
         .then(docs => {
             const grid = document.getElementById('cardsGrid');
             const badge = document.getElementById('docCountBadge');

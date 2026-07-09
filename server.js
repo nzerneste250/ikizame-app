@@ -177,7 +177,10 @@ app.get('/robots.txt',  (req, res) => res.sendFile(path.join(__dirname, 'public'
 app.get('/',               (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/index',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/admin-login',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
-app.get('/ifashanyigisho', (req, res) => res.sendFile(path.join(__dirname, 'public', 'ifashanyigisho.html')));
+app.get('/ifashanyigisho', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    res.sendFile(path.join(__dirname, 'public', 'ifashanyigisho.html'));
+});
 app.get('/ibiciro',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'ibiciro.html')));
 app.get('/ubufasha',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'ubufasha.html')));
 app.get('/amanota',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'amanota.html')));
