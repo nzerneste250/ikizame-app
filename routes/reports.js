@@ -333,5 +333,6 @@ module.exports = function startReportScheduler(db, transport) {
     console.log('✅ Report scheduler started (daily 7AM, password check 8AM, weekly Mon, monthly 1st, yearly Jan 1st)');
 };
 
-module.exports.sendReport      = sendReport;
-module.exports.sendDailyReport = sendDailyReport;
+module.exports.sendReport               = sendReport;
+module.exports.sendDailyReport          = sendDailyReport;
+module.exports.sendPasswordExpiryReminder = sendPasswordExpiryReminder;

@@ -395,9 +395,10 @@ app.get('/api/admin/test-report/:type', (req, res) => {
     const isAdmin = getAdminSessionState(req);
     const keyOk   = req.query.key === (process.env.REPORT_TEST_KEY || 'ikizame-report-test');
     if (!isAdmin && !keyOk) return res.status(401).json({ error: 'Unauthorized' });
-    const type = ['weekly','monthly','yearly','daily'].includes(req.params.type) ? req.params.type : 'daily';
-    const runner = type === 'daily'
-        ? require('./routes/reports').sendDailyReport(db, emailTransport)
+    const type = ['weekly','monthly','yearly','daily','password-reminder'].includes(req.params.type) ? req.params.type : 'daily';
+    const reports = require('./routes/reports');
+    const runner = type === 'daily' ? reports.sendDailyReport(db, emailTransport)
+        : type === 'password-reminder' ? reports.sendPasswordExpiryReminder(emailTransport)
         : sendReport(db, emailTransport, type);
     runner
         .then(() => res.json({ ok: true, message: `${type} report sent` }))
