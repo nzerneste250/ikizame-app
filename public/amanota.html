@@ -478,7 +478,8 @@
                             lookupPhoneHint.textContent = "Nta kizamini na kimwe cyabonetse kuri iyi numero!";
                             lookupPhoneHint.className = "hint error";
                             submitLookupBtn.disabled = false;
-                            submitLookupBtn.innerHTML = `Shakisha Amanota <i class="fa-solid fa-magnifying-glass"></i>`;
+                            const _t3 = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
+                            submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> <span>${_t3==='en'?'Search Scores':'Shakisha Amanota'}</span>`;
                             return;
                         }
 
@@ -575,8 +576,8 @@
                     } finally {
                         submitLookupBtn.disabled = false;
                         const _t2 = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-                        submitLookupBtn.innerHTML = `Shakisha Amanota <i class="fa-solid fa-magnifying-glass"></i>`;
-                        if (_t2 === 'en') submitLookupBtn.innerHTML = `Search Scores <i class="fa-solid fa-magnifying-glass"></i>`;
+                        const _btnLabel = _t2 === 'en' ? 'Search Scores' : 'Shakisha Amanota';
+                        submitLookupBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> <span>${_btnLabel}</span>`;
                     }
                 });
             }

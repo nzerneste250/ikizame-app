@@ -382,7 +382,7 @@ function filterDocs(q) {
     const term = q.trim().toLowerCase();
     clearBtn.classList.toggle('show', term.length > 0);
     if (!term) {
-        grid.innerHTML = allDocs.map(doc => buildCard(doc)).join('');
+        grid.innerHTML = allDocs.map((doc, i) => buildCard(doc, i)).join('');
         badge.textContent = allDocs.length + ' inyandiko';
         return;
     }
@@ -392,7 +392,7 @@ function filterDocs(q) {
     );
     badge.textContent = filtered.length + ' ibisubizo';
     grid.innerHTML = filtered.length
-        ? filtered.map(doc => buildCard(doc)).join('')
+        ? filtered.map(doc => buildCard(doc, allDocs.indexOf(doc))).join('')
         : `<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zibonetse zifite "${q}"</p></div>`;
 }
 
