@@ -1,8 +1,25 @@
-const express = require('express');
-const path    = require('path');
-const multer  = require('multer');
-const fs      = require('fs');
+const express    = require('express');
+const path       = require('path');
+const multer     = require('multer');
+const fs         = require('fs');
+const { execSync } = require('child_process');
 const { requireAdminLogin } = require('../middleware/auth');
+
+function compressUploadedFile(filePath) {
+    const ext = path.extname(filePath).toLowerCase();
+    try {
+        if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
+            execSync(`convert "${filePath}" -resize '800x800>' -quality 82 "${filePath}"`, { timeout: 15000 });
+        } else if (ext === '.pdf') {
+            const tmp = filePath + '_tmp.pdf';
+            execSync(`gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${tmp}" "${filePath}"`, { timeout: 60000 });
+            fs.renameSync(tmp, filePath);
+        }
+        console.log(`✅ Compressed resource: ${path.basename(filePath)}`);
+    } catch(e) {
+        console.warn(`⚠️ Compression skipped for ${path.basename(filePath)}:`, e.message);
+    }
+}
 
 const uploadDir = path.resolve(__dirname, '..', 'public', 'assets', 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
@@ -53,6 +70,8 @@ module.exports = (db, isPublic = false) => {
         const allowRead    = canRead    === 'on' ? 1 : 0;
         const allowDownload = canDownload === 'on' ? 1 : 0;
 
+        compressUploadedFile(req.file.path);
+
         db.query(
             `INSERT INTO learning_resources (title, description, file_name, file_type, allow_read, allow_download) VALUES (?, ?, ?, ?, ?, ?)`,
             [title.trim(), description ? description.trim() : '', fileName, fileType, allowRead, allowDownload],
@@ -69,6 +88,8 @@ module.exports = (db, isPublic = false) => {
 
         const finalFileName = req.file ? req.file.filename : existingFileName;
         const finalFileType = req.file ? path.extname(req.file.originalname).toLowerCase().replace('.', '') : existingFileType;
+
+        if (req.file) compressUploadedFile(req.file.path);
         const allowRead     = canRead    === 'on' ? 1 : 0;
         const allowDownload  = canDownload === 'on' ? 1 : 0;
 
