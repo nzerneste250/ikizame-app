@@ -407,22 +407,25 @@ function buildCard(doc) {
     const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
     const readLabel = _t === 'en' ? 'Read Now' : 'Soma Hano';
     const dlLabel   = _t === 'en' ? 'Download' : 'Gukura';
-    const ext = doc.file_path.split('.').pop().toLowerCase();
+    const ext = (doc.file_path || '').split('.').pop().toLowerCase();
     const isPdf = ext === 'pdf';
     const isWord = ['doc','docx'].includes(ext);
 
     const iconClass = isPdf ? 'icon-pdf' : isWord ? 'icon-word' : 'icon-img';
-    const iconFA = isPdf ? 'fa-file-pdf' : isWord ? 'fa-file-word' : 'fa-file-image';
-    const tagClass = isPdf ? 'tag-pdf' : 'tag-word';
-    const tagLabel = ext.toUpperCase();
+    const iconFA    = isPdf ? 'fa-file-pdf' : isWord ? 'fa-file-word' : 'fa-file-image';
+    const tagClass  = isPdf ? 'tag-pdf' : 'tag-word';
+    const tagLabel  = ext.toUpperCase();
+
+    // Store doc safely in a data attribute to avoid quote issues in onclick
+    const idx = allDocs.indexOf(doc);
 
     const dlBtn = doc.allow_download === 1
-        ? `<a href="/${doc.file_path}" download class="btn-download"><i class="fa-solid fa-download"></i> ${dlLabel}</a>`
+        ? `<a href="/${doc.file_path}" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> ${dlLabel}</a>`
         : `<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>`;
 
     const desc = doc.description ? `<p>${doc.description}</p>` : '';
 
-    return `<div class="doc-card" onclick="openViewer(${JSON.stringify(doc).replace(/"/g, '&quot;')})">
+    return `<div class="doc-card" onclick="openViewer(${idx})">
         <div class="doc-card-top">
             <div class="doc-type-icon ${iconClass}"><i class="fa-solid ${iconFA}"></i></div>
             <div class="doc-info">
@@ -435,7 +438,7 @@ function buildCard(doc) {
             <span class="doc-tag tag-read"><i class="fa-solid fa-eye" style="font-size:9px"></i> Soma</span>
         </div>
         <div class="doc-actions" onclick="event.stopPropagation()">
-            <button class="btn-read" onclick="openViewer(${JSON.stringify(doc).replace(/"/g, '&quot;')})">
+            <button class="btn-read" onclick="openViewer(${idx})">
                 <i class="fa-solid fa-book-open"></i> ${readLabel}
             </button>
             ${dlBtn}
@@ -443,10 +446,10 @@ function buildCard(doc) {
     </div>`;
 }
 
-function openViewer(doc) {
-    const ext = doc.file_path.split('.').pop().toLowerCase();
+function openViewer(idx) {
+    const doc = allDocs[idx];
+    if (!doc) return;
     const fileUrl = window.location.origin + '/' + doc.file_path;
-    // Open directly in new tab — fastest on VPS, no iframe delay
     window.open(fileUrl, '_blank', 'noopener');
 }
 
