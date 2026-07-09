@@ -1,0 +1,146 @@
+// IKIZAME — shared language switcher
+(function () {
+    const T = {
+        rw: {
+            // navbar links
+            nav_home: 'Ahabanza', nav_help: 'Ubufasha', nav_resources: 'Imfashanyigisho',
+            nav_pricing: 'Ibiciro', nav_school: 'Amashuri (School Portal)', nav_scores: 'Amanota',
+            // index hero
+            hero_pill1: 'Isuzuma Rihuse', hero_pill2: 'Amategeko 2026',
+            hero_h1: 'Iga, Isuzume,', hero_h1_em: 'Utsinde', hero_h1_end: 'Ikizamini!',
+            hero_desc: "Ikizame ni urubuga rugufasha kwiga amategeko y'umuhanda no gukora imyitozo y'ikizamini cy'uruhushya rwo gutwara imodoka mu Rwanda — vuba, neza, kandi ukoresheje telefone yawe.",
+            hero_cta: 'Reba Uko Bigenda',
+            // reg card
+            card_title: 'Tangira Ikizamini',
+            card_sub: "Injiza amazina yawe n'inomero ya telefone kugira ngo utangire ikizamini cy'amategeko y'umuhanda.",
+            label_name: 'Amazina Yanyu', ph_name: 'Urugero: Irakoze Felix',
+            hint_name: 'Andika amazina yanyu yose',
+            label_phone: 'Numero ya Telefone', ph_phone: '0788000000',
+            hint_phone: 'Tangira na 0 (Inimero 10 gusa, urugero: 0788000000)',
+            btn_start: 'Tangira Ikizamini',
+            // guide modal
+            guide_title: 'Uko IKIZAME Ikora',
+            guide_sub: 'Inzira yose kuva gutangira kugeza kureba amanota yawe',
+            // exam score
+            score_label: 'Amanota wagize:',
+            verdict_pass: 'WATSINZE', verdict_fail: 'WATSINZWE',
+            btn_review: 'Reba ibisubizo', btn_home: 'Jya Ahabanza',
+            // exam result banner
+            result_banner: "IBYAVUYE MU KIZAMINI CYAWE",
+            result_sub: "Ikizamini cy'Inzira",
+            lbl_name: 'Amazina', lbl_score: 'Amanota', lbl_phone: 'Telefoni',
+            lbl_time: 'Igihe cyakorewe', lbl_correct: 'WASUBIJE NEZA',
+            lbl_wrong: 'WASUBIJE NABI', lbl_skipped: 'BIDASUBIWE',
+            btn_back_home: 'Subira Ahabanza', lbl_all_q: "Ibibazo Byose n'Ibisubizo Byazo",
+            btn_top: 'Subira Hejuru',
+            // amanota page
+            lookup_title: 'Reba Amanota Yawe',
+            lookup_desc: 'Injiza numero ya telefoni yakoreshejwe mu kizamini kugira ngo urebe amateka yawe yose.',
+            lookup_label: 'Numero ya Telefoni', lookup_ph: '0780 000 000',
+            lookup_hint: 'Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079',
+            lookup_btn: 'Shakisha Amanota',
+            // ubufasha
+            help_hero_h1: 'Dufashe Gukora', help_hero_span: 'Ikizamini Neza',
+            help_hero_p: 'Ufite ikibazo? Twandikire kuri WhatsApp cyangwa utubone ku mbuga nkoranyambaga. Turakwitabira vuba kandi neza.',
+            // ifashanyigisho
+            res_hero_h1: "Imfashanyigisho z'Amategeko",
+            res_hero_p: "Soma no gukura inyandiko z'amategeko y'umuhanda zikubiye hano kugirango witegure ikizamini cyawe neza.",
+            res_search_ph: 'Shakisha inyandiko...',
+            res_read_btn: 'Soma Hano', res_dl_btn: 'Gukura',
+            // ibiciro
+            pricing_h2: 'Gura Ibizamini Byoroshye kandi Bihendutse',
+            pricing_p: "Urahawe uburyo bwihuse bwo kugura amasomo y'ikizamini, kureba ibisigaye ku nomero yawe, no kwishyura ukoresheje MTN MoMo cyangwa Airtel Money.",
+            // exam page
+            exam_timer_label: 'IGIHE MUSIGARANYE:',
+            exam_prev: '← Inyuma', exam_next: 'Komeza →', exam_finish: 'Soza Ikizamini ✓',
+            exam_confirm: 'Ese koko urashaka gusoza ikizami?',
+            exam_no: 'Oya', exam_yes: 'Yego, Soza',
+        },
+        en: {
+            nav_home: 'Home', nav_help: 'Help', nav_resources: 'Resources',
+            nav_pricing: 'Pricing', nav_school: 'Schools (School Portal)', nav_scores: 'My Scores',
+            hero_pill1: 'Quick Practice', hero_pill2: 'Traffic Laws 2026',
+            hero_h1: 'Learn, Practice,', hero_h1_em: 'Pass', hero_h1_end: 'Your Exam!',
+            hero_desc: "IKIZAME helps you study Rwanda's traffic laws and practice driving licence exam questions — fast, easy, and right from your phone.",
+            hero_cta: 'See How It Works',
+            card_title: 'Start Exam',
+            card_sub: 'Enter your name and phone number to begin the traffic law exam.',
+            label_name: 'Full Name', ph_name: 'e.g. Irakoze Felix',
+            hint_name: 'Enter your full name',
+            label_phone: 'Phone Number', ph_phone: '0788000000',
+            hint_phone: 'Start with 0 (10 digits only, e.g. 0788000000)',
+            btn_start: 'Start Exam',
+            guide_title: 'How IKIZAME Works',
+            guide_sub: 'Step by step from registration to viewing your results',
+            score_label: 'Your score:',
+            verdict_pass: 'PASSED', verdict_fail: 'FAILED',
+            btn_review: 'View answers', btn_home: 'Go Home',
+            result_banner: 'YOUR EXAM RESULTS',
+            result_sub: "Driving Licence Exam",
+            lbl_name: 'Name', lbl_score: 'Score', lbl_phone: 'Phone',
+            lbl_time: 'Date & Time', lbl_correct: 'CORRECT',
+            lbl_wrong: 'WRONG', lbl_skipped: 'SKIPPED',
+            btn_back_home: 'Back to Home', lbl_all_q: 'All Questions & Answers',
+            btn_top: 'Back to Top',
+            lookup_title: 'View My Scores',
+            lookup_desc: 'Enter the phone number used during the exam to view all your results.',
+            lookup_label: 'Phone Number', lookup_ph: '0780 000 000',
+            lookup_hint: 'Enter 10 digits starting with 072, 073, 078 or 079',
+            lookup_btn: 'Search Scores',
+            help_hero_h1: 'We Are Here', help_hero_span: 'To Help You',
+            help_hero_p: 'Have a question? Contact us on WhatsApp or social media. We respond quickly.',
+            res_hero_h1: 'Study Resources',
+            res_hero_p: 'Read and download traffic law documents to prepare for your exam.',
+            res_search_ph: 'Search documents...',
+            res_read_btn: 'Read Now', res_dl_btn: 'Download',
+            pricing_h2: 'Buy Exam Attempts — Simple & Affordable',
+            pricing_p: 'Get quick access to exam attempts, check your balance, and pay via MTN MoMo or Airtel Money.',
+            exam_timer_label: 'TIME REMAINING:',
+            exam_prev: '← Back', exam_next: 'Next →', exam_finish: 'Finish Exam ✓',
+            exam_confirm: 'Are you sure you want to submit the exam?',
+            exam_no: 'Cancel', exam_yes: 'Yes, Submit',
+        }
+    };
+
+    // English flag SVG inline
+    const FLAGS = {
+        rw: `<svg class="lang-flag" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>`,
+        en: `<svg class="lang-flag" viewBox="0 0 60 30"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4"/><path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/><path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/></svg>`
+    };
+
+    function getLang() { return localStorage.getItem('ikizame_lang') || 'rw'; }
+    function setLang(l) { localStorage.setItem('ikizame_lang', l); }
+
+    function applyLang(lang) {
+        const t = T[lang];
+        if (!t) return;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key] !== undefined) el.textContent = t[key];
+        });
+        document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+            const key = el.getAttribute('data-i18n-ph');
+            if (t[key] !== undefined) el.placeholder = t[key];
+        });
+        // Update all lang badges on page
+        document.querySelectorAll('.lang-badge').forEach(badge => {
+            badge.innerHTML = `
+                ${FLAGS[lang]}
+                <span>${lang === 'rw' ? 'Kinyarwanda' : 'English'}</span>
+                <span class="lang-switch-btn" onclick="window.ikizameSwitchLang()" title="Switch language" style="margin-left:6px;cursor:pointer;font-size:0.75rem;background:#f1f5f9;border-radius:4px;padding:2px 7px;font-weight:800;color:#0b698b;border:1px solid #cbd5e1;">${lang === 'rw' ? 'EN' : 'RW'}</span>`;
+        });
+        document.documentElement.lang = lang === 'rw' ? 'rw' : 'en';
+    }
+
+    window.ikizameSwitchLang = function () {
+        const next = getLang() === 'rw' ? 'en' : 'rw';
+        setLang(next);
+        applyLang(next);
+    };
+
+    // Auto-apply on load
+    document.addEventListener('DOMContentLoaded', () => applyLang(getLang()));
+    // Also expose for pages that call it manually
+    window.ikizameApplyLang = applyLang;
+    window.ikizameGetLang = getLang;
+})();

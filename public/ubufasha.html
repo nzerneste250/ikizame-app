@@ -163,16 +163,16 @@
         </a>
         <nav>
             <ul class="navbar-links">
-                <li><a href="/">Ahabanza</a></li>
-                <li><a href="ubufasha" class="active">Ubufasha</a></li>
-                <li><a href="ifashanyigisho">Imfashanyigisho</a></li>
-                <li><a href="ibiciro">Ibiciro</a></li>
-                <li><a href="school-auth">Amashuri (School Portal)</a></li>
-                <li><a href="amanota">Amanota</a></li>
+                <li><a href="/" data-i18n="nav_home">Ahabanza</a></li>
+                <li><a href="ubufasha" class="active" data-i18n="nav_help">Ubufasha</a></li>
+                <li><a href="ifashanyigisho" data-i18n="nav_resources">Imfashanyigisho</a></li>
+                <li><a href="ibiciro" data-i18n="nav_pricing">Ibiciro</a></li>
+                <li><a href="school-auth" data-i18n="nav_school">Amashuri (School Portal)</a></li>
+                <li><a href="amanota" data-i18n="nav_scores">Amanota</a></li>
             </ul>
         </nav>
-        <div class="lang-badge">
-            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+        <div class="lang-badge" style="cursor:pointer;" onclick="window.ikizameSwitchLang()">
+            <svg class="rw-flag-svg lang-flag" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
             <span>Kinyarwanda</span>
         </div>
     </header>
@@ -185,8 +185,8 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 Twandikire · Turakwitabira
             </div>
-            <h1>Dufashe Gukora<br><span>Ikizamini Neza</span></h1>
-            <p>Ufite ikibazo? Twandikire kuri WhatsApp cyangwa utubone ku mbuga nkoranyambaga. Turakwitabira vuba kandi neza.</p>
+            <h1><span data-i18n="help_hero_h1">Dufashe Gukora</span><br><span data-i18n="help_hero_span">Ikizamini Neza</span></h1>
+            <p data-i18n="help_hero_p">Ufite ikibazo? Twandikire kuri WhatsApp cyangwa utubone ku mbuga nkoranyambaga. Turakwitabira vuba kandi neza.</p>
             <p style="font-size:0.78rem; color:rgba(148,163,184,0.5); margin-top:10px;">Ubufasha bw'abantu nyabo, si AI.</p>
         </div>
 
@@ -341,6 +341,6 @@
             document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
             if (!isOpen) item.classList.add('open');
         }
-    </script>
+    <script src="assets/js/i18n.js"></script>
 </body>
 </html>

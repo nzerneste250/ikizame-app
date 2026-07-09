@@ -252,16 +252,16 @@
         </a>
         <nav>
             <ul class="navbar-links">
-                <li><a href="/">Ahabanza</a></li>
-                <li><a href="ubufasha">Ubufasha</a></li>
-                <li><a href="ifashanyigisho">Imfashanyigisho</a></li>
-                <li><a href="ibiciro">Ibiciro</a></li>
-                <li><a href="school-auth">Amashuri (School Portal)</a></li>
-                <li><a href="amanota" class="active">Amanota</a></li>
+                <li><a href="/" data-i18n="nav_home">Ahabanza</a></li>
+                <li><a href="ubufasha" data-i18n="nav_help">Ubufasha</a></li>
+                <li><a href="ifashanyigisho" data-i18n="nav_resources">Imfashanyigisho</a></li>
+                <li><a href="ibiciro" data-i18n="nav_pricing">Ibiciro</a></li>
+                <li><a href="school-auth" data-i18n="nav_school">Amashuri (School Portal)</a></li>
+                <li><a href="amanota" class="active" data-i18n="nav_scores">Amanota</a></li>
             </ul>
         </nav>
-        <div class="lang-badge">
-            <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+        <div class="lang-badge" style="cursor:pointer;" onclick="window.ikizameSwitchLang()">
+            <svg class="rw-flag-svg lang-flag" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
             <span>Kinyarwanda</span>
         </div>
     </header>
@@ -282,14 +282,14 @@
                     <rect x="88" y="26" width="7" height="5" rx="1" fill="#fef08a"/>
                 </svg>
             </div>
-            <h2>Reba Amanota Yawe</h2>
-            <p>Injiza numero ya telefoni yakoreshejwe mu kizamini kugira ngo urebe amateka yawe yose.</p>
-            <div class="phone-field-label"><i class="fa-solid fa-sim-card"></i> Numero ya Telefoni</div>
+            <h2 data-i18n="lookup_title">Reba Amanota Yawe</h2>
+            <p data-i18n="lookup_desc">Injiza numero ya telefoni yakoreshejwe mu kizamini kugira ngo urebe amateka yawe yose.</p>
+            <div class="phone-field-label"><i class="fa-solid fa-sim-card"></i> <span data-i18n="lookup_label">Numero ya Telefoni</span></div>
             <div class="phone-input-row">
                 <div class="phone-prefix"><i class="fa-solid fa-phone"></i>&nbsp;+25</div>
-                <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" maxlength="10">
+                <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" data-i18n-ph="lookup_ph" maxlength="10">
             </div>
-            <div id="lookupPhoneHint" class="hint">Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079</div>
+            <div id="lookupPhoneHint" class="hint" data-i18n="lookup_hint">Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079</div>
             <button class="btn-submit-lookup" id="submitLookupBtn">
                 <i class="fa-solid fa-magnifying-glass"></i> Shakisha Amanota
             </button>
@@ -617,6 +617,6 @@
                 }
             };
         });
-    </script>
+    <script src="assets/js/i18n.js"></script>
 </body>
 </html>

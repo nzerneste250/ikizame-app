@@ -379,10 +379,10 @@
             <img src="assets/uploads/logo.png" alt="IKIZAME Logo" onerror="this.style.display='none'">
             <div>
                 <div class="banner-logo-text">IKIZAME</div>
-                <div class="banner-logo-sub">Ikizamini cy'Inzira</div>
+                <div class="banner-logo-sub" data-i18n="result_sub">Ikizamini cy'Inzira</div>
             </div>
         </a>
-        <div class="banner-title">IBYAVUYE MU KIZAMINI CYAWE</div>
+        <div class="banner-title" data-i18n="result_banner">IBYAVUYE MU KIZAMINI CYAWE</div>
         <div class="banner-spacer"></div>
     </div>
 
@@ -419,28 +419,28 @@
                 <div class="info-row">
                     <div class="info-icon"><i class="fa-solid fa-id-card"></i></div>
                     <div style="min-width:0;">
-                        <div class="info-label">Amazina</div>
+                        <div class="info-label" data-i18n="lbl_name">Amazina</div>
                         <div class="info-value" id="labelStudentName">---</div>
                     </div>
                 </div>
                 <div class="info-row">
                     <div class="info-icon score-icon"><i class="fa-solid fa-medal"></i></div>
                     <div style="min-width:0;">
-                        <div class="info-label">Amanota</div>
+                        <div class="info-label" data-i18n="lbl_score">Amanota</div>
                         <div class="info-value" id="labelScore">---</div>
                     </div>
                 </div>
                 <div class="info-row">
                     <div class="info-icon phone-icon"><i class="fa-solid fa-mobile-screen"></i></div>
                     <div style="min-width:0;">
-                        <div class="info-label">Telefoni</div>
+                        <div class="info-label" data-i18n="lbl_phone">Telefoni</div>
                         <div class="info-value" id="labelPhoneNumber">---</div>
                     </div>
                 </div>
                 <div class="info-row">
                     <div class="info-icon time-icon"><i class="fa-regular fa-calendar-check"></i></div>
                     <div style="min-width:0;">
-                        <div class="info-label">Igihe cyakorewe</div>
+                        <div class="info-label" data-i18n="lbl_time">Igihe cyakorewe</div>
                         <div class="info-value" id="labelTime">---</div>
                     </div>
                 </div>
@@ -450,23 +450,21 @@
             <div class="stats-row">
                 <div class="stat-cell s-correct">
                     <div class="stat-num" id="statCorrect">0</div>
-                    <div class="stat-lbl"><i class="fa-solid fa-circle-check" style="margin-right:3px;"></i>WASUBIJE NEZA</div>
+                    <div class="stat-lbl"><i class="fa-solid fa-circle-check" style="margin-right:3px;"></i><span data-i18n="lbl_correct">WASUBIJE NEZA</span></div>
                 </div>
                 <div class="stat-cell s-wrong">
                     <div class="stat-num" id="statWrong">0</div>
-                    <div class="stat-lbl"><i class="fa-solid fa-circle-xmark" style="margin-right:3px;"></i>WASUBIJE NABI</div>
+                    <div class="stat-lbl"><i class="fa-solid fa-circle-xmark" style="margin-right:3px;"></i><span data-i18n="lbl_wrong">WASUBIJE NABI</span></div>
                 </div>
                 <div class="stat-cell s-skip">
                     <div class="stat-num" id="statSkip">0</div>
-                    <div class="stat-lbl"><i class="fa-solid fa-circle-minus" style="margin-right:3px;"></i>BIDASUBIWE</div>
+                    <div class="stat-lbl"><i class="fa-solid fa-circle-minus" style="margin-right:3px;"></i><span data-i18n="lbl_skipped">BIDASUBIWE</span></div>
                 </div>
             </div>
 
             <!-- Footer: button only -->
             <div class="card-footer">
-                <a href="/" class="btn-home">
-                    <i class="fa-solid fa-house"></i> Subira Ahabanza
-                </a>
+                <a href="/" class="btn-home" data-i18n="btn_back_home"><i class="fa-solid fa-house"></i> Subira Ahabanza</a>
             </div>
         </div>
 
@@ -474,7 +472,7 @@
         <div class="questions-wrap">
             <div class="section-divider">
                 <div class="line"></div>
-                <span><i class="fa-solid fa-list-check" style="margin-right:5px;color:var(--brand);"></i>Ibibazo Byose n'Ibisubizo Byazo</span>
+                <span><i class="fa-solid fa-list-check" style="margin-right:5px;color:var(--brand);"></i><span data-i18n="lbl_all_q">Ibibazo Byose n'Ibisubizo Byazo</span></span>
                 <div class="line"></div>
             </div>
             <div id="questionsContainer"></div>
@@ -483,9 +481,7 @@
     </div><!-- /page-wrap -->
 
     <!-- BACK TO TOP BUTTON -->
-    <button id="backToTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-        <i class="fa-solid fa-arrow-up"></i> Subira Hejuru
-    </button>
+    <button id="backToTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" data-i18n="btn_top"><i class="fa-solid fa-arrow-up"></i> Subira Hejuru</button>
 
     <script>
         // ── GUARD: redirect to amanota if no valid session data ──
@@ -611,6 +607,6 @@
                     </div>`;
             });
         });
-    </script>
+    <script src="assets/js/i18n.js"></script>
 </body>
 </html>
