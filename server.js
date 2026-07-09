@@ -387,8 +387,9 @@ module.exports.sendErrorAlert = sendErrorAlert;
 app.set('emailTransport', emailTransport);
 
 // ── PAYMENT REPORT SCHEDULER ─────────────────────────────────────────────
-const { sendReport } = require('./routes/reports');
-require('./routes/reports')(db, emailTransport);
+const reports = require('./routes/reports');
+const { sendReport } = reports;
+reports(db, emailTransport);
 
 // Test endpoint — admin session OR secret key
 app.get('/api/admin/test-report/:type', (req, res) => {
@@ -399,7 +400,7 @@ app.get('/api/admin/test-report/:type', (req, res) => {
     const reports = require('./routes/reports');
     const runner = type === 'daily' ? reports.sendDailyReport(db, emailTransport)
         : type === 'password-reminder' ? reports.sendPasswordExpiryReminder(emailTransport)
-        : sendReport(db, emailTransport, type);
+        : reports.sendReport(db, emailTransport, type);
     runner
         .then(() => res.json({ ok: true, message: `${type} report sent` }))
         .catch(e => res.status(500).json({ ok: false, error: e.message }));
