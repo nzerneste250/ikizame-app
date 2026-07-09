@@ -344,16 +344,21 @@
 </div>
 
 <script>
-const isReloaded = performance.navigation && performance.navigation.type === performance.navigation.TYPE_RELOAD;
-if (isReloaded || sessionStorage.getItem('isExamAlreadyStarted') === 'true') {
-    sessionStorage.clear();
+// Detect reload using PerformanceNavigationTiming (modern) with fallback
+const navEntry = performance.getEntriesByType('navigation')[0];
+const isReloaded = navEntry ? navEntry.type === 'reload' : (performance.navigation && performance.navigation.type === 1);
+if (isReloaded) {
+    sessionStorage.removeItem('isExamAlreadyStarted');
     alert("IKIZAME CYAHAGARIKWA! Ntabwo wemerewe gukora Refresh/Reload.");
     window.location.replace('/');
-} else {
-    sessionStorage.setItem('isExamAlreadyStarted', 'true');
 }
 if (!sessionStorage.getItem('studentName') || !sessionStorage.getItem('phoneNumber')) {
     sessionStorage.clear(); window.location.replace('/');
+}
+if (sessionStorage.getItem('isExamAlreadyStarted') === 'true' && !isReloaded) {
+    // already running — fine, continue
+} else if (!isReloaded) {
+    sessionStorage.setItem('isExamAlreadyStarted', 'true');
 }
 
 // Block F5, Ctrl+R, Cmd+R refresh
@@ -459,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (q.image_path) {
             imgFrameEl.style.display = 'flex';
             qBodyEl.classList.remove('no-image');
-            imgFrameEl.innerHTML = `<img src="assets/uploads/${q.image_path}" alt="Ikimenyetso" decoding="async">`;
+            imgFrameEl.innerHTML = `<img src="assets/uploads/${q.image_path}" alt="Ikimenyetso" decoding="async" fetchpriority="high" loading="eager">`;
         } else {
             imgFrameEl.style.display = 'none';
             qBodyEl.classList.add('no-image');
@@ -563,20 +568,21 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/exams')
         .then(r => r.json())
         .then(data => {
-            // Server returns a unique shuffled set locked to this session.
-            // No client-side shuffle — no duplicates possible.
             questions = data;
             if (!questions.length) {
                 document.querySelector('.question-card').innerHTML = '<p style="text-align:center;padding:40px;font-weight:700;">Nta bibazo biri mu bubiko.</p>';
                 clearInterval(timer); return;
             }
-            questions.forEach(q => {
-                if (q.image_path) new Image().src = `assets/uploads/${q.image_path}`;
-                ['option_a','option_b','option_c','option_d'].forEach(k => {
-                    if (q[k] && /\.(png|jpg|jpeg|gif|webp)$/i.test(q[k])) new Image().src = `assets/uploads/${q[k]}`;
-                });
-            });
+            // Render first question immediately, then preload all images in background
             render();
+            setTimeout(() => {
+                questions.forEach(q => {
+                    if (q.image_path) { const i = new Image(); i.src = `assets/uploads/${q.image_path}`; }
+                    ['option_a','option_b','option_c','option_d'].forEach(k => {
+                        if (q[k] && /\.(png|jpg|jpeg|gif|webp)$/i.test(q[k])) { const i = new Image(); i.src = `assets/uploads/${q[k]}`; }
+                    });
+                });
+            }, 100);
         });
 });
 </script>
