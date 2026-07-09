@@ -96,6 +96,7 @@
             res_hero_h1: "Imfashanyigisho z'Amategeko",
             res_hero_p: "Soma no gukura inyandiko z'amategeko y'umuhanda zikubiye hano kugirango witegure ikizamini cyawe neza.",
             res_search_ph: 'Shakisha inyandiko...',
+            res_docs_available: 'Inyandiko Zihari', res_loading: 'Irimo gushaka...',
             res_read_btn: 'Soma Hano', res_dl_btn: 'Gukura',
             // ibiciro
             pricing_h2: 'Gura Ibizamini Byoroshye kandi Bihendutse',
@@ -201,6 +202,7 @@
             res_hero_h1: 'Study Resources',
             res_hero_p: 'Read and download traffic law documents to prepare for your exam.',
             res_search_ph: 'Search documents...',
+            res_docs_available: 'Available Documents', res_loading: 'Loading...',
             res_read_btn: 'Read Now', res_dl_btn: 'Download',
             pricing_h2: 'Buy Exam Attempts — Simple & Affordable',
             pricing_p: 'Get quick access to exam attempts, check your balance, and pay via MTN MoMo or Airtel Money.',

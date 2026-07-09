@@ -7,8 +7,8 @@
     <title>Imfashanyigisho | IKIZAME - Inyigisho z'Amategeko y'Umuhanda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --brand: #0b698b;
@@ -232,7 +232,7 @@
             .modal-box { border-radius: 0; height: 100vh; }
         }
     </style>
-<script src="assets/js/i18n.js?v=6"></script>
+<script src="assets/js/i18n.js?v=7"></script>
 </head>
 <body>
 
@@ -268,8 +268,8 @@
 <!-- MAIN -->
 <main class="main">
     <div class="section-head">
-        <h2><i class="fa-solid fa-folder-open"></i> Inyandiko Zihari</h2>
-        <span class="doc-count-badge" id="docCountBadge">Irimo gushaka...</span>
+        <h2><i class="fa-solid fa-folder-open"></i> <span data-i18n="res_docs_available">Inyandiko Zihari</span></h2>
+        <span class="doc-count-badge" id="docCountBadge" data-i18n="res_loading">Irimo gushaka...</span>
     </div>
     <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass s-icon"></i>
@@ -338,8 +338,14 @@ let allDocs = [];
 document.addEventListener('DOMContentLoaded', loadDocs);
 
 function loadDocs() {
-    fetch('/api/public/documents')
-        .then(r => r.json())
+    const badge = document.getElementById('docCountBadge');
+    const _t = () => window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    fetch('/api/public/documents', { signal: controller.signal })
+        .then(r => { clearTimeout(timeout); return r.json(); })
         .then(docs => {
             const grid = document.getElementById('cardsGrid');
             const badge = document.getElementById('docCountBadge');
@@ -359,12 +365,14 @@ function loadDocs() {
             grid.innerHTML = docs.map(doc => buildCard(doc)).join('');
         })
         .catch(() => {
+            const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
             document.getElementById('cardsGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1">
                 <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
-                <h3>Habayeho ikosa</h3>
-                <p>Gushaka inyandiko byanze. Gerageza kongera.</p>
+                <h3>${_t==='en'?'Something went wrong':'Habayeho ikosa'}</h3>
+                <p>${_t==='en'?'Could not load documents. Please try again.':'Gushaka inyandiko byanze. Gerageza kongera.'}</p>
+                <button onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;">${_t==='en'?'Retry':'Ongera Ugerageze'}</button>
             </div>`;
-            document.getElementById('docCountBadge').textContent = 'Ikosa';
+            document.getElementById('docCountBadge').textContent = _t==='en'?'Error':'Ikosa';
         });
 }
 
@@ -514,4 +522,5 @@ document.getElementById('viewerModal').addEventListener('click', function(e) {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewer(); });
 </body>
 </html>
+
 
