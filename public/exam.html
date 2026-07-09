@@ -403,14 +403,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const progFillD      = document.getElementById('progFillD');
     const progFillM      = document.getElementById('progFillM');
 
-    // Timer
-    let secs = 20 * 60;
-    const timer = setInterval(() => {
-        const m = Math.floor(secs / 60), s = secs % 60;
+    // Timer — deadline-based so it works even when tab is in background
+    const examDeadline = Date.now() + 20 * 60 * 1000;
+    function tickTimer() {
+        const remaining = Math.max(0, Math.round((examDeadline - Date.now()) / 1000));
+        const m = Math.floor(remaining / 60), s = remaining % 60;
         countdownEl.textContent = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
-        if (secs <= 0) { clearInterval(timer); sessionStorage.removeItem('isExamAlreadyStarted'); submit(); }
-        secs--;
-    }, 1000);
+        if (remaining <= 60) { countdownEl.style.color = '#dc2626'; }
+        if (remaining <= 0) { sessionStorage.removeItem('isExamAlreadyStarted'); submit(); return; }
+        setTimeout(tickTimer, 500);
+    }
+    tickTimer();
 
     function makeDot(i) {
         const q = questions[i];
@@ -545,7 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function submit() {
-        clearInterval(timer);
         const payload = {};
         for (const id in answers) payload[`question_${id}`] = answers[id];
         fetch('/api/exams/submit', {
