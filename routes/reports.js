@@ -2,6 +2,48 @@ const cron   = require('node-cron');
 const PDFDoc = require('pdfkit');
 
 const DAILY_REPORT_EMAIL = 'dotadostationarystore@gmail.com';
+const PASSWORD_REMINDER_EMAIL = 'nzerneste250@gmail.com';
+const PASSWORD_EXPIRY_DAYS = 14;
+const PASSWORD_WARN_DAYS  = 3;
+
+// Track password change date in memory (set via env or default to app start)
+// Set PASS_CHANGED_AT=YYYY-MM-DD in .env when you change the password
+function getPasswordExpiryInfo() {
+    const raw = process.env.PASS_CHANGED_AT;
+    const changed = raw ? new Date(raw) : new Date();
+    const expiry  = new Date(changed);
+    expiry.setDate(expiry.getDate() + PASSWORD_EXPIRY_DAYS);
+    const now = new Date();
+    const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+    return { changed, expiry, daysLeft };
+}
+
+async function sendPasswordExpiryReminder(transport) {
+    const { expiry, daysLeft } = getPasswordExpiryInfo();
+    if (daysLeft > PASSWORD_WARN_DAYS || daysLeft < 0) return; // only warn in last 3 days
+    const urgency = daysLeft <= 1 ? '🚨' : '⚠️';
+    await transport.sendMail({
+        from: `"IKIZAME Security" <${process.env.SMTP_USER}>`,
+        to:   PASSWORD_REMINDER_EMAIL,
+        subject: `${urgency} IKIZAME — Password Expires in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}`,
+        html: `<div style="font-family:Inter,sans-serif;background:#f8fafc;padding:24px;max-width:480px;">
+            <div style="background:${daysLeft<=1?'#ef4444':'#f59e0b'};padding:16px 20px;border-radius:8px;margin-bottom:16px;">
+                <h2 style="color:#fff;margin:0;font-size:17px;">${urgency} Password Expiry Reminder</h2>
+                <p style="color:rgba(255,255,255,0.85);margin:4px 0 0;font-size:12px;">IKIZAME Server Credentials</p>
+            </div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <tr style="background:#fef3c7;"><td colspan="2" style="padding:8px 12px;font-weight:800;color:#92400e;">Action Required</td></tr>
+                <tr><td style="padding:7px 12px;color:#64748b;">Days Remaining</td><td style="padding:7px 12px;font-weight:800;color:${daysLeft<=1?'#ef4444':'#f59e0b'};font-size:16px;">${daysLeft} day${daysLeft!==1?'s':''}</td></tr>
+                <tr style="background:#f8fafc;"><td style="padding:7px 12px;color:#64748b;">Expiry Date</td><td style="padding:7px 12px;font-weight:700;">${expiry.toISOString().slice(0,10)}</td></tr>
+                <tr><td style="padding:7px 12px;color:#64748b;">Scope</td><td style="padding:7px 12px;font-weight:700;">Server & Database Credentials</td></tr>
+            </table>
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;margin-top:16px;">
+                <p style="color:#b91c1c;font-size:13px;font-weight:600;margin:0;">Please update your server and database passwords before the expiry date, then update <strong>PASS_CHANGED_AT</strong> in the .env file to today's date.</p>
+            </div>
+        </div>`
+    });
+    console.log(`✅ Password expiry reminder sent — ${daysLeft} day(s) left`);
+}
 
 function getPeriodRange(type) {
     const now = new Date();
@@ -284,10 +326,11 @@ function buildDailyPDF(d) {
 
 module.exports = function startReportScheduler(db, transport) {
     cron.schedule('0 7 * * *', () => sendDailyReport(db, transport).catch(e => console.error('❌ Daily report failed:', e.message)));
+    cron.schedule('0 8 * * *', () => sendPasswordExpiryReminder(transport).catch(e => console.error('❌ Password reminder failed:', e.message)));
     cron.schedule('0 7 * * 1', () => sendReport(db, transport, 'weekly').catch(e => console.error('❌ Weekly report failed:', e.message)));
     cron.schedule('0 7 1 * *', () => sendReport(db, transport, 'monthly').catch(e => console.error('❌ Monthly report failed:', e.message)));
     cron.schedule('0 7 1 1 *', () => sendReport(db, transport, 'yearly').catch(e => console.error('❌ Yearly report failed:', e.message)));
-    console.log('✅ Report scheduler started (daily 7AM, weekly Mon, monthly 1st, yearly Jan 1st)');
+    console.log('✅ Report scheduler started (daily 7AM, password check 8AM, weekly Mon, monthly 1st, yearly Jan 1st)');
 };
 
 module.exports.sendReport      = sendReport;
