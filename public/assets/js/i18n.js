@@ -124,10 +124,9 @@
         });
         // Update all lang badges on page
         document.querySelectorAll('.lang-badge').forEach(badge => {
-            badge.innerHTML = `
-                ${FLAGS[lang]}
-                <span>${lang === 'rw' ? 'Kinyarwanda' : 'English'}</span>
-                <span class="lang-switch-btn" onclick="window.ikizameSwitchLang()" title="Switch language" style="margin-left:6px;cursor:pointer;font-size:0.75rem;background:#f1f5f9;border-radius:4px;padding:2px 7px;font-weight:800;color:#0b698b;border:1px solid #cbd5e1;">${lang === 'rw' ? 'EN' : 'RW'}</span>`;
+            badge.innerHTML = `${FLAGS[lang]}<span>${lang === 'rw' ? 'Kinyarwanda' : 'English'}</span>`;
+            badge.style.cursor = 'pointer';
+            badge.onclick = window.ikizameSwitchLang;
         });
         document.documentElement.lang = lang === 'rw' ? 'rw' : 'en';
     }
@@ -138,9 +137,12 @@
         applyLang(next);
     };
 
-    // Auto-apply on load
-    document.addEventListener('DOMContentLoaded', () => applyLang(getLang()));
-    // Also expose for pages that call it manually
+    // Apply immediately if DOM ready, else wait
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => applyLang(getLang()));
+    } else {
+        applyLang(getLang());
+    }
     window.ikizameApplyLang = applyLang;
     window.ikizameGetLang = getLang;
 })();
