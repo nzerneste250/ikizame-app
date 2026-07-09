@@ -445,63 +445,10 @@ function buildCard(doc) {
 }
 
 function openViewer(doc) {
-    const modal = document.getElementById('viewerModal');
-    const frame = document.getElementById('viewerFrame');
-    const loading = document.getElementById('viewerLoading');
-    const title = document.getElementById('modalTitle');
-    const sub = document.getElementById('modalSub');
-    const icon = document.getElementById('modalIcon');
-    const dlBtn = document.getElementById('modalDownloadBtn');
-
     const ext = doc.file_path.split('.').pop().toLowerCase();
-    const isPdf = ext === 'pdf';
-    const isWord = ['doc','docx'].includes(ext);
     const fileUrl = window.location.origin + '/' + doc.file_path;
-
-    // Update modal header
-    title.textContent = doc.title;
-    sub.textContent = ext.toUpperCase() + ' Document';
-    icon.className = 'modal-header-icon ' + (isPdf ? 'icon-pdf' : isWord ? 'icon-word' : 'icon-img');
-    icon.innerHTML = '<i class="fa-solid ' + (isPdf ? 'fa-file-pdf' : isWord ? 'fa-file-word' : 'fa-file-image') + '"></i>';
-
-    // Download button
-    if (doc.allow_download === 1) {
-        dlBtn.href = '/' + doc.file_path;
-        dlBtn.style.display = 'flex';
-    } else {
-        dlBtn.style.display = 'none';
-    }
-
-    // Show loading, hide old frame
-    loading.style.display = 'flex';
-    frame.style.opacity = '0';
-    frame.src = '';
-
-    modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-
-    // Build viewer URL — use Google Docs viewer for Word, direct for PDF
-    let viewerSrc;
-    if (isWord) {
-        viewerSrc = 'https://docs.google.com/gview?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
-    } else {
-        viewerSrc = fileUrl + '#toolbar=0&navpanes=0&scrollbar=1';
-    }
-
-    // Load iframe after short delay so modal animation completes first
-    setTimeout(() => {
-        frame.onload = () => {
-            loading.style.display = 'none';
-            frame.style.opacity = '1';
-            frame.style.transition = 'opacity 0.3s';
-        };
-        // Fallback: hide spinner after 8s even if onload doesn't fire
-        setTimeout(() => {
-            loading.style.display = 'none';
-            frame.style.opacity = '1';
-        }, 8000);
-        frame.src = viewerSrc;
-    }, 200);
+    // Open directly in new tab — fastest on VPS, no iframe delay
+    window.open(fileUrl, '_blank', 'noopener');
 }
 
 function closeViewer() {

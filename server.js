@@ -74,6 +74,10 @@ if (!isProduction) {
 }
 
 // ── DATABASE POOL ─────────────────────────────────────────────────────────
+// ── DOCUMENTS CACHE ──────────────────────────────────────────────────────
+let _docsCache = null;
+let _docsCacheAt = 0;
+
 console.log(`ℹ️  ${isProduction ? 'Production' : 'Local'} environment — connecting to [${dbConfig.host}]...`);
 
 const db = mysql.createPool(dbConfig);
@@ -89,7 +93,22 @@ db.getConnection((err, conn) => {
         if (e) console.warn('⚠️  is_active migration skipped:', e.message);
         else   console.log('✅ portal_admins.is_active column ready');
     });
-    conn.release();
+    // Warm up documents cache on startup
+    conn.query(
+        `SELECT id, title, description, file_name, file_type, allow_read, allow_download FROM learning_resources WHERE allow_read = 1 ORDER BY id DESC`,
+        (e2, rows) => {
+            if (!e2 && rows) {
+                _docsCache = rows.map(row => ({
+                    id: row.id, title: row.title, description: row.description,
+                    file_path: `assets/uploads/${row.file_name}`,
+                    file_type: row.file_type, allow_download: parseInt(row.allow_download, 10)
+                }));
+                _docsCacheAt = Date.now();
+                console.log(`✅ Documents cache warmed (${_docsCache.length} docs)`);
+            }
+            conn.release();
+        }
+    );
 });
 
 // ── SESSION STORE ────────────────────────────────────────────────
@@ -333,7 +352,27 @@ app.use('/api/exams',            require('./routes/exams')(db));
 app.use('/api/payments',         require('./routes/payments')(db));
 app.use('/api/amanota',          require('./routes/amanota')(db));
 app.use('/api/resources',        require('./routes/resources')(db));
-app.use('/api/public/documents', require('./routes/resources')(db, true));
+
+// ── PUBLIC DOCUMENTS — in-memory cache (60s TTL) ─────────────────────────
+app.get('/api/public/documents', (req, res) => {
+    const now = Date.now();
+    if (_docsCache && (now - _docsCacheAt) < 60000) {
+        return res.json(_docsCache);
+    }
+    db.query(
+        `SELECT id, title, description, file_name, file_type, allow_read, allow_download FROM learning_resources WHERE allow_read = 1 ORDER BY id DESC`,
+        (err, results) => {
+            if (err) return res.status(500).json({ error: 'Gushaka imfashanyigisho byanze.' });
+            _docsCache = results.map(row => ({
+                id: row.id, title: row.title, description: row.description,
+                file_path: `assets/uploads/${row.file_name}`,
+                file_type: row.file_type, allow_download: parseInt(row.allow_download, 10)
+            }));
+            _docsCacheAt = now;
+            res.json(_docsCache);
+        }
+    );
+});
 
 // Admin routes — rate limiter applied on the router before mounting
 const adminRouter = require('./routes/admin')(db, loginLimiter);
