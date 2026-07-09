@@ -255,7 +255,10 @@
         tbody tr:hover { background: #f8fafc; }
         tbody td { padding: 12px 16px; color: var(--text-main); vertical-align: middle; }
 
-        .cell-img { width: 40px; height: 40px; border-radius: 6px; border: 1px solid var(--border); object-fit: contain; background: #fafafa; display: block; }
+        .cell-img { width: 40px; height: 40px; border-radius: 6px; border: 1px solid var(--border); object-fit: contain; background: #fafafa; display: block; cursor: zoom-in; transition: transform 0.15s, box-shadow 0.15s; }
+        .cell-img:hover { transform: scale(1.12); box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+        #imgPreviewOverlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.82); backdrop-filter:blur(6px); z-index:99999; align-items:center; justify-content:center; cursor:zoom-out; }
+        #imgPreviewOverlay img { max-width:88vw; max-height:88vh; border-radius:16px; box-shadow:0 30px 70px rgba(0,0,0,0.5); object-fit:contain; border:3px solid #fff; }
         .cell-badge { font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
         .cell-badge.correct { background: #dcfce7; color: #15803d; }
                 /* ── 🎯 ACTION CELL CONTROLS ── */
@@ -477,6 +480,20 @@
     <span>Session expires in <span id="adminToastSec">60</span>s — move the mouse to stay active.</span>
 </div>
 <script src="assets/js/admin-session.js"></script>
+<div id="imgPreviewOverlay" onclick="this.style.display='none'">
+    <button onclick="event.stopPropagation(); document.getElementById('imgPreviewOverlay').style.display='none'" style="position:fixed; top:18px; right:22px; background:#fff; border:none; width:40px; height:40px; border-radius:50%; font-size:20px; font-weight:800; color:#0f172a; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,0.3); z-index:1;">&#x2715;</button>
+    <img id="imgPreviewImg" src="" alt="Sign preview">
+</div>
+<script>
+window.showImgPreview = function(src) {
+    var o = document.getElementById('imgPreviewOverlay');
+    document.getElementById('imgPreviewImg').src = src;
+    o.style.display = 'flex';
+};
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') document.getElementById('imgPreviewOverlay').style.display = 'none';
+});
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -546,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td style="text-align:center; font-weight:700; color:var(--brand);">${i + 1}</td>
                     <td style="font-weight:600; line-height:1.45; min-width:220px; color:#0f172a; white-space:normal; overflow:visible;">${q.question}</td>
                     <td style="text-align:center;">
-                        ${q.image_path ? `<img src="assets/uploads/${q.image_path}" class="cell-img" style="margin:0 auto;" alt="Sign">` : `<span style="color:#cbd5e1; font-weight:600; font-size:12px;">None</span>`}
+                        ${q.image_path ? `<img src="assets/uploads/${q.image_path}" class="cell-img" style="margin:0 auto;" alt="Sign" title="Click or hover to preview" onclick="showImgPreview('assets/uploads/${q.image_path}')">` : `<span style="color:#cbd5e1; font-weight:600; font-size:12px;">None</span>`}
                     </td>
                     <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_a)}</td>
                     <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_b)}</td>
