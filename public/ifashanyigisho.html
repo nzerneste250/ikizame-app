@@ -361,7 +361,7 @@ function loadDocs() {
 
             allDocs = docs;
             badge.textContent = docs.length + ' inyandiko';
-            grid.innerHTML = docs.map(doc => buildCard(doc)).join('');
+            grid.innerHTML = allDocs.map((doc, i) => buildCard(doc, i)).join('');
         })
         .catch(() => {
             const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
@@ -403,21 +403,17 @@ function clearSearch() {
     input.focus();
 }
 
-function buildCard(doc) {
+function buildCard(doc, idx) {
     const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
     const readLabel = _t === 'en' ? 'Read Now' : 'Soma Hano';
     const dlLabel   = _t === 'en' ? 'Download' : 'Gukura';
     const ext = (doc.file_path || '').split('.').pop().toLowerCase();
     const isPdf = ext === 'pdf';
     const isWord = ['doc','docx'].includes(ext);
-
     const iconClass = isPdf ? 'icon-pdf' : isWord ? 'icon-word' : 'icon-img';
     const iconFA    = isPdf ? 'fa-file-pdf' : isWord ? 'fa-file-word' : 'fa-file-image';
     const tagClass  = isPdf ? 'tag-pdf' : 'tag-word';
     const tagLabel  = ext.toUpperCase();
-
-    // Store doc safely in a data attribute to avoid quote issues in onclick
-    const idx = allDocs.indexOf(doc);
 
     const dlBtn = doc.allow_download === 1
         ? `<a href="/${doc.file_path}" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> ${dlLabel}</a>`
