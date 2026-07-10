@@ -13,19 +13,20 @@
         :root { --brand:#0b698b; --brand-dark:#08536e; --brand-light:#e0f2fe; --bg:#f0f6fa; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0; }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-        .navbar { position:sticky; top:0; z-index:1000; background:#fff; border-bottom:1px solid var(--border); box-shadow:0 1px 8px rgba(15,23,42,.06); padding:0 5%; display:flex; align-items:center; justify-content:space-between; height:62px; }
-        .navbar-brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
-        .navbar-brand img { width:34px; height:34px; object-fit:contain; }
-        .navbar-brand span { font-size:1.5rem; font-weight:800; color:var(--brand); letter-spacing:-.5px; }
-        .navbar-links { display:flex; list-style:none; gap:6px; align-items:center; }
-        .navbar-links a { font-size:.83rem; font-weight:600; color:var(--muted); text-decoration:none; padding:7px 12px; border-radius:8px; transition:all .15s; white-space:nowrap; }
-        .navbar-links a:hover { color:var(--brand); background:var(--brand-light); }
-        .navbar-links a.active { color:var(--brand); background:var(--brand-light); font-weight:700; }
+        .navbar { position:fixed; top:0; left:0; right:0; z-index:5000; height:60px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 4%; border-bottom:1px solid #e2e8f0; box-shadow:0 1px 10px rgba(15,23,42,.03); width:100vw; box-sizing:border-box; }
+        .navbar-brand-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
+        .navbar-brand-wrap img { width:32px; height:32px; object-fit:contain; }
+        .navbar-brand { font-family:'Inter',sans-serif; font-size:1.65rem; font-weight:800; color:#0b698b; letter-spacing:-.5px; text-transform:uppercase; line-height:1; }
+        .navbar-links { display:flex; list-style:none; gap:22px; align-items:center; margin:0; padding:0; }
+        .navbar-links a { font-family:'Inter',sans-serif; font-size:.84rem; font-weight:700; color:#475569; text-decoration:none; padding:20px 0 18px; position:relative; transition:color .15s; white-space:nowrap; display:inline-block; }
+        .navbar-links a:hover { color:#0b698b; }
+        .navbar-links a.active { color:#0b698b; font-weight:800; }
+        .navbar-links a.active::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:#0b698b; border-radius:2px 2px 0 0; }
         .hero { background:linear-gradient(135deg,var(--brand) 0%,#0e4f6b 100%); padding:52px 5% 48px; text-align:center; }
         .hero-icon { width:64px; height:64px; background:rgba(255,255,255,.15); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:28px; color:#fff; margin:0 auto 18px; }
         .hero h1 { font-size:clamp(1.6rem,4vw,2.4rem); font-weight:800; color:#fff; margin-bottom:10px; }
         .hero p { font-size:1rem; color:rgba(255,255,255,.8); max-width:520px; margin:0 auto; line-height:1.6; }
-        .main { max-width:1100px; margin:0 auto; padding:40px 5% 60px; }
+        .main { max-width:1100px; margin:0 auto; padding:80px 5% 60px; }
         .search-wrap { position:relative; margin-bottom:24px; }
         .s-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.9rem; pointer-events:none; }
         .search-input { width:100%; padding:13px 44px; border:1.5px solid var(--border); border-radius:12px; font-size:.9rem; font-family:inherit; color:var(--text); background:var(--surface); outline:none; }
@@ -77,10 +78,9 @@
         .no-results p { font-size:.9rem; font-weight:600; color:var(--muted); }
         footer { background:#0f172a; color:#64748b; text-align:center; padding:16px; font-size:.78rem; }
         footer strong { color:#38bdf8; }
+        @media(max-width:900px) { .navbar { flex-direction:column!important; height:auto!important; padding:10px 4% 8px!important; gap:6px!important; } .navbar-links { gap:12px 16px!important; width:100%!important; justify-content:center!important; flex-wrap:wrap!important; } .navbar-links a { font-size:.78rem!important; padding:6px 0!important; } }
         @media(max-width:768px) {
-            .navbar { padding:0 4%; }
-            .navbar-brand span { font-size:1.2rem; }
-            .navbar-links { display:none; }
+            .navbar-links { display:flex; }
             .hero { padding:36px 4% 32px; }
             .main { padding:24px 4% 50px; }
             .cards-grid { grid-template-columns:1fr; }
@@ -94,9 +94,9 @@
 <body>
 
 <header class="navbar">
-    <a href="/" class="navbar-brand">
-        <img src="assets/uploads/logo.png" alt="IKIZAME">
-        <span>IKIZAME</span>
+    <a href="/" class="navbar-brand-wrap">
+        <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+        <div class="navbar-brand">IKIZAME</div>
     </a>
     <nav>
         <ul class="navbar-links">
