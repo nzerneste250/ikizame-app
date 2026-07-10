@@ -416,5 +416,5 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500).json({ error: 'Internal server error.' });
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = Number(process.env.PORT || 3000);
 app.listen(PORT, () => console.log(`🚀 IKIZAME Server running on port ${PORT}`));

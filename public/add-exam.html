@@ -274,8 +274,17 @@
         }
         .admin-footer strong { color: #38bdf8; }
 
-        @media (max-width: 1100px) { .sidebar { display: none; } .topbar, .form-scroll { padding-left: 20px; padding-right: 20px; } }
-        @media (max-width: 700px) { .options-grid, .text-options-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 1100px) {
+            .sidebar { display: none; }
+            .topbar, .form-scroll { padding-left: 20px; padding-right: 20px; }
+            .form-card { padding: 18px; }
+            .form-scroll { padding-top: 18px; padding-bottom: 24px; }
+        }
+        @media (max-width: 700px) {
+            .options-grid, .text-options-grid { grid-template-columns: 1fr; }
+            .form-card { padding: 16px; }
+            .topbar { padding: 14px 16px; }
+        }
     </style>
 </head>
 <body>

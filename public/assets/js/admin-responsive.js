@@ -3,6 +3,24 @@
     return document.querySelector('.sidebar, .side');
   }
 
+  function enhanceTablesForMobile() {
+    document.querySelectorAll('table').forEach(function (table) {
+      const headers = Array.from(table.querySelectorAll('thead th')).map(function (cell) {
+        return (cell.textContent || '').trim();
+      });
+
+      table.querySelectorAll('tbody tr').forEach(function (row) {
+        const cells = row.querySelectorAll('td');
+        cells.forEach(function (cell, index) {
+          const label = headers[index] || '';
+          if (label) {
+            cell.setAttribute('data-label', label);
+          }
+        });
+      });
+    });
+  }
+
   function openSidebar() {
     const sidebar = getSidebar();
     if (!sidebar) return;
@@ -30,6 +48,8 @@
   window.closeAdminSidebar = closeSidebar;
 
   document.addEventListener('DOMContentLoaded', function () {
+    enhanceTablesForMobile();
+
     const sidebar = getSidebar();
     if (!sidebar) return;
 
@@ -52,6 +72,13 @@
       if (window.innerWidth > 1100) {
         closeSidebar();
       }
+      enhanceTablesForMobile();
     });
+
+    const observer = new MutationObserver(function () {
+      enhanceTablesForMobile();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
   });
 })();
