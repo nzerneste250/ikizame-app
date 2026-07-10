@@ -22,6 +22,8 @@
         .navbar-links a:hover { color:#0b698b; }
         .navbar-links a.active { color:#0b698b; font-weight:800; }
         .navbar-links a.active::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:#0b698b; border-radius:2px 2px 0 0; }
+        .lang-badge { display:flex; align-items:center; gap:8px; font-family:'Inter',sans-serif; font-size:.8rem; font-weight:700; color:#1e293b; background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:5px 12px; user-select:none; }
+        .rw-flag-svg { width:20px; height:14px; border-radius:2px; border:1px solid #e2e8f0; flex-shrink:0; }
         .hero { background:linear-gradient(135deg,var(--brand) 0%,#0e4f6b 100%); padding:52px 5% 48px; text-align:center; }
         .hero-icon { width:64px; height:64px; background:rgba(255,255,255,.15); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:28px; color:#fff; margin:0 auto 18px; }
         .hero h1 { font-size:clamp(1.6rem,4vw,2.4rem); font-weight:800; color:#fff; margin-bottom:10px; }
@@ -78,7 +80,7 @@
         .no-results p { font-size:.9rem; font-weight:600; color:var(--muted); }
         footer { background:#0f172a; color:#64748b; text-align:center; padding:16px; font-size:.78rem; }
         footer strong { color:#38bdf8; }
-        @media(max-width:900px) { .navbar { flex-direction:column!important; height:auto!important; padding:10px 4% 8px!important; gap:6px!important; } .navbar-links { gap:12px 16px!important; width:100%!important; justify-content:center!important; flex-wrap:wrap!important; } .navbar-links a { font-size:.78rem!important; padding:6px 0!important; } }
+        @media(max-width:900px) { .navbar { flex-direction:column!important; height:auto!important; padding:10px 4% 8px!important; gap:6px!important; } .navbar-links { gap:12px 16px!important; width:100%!important; justify-content:center!important; flex-wrap:wrap!important; } .navbar-links a { font-size:.78rem!important; padding:6px 0!important; } .navbar-links a.active::after { bottom:-2px!important; } }
         @media(max-width:768px) {
             .navbar-links { display:flex; }
             .hero { padding:36px 4% 32px; }
@@ -107,7 +109,12 @@
             <li><a href="school-auth">Amashuri (School Portal)</a></li>
             <li><a href="amanota">Amanota</a></li>
         </ul>
-    </nav>\r\n    <div class="lang-badge" onclick="">\r\n        <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>\r\n        <span>Kinyarwanda</span>\r\n    </div>\r\n</header>
+    </nav>
+    <div class="lang-badge">
+        <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+        <span>Kinyarwanda</span>
+    </div>
+</header>
 
 <section class="hero">
     <div class="hero-icon"><i class="fa-solid fa-book-open"></i></div>
