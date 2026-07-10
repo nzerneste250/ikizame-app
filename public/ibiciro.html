@@ -245,7 +245,10 @@
         .diagram-step p { font-size: 0.72rem; color: #475569; line-height: 1.35; }
         .diagram-arrow { display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 12px; }
 
-        .balance-check-block { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2px; }
+        .balance-check-block { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2px; transition: background 0.2s ease, border-color 0.2s ease; }
+        .balance-check-block.balance-check-good { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); border-radius: 16px; padding: 12px; }
+        .balance-check-block.balance-check-empty { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); border-radius: 16px; padding: 12px; }
+        .balance-check-block.balance-check-low { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); border-radius: 16px; padding: 12px; }
         .balance-check-block .btn-pay-trigger { width: 100%; }
         .balance-check-block #balanceStatusPanel {
             min-height: 52px;
@@ -705,6 +708,10 @@
             }
 
             const last9 = rawPhone.slice(-9);
+            const balanceBlock = phoneInput.closest('.balance-check-block');
+            if (balanceBlock) {
+                balanceBlock.classList.remove('balance-check-good', 'balance-check-empty', 'balance-check-low');
+            }
             statusPanel.textContent = 'Iri gushakisha ibisigaye...';
             statusPanel.className = '';
 
@@ -715,14 +722,23 @@
                     if (remaining > 0) {
                         statusPanel.textContent = `Ufite ${remaining} bizamini bisigaye kuri iyi nomero. Ushobora kongera ukagura andi.`;
                         statusPanel.className = 'balance-status-good';
+                        if (balanceBlock) {
+                            balanceBlock.classList.add('balance-check-good');
+                        }
                     } else {
                         statusPanel.textContent = 'Nta bizamini bisigaye kuri iyi nomero. Gura andi kugira ngo ukomeze.';
                         statusPanel.className = 'balance-status-empty';
+                        if (balanceBlock) {
+                            balanceBlock.classList.add('balance-check-empty');
+                        }
                     }
                 })
                 .catch(() => {
                     statusPanel.textContent = 'Gushaka ibisigaye byanze. Reba internet cyangwa ongera ugerageze.';
                     statusPanel.className = 'balance-status-low';
+                    if (balanceBlock) {
+                        balanceBlock.classList.add('balance-check-low');
+                    }
                 });
         };
 
