@@ -25,7 +25,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body {
-            height: 100%;
+            min-height: 100vh;
             width: 100%;
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 50%, #fdfefe 100%);
@@ -33,7 +33,7 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            overflow-y: hidden;
+            overflow-y: auto;
         }
                 /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
         .navbar {
@@ -161,22 +161,22 @@
         .workspace-scroll-container {
             flex: 1;
             margin-top: 60px;
-            padding: 10px 2% 12px;
+            padding: 10px clamp(16px, 2.8vw, 32px) 24px;
             display: flex;
             align-items: flex-start;
             justify-content: center;
             width: 100%;
             min-height: calc(100vh - 60px);
-            overflow: hidden;
+            overflow: visible;
         }
         .workspace-inner {
             width: 100%;
-            max-width: 1180px;
+            max-width: 1320px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             justify-content: flex-start;
-            overflow: hidden;
+            overflow: visible;
         }
         
         .section-header-meta { text-align: center; padding: 8px 0 4px; }
@@ -196,11 +196,11 @@
 
         /* ===== TWO-COLUMN SYMMETRICAL SPLIT CONTENT GRADIENT ===== */
         .pricing-split-layout {
-            display: grid; grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.15fr); gap: 16px;
+            display: grid; grid-template-columns: minmax(320px, 0.95fr) minmax(430px, 1.25fr); gap: 24px;
             width: 100%; align-items: start; min-height: 0;
         }
 
-        .cards-column { display: grid; gap: 12px; align-content: start; max-width: 420px; }
+        .cards-column { display: grid; gap: 14px; align-content: start; width: 100%; max-width: 480px; }
 
         .resource-glass-card {
             background: var(--surface); border: 1px solid var(--border-color);
@@ -225,7 +225,7 @@
         /* ===== RIGHT PANEL PROCESS CONTAINER ===== */
         .payment-guide-container {
             background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%); border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 16px; display: flex; flex-direction: column;
+            border-radius: 20px; padding: 18px; display: flex; flex-direction: column;
             gap: 12px; min-height: 100%; justify-content: flex-start; box-shadow: 0 16px 36px rgba(15, 23, 42, 0.05);
         }
         .guide-card-header h3 { font-size: 1rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
@@ -286,7 +286,7 @@
         .live-amount-strip { background: #f1f5f9; padding: 10px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 800; color: #1e293b; margin-bottom: 16px; border: 1px dashed #cbd5e1; }
         .btn-submit-payment { background: #0b698b; color: #ffffff; border: none; padding: 12px; width: 100%; border-radius: 6px; font-size: 0.88rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-        .footer { height: 36px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #94a3b8; position: relative; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); z-index: 10; }
+        .footer { min-height: 48px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; position: relative; margin-top: 16px; padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.06); z-index: 10; text-align: center; line-height: 1.5; }
 
         /* ===== 📱 MOBILE OVERRIDES ===== */
         @media (max-width: 850px) {
@@ -329,7 +329,7 @@
         <main class="workspace-inner">
             <section class="section-header-meta">
                 <h2>Gura Ibizamini Byoroshye kandi Bihendutse</h2>
-                <p>Urahawe uburyo bwihuse bwo kugura amasomo y'ikizamini, kureba ibisigaye ku nomero yawe, no kwishyura ukoresheje MTN MoMo cyangwa Airtel Money.</p>
+                <p>Urahawe uburyo bwihuse bwo kugura ibizamini, kureba ibisigaye ku nomero yawe, no kwishyura ukoresheje MTN MoMo cyangwa Airtel Money.</p>
                 
                 <div class="channel-support-banner" style="margin-top: 12px;">
                     <span>Uburyo bwemewe:</span>
@@ -348,8 +348,8 @@
                             <div class="price-badge-row">100 <span>RWF / Ikizamini</span></div>
                             <ul class="perk-list">
                                 <li><i class="fa-solid fa-circle-check"></i> 1 - 9 Ibizamini</li>
-                                <li><i class="fa-solid fa-circle-check"></i> Bidashobora guteza umunaniro</li>
-                                <li><i class="fa-solid fa-circle-check"></i> Ntugure byinshi niba uri gutoza</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Bidashobora gutera umunaniro</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Ntagure byinshi niba uri gutoza</li>
                             </ul>
                         </div>
                         <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)">Ishyura Ubu</button>
@@ -359,7 +359,7 @@
                         <div class="featured-tag">Inzira nziza</div>
                         <div class="resource-card-body">
                             <h3>Best Value Pack</h3>
-                            <div class="price-badge-row">Amahitamo Yoroheje</div>
+                            <div class="price-badge-row">Amahitamo yoroheje</div>
                             <ul class="perk-list">
                                 <li><i class="fa-solid fa-circle-check"></i> 10 - 14 Ibizamini: 80 RWF / imwe</li>
                                 <li><i class="fa-solid fa-circle-check"></i> 15 - 20 Ibizamini: 70 RWF / imwe</li>
@@ -372,13 +372,13 @@
 
                 <section class="payment-guide-container">
                     <div class="guide-card-header">
-                        <h3><i class="fa-solid fa-circle-info"></i> Ibikurikira mbere yo Kwishyura</h3>
-                        <p>Reba ibisigaye kuri nomero yawe mbere yo kugura. Ukoreshe neza credits zawe, ukanahita ubona uko amahitamo yawe ahagaze.</p>
+                        <h3><i class="fa-solid fa-circle-info"></i> Ibikurikira mbere yo kwishyura</h3>
+                        <p>Reba ibisigaye kuri nomero yawe mbere yo kugura. Ukoreshe neza credits zawe, kandi uhite ubona uko amahitamo yawe ahagaze.</p>
                     </div>
 
                     <div class="balance-check-block" style="margin-bottom: 18px;">
                         <div class="input-form-field">
-                            <label>Reba ibisigaye kuri telephone</label>
+                            <label>Reba ibisigaye kuri terefone</label>
                             <input type="tel" id="balancePhoneInput" placeholder="0788000000" oninput="sanitizeBalancePhoneInput()">
                         </div>
                         <button class="btn-pay-trigger" id="balanceCheckBtn" style="margin-bottom: 12px;" onclick="fetchRemainingExamBalance()">Reba ibisigaye</button>
@@ -388,7 +388,7 @@
                     <div class="diagram-flow-row">
                         <div class="diagram-step">
                             <div class="step-icon">1</div>
-                            <h4>Injiza phone yawe</h4>
+                            <h4>Injiza terefone yawe</h4>
                             <p>Andika nomero ya MTN cyangwa Airtel mu murongo ugendanwa.</p>
                         </div>
                         <div class="diagram-arrow"><i class="fa-solid fa-arrow-right"></i></div>
@@ -400,13 +400,13 @@
                         <div class="diagram-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                         <div class="diagram-step">
                             <div class="step-icon">3</div>
-                            <h4>Kora Kwishyura</h4>
-                            <p>Injiza PIN ya MoMo hanyuma umenye ko konti yawe yahise ifunguka.</p>
+                            <h4>Kora kwishyura</h4>
+                            <p>Injiza PIN ya MoMo, hanyuma umenye ko konti yawe yahise ifunguka.</p>
                         </div>
                     </div>
 
                     <div class="ussd-fallback-box">
-                        <h4><i class="fa-solid fa-mobile-screen-button"></i> Mu gihe PIN Push itaje (USSD Code Drop):</h4>
+                        <h4><i class="fa-solid fa-mobile-screen-button"></i> Mu gihe PIN Push itaje (USSD Code):</h4>
                         <div class="ussd-commands-grid">
                             <div class="ussd-card">
                                 <div class="ussd-meta-wrap">
