@@ -305,7 +305,8 @@ function computeAnalyticsFromChart(chart,daily){
     if(!Array.isArray(chart) || chart.length===0) return out;
     // ensure chronological order (oldest -> newest)
     const sorted = chart.slice().sort((a,b)=> new Date(a.day) - new Date(b.day));
-    const nums = sorted.map(r=>Number(r.unique_visitors||0));
+    const cleanNum = v=>{ const s = String(v||'').replace(/[^0-9.-]+/g,''); const n = Number(s); return Number.isFinite(n)?n:0; };
+    const nums = sorted.map(r=>cleanNum(r.unique_visitors));
     const len=nums.length;
     const last = nums[len-1] || 0;
     const sum = arr=>arr.reduce((s,v)=>s+v,0);
@@ -325,7 +326,7 @@ function computeAnalyticsFromChart(chart,daily){
 
     // top IPs across provided daily range
     const ipMap = {};
-    (daily||[]).forEach(d=>{(d.ips||[]).forEach(ip=>{ const key = ip.ip || ip.address || ip[0] || 'unknown'; ipMap[key] = (ipMap[key]||0) + (Number(ip.count)||1); });});
+    (daily||[]).forEach(d=>{(d.ips||[]).forEach(ip=>{ const key = ip.ip || ip.address || ip[0] || 'unknown'; ipMap[key] = (ipMap[key]||0) + (cleanNum(ip.count)); });});
     const top = Object.keys(ipMap).map(k=>({ip:k,count:ipMap[k]})).sort((a,b)=>b.count-a.count).slice(0,8);
     out.topIPs = top;
     return out;
