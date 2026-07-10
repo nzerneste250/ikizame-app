@@ -101,6 +101,22 @@ footer strong{color:#38bdf8;}
 @media(max-width:1100px){.stats{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:960px){.side{display:none;}}
 @media(max-width:600px){.stats{grid-template-columns:1fr 1fr;}.body{padding:14px;}.topbar{padding:14px 14px;}.topbar h1{font-size:18px;}.panel{padding:14px;}}
+/* ANALYSIS */
+.analysis-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;margin-bottom:6px;}
+.analysis-card{background:#fff;border:1px solid #e6eef6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 6px rgba(2,6,23,.04);}
+.analysis-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.analysis-val{font-size:1.6rem;font-weight:900;color:#0b698b}
+.analysis-delta{font-size:13px;font-weight:800;padding:6px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:8px}
+.delta-up{background:#ecfdf5;color:#065f46;border:1px solid #bbf7d0}
+.delta-down{background:#fff1f2;color:#991b1b;border:1px solid #fecaca}
+.spark{display:flex;align-items:flex-end;gap:3px;height:26px}
+.spark div{width:6px;border-radius:3px;background:#cfeefe}
+.spark div.active{background:#0b698b}
+.top-ips{margin-top:12px}
+.top-ips table{width:100%;border-collapse:collapse}
+.top-ips td{padding:6px 8px;font-size:13px}
+@media(max-width:900px){.analysis-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.analysis-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -162,6 +178,40 @@ footer strong{color:#38bdf8;}
             </div>
 
             <!-- BAR CHART -->
+            <!-- ANALYSIS CARDS -->
+            <div class="analysis-grid" id="analysisGrid">
+                <div class="analysis-card">
+                    <div class="analysis-top"><div style="font-weight:800;color:#64748b;">Today vs Prev 7d</div><div id="deltaToday" class="analysis-delta delta-up">—</div></div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                        <div>
+                            <div class="analysis-val" id="todayVal">—</div>
+                            <div style="font-size:12px;color:#64748b;font-weight:700;">unique visitors (last day)</div>
+                        </div>
+                        <div style="width:100px"><div class="spark" id="sparkToday"></div></div>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-top"><div style="font-weight:800;color:#64748b;">This Week</div><div id="deltaWeek" class="analysis-delta delta-up">—</div></div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                        <div>
+                            <div class="analysis-val" id="weekVal">—</div>
+                            <div style="font-size:12px;color:#64748b;font-weight:700;">sum last 7 days</div>
+                        </div>
+                        <div style="width:100px"><div class="spark" id="sparkWeek"></div></div>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-top"><div style="font-weight:800;color:#64748b;">This Month</div><div id="deltaMonth" class="analysis-delta delta-up">—</div></div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                        <div>
+                            <div class="analysis-val" id="monthVal">—</div>
+                            <div style="font-size:12px;color:#64748b;font-weight:700;">sum last 30 days</div>
+                        </div>
+                        <div style="width:100px"><div class="spark" id="sparkMonth"></div></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="panel">
                 <div class="ph"><i class="fa-solid fa-chart-column"></i> Daily Unique Visitors — Last 30 Days</div>
                 <div class="chart-box"><div class="bars" id="bars"><div style="color:#64748b;font-size:13px;align-self:center;width:100%;text-align:center;">Loading...</div></div></div>
@@ -183,6 +233,13 @@ footer strong{color:#38bdf8;}
                         <thead><tr><th>#</th><th>Date</th><th>Day</th><th>Unique IPs</th><th>Total Visits</th><th>Peak IP</th></tr></thead>
                         <tbody id="sumTb"><tr><td colspan="6" style="text-align:center;color:#64748b;padding:22px;">Loading...</td></tr></tbody>
                     </table>
+                </div>
+            </div>
+
+            <div class="panel top-ips">
+                <div class="ph"><i class="fa-solid fa-network-wired"></i> Top IPs (last range)</div>
+                <div style="margin-top:10px;">
+                    <table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:8px;color:#64748b;font-size:12px">#</th><th style="text-align:left;padding:8px;color:#64748b;font-size:12px">IP Address</th><th style="text-align:left;padding:8px;color:#64748b;font-size:12px">Visits</th></tr></thead><tbody id="topIpsBody"><tr><td colspan="3" style="text-align:center;color:#64748b;padding:12px;">Loading...</td></tr></tbody></table>
                 </div>
             </div>
 
@@ -243,6 +300,49 @@ function buildSummary(daily,today){
     renderSummary();
 }
 
+function computeAnalyticsFromChart(chart,daily){
+    const out={};
+    const len=chart.length; if(len===0) return out;
+    const last=chart[len-1].unique_visitors||0;
+    const last7=chart.slice(Math.max(0,len-7),len).map(r=>r.unique_visitors||0);
+    const prev7=chart.slice(Math.max(0,len-14),Math.max(0,len-7)).map(r=>r.unique_visitors||0);
+    const sum = arr=>arr.reduce((s,v)=>s+v,0);
+    const avg = arr=>arr.length?Math.round(sum(arr)/arr.length):0;
+    const last7Sum=sum(last7), prev7Sum=sum(prev7);
+    const pctToday = prev7.length?Math.round(((last - avg(prev7))/Math.max(1,avg(prev7)))*100):0;
+    out.today = {value:last, pct:pctToday, spark: chart.slice(Math.max(0,len-8),len).map(r=>r.unique_visitors||0)};
+    out.week = {value:last7Sum, pct: prev7Sum?Math.round(((last7Sum-prev7Sum)/Math.max(1,prev7Sum))*100):0, spark: chart.slice(Math.max(0,len-14),len).slice(-7).map(r=>r.unique_visitors||0)};
+    // month: compare last 30 vs previous 30
+    const last30 = chart.slice(Math.max(0,len-30),len).map(r=>r.unique_visitors||0);
+    const prev30 = chart.slice(Math.max(0,len-60),Math.max(0,len-30)).map(r=>r.unique_visitors||0);
+    const last30Sum=sum(last30), prev30Sum=sum(prev30);
+    out.month = {value:last30Sum,pct: prev30Sum?Math.round(((last30Sum-prev30Sum)/Math.max(1,prev30Sum))*100):0, spark: last30.slice(-12)};
+
+    // top IPs across provided daily range
+    const ipMap = {};
+    (daily||[]).forEach(d=>{(d.ips||[]).forEach(ip=>{ipMap[ip.ip||(ip.address||'unknown')] = (ipMap[ip.ip||(ip.address||'unknown')]||0) + (ip.count||1);});});
+    const top = Object.keys(ipMap).map(k=>({ip:k,count:ipMap[k]})).sort((a,b)=>b.count-a.count).slice(0,8);
+    out.topIPs = top;
+    return out;
+}
+
+function renderAnalysis(analytics){
+    if(!analytics) return;
+    document.getElementById('todayVal').textContent = (analytics.today?.value||0).toLocaleString();
+    const dT = document.getElementById('deltaToday'); dT.textContent = (analytics.today?.pct>=0?'+':'')+ (analytics.today?.pct||0)+'%'; dT.className='analysis-delta '+(analytics.today?.pct>=0?'delta-up':'delta-down');
+    document.getElementById('weekVal').textContent = (analytics.week?.value||0).toLocaleString(); const dW=document.getElementById('deltaWeek'); dW.textContent=(analytics.week?.pct>=0?'+':'')+(analytics.week?.pct||0)+'%'; dW.className='analysis-delta '+(analytics.week?.pct>=0?'delta-up':'delta-down');
+    document.getElementById('monthVal').textContent = (analytics.month?.value||0).toLocaleString(); const dM=document.getElementById('deltaMonth'); dM.textContent=(analytics.month?.pct>=0?'+':'')+(analytics.month?.pct||0)+'%'; dM.className='analysis-delta '+(analytics.month?.pct>=0?'delta-up':'delta-down');
+
+    function drawSpark(id,arr){ const el=document.getElementById(id); if(!el) return; el.innerHTML=''; const mx=Math.max(...arr,1); arr.forEach(v=>{const h=Math.max(3,Math.round((v/mx)*22)); const d=document.createElement('div'); d.style.height=h+'px'; if(v>0) d.className='active'; el.appendChild(d);}); }
+    drawSpark('sparkToday', analytics.today?.spark||[]);
+    drawSpark('sparkWeek', analytics.week?.spark||[]);
+    drawSpark('sparkMonth', analytics.month?.spark||[]);
+
+    // render top IPs
+    const tEl=document.getElementById('sumTb');
+    if(document.getElementById('topIpsBody')) document.getElementById('topIpsBody').innerHTML = analytics.topIPs.length?analytics.topIPs.map((t,i)=>'<tr><td style="padding:6px 8px;font-weight:700;">'+(i+1)+'</td><td style="padding:6px 8px;">'+t.ip+'</td><td style="padding:6px 8px;font-weight:800;color:#0b698b;">'+t.count+'</td></tr>').join(''):'<tr><td colspan="3" style="text-align:center;color:#64748b;padding:12px;">No IP data.</td></tr>';
+}
+
 function renderSummary(){
     const q=(document.getElementById('sumSearch').value||'').toLowerCase();
     const filtered=_summaryData.filter(r=>!q||r.day.includes(q));
@@ -287,6 +387,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         document.getElementById('vA').textContent=(c.total||0).toLocaleString();
         buildChart(chart);
         buildSummary(daily,today);
+        try{ const analytics=computeAnalyticsFromChart(chart,daily); renderAnalysis(analytics);}catch(e){console.warn('analytics',e);} 
     }).catch(()=>{
         document.getElementById('sumTb').innerHTML='<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:22px;">Failed to load.</td></tr>';
     });
