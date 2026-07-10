@@ -32,7 +32,8 @@
             color: #0f172a;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
                 /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
         .navbar {
@@ -160,13 +161,13 @@
         .workspace-scroll-container {
             flex: 1;
             margin-top: 60px;
-            padding: 10px 2% 12px;
+            padding: 10px 2% 16px;
             display: flex;
-            align-items: stretch;
+            align-items: flex-start;
             justify-content: center;
             width: 100%;
-            height: calc(100vh - 72px);
-            overflow: hidden;
+            min-height: calc(100vh - 60px);
+            overflow: visible;
         }
         .workspace-inner {
             width: 100%;
@@ -175,7 +176,7 @@
             flex-direction: column;
             gap: 12px;
             justify-content: flex-start;
-            overflow: hidden;
+            overflow: visible;
         }
         
         .section-header-meta { text-align: center; padding: 8px 0 4px; }
@@ -185,16 +186,18 @@
         /* ── 🎯 CHANNEL RECONCILIATION CHANNELS BANNER ── */
         .channel-support-banner {
             display: inline-flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.95);
-            border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 999px; margin: 0 auto;
+            border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 999px; margin: 0 auto;
             box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .channel-support-banner span { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-        .channel-inline-row { display: flex; align-items: center; gap: 8px; }
+        .channel-inline-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
         /* ===== TWO-COLUMN SYMMETRICAL SPLIT CONTENT GRADIENT ===== */
         .pricing-split-layout {
-            display: grid; grid-template-columns: 1.02fr 0.98fr; gap: 18px;
-            width: 100%; align-items: stretch; min-height: 0;
+            display: grid; grid-template-columns: 1fr; gap: 16px;
+            width: 100%; align-items: start; min-height: 0;
         }
 
         .cards-column { display: grid; gap: 14px; align-content: start; }
@@ -245,9 +248,9 @@
 
         /* ===== HIGH-VISIBILITY LOGO SQUARE BADGE EMBEDS ===== */
         .carrier-logo-square-box { 
-            width: 72px; /* 🎯 Enhanced layout width parameter */
-            height: 72px; 
-            border-radius: 10px; 
+            width: 88px; /* 🎯 Enhanced layout width parameter */
+            height: 88px; 
+            border-radius: 14px; 
             overflow: hidden; 
             border: 2px solid #e2e8f0; 
             display: flex; 
@@ -255,10 +258,11 @@
             justify-content: center; 
             flex-shrink: 0; 
             background: #ffffff; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
-        .carrier-logo-square-box img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
-        .carrier-logo-square-box.modal-badge { width: 88px; height: 88px; border: 2px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .carrier-logo-square-box img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+        .carrier-logo-square-box.modal-badge { width: 104px; height: 104px; border: 2px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .carrier-logo-square-box.header-payment-badge { width: 56px; height: 56px; border-radius: 12px; }
 
 .ussd-fallback-box { background: linear-gradient(135deg, #f4fbff 0%, #eef7ff 100%); border: 1px dashed rgba(11, 105, 139, 0.2); border-radius: 14px; padding: 14px 16px; }
         .ussd-fallback-box h4 { font-size: 0.88rem; font-weight: 700; color: #0b698b; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
@@ -288,7 +292,7 @@
         /* ===== 📱 MOBILE OVERRIDES ===== */
         @media (max-width: 850px) {
             html, body { height: auto; overflow-y: auto; }
-            .workspace-scroll-container { margin-top: 170px; padding: 14px 4% 28px; }
+            .workspace-scroll-container { margin-top: 170px; padding: 14px 4% 28px; min-height: auto; }
             .workspace-inner { height: auto; gap: 16px; }
             .pricing-split-layout { grid-template-columns: 1fr; height: auto; gap: 18px; }
             .diagram-flow-row { flex-direction: column; gap: 12px; }
@@ -329,8 +333,8 @@
                 <div class="channel-support-banner" style="margin-top: 12px;">
                     <span>Uburyo bwemewe:</span>
                     <div class="channel-inline-row">
-                        <div class="carrier-logo-square-box" style="width: 22px; height: 22px; border-radius: 3px;"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN"></div>
-                        <div class="carrier-logo-square-box" style="width: 22px; height: 22px; border-radius: 3px;"><img src="assets/images/providers/airtel-logo.svg" alt="Airtel"></div>
+                        <div class="carrier-logo-square-box header-payment-badge"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN"></div>
+                        <div class="carrier-logo-square-box header-payment-badge"><img src="assets/images/providers/airtel-logo.svg" alt="Airtel"></div>
                     </div>
                 </div>
             </section>
