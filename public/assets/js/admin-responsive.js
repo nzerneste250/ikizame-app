@@ -3,6 +3,10 @@
     return document.querySelector('.sidebar, .side');
   }
 
+  function getShell() {
+    return document.querySelector('.shell');
+  }
+
   function enhanceTablesForMobile() {
     document.querySelectorAll('table').forEach(function (table) {
       const headers = Array.from(table.querySelectorAll('thead th')).map(function (cell) {
@@ -23,16 +27,24 @@
 
   function openSidebar() {
     const sidebar = getSidebar();
+    const shell = getShell();
     if (!sidebar) return;
     sidebar.classList.add('open');
     document.body.classList.add('sidebar-open');
+    if (shell) {
+      shell.classList.add('sidebar-open');
+    }
   }
 
   function closeSidebar() {
     const sidebar = getSidebar();
+    const shell = getShell();
     if (!sidebar) return;
     sidebar.classList.remove('open');
     document.body.classList.remove('sidebar-open');
+    if (shell) {
+      shell.classList.remove('sidebar-open');
+    }
   }
 
   window.toggleAdminSidebar = function () {

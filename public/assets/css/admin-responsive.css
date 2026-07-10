@@ -45,6 +45,7 @@ body.sidebar-open .mobile-sidebar-overlay {
     flex-direction: column;
     min-height: 100vh;
     height: auto;
+    padding-bottom: 0;
   }
 
   .shell > .sidebar,
@@ -69,6 +70,11 @@ body.sidebar-open .mobile-sidebar-overlay {
     transform: translateX(0);
   }
 
+  .shell.sidebar-open > .workspace,
+  .shell.sidebar-open > .page {
+    pointer-events: none;
+  }
+
   .shell > .workspace,
   .shell > .page {
     width: 100%;
@@ -82,6 +88,10 @@ body.sidebar-open .mobile-sidebar-overlay {
     flex-wrap: wrap;
     gap: 12px;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: #ffffff;
   }
 
   .workspace .mobile-nav-toggle {
@@ -107,7 +117,7 @@ body.sidebar-open .mobile-sidebar-overlay {
   .workspace .form-container,
   .workspace .perf-scroll,
   .workspace .body {
-    padding: 20px;
+    padding: 16px 14px 20px;
     overflow: auto;
     height: auto;
     min-height: 0;
@@ -120,8 +130,8 @@ body.sidebar-open .mobile-sidebar-overlay {
   .workspace .options-grid,
   .workspace .text-options-grid,
   .workspace .review-info-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .workspace .summary-card,
@@ -220,8 +230,8 @@ body.sidebar-open .mobile-sidebar-overlay {
   }
 
   .workspace .form-scroll {
-    padding: 14px 12px 20px;
-    gap: 14px;
+    padding: 12px 12px 20px;
+    gap: 12px;
   }
 
   .workspace .form-card,
