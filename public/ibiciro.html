@@ -25,14 +25,14 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body {
-            min-height: 100vh;
+            height: 100%;
             width: 100%;
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 50%, #fdfefe 100%);
             color: #0f172a;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
+            overflow: hidden;
         }
                 /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
         .navbar {
@@ -160,20 +160,22 @@
         .workspace-scroll-container {
             flex: 1;
             margin-top: 60px;
-            padding: 20px 2% 40px;
+            padding: 10px 2% 12px;
             display: flex;
             align-items: stretch;
             justify-content: center;
             width: 100%;
-            min-height: calc(100vh - 60px);
+            height: calc(100vh - 72px);
+            overflow: hidden;
         }
         .workspace-inner {
             width: 100%;
             max-width: 1180px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
             justify-content: flex-start;
+            overflow: hidden;
         }
         
         .section-header-meta { text-align: center; padding: 8px 0 4px; }

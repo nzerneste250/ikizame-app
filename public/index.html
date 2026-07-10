@@ -13,14 +13,14 @@
     
     <style>
         :root {
-            --bg-dark: #0d1b2a;
+            --bg-dark: #0f172a;
             --bg-card: #ffffff;
             --text-dark: #0f172a;
             --text-muted: #64748b;
             --accent-teal: #0b698b;
             --accent-teal-hover: #08536e;
             --accent-cyan: #38bdf8;
-            --border-color: #cbd5e1;
+            --border-color: rgba(15, 23, 42, 0.08);
             --error-crimson: #ef4444;
             --success-emerald: #10b981;
         }
@@ -29,8 +29,8 @@
 
         html, body {
             min-height: 100vh;
-            background-color: var(--bg-dark);
-            color: #ffffff;
+            background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 50%, #fdfefe 100%);
+            color: #0f172a;
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -154,9 +154,9 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.6px;
-            color: #ffffff;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
+            color: var(--accent-teal);
+            background: rgba(11, 105, 139, 0.08);
+            border: 1px solid rgba(11, 105, 139, 0.14);
             padding: 6px 15px;
             border-radius: 30px;
         }
@@ -166,19 +166,19 @@
             font-size: clamp(2.6rem, 4.5vw, 4rem);
             line-height: 1.1;
             letter-spacing: -1px;
-            color: #ffffff;
+            color: #0f172a;
         }
         .hero-h1 em {
             font-style: italic;
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 800;
-            color: var(--accent-cyan);
+            color: var(--accent-teal);
         }
 
         .hero-desc {
             font-size: 1.02rem;
             font-weight: 500;
-            color: #94a3b8;
+            color: #475569;
             line-height: 1.6;
             max-width: 460px;
         }
@@ -188,8 +188,8 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: transparent;
-            border: 2px solid rgba(255,255,255,0.25);
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-teal-hover) 100%);
+            border: 2px solid transparent;
             color: #ffffff;
             text-decoration: none;
             padding: 13px 26px;
@@ -198,8 +198,9 @@
             border-radius: 40px;
             transition: all 0.2s;
             cursor: pointer;
+            box-shadow: 0 10px 24px rgba(11, 105, 139, 0.16);
         }
-        .hero-cta:hover { background: rgba(255,255,255,0.08); }
+        .hero-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(11, 105, 139, 0.22); }
         .hero-cta svg { width: 16px; height: 16px; }
 
         /* ===== GUIDE MODAL ===== */
