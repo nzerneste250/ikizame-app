@@ -262,7 +262,7 @@
                 <div class="input-form-field">
                     <label>Nomero ya Telephone (MTN / Airtel)</label>
                     <input type="tel" id="renewMomoPhoneInput" placeholder="e.g., 0788000000" maxlength="10" oninput="validateRenewPhone(this)">
-                    <span id="renewPhoneHint" style="font-size:11px; color:#94a3b8; margin-top:4px;">Tangira na 07 — inimero 10 (078/079/073)</span>
+                    <span id="renewPhoneHint" style="font-size:11px; color:#94a3b8; margin-top:4px;">Tangira na 07, inimero 10 (078/079/073)</span>
                 </div>
                 <button class="btn-renew-submit" id="renewSubmitBtn" onclick="triggerSchoolLicenseRenewalRequest()">
                     <span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>
@@ -416,7 +416,7 @@
                 hint.textContent = `Haracyabura imibare (${v.length}/10)`;
                 hint.style.color = '#f59e0b';
             } else {
-                hint.textContent = 'Tangira na 07 — inimero 10 (078/079/073)';
+                hint.textContent = 'Tangira na 07, inimero 10 (078/079/073)';
                 hint.style.color = '#94a3b8';
             }
         };
@@ -431,7 +431,7 @@
 
             // Validate
             if (phone.length !== 10 || !phone.startsWith('07') || !['8','9','3'].includes(phone[2])) {
-                alert('Injiza nomero yuzuye ya Rwanda (078/079/073 — inimero 10).');
+                alert('Injiza nomero yuzuye ya Rwanda (078/079/073, inimero 10).');
                 phoneField.focus();
                 return;
             }

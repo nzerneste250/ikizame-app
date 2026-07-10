@@ -130,7 +130,7 @@
 </div>
 <div id="sessionToast">
     <i class="fa-solid fa-triangle-exclamation"></i>
-    <span>Session expires in <span id="toastTimer">60</span>s — move the mouse to stay active.</span>
+    <span>Session expires in <span id="toastTimer">60</span>s, move the mouse to stay active.</span>
 </div>
 
 <!-- Edit user modal -->
@@ -148,9 +148,9 @@
             </div>
             <div>
                 <label>Role</label>
-                <select id="editRole">
-                    <option value="viewer">Viewer — Read-only</option>
-                    <option value="superadmin">Super Admin — Full Access</option>
+                    <select id="editRole">
+                    <option value="viewer">Viewer, Read-only</option>
+                    <option value="superadmin">Super Admin, Full Access</option>
                 </select>
             </div>
         </div>
@@ -239,15 +239,15 @@
                     <div class="field-wrap">
                         <i class="fa-solid fa-shield-halved ico"></i>
                         <select id="newRole">
-                            <option value="viewer">Viewer — Read-only</option>
-                            <option value="superadmin">Super Admin — Full Access</option>
+                            <option value="viewer">Viewer, Read-only</option>
+                            <option value="superadmin">Super Admin, Full Access</option>
                         </select>
                     </div>
                 </div>
                 <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--muted);">
                     <strong style="color:var(--text);">Role permissions:</strong><br>
-                    <span style="color:#0369a1;">● Viewer</span> — View payments & schools only.<br>
-                    <span style="color:#166534;">● Super Admin</span> — Full access to all features.
+                    <span style="color:#0369a1;">● Viewer</span>, View payments & schools only.<br>
+                    <span style="color:#166534;">● Super Admin</span>, Full access to all features.
                 </div>
                 <button class="btn-add" id="addBtn" onclick="addUser()">
                     <span id="addLabel"><i class="fa-solid fa-user-plus"></i> Create Account</span>

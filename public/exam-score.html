@@ -20,7 +20,7 @@
             flex-direction: column;
         }
 
-        /* ── HEADER — matches index page brand color ── */
+        /* ── HEADER, matches index page brand color ── */
         .header {
             height: 60px;
             background: #0b698b;
@@ -144,7 +144,7 @@
         }
         .btn-home:hover { background: #f3f4f6; }
 
-        /* ── FOOTER — matches header brand color ── */
+        /* ── FOOTER, matches header brand color ── */
         .footer {
             height: 44px;
             background: #0b698b;
@@ -190,7 +190,7 @@
 
             <!-- Icon -->
             <div class="icon-circle" id="iconCircle">
-                <!-- pass: checkmark / fail: X — set by JS -->
+                <!-- pass: checkmark / fail: X, set by JS -->
             </div>
 
             <!-- Score: always out of 20, skipped = 0 -->
@@ -219,7 +219,7 @@
 
 <script>
     /* ── Constants ── */
-    const TOTAL    = 20;   /* Always out of 20 — skipped questions count as 0 */
+    const TOTAL    = 20;   /* Always out of 20, skipped questions count as 0 */
     const PASS_MIN = 12;
 
     /* ── Read score; redirect if missing ── */
@@ -243,7 +243,7 @@
                      stroke-linecap="round"/>
            </svg>`;
 
-    /* ── Score line — denominator always 20 ── */
+    /* ── Score line, denominator always 20 ── */
     document.getElementById('scoreLine').textContent =
         `Amanota wagize: ${score} / ${TOTAL}`;
 

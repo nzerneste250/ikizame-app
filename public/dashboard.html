@@ -480,7 +480,7 @@
 </div>
 <div id="adminSessionToast">
     <i class="fa-solid fa-triangle-exclamation"></i>
-    <span>Session expires in <span id="adminToastSec">60</span>s — move the mouse to stay active.</span>
+    <span>Session expires in <span id="adminToastSec">60</span>s, move the mouse to stay active.</span>
 </div>
 <script src="assets/js/admin-session.js"></script>
 <div id="imgPreviewOverlay" onclick="this.style.display='none'">
@@ -766,7 +766,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(err => console.error(err));
 
-            // 👥 GROUPED STUDENT PERFORMANCE TABLE — name, total exams, average score
+            // 👥 GROUPED STUDENT PERFORMANCE TABLE, name, total exams, average score
             fetch('/api/admin/students')
                 .then(res => {
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -1061,7 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <!-- ==========================================================================
-     🗂️ MODAL 1: STUDENT EXAM HISTORY — all attempts for one student
+    🗂️ MODAL 1: STUDENT EXAM HISTORY, all attempts for one student
      ========================================================================== -->
 <div id="studentAttemptsModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:9000; align-items:center; justify-content:center;">
     <div style="background:#fff; border-radius:16px; width:92%; max-width:560px; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 24px 48px rgba(0,0,0,0.3);">
@@ -1088,7 +1088,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <!-- ==========================================================================
-     📝 MODAL 2: ANSWER SHEET — what the student answered for one attempt
+    📝 MODAL 2: ANSWER SHEET, what the student answered for one attempt
      ========================================================================== -->
 <div id="answerSheetModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); z-index:9100; align-items:center; justify-content:center; overflow-y:auto;">
     <div class="review-modal-wrapper">

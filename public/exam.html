@@ -356,7 +356,7 @@ if (!sessionStorage.getItem('studentName') || !sessionStorage.getItem('phoneNumb
     sessionStorage.clear(); window.location.replace('/');
 }
 if (sessionStorage.getItem('isExamAlreadyStarted') === 'true' && !isReloaded) {
-    // already running — fine, continue
+    // already running, fine, continue
 } else if (!isReloaded) {
     sessionStorage.setItem('isExamAlreadyStarted', 'true');
 }
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const progFillD      = document.getElementById('progFillD');
     const progFillM      = document.getElementById('progFillM');
 
-    // Timer — deadline-based so it works even when tab is in background
+    // Timer, deadline-based so it works even when tab is in background
     const examDeadline = Date.now() + 20 * 60 * 1000;
     function tickTimer() {
         const remaining = Math.max(0, Math.round((examDeadline - Date.now()) / 1000));
