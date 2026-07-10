@@ -190,14 +190,16 @@
 
         /* ── 🎯 CHANNEL RECONCILIATION CHANNELS BANNER ── */
         .channel-support-banner {
-            display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.95);
-            border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 12px; margin: 0 auto;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
-            flex-wrap: wrap;
-            justify-content: center;
+            display: flex; align-items: center; gap: 14px;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.22);
+            padding: 14px 18px; border-radius: 18px;
+            margin: 0 auto; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            flex-wrap: wrap; justify-content: center; width: min(760px, 100%);
         }
-        .channel-support-banner span { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-        .channel-inline-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .channel-support-banner span { font-size: 0.83rem; font-weight: 800; color: #cffafe; text-transform: uppercase; letter-spacing: 0.6px; }
+        .channel-support-banner .banner-label { color: #7dd3fc; }
+        .channel-inline-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
 
         /* ===== TWO-COLUMN SYMMETRICAL SPLIT CONTENT GRADIENT ===== */
         .pricing-split-layout {
@@ -353,8 +355,8 @@
                 <h2>Gura Ibizamini Byoroshye kandi Bihendutse</h2>
                 <p>Urahawe uburyo bwihuse bwo kugura ibizamini, kureba ibisigaye ku nomero yawe, no kwishyura ukoresheje MTN MoMo cyangwa Airtel Money.</p>
                 
-                <div class="channel-support-banner" style="margin-top: 12px; background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.22); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);">
-                    <span>Uburyo bwemewe:</span>
+                <div class="channel-support-banner" style="margin-top: 18px;">
+                    <span class="banner-label">Uburyo bwizewe bwo kwishyura:</span>
                     <div class="channel-inline-row">
                         <div class="carrier-logo-square-box header-payment-badge"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN"></div>
                         <div class="carrier-logo-square-box header-payment-badge"><img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel"></div>
