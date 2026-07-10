@@ -29,8 +29,8 @@ body.sidebar-open .mobile-sidebar-overlay {
 }
 
 @media (max-width: 1100px) {
-  html, body {
-    height: auto;
+  html body {
+    height: auto !important;
     min-height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
@@ -47,8 +47,8 @@ body.sidebar-open .mobile-sidebar-overlay {
     height: auto;
   }
 
-  .sidebar,
-  .side {
+  .shell > .sidebar,
+  .shell > .side {
     position: fixed !important;
     top: 0;
     left: 0;
@@ -64,19 +64,19 @@ body.sidebar-open .mobile-sidebar-overlay {
     flex-direction: column !important;
   }
 
-  .sidebar.open,
-  .side.open {
+  .shell > .sidebar.open,
+  .shell > .side.open {
     transform: translateX(0);
   }
 
-  .workspace,
-  .page {
+  .shell > .workspace,
+  .shell > .page {
     width: 100%;
     min-height: 100vh;
     overflow: visible;
   }
 
-  .topbar {
+  .workspace .topbar {
     padding: 16px 20px;
     min-height: auto;
     flex-wrap: wrap;
@@ -84,63 +84,87 @@ body.sidebar-open .mobile-sidebar-overlay {
     align-items: center;
   }
 
-  .mobile-nav-toggle {
+  .workspace .mobile-nav-toggle {
     display: inline-flex;
     flex-shrink: 0;
   }
 
-  .topbar h1 {
+  .workspace .topbar h1 {
     font-size: 20px;
   }
 
-  .topbar p {
+  .workspace .topbar p {
     font-size: 12px;
     margin-top: 4px;
   }
 
-  .content,
-  .form-scroll,
-  .form-container,
-  .perf-scroll,
-  .body {
+  .workspace .search-box-wrap {
+    width: 100%;
+    margin-top: 2px;
+  }
+
+  .workspace .form-scroll,
+  .workspace .form-container,
+  .workspace .perf-scroll,
+  .workspace .body {
     padding: 20px;
-    overflow: visible;
+    overflow: auto;
     height: auto;
+    min-height: 0;
   }
 
-  .grid,
-  .grid-cards,
-  .stats,
-  .resource-row,
-  .options-grid,
-  .text-options-grid,
-  .review-info-grid {
-    grid-template-columns: 1fr;
+  .workspace .grid,
+  .workspace .grid-cards,
+  .workspace .stats,
+  .workspace .resource-row,
+  .workspace .options-grid,
+  .workspace .text-options-grid,
+  .workspace .review-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
-  .summary-card,
-  .card,
-  .panel,
-  .card-panel,
-  .form-card,
-  .system-details-panel,
-  .table-card,
-  .table-container {
+  .workspace .summary-card,
+  .workspace .card,
+  .workspace .panel,
+  .workspace .card-panel,
+  .workspace .form-card,
+  .workspace .system-details-panel,
+  .workspace .table-card,
+  .workspace .table-container {
     border-radius: 14px;
   }
 
-  .table-container,
-  .table-card,
-  .table-wrap {
-    overflow: visible;
+  .workspace .table-container,
+  .workspace .table-card,
+  .workspace .table-wrap {
+    overflow: auto;
   }
 
-  .table-container {
+  .workspace .table-container {
     overflow-x: auto;
   }
 
-  .table-container table {
-    min-width: 900px;
+  .workspace .table-container table {
+    min-width: 760px;
+  }
+
+  .workspace .sidebar-brand {
+    padding: 18px 16px;
+    font-size: 1rem;
+  }
+
+  .workspace .sidebar-nav {
+    padding: 12px 10px;
+  }
+
+  .workspace .sidebar-nav a {
+    padding: 11px 12px;
+    font-size: 13px;
+  }
+
+  .workspace .sidebar-footer {
+    padding: 12px 14px;
   }
 
   .resource-item {
@@ -178,57 +202,75 @@ body.sidebar-open .mobile-sidebar-overlay {
 }
 
 @media (max-width: 700px) {
-  .topbar {
-    align-items: center;
+  .workspace .topbar {
+    padding: 14px 14px 12px;
+    align-items: flex-start;
+    gap: 10px;
   }
 
-  .topbar > div:first-child {
+  .workspace .topbar > div:first-child {
     width: 100%;
   }
 
-  .mode-badge,
-  .perf-badge,
-  .search-bar-wrap {
+  .workspace .mode-badge,
+  .workspace .perf-badge,
+  .workspace .search-bar-wrap {
     width: 100%;
     justify-content: space-between;
   }
 
-  .form-card,
-  .card-panel,
-  .summary-card,
-  .panel,
-  .system-details-panel,
-  .table-card,
-  .table-container {
-    padding: 16px;
+  .workspace .form-scroll {
+    padding: 14px 12px 20px;
+    gap: 14px;
   }
 
-  .field input,
-  .field textarea,
-  .field select,
-  .modal-body input,
-  .modal-body select {
+  .workspace .form-card,
+  .workspace .card-panel,
+  .workspace .summary-card,
+  .workspace .panel,
+  .workspace .system-details-panel,
+  .workspace .table-card,
+  .workspace .table-container {
+    padding: 14px;
+  }
+
+  .workspace .field input,
+  .workspace .field textarea,
+  .workspace .field select,
+  .workspace .modal-body input,
+  .workspace .modal-body select {
     font-size: 14px;
   }
 
-  .review-modal-wrapper {
+  .workspace .review-modal-wrapper {
     min-width: 0;
     width: 100%;
     max-height: 100vh;
     height: auto;
   }
 
-  .summary-card {
-    padding: 14px;
+  .workspace .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 
-  .summary-card div p {
+  .workspace .summary-card {
+    padding: 12px;
+    min-height: 86px;
+  }
+
+  .workspace .summary-card div p {
     font-size: 20px;
   }
 
+  .workspace .summary-card div h3 {
+    font-size: 9px;
+    letter-spacing: 0.25px;
+  }
+
   .workspace table,
-  .page table,
-  .shell table {
+  .workspace .page table,
+  .workspace .shell table {
     display: block;
     width: 100%;
     border-collapse: separate;
@@ -236,21 +278,21 @@ body.sidebar-open .mobile-sidebar-overlay {
   }
 
   .workspace thead,
-  .page thead,
-  .shell thead {
+  .workspace .page thead,
+  .workspace .shell thead {
     display: none;
   }
 
   .workspace tbody,
-  .page tbody,
-  .shell tbody {
+  .workspace .page tbody,
+  .workspace .shell tbody {
     display: block;
     width: 100%;
   }
 
   .workspace tbody tr,
-  .page tbody tr,
-  .shell tbody tr {
+  .workspace .page tbody tr,
+  .workspace .shell tbody tr {
     display: block;
     width: 100%;
     background: #ffffff;
@@ -262,8 +304,8 @@ body.sidebar-open .mobile-sidebar-overlay {
   }
 
   .workspace td,
-  .page td,
-  .shell td {
+  .workspace .page td,
+  .workspace .shell td {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -275,15 +317,15 @@ body.sidebar-open .mobile-sidebar-overlay {
   }
 
   .workspace td:last-child,
-  .page td:last-child,
-  .shell td:last-child {
+  .workspace .page td:last-child,
+  .workspace .shell td:last-child {
     border-bottom: none;
     padding-bottom: 0;
   }
 
   .workspace td::before,
-  .page td::before,
-  .shell td::before {
+  .workspace .page td::before,
+  .workspace .shell td::before {
     content: attr(data-label);
     font-size: 9px;
     font-weight: 800;
@@ -294,16 +336,16 @@ body.sidebar-open .mobile-sidebar-overlay {
   }
 
   .workspace td > *,
-  .page td > *,
-  .shell td > * {
+  .workspace .page td > *,
+  .workspace .shell td > * {
     flex: 1;
-    text-align: right;
+    text-align: left;
     min-width: 0;
   }
 
   .workspace td .actions,
-  .page td .actions,
-  .shell td .actions {
+  .workspace .page td .actions,
+  .workspace .shell td .actions {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -313,22 +355,22 @@ body.sidebar-open .mobile-sidebar-overlay {
   }
 
   .workspace td .actions > *,
-  .page td .actions > *,
-  .shell td .actions > * {
+  .workspace .page td .actions > *,
+  .workspace .shell td .actions > * {
     display: block;
     width: 100%;
     text-align: center;
   }
 
   .workspace td .actions .btn,
-  .page td .actions .btn,
-  .shell td .actions .btn,
+  .workspace .page td .actions .btn,
+  .workspace .shell td .actions .btn,
   .workspace td .actions a,
-  .page td .actions a,
-  .shell td .actions a,
+  .workspace .page td .actions a,
+  .workspace .shell td .actions a,
   .workspace td .actions button,
-  .page td .actions button,
-  .shell td .actions button {
+  .workspace .page td .actions button,
+  .workspace .shell td .actions button {
     width: 100%;
     justify-content: center;
   }
