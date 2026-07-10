@@ -310,10 +310,10 @@ body.sidebar-open .mobile-sidebar-overlay {
     width: 100%;
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 10px 10px 6px;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    border-radius: 14px;
+    padding: 12px 12px 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
     overflow: hidden;
   }
 
@@ -323,9 +323,9 @@ body.sidebar-open .mobile-sidebar-overlay {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
-    padding: 7px 0;
+    padding: 8px 0;
     border-bottom: 1px solid #f1f5f9;
     text-align: left;
     white-space: normal;
@@ -344,10 +344,12 @@ body.sidebar-open .mobile-sidebar-overlay {
     content: attr(data-label);
     font-size: 9px;
     font-weight: 800;
-    letter-spacing: 0.35px;
+    letter-spacing: 0.4px;
     color: #64748b;
     text-transform: uppercase;
     flex: 0 0 38%;
+    min-width: 110px;
+    line-height: 1.4;
   }
 
   .workspace td > *,
@@ -357,17 +359,19 @@ body.sidebar-open .mobile-sidebar-overlay {
     text-align: left;
     min-width: 0;
     overflow-wrap: anywhere;
+    line-height: 1.45;
   }
 
   .workspace td .actions,
   .workspace .page td .actions,
-  .workspace .shell td .actions {
+  .shell td .actions {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-end;
-    gap: 6px;
+    gap: 8px;
     width: 100%;
+    margin-top: 4px;
   }
 
   .workspace td .actions > *,
@@ -376,6 +380,8 @@ body.sidebar-open .mobile-sidebar-overlay {
     display: block;
     width: 100%;
     text-align: center;
+    min-height: 40px;
+    padding: 10px 12px;
   }
 
   .workspace td .actions .btn,
@@ -389,5 +395,6 @@ body.sidebar-open .mobile-sidebar-overlay {
   .workspace .shell td .actions button {
     width: 100%;
     justify-content: center;
+    border-radius: 10px;
   }
 }
