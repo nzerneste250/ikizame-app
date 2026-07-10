@@ -12,7 +12,41 @@
     <style>
         :root { --brand:#0b698b; --brand-dark:#08536e; --brand-light:#e0f2fe; --bg:#f0f6fa; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0; }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-top:60px; }
+        body { font-family:'Inter',sans-serif; background:
+            radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 30%),
+            linear-gradient(135deg, #07131b 0%, #0b698b 55%, #0d1b2a 100%);
+            color:var(--text); min-height:100vh; padding-top:60px; position:relative; overflow-x:hidden; }
+
+        body::before {
+            content:'';
+            position:fixed;
+            inset:0;
+            pointer-events:none;
+            background:
+                linear-gradient(90deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 120px),
+                linear-gradient(0deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 120px);
+            background-size:120px 120px;
+            opacity:0.2;
+            z-index:0;
+        }
+
+        body::after {
+            content:'';
+            position:fixed;
+            right:-50px;
+            top:70px;
+            width:220px;
+            height:220px;
+            border:1px solid rgba(255,255,255,0.12);
+            border-radius:50%;
+            pointer-events:none;
+            z-index:0;
+        }
+
+        body > * {
+            position:relative;
+            z-index:1;
+        }
         .navbar { position:fixed; top:0; left:0; right:0; z-index:5000; height:60px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 4%; border-bottom:1px solid #e2e8f0; box-shadow:0 1px 10px rgba(15,23,42,.03); width:100vw; box-sizing:border-box; }
         .navbar-brand-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
         .navbar-brand-wrap img { width:32px; height:32px; object-fit:contain; }

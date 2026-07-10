@@ -22,12 +22,46 @@
         html, body {
             height: 100%;
             font-family: 'Inter', sans-serif;
-            background-color: #0d1b2a;
+            background:
+                radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 30%),
+                linear-gradient(135deg, #07131b 0%, #0b698b 55%, #0d1b2a 100%);
             color: #ffffff;
             display: flex;
             flex-direction: column;
             width: 100%;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(90deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 120px),
+                linear-gradient(0deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 120px);
+            background-size: 120px 120px;
+            opacity: 0.22;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            right: -60px;
+            top: 80px;
+            width: 220px;
+            height: 220px;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body > * {
+            position: relative;
+            z-index: 1;
         }
                 /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
         .navbar { 
