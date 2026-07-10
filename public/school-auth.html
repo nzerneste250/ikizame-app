@@ -13,17 +13,20 @@
         :root {
             --brand: #0b698b;
             --brand-dark: #08536e;
-            --bg-dark: #0d1b2a;
+            --bg-dark: #0f172a;
             --text-dark: #0f172a;
-            --border-color: rgba(255,255,255,0.12);
+            --border-color: rgba(15, 23, 42, 0.08);
+            --surface: #ffffff;
+            --surface-soft: #f8fbff;
+            --text-muted: #64748b;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body {
             height: 100%;
             font-family: 'Inter', sans-serif;
-            background-color: #0d1b2a;
-            color: #ffffff;
+            background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 55%, #fdfefe 100%);
+            color: #0f172a;
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -167,36 +170,43 @@
         }
         
         .auth-card-frame {
-            background: rgba(255, 255, 255, 0.03);
+            background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 18px;
             max-width: 440px;
             width: 100%;
             padding: 32px 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
 
         .auth-heading-block { text-align: center; margin-bottom: 24px; }
-        .auth-heading-block h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
-        .auth-heading-block p { font-size: 0.88rem; color: #94a3b8; line-height: 1.4; }
+        .auth-heading-block .portal-pill {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: rgba(11, 105, 139, 0.08);
+            color: var(--brand);
+            border: 1px solid rgba(11, 105, 139, 0.15);
+            border-radius: 999px; padding: 6px 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;
+        }
+        .auth-heading-block h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; color: #0f172a; }
+        .auth-heading-block p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; }
 
         /* Form Wizard Content Toggles */
         .auth-wizard-view-step { display: none; }
         .auth-wizard-view-step.active { display: block; }
 
         .input-form-field { display: flex; flex-direction: column; text-align: left; gap: 6px; margin-bottom: 18px; }
-        .input-form-field label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-form-field input { width: 100%; padding: 12px 14px; border: 2px solid rgba(255,255,255,0.15); border-radius: 8px; font-size: 14px; font-weight: 600; outline: none; background: rgba(255,255,255,0.02); color: #fff; font-family: inherit; }
-        .input-form-field input:focus { border-color: var(--brand); background: rgba(255,255,255,0.06); }
+        .input-form-field label { font-size: 11px; font-weight: 800; color: var(--brand); text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-form-field input { width: 100%; padding: 12px 14px; border: 2px solid #cbd5e1; border-radius: 10px; font-size: 14px; font-weight: 600; outline: none; background: #f8fbff; color: #0f172a; font-family: inherit; }
+        .input-form-field input:focus { border-color: var(--brand); background: #ffffff; box-shadow: 0 0 0 3px rgba(11, 105, 139, 0.12); }
         .pw-wrap { position: relative; }
         .pw-wrap input { padding-right: 44px; }
         .pw-eye { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer; padding: 4px; display: flex; align-items: center; font-size: 15px; transition: color 0.15s; }
         .pw-eye:hover { color: #94a3b8; }
         
-        .btn-auth-submit { background: var(--brand); color: #ffffff; border: none; padding: 13px; width: 100%; border-radius: 8px; font-size: 0.92rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(11, 105, 139, 0.2); transition: background 0.1s; }
-        .btn-auth-submit:hover { background: var(--brand-dark); }
+        .btn-auth-submit { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #ffffff; border: none; padding: 13px; width: 100%; border-radius: 10px; font-size: 0.92rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 24px rgba(11, 105, 139, 0.16); transition: transform 0.15s, box-shadow 0.15s; }
+        .btn-auth-submit:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(11, 105, 139, 0.22); }
         .btn-auth-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .switch-mode-anchor { text-align: center; margin-top: 20px; font-size: 13px; color: #94a3b8; }
@@ -251,6 +261,7 @@
             <!-- ====== ENGINE PANEL A: SCHOOL LOGIN MODE ====== -->
             <div class="auth-wizard-view-step active" id="viewSectionSchoolLogin">
                 <div class="auth-heading-block">
+                    <div class="portal-pill"><i class="fa-solid fa-school"></i> School portal</div>
                     <h2>Kwinjira k'Ishuri</h2>
                     <p>Injiza amakuru ya Konti y'ishuri ryawe utangire gukurikirana abanyeshuri.</p>
                 </div>
@@ -275,6 +286,7 @@
             <!-- ====== ENGINE PANEL B: REGISTER INITIAL DATA ====== -->
             <div class="auth-wizard-view-step" id="viewSectionSchoolRegister">
                 <div class="auth-heading-block">
+                    <div class="portal-pill"><i class="fa-solid fa-user-plus"></i> New school account</div>
                     <h2>Fungura Konti y'Ishuri</h2>
                     <p>Iyandikishe nk'ishuri rya shofere pro uhite ubona kode ya OTP muri Email yawe.</p>
                 </div>
