@@ -105,18 +105,19 @@
         /* 24/7 BANNER */
         .support-banner {
             display: flex; align-items: center; justify-content: center; gap: 16px;
-            background: linear-gradient(135deg, rgba(11,105,139,0.12), rgba(56,189,248,0.06));
-            border: 1px solid rgba(11,105,139,0.16); border-radius: 14px;
-            padding: 18px 28px; margin-bottom: 28px; flex-wrap: wrap; text-align: center;
-            box-shadow: 0 12px 26px rgba(15, 23, 42, 0.05);
+            background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
+            border: none; border-radius: 14px;
+            padding: 22px 30px; margin-bottom: 28px; flex-wrap: wrap; text-align: center;
+            box-shadow: 0 18px 40px rgba(2,6,23,0.12);
+            color: #fff;
         }
         .support-banner .badge-247 {
-            background: linear-gradient(135deg, #0b698b, #38bdf8);
-            color: #fff; font-size: 1.1rem; font-weight: 900;
-            padding: 8px 18px; border-radius: 10px; letter-spacing: 1px; flex-shrink: 0;
+            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18);
+            color: #fff; font-size: 1.05rem; font-weight: 900;
+            padding: 10px 20px; border-radius: 12px; letter-spacing: 1px; flex-shrink: 0;
         }
-        .support-banner p { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
-        .support-banner p strong { color: var(--text); }
+        .support-banner p { font-size: 0.95rem; color: rgba(255,255,255,0.95); line-height: 1.5; margin:0; }
+        .support-banner p strong { color: #fff; font-weight:900; }
 
         /* TIMELINE */
         .timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
