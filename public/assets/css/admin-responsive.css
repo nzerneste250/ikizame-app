@@ -117,8 +117,8 @@ body.sidebar-open .mobile-sidebar-overlay {
   .workspace .form-container,
   .workspace .perf-scroll,
   .workspace .body {
-    padding: 16px 14px 20px;
-    overflow: auto;
+    padding: 16px 14px 24px;
+    overflow: visible;
     height: auto;
     min-height: 0;
   }
@@ -148,7 +148,8 @@ body.sidebar-open .mobile-sidebar-overlay {
   .workspace .table-container,
   .workspace .table-card,
   .workspace .table-wrap {
-    overflow: auto;
+    overflow: visible;
+    padding-bottom: 6px;
   }
 
   .workspace .table-container {
@@ -157,6 +158,8 @@ body.sidebar-open .mobile-sidebar-overlay {
 
   .workspace .table-container table {
     min-width: 760px;
+    display: table;
+    width: 100%;
   }
 
   .workspace .sidebar-brand {
@@ -266,7 +269,7 @@ body.sidebar-open .mobile-sidebar-overlay {
 
   .workspace .summary-card {
     padding: 12px;
-    min-height: 86px;
+    min-height: auto;
   }
 
   .workspace .summary-card div p {
@@ -311,19 +314,21 @@ body.sidebar-open .mobile-sidebar-overlay {
     padding: 10px 10px 6px;
     margin-bottom: 10px;
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    overflow: hidden;
   }
 
   .workspace td,
   .workspace .page td,
   .workspace .shell td {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 8px;
     width: 100%;
-    padding: 6px 0;
+    padding: 7px 0;
     border-bottom: 1px solid #f1f5f9;
     text-align: left;
+    white-space: normal;
   }
 
   .workspace td:last-child,
@@ -351,6 +356,7 @@ body.sidebar-open .mobile-sidebar-overlay {
     flex: 1;
     text-align: left;
     min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .workspace td .actions,
