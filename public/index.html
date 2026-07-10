@@ -29,47 +29,13 @@
 
         html, body {
             min-height: 100vh;
-            background:
-                radial-gradient(circle at top left, rgba(56,189,248,0.20), transparent 28%),
-                linear-gradient(135deg, #07131b 0%, #0b698b 55%, #0d1b2a 100%);
+            background-color: var(--bg-dark);
             color: #ffffff;
             display: flex;
             flex-direction: column;
             width: 100%;
             position: relative;
             font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background:
-                linear-gradient(90deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 120px),
-                linear-gradient(0deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 120px);
-            background-size: 120px 120px;
-            opacity: 0.22;
-            z-index: 0;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            right: -90px;
-            top: -90px;
-            width: 260px;
-            height: 260px;
-            border: 1px solid rgba(255,255,255,0.14);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        body > * {
-            position: relative;
-            z-index: 1;
         }
 
         /* ===== SCENE BACKGROUND ===== */

@@ -19,41 +19,7 @@
             --muted: #94a3b8;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; background:
-            radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 30%),
-            linear-gradient(135deg, #07131b 0%, #0b698b 55%, #0d1b2a 100%);
-            color: #fff; min-height: 100vh; position: relative; overflow-x: hidden; }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background:
-                linear-gradient(90deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 120px),
-                linear-gradient(0deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 120px);
-            background-size: 120px 120px;
-            opacity: 0.2;
-            z-index: 0;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            left: -70px;
-            bottom: -70px;
-            width: 240px;
-            height: 240px;
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        body > * {
-            position: relative;
-            z-index: 1;
-        }
+        html, body { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; background: var(--bg); color: #fff; min-height: 100vh; }
 
         /* NAVBAR */
         .navbar {
