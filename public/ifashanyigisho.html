@@ -10,233 +10,89 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root {
-            --brand: #0b698b;
-            --brand-dark: #08536e;
-            --brand-light: #e0f2fe;
-            --bg: #f0f6fa;
-            --surface: #ffffff;
-            --text: #0f172a;
-            --muted: #64748b;
-            --border: #e2e8f0;
+        :root { --brand:#0b698b; --brand-dark:#08536e; --brand-light:#e0f2fe; --bg:#f0f6fa; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+        .navbar { position:sticky; top:0; z-index:1000; background:#fff; border-bottom:1px solid var(--border); box-shadow:0 1px 8px rgba(15,23,42,.06); padding:0 5%; display:flex; align-items:center; justify-content:space-between; height:62px; }
+        .navbar-brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+        .navbar-brand img { width:34px; height:34px; object-fit:contain; }
+        .navbar-brand span { font-size:1.5rem; font-weight:800; color:var(--brand); letter-spacing:-.5px; }
+        .navbar-links { display:flex; list-style:none; gap:6px; align-items:center; }
+        .navbar-links a { font-size:.83rem; font-weight:600; color:var(--muted); text-decoration:none; padding:7px 12px; border-radius:8px; transition:all .15s; white-space:nowrap; }
+        .navbar-links a:hover { color:var(--brand); background:var(--brand-light); }
+        .navbar-links a.active { color:var(--brand); background:var(--brand-light); font-weight:700; }
+        .hero { background:linear-gradient(135deg,var(--brand) 0%,#0e4f6b 100%); padding:52px 5% 48px; text-align:center; }
+        .hero-icon { width:64px; height:64px; background:rgba(255,255,255,.15); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:28px; color:#fff; margin:0 auto 18px; }
+        .hero h1 { font-size:clamp(1.6rem,4vw,2.4rem); font-weight:800; color:#fff; margin-bottom:10px; }
+        .hero p { font-size:1rem; color:rgba(255,255,255,.8); max-width:520px; margin:0 auto; line-height:1.6; }
+        .main { max-width:1100px; margin:0 auto; padding:40px 5% 60px; }
+        .search-wrap { position:relative; margin-bottom:24px; }
+        .s-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.9rem; pointer-events:none; }
+        .search-input { width:100%; padding:13px 44px; border:1.5px solid var(--border); border-radius:12px; font-size:.9rem; font-family:inherit; color:var(--text); background:var(--surface); outline:none; }
+        .search-input:focus { border-color:var(--brand); }
+        .search-input::placeholder { color:#94a3b8; }
+        .search-clear { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:#e2e8f0; border:none; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:12px; color:var(--muted); display:none; align-items:center; justify-content:center; }
+        .search-clear.show { display:flex; }
+        .section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:12px; }
+        .section-head h2 { font-size:1.15rem; font-weight:800; color:var(--text); display:flex; align-items:center; gap:10px; }
+        .section-head h2 i { color:var(--brand); }
+        .doc-count-badge { background:var(--brand-light); color:var(--brand); font-size:.78rem; font-weight:700; padding:4px 12px; border-radius:20px; }
+        .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+        .doc-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; display:flex; flex-direction:column; gap:16px; box-shadow:0 2px 12px rgba(15,23,42,.05); transition:transform .2s,box-shadow .2s,border-color .2s; cursor:pointer; }
+        .doc-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(11,105,139,.12); border-color:#bae6fd; }
+        .doc-card-top { display:flex; align-items:flex-start; gap:14px; }
+        .doc-type-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+        .icon-pdf { background:#fee2e2; color:#dc2626; }
+        .icon-word { background:#dbeafe; color:#1d4ed8; }
+        .icon-img { background:#dcfce7; color:#16a34a; }
+        .doc-info { flex:1; min-width:0; }
+        .doc-info h3 { font-size:.95rem; font-weight:700; color:var(--text); line-height:1.4; margin-bottom:4px; }
+        .doc-info p { font-size:.8rem; color:var(--muted); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .doc-meta-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+        .doc-tag { font-size:.72rem; font-weight:700; padding:3px 9px; border-radius:20px; text-transform:uppercase; }
+        .tag-pdf { background:#fee2e2; color:#dc2626; }
+        .tag-word { background:#dbeafe; color:#1d4ed8; }
+        .tag-read { background:#dcfce7; color:#16a34a; }
+        .doc-actions { display:flex; gap:10px; margin-top:auto; }
+        .btn-read { flex:1; background:var(--brand); color:#fff; border:none; padding:10px 16px; border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-family:inherit; transition:background .15s; }
+        .btn-read:hover { background:var(--brand-dark); }
+        .btn-download { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; padding:10px 14px; border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; text-decoration:none; font-family:inherit; }
+        .btn-download:hover { background:#dcfce7; }
+        .btn-download.locked { background:#f8fafc; color:#cbd5e1; border-color:#e2e8f0; cursor:not-allowed; pointer-events:none; }
+        .skeleton-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; display:flex; flex-direction:column; gap:14px; }
+        .skel { background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:8px; }
+        .skel-icon { width:52px; height:52px; border-radius:14px; }
+        .skel-line { height:12px; }
+        .skel-line.w80 { width:80%; }
+        .skel-line.w60 { width:60%; }
+        .skel-line.w40 { width:40%; }
+        .skel-btn { height:38px; border-radius:10px; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .empty-state { text-align:center; padding:60px 20px; }
+        .empty-state i { font-size:3.5rem; color:#cbd5e1; margin-bottom:16px; display:block; }
+        .empty-state h3 { font-size:1.1rem; font-weight:700; color:var(--muted); margin-bottom:6px; }
+        .empty-state p { font-size:.88rem; color:#94a3b8; }
+        .no-results { grid-column:1/-1; text-align:center; padding:48px 20px; }
+        .no-results i { font-size:2.5rem; color:#cbd5e1; display:block; margin-bottom:12px; }
+        .no-results p { font-size:.9rem; font-weight:600; color:var(--muted); }
+        footer { background:#0f172a; color:#64748b; text-align:center; padding:16px; font-size:.78rem; }
+        footer strong { color:#38bdf8; }
+        @media(max-width:768px) {
+            .navbar { padding:0 4%; }
+            .navbar-brand span { font-size:1.2rem; }
+            .navbar-links { display:none; }
+            .hero { padding:36px 4% 32px; }
+            .main { padding:24px 4% 50px; }
+            .cards-grid { grid-template-columns:1fr; }
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-        /* ── NAVBAR ── */
-        .navbar {
-            position: sticky; top: 0; z-index: 1000;
-            background: #fff; border-bottom: 1px solid var(--border);
-            box-shadow: 0 1px 8px rgba(15,23,42,0.06);
-            padding: 0 5%;
-            display: flex; align-items: center; justify-content: space-between;
-            height: 62px;
-        }
-        .navbar-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .navbar-brand img { width: 34px; height: 34px; object-fit: contain; }
-        .navbar-brand span { font-size: 1.5rem; font-weight: 800; color: var(--brand); letter-spacing: -0.5px; }
-        .navbar-links { display: flex; list-style: none; gap: 6px; align-items: center; }
-        .navbar-links a { font-size: 0.83rem; font-weight: 600; color: var(--muted); text-decoration: none; padding: 7px 12px; border-radius: 8px; transition: all 0.15s; white-space: nowrap; }
-        .navbar-links a:hover { color: var(--brand); background: var(--brand-light); }
-        .navbar-links a.active { color: var(--brand); background: var(--brand-light); font-weight: 700; }
-        .lang-badge { display: flex; align-items: center; gap: 7px; font-size: 0.78rem; font-weight: 700; color: #1e293b; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 5px 11px; flex-shrink: 0; }
-        .rw-flag { width: 20px; height: 14px; border-radius: 2px; overflow: hidden; flex-shrink: 0; }
-
-        /* ── HERO ── */
-        .hero {
-            background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
-            padding: 52px 5% 48px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-        .hero-icon { width: 64px; height: 64px; background: rgba(255,255,255,0.15); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; margin: 0 auto 18px; backdrop-filter: blur(4px); }
-        .hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; color: #fff; margin-bottom: 10px; }
-        .hero p { font-size: 1rem; color: rgba(255,255,255,0.8); max-width: 520px; margin: 0 auto; line-height: 1.6; }
-
-        /* ── MAIN CONTENT ── */
-        .main { max-width: 1100px; margin: 0 auto; padding: 40px 5% 60px; }
-
-        /* ── SEARCH BAR ── */
-        .search-wrap { position: relative; margin-bottom: 24px; }
-        .search-wrap .s-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; pointer-events: none; }
-        .search-input {
-            width: 100%; padding: 13px 44px 13px 44px;
-            border: 1.5px solid var(--border); border-radius: 12px;
-            font-size: 0.9rem; font-family: inherit; color: var(--text);
-            background: var(--surface); outline: none;
-            box-shadow: 0 1px 4px rgba(15,23,42,0.04);
-            transition: border-color 0.15s, box-shadow 0.15s;
-        }
-        .search-input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(11,105,139,0.1); }
-        .search-input::placeholder { color: #94a3b8; }
-        .search-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #e2e8f0; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 12px; color: var(--muted); display: none; align-items: center; justify-content: center; transition: background 0.15s; }
-        .search-clear.show { display: flex; }
-        .search-clear:hover { background: #cbd5e1; }
-        .no-results { grid-column: 1/-1; text-align: center; padding: 48px 20px; }
-        .no-results i { font-size: 2.5rem; color: #cbd5e1; display: block; margin-bottom: 12px; }
-        .no-results p { font-size: 0.9rem; font-weight: 600; color: var(--muted); }
-
-        /* ── SECTION HEADING ── */
-        .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
-        .section-head h2 { font-size: 1.15rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 10px; }
-        .section-head h2 i { color: var(--brand); }
-        .doc-count-badge { background: var(--brand-light); color: var(--brand); font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
-
-        /* ── CARDS GRID ── */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-
-        .doc-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            box-shadow: 0 2px 12px rgba(15,23,42,0.05);
-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-            cursor: pointer;
-        }
-        .doc-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(11,105,139,0.12); border-color: #bae6fd; }
-
-        .doc-card-top { display: flex; align-items: flex-start; gap: 14px; }
-        .doc-type-icon {
-            width: 52px; height: 52px; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; flex-shrink: 0;
-        }
-        .icon-pdf { background: #fee2e2; color: #dc2626; }
-        .icon-word { background: #dbeafe; color: #1d4ed8; }
-        .icon-img { background: #dcfce7; color: #16a34a; }
-
-        .doc-info { flex: 1; min-width: 0; }
-        .doc-info h3 { font-size: 0.95rem; font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 4px; }
-        .doc-info p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        .doc-meta-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .doc-tag { font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; }
-        .tag-pdf { background: #fee2e2; color: #dc2626; }
-        .tag-word { background: #dbeafe; color: #1d4ed8; }
-        .tag-read { background: #dcfce7; color: #16a34a; }
-        .tag-locked { background: #f1f5f9; color: #94a3b8; }
-
-        .doc-actions { display: flex; gap: 10px; margin-top: auto; }
-        .btn-read {
-            flex: 1; background: var(--brand); color: #fff; border: none;
-            padding: 10px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-            font-family: inherit; transition: background 0.15s;
-        }
-        .btn-read:hover { background: var(--brand-dark); }
-        .btn-download {
-            background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;
-            padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; gap: 6px;
-            text-decoration: none; font-family: inherit; transition: background 0.15s;
-        }
-        .btn-download:hover { background: #dcfce7; }
-        .btn-download.locked { background: #f8fafc; color: #cbd5e1; border-color: #e2e8f0; cursor: not-allowed; pointer-events: none; }
-
-        /* ── SKELETON LOADER ── */
-        .skeleton-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
-        .skel { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px; }
-        .skel-icon { width: 52px; height: 52px; border-radius: 14px; }
-        .skel-line { height: 12px; }
-        .skel-line.w80 { width: 80%; }
-        .skel-line.w60 { width: 60%; }
-        .skel-line.w40 { width: 40%; }
-        .skel-btn { height: 38px; border-radius: 10px; }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* ── MODAL VIEWER ── */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(15,23,42,0.75);
-            backdrop-filter: blur(6px); z-index: 9000;
-            display: none; align-items: center; justify-content: center;
-            padding: 16px;
-        }
-        .modal-overlay.open { display: flex; }
-        .modal-box {
-            background: var(--surface); border-radius: 20px;
-            width: 100%; max-width: 900px; height: 90vh;
-            display: flex; flex-direction: column;
-            box-shadow: 0 32px 80px rgba(15,23,42,0.3);
-            overflow: hidden;
-            animation: slideUp 0.25s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .modal-header {
-            padding: 16px 20px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 12px; flex-shrink: 0;
-            background: #f8fafc;
-        }
-        .modal-header-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-        .modal-title { flex: 1; min-width: 0; }
-        .modal-title h3 { font-size: 0.95rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .modal-title p { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
-        .modal-header-actions { display: flex; gap: 8px; flex-shrink: 0; }
-        .btn-modal-dl { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; padding: 7px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; font-family: inherit; }
-        .btn-modal-close { background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-size: 16px; color: var(--muted); display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
-        .btn-modal-close:hover { background: #fee2e2; color: #dc2626; }
-
-        .modal-body { flex: 1; position: relative; overflow: hidden; background: #f8fafc; }
-
-        /* Loading spinner inside modal */
-        .viewer-loading {
-            position: absolute; inset: 0; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 14px;
-            background: #f8fafc; z-index: 2;
-        }
-        .spinner { width: 44px; height: 44px; border: 4px solid #e2e8f0; border-top-color: var(--brand); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .viewer-loading p { font-size: 0.88rem; font-weight: 600; color: var(--muted); }
-
-        .viewer-iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-
-        /* ── EMPTY STATE ── */
-        .empty-state { text-align: center; padding: 60px 20px; }
-        .empty-state i { font-size: 3.5rem; color: #cbd5e1; margin-bottom: 16px; display: block; }
-        .empty-state h3 { font-size: 1.1rem; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
-        .empty-state p { font-size: 0.88rem; color: #94a3b8; }
-
-        /* ── FOOTER ── */
-        footer { background: #0f172a; color: #64748b; text-align: center; padding: 16px; font-size: 0.78rem; }
-        footer strong { color: #38bdf8; }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 768px) {
-            html, body { overflow-x: hidden; max-width: 100vw; }
-            .navbar { padding: 0 4%; min-width: 0; }
-            .navbar-brand span { font-size: 1.2rem; }
-            .navbar-links { display: none; }
-            .hero { padding: 36px 4% 32px; }
-            .main { padding: 24px 4% 50px; }
-            .cards-grid { grid-template-columns: 1fr; }
-            .modal-box { height: 95vh; border-radius: 16px; max-width: 100%; }
-            .modal-header { padding: 12px 14px; }
-            .btn-modal-dl span { display: none; }
-        }
-        @media (max-width: 480px) {
-            html, body { overflow-x: hidden; }
-            .navbar { padding: 0 3%; }
-            .doc-actions { flex-direction: column; }
-            .btn-download { justify-content: center; }
-            .modal-overlay { padding: 0; }
-            .modal-box { border-radius: 0; height: 100vh; }
+        @media(max-width:480px) {
+            .doc-actions { flex-direction:column; }
+            .btn-download { justify-content:center; }
         }
     </style>
-<script src="assets/js/i18n.js?v=7"></script>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <a href="/" class="navbar-brand">
         <img src="assets/uploads/logo.png" alt="IKIZAME">
@@ -244,40 +100,33 @@
     </a>
     <nav>
         <ul class="navbar-links">
-            <li><a href="/" data-i18n="nav_home">Ahabanza</a></li>
-            <li><a href="ubufasha" data-i18n="nav_help">Ubufasha</a></li>
-            <li><a href="ifashanyigisho" class="active" data-i18n="nav_resources">Imfashanyigisho</a></li>
-            <li><a href="ibiciro" data-i18n="nav_pricing">Ibiciro</a></li>
-            <li><a href="school-auth" data-i18n="nav_school">Amashuri</a></li>
-            <li><a href="amanota" data-i18n="nav_scores">Amanota</a></li>
+            <li><a href="/">Ahabanza</a></li>
+            <li><a href="ubufasha">Ubufasha</a></li>
+            <li><a href="ifashanyigisho" class="active">Imfashanyigisho</a></li>
+            <li><a href="ibiciro">Ibiciro</a></li>
+            <li><a href="school-auth">Amashuri (School Portal)</a></li>
+            <li><a href="amanota">Amanota</a></li>
         </ul>
     </nav>
-    <div class="lang-badge" style="cursor:pointer;" onclick="window.ikizameSwitchLang()">
-        <svg class="rw-flag lang-flag" viewBox="0 0 4 3"><rect width="4" height="1.1" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
-        <span>Kinyarwanda</span>
-    </div>
 </header>
 
-<!-- HERO -->
 <section class="hero">
     <div class="hero-icon"><i class="fa-solid fa-book-open"></i></div>
-    <h1 data-i18n="res_hero_h1">Imfashanyigisho z'Amategeko</h1>
-    <p data-i18n="res_hero_p">Soma no gukura inyandiko z'amategeko y'umuhanda zikubiye hano kugirango witegure ikizamini cyawe neza.</p>
+    <h1>Imfashanyigisho z'Amategeko</h1>
+    <p>Soma no gukura inyandiko z'amategeko y'umuhanda zikubiye hano kugirango witegure ikizamini cyawe neza.</p>
 </section>
 
-<!-- MAIN -->
 <main class="main">
     <div class="section-head">
-        <h2><i class="fa-solid fa-folder-open"></i> <span data-i18n="res_docs_available">Inyandiko Zihari</span></h2>
-        <span class="doc-count-badge" id="docCountBadge">...</span>
+        <h2><i class="fa-solid fa-folder-open"></i> Inyandiko Zihari</h2>
+        <span class="doc-count-badge" id="docCountBadge">Irimo gushaka...</span>
     </div>
     <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass s-icon"></i>
-        <input type="text" class="search-input" id="searchInput" name="searchInput" placeholder="Shakisha inyandiko..." data-i18n-ph="res_search_ph" oninput="filterDocs(this.value)" autocomplete="off">
+        <input type="text" class="search-input" id="searchInput" placeholder="Shakisha inyandiko..." oninput="filterDocs(this.value)" autocomplete="off">
         <button class="search-clear" id="searchClear" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="cards-grid" id="cardsGrid">
-        <!-- Skeleton loaders -->
         <div class="skeleton-card">
             <div style="display:flex;gap:14px;align-items:flex-start">
                 <div class="skel skel-icon"></div>
@@ -305,171 +154,91 @@
 
 <footer>&copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>Developed by Dotado Stationery Store Ltd</strong></footer>
 
-<!-- PDF VIEWER MODAL -->
-<div class="modal-overlay" id="viewerModal">
-    <div class="modal-box">
-        <div class="modal-header">
-            <div class="modal-header-icon icon-pdf" id="modalIcon"><i class="fa-solid fa-file-pdf"></i></div>
-            <div class="modal-title">
-                <h3 id="modalTitle">Inyandiko</h3>
-                <p id="modalSub">PDF Document</p>
-            </div>
-            <div class="modal-header-actions">
-                <a href="#" id="modalDownloadBtn" class="btn-modal-dl" download>
-                    <i class="fa-solid fa-download"></i>
-                    <span>Gukura</span>
-                </a>
-                <button class="btn-modal-close" onclick="closeViewer()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-        </div>
-        <div class="modal-body">
-            <div class="viewer-loading" id="viewerLoading">
-                <div class="spinner"></div>
-                <p>Irimo gufungura inyandiko...</p>
-            </div>
-            <iframe class="viewer-iframe" id="viewerFrame" src="" title="Document Viewer"></iframe>
-        </div>
-    </div>
-</div>
-
 <script>
-let allDocs = [];
+var allDocs = [];
 
 document.addEventListener('DOMContentLoaded', loadDocs);
 
 function loadDocs() {
-    const grid = document.getElementById('cardsGrid');
-    const badge = document.getElementById('docCountBadge');
-    const lang = () => window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-    badge.textContent = lang() === 'en' ? 'Loading...' : 'Irimo gushaka...';
-
     fetch('/api/public/documents')
-        .then(r => r.json())
-        .then(docs => {
-            const grid = document.getElementById('cardsGrid');
-            const badge = document.getElementById('docCountBadge');
-
+        .then(function(r) { return r.json(); })
+        .then(function(docs) {
+            var grid = document.getElementById('cardsGrid');
+            var badge = document.getElementById('docCountBadge');
             if (!docs || docs.length === 0) {
-                grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-                    <i class="fa-solid fa-folder-open"></i>
-                    <h3>Nta nyandiko zihari ubu</h3>
-                    <p>Inyandiko zizashyirwaho vuba. Subira nyuma.</p>
-                </div>`;
+                grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta nyandiko zihari ubu</h3><p>Inyandiko zizashyirwaho vuba. Subira nyuma.</p></div>';
                 badge.textContent = '0 inyandiko';
                 return;
             }
-
             allDocs = docs;
             badge.textContent = docs.length + ' inyandiko';
-            grid.innerHTML = docs.map(doc => buildCard(doc)).join('');
+            grid.innerHTML = allDocs.map(function(doc, i) { return buildCard(doc, i); }).join('');
         })
-        .catch(() => {
-            const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-            document.getElementById('cardsGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-                <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
-                <h3>${_t==='en'?'Something went wrong':'Habayeho ikosa'}</h3>
-                <p>${_t==='en'?'Could not load documents. Please try again.':'Gushaka inyandiko byanze. Gerageza kongera.'}</p>
-                <button onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;">${_t==='en'?'Retry':'Ongera Ugerageze'}</button>
-            </div>`;
-            document.getElementById('docCountBadge').textContent = _t==='en'?'Error':'Ikosa';
+        .catch(function() {
+            document.getElementById('cardsGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habayeho ikosa</h3><p>Gushaka inyandiko byanze. Gerageza kongera.</p><button onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera Ugerageze</button></div>';
+            document.getElementById('docCountBadge').textContent = 'Ikosa';
         });
 }
 
 function filterDocs(q) {
-    const clearBtn = document.getElementById('searchClear');
-    const badge = document.getElementById('docCountBadge');
-    const grid = document.getElementById('cardsGrid');
-    const term = q.trim().toLowerCase();
+    var clearBtn = document.getElementById('searchClear');
+    var badge = document.getElementById('docCountBadge');
+    var grid = document.getElementById('cardsGrid');
+    var term = q.trim().toLowerCase();
     clearBtn.classList.toggle('show', term.length > 0);
     if (!term) {
-        grid.innerHTML = allDocs.map(doc => buildCard(doc)).join('');
+        grid.innerHTML = allDocs.map(function(doc, i) { return buildCard(doc, i); }).join('');
         badge.textContent = allDocs.length + ' inyandiko';
         return;
     }
-    const filtered = allDocs.filter(doc =>
-        doc.title.toLowerCase().includes(term) ||
-        (doc.description && doc.description.toLowerCase().includes(term))
-    );
+    var filtered = allDocs.filter(function(doc) {
+        return doc.title.toLowerCase().includes(term) || (doc.description && doc.description.toLowerCase().includes(term));
+    });
     badge.textContent = filtered.length + ' ibisubizo';
     grid.innerHTML = filtered.length
-        ? filtered.map(doc => buildCard(doc)).join('')
-        : `<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zibonetse zifite "${q}"</p></div>`;
+        ? filtered.map(function(doc) { return buildCard(doc, allDocs.indexOf(doc)); }).join('')
+        : '<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zibonetse.</p></div>';
 }
 
 function clearSearch() {
-    const input = document.getElementById('searchInput');
+    var input = document.getElementById('searchInput');
     input.value = '';
     filterDocs('');
     input.focus();
 }
 
-function buildCard(doc) {
-    const _t = window.ikizameGetLang ? window.ikizameGetLang() : 'rw';
-    const readLabel = _t === 'en' ? 'Read Now' : 'Soma Hano';
-    const dlLabel   = _t === 'en' ? 'Download' : 'Gukura';
-    const ext = (doc.file_path || '').split('.').pop().toLowerCase();
-    const isPdf = ext === 'pdf';
-    const isWord = ['doc','docx'].includes(ext);
-
-    const iconClass = isPdf ? 'icon-pdf' : isWord ? 'icon-word' : 'icon-img';
-    const iconFA    = isPdf ? 'fa-file-pdf' : isWord ? 'fa-file-word' : 'fa-file-image';
-    const tagClass  = isPdf ? 'tag-pdf' : 'tag-word';
-    const tagLabel  = ext.toUpperCase();
-
-    // Store doc safely in a data attribute to avoid quote issues in onclick
-    const idx = allDocs.indexOf(doc);
-
-    const dlBtn = doc.allow_download === 1
-        ? `<a href="/${doc.file_path}" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> ${dlLabel}</a>`
-        : `<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>`;
-
-    const desc = doc.description ? `<p>${doc.description}</p>` : '';
-
-    return `<div class="doc-card" onclick="openViewer(${idx})">
-        <div class="doc-card-top">
-            <div class="doc-type-icon ${iconClass}"><i class="fa-solid ${iconFA}"></i></div>
-            <div class="doc-info">
-                <h3>${doc.title}</h3>
-                ${desc}
-            </div>
-        </div>
-        <div class="doc-meta-row">
-            <span class="doc-tag ${tagClass}">${tagLabel}</span>
-            <span class="doc-tag tag-read"><i class="fa-solid fa-eye" style="font-size:9px"></i> Soma</span>
-        </div>
-        <div class="doc-actions" onclick="event.stopPropagation()">
-            <button class="btn-read" onclick="openViewer(${idx})">
-                <i class="fa-solid fa-book-open"></i> ${readLabel}
-            </button>
-            ${dlBtn}
-        </div>
-    </div>`;
+function buildCard(doc, idx) {
+    var ext = (doc.file_path || '').split('.').pop().toLowerCase();
+    var isPdf = ext === 'pdf';
+    var isWord = ext === 'doc' || ext === 'docx';
+    var iconClass = isPdf ? 'icon-pdf' : isWord ? 'icon-word' : 'icon-img';
+    var iconFA = isPdf ? 'fa-file-pdf' : isWord ? 'fa-file-word' : 'fa-file-image';
+    var tagClass = isPdf ? 'tag-pdf' : 'tag-word';
+    var dlBtn = doc.allow_download === 1
+        ? '<a href="/' + doc.file_path + '" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> Gukura</a>'
+        : '<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>';
+    var desc = doc.description ? '<p>' + doc.description + '</p>' : '';
+    return '<div class="doc-card" onclick="openViewer(' + idx + ')">'
+        + '<div class="doc-card-top">'
+        + '<div class="doc-type-icon ' + iconClass + '"><i class="fa-solid ' + iconFA + '"></i></div>'
+        + '<div class="doc-info"><h3>' + doc.title + '</h3>' + desc + '</div>'
+        + '</div>'
+        + '<div class="doc-meta-row">'
+        + '<span class="doc-tag ' + tagClass + '">' + ext.toUpperCase() + '</span>'
+        + '<span class="doc-tag tag-read"><i class="fa-solid fa-eye" style="font-size:9px"></i> Soma</span>'
+        + '</div>'
+        + '<div class="doc-actions" onclick="event.stopPropagation()">'
+        + '<button class="btn-read" onclick="openViewer(' + idx + ')"><i class="fa-solid fa-book-open"></i> Soma Hano</button>'
+        + dlBtn
+        + '</div>'
+        + '</div>';
 }
 
 function openViewer(idx) {
-    const doc = allDocs[idx];
+    var doc = allDocs[idx];
     if (!doc) return;
-    const fileUrl = window.location.origin + '/' + doc.file_path;
-    window.open(fileUrl, '_blank', 'noopener');
+    window.open(window.location.origin + '/' + doc.file_path, '_blank', 'noopener');
 }
-
-function closeViewer() {
-    const modal = document.getElementById('viewerModal');
-    const frame = document.getElementById('viewerFrame');
-    modal.classList.remove('open');
-    document.body.style.overflow = '';
-    // Clear src after close animation
-    setTimeout(() => { frame.src = ''; }, 300);
-}
-
-// Close on backdrop click
-document.getElementById('viewerModal').addEventListener('click', function(e) {
-    if (e.target === this) closeViewer();
-});
-
-// Close on Escape key
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewer(); });
+</script>
 </body>
 </html>
-
-
