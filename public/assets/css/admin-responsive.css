@@ -49,17 +49,19 @@ body.sidebar-open .mobile-sidebar-overlay {
 
   .sidebar,
   .side {
-    position: fixed;
+    position: fixed !important;
     top: 0;
     left: 0;
     bottom: 0;
-    width: var(--mobile-nav-width);
+    width: var(--mobile-nav-width) !important;
     max-width: 100%;
     z-index: 1200;
     transform: translateX(-100%);
     transition: transform 0.25s ease;
     box-shadow: 0 20px 60px rgba(15, 23, 42, 0.28);
     overflow-y: auto;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .sidebar.open,
@@ -79,6 +81,7 @@ body.sidebar-open .mobile-sidebar-overlay {
     min-height: auto;
     flex-wrap: wrap;
     gap: 12px;
+    align-items: center;
   }
 
   .mobile-nav-toggle {
@@ -136,6 +139,10 @@ body.sidebar-open .mobile-sidebar-overlay {
     overflow-x: auto;
   }
 
+  .table-container table {
+    min-width: 900px;
+  }
+
   .resource-item {
     flex-direction: column;
     align-items: flex-start;
@@ -147,7 +154,9 @@ body.sidebar-open .mobile-sidebar-overlay {
     flex-wrap: wrap;
   }
 
+  .search-box-wrap,
   .search-bar-wrap {
+    width: 100% !important;
     flex-wrap: wrap;
   }
 
@@ -207,5 +216,120 @@ body.sidebar-open .mobile-sidebar-overlay {
     width: 100%;
     max-height: 100vh;
     height: auto;
+  }
+
+  .summary-card {
+    padding: 14px;
+  }
+
+  .summary-card div p {
+    font-size: 20px;
+  }
+
+  .workspace table,
+  .page table,
+  .shell table {
+    display: block;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .workspace thead,
+  .page thead,
+  .shell thead {
+    display: none;
+  }
+
+  .workspace tbody,
+  .page tbody,
+  .shell tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .workspace tbody tr,
+  .page tbody tr,
+  .shell tbody tr {
+    display: block;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 10px 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+  }
+
+  .workspace td,
+  .page td,
+  .shell td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: left;
+  }
+
+  .workspace td:last-child,
+  .page td:last-child,
+  .shell td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .workspace td::before,
+  .page td::before,
+  .shell td::before {
+    content: attr(data-label);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.35px;
+    color: #64748b;
+    text-transform: uppercase;
+    flex: 0 0 38%;
+  }
+
+  .workspace td > *,
+  .page td > *,
+  .shell td > * {
+    flex: 1;
+    text-align: right;
+    min-width: 0;
+  }
+
+  .workspace td .actions,
+  .page td .actions,
+  .shell td .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-end;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .workspace td .actions > *,
+  .page td .actions > *,
+  .shell td .actions > * {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .workspace td .actions .btn,
+  .page td .actions .btn,
+  .shell td .actions .btn,
+  .workspace td .actions a,
+  .page td .actions a,
+  .shell td .actions a,
+  .workspace td .actions button,
+  .page td .actions button,
+  .shell td .actions button {
+    width: 100%;
+    justify-content: center;
   }
 }
