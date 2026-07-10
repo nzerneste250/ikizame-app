@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="assets/css/admin-responsive.css">
     <style>
         :root {
             --brand: #0b698b;
@@ -278,6 +279,7 @@
     </style>
 </head>
 <body>
+<div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
 
 <!-- SESSION MODAL -->
 <div id="sessionModal">
@@ -318,7 +320,7 @@
     </aside>
 
     <div class="workspace">
-        <header class="topbar">
+        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button>
             <div>
                 <h1>Add New Question</h1>
                 <p>Drag &amp; drop an image or click to browse. Switch mode for image-options questions.</p>
@@ -610,6 +612,7 @@ fetch('/api/admin/check-session').then(function(r){return r.json();}).then(funct
     if(r) r.textContent=d.role==='viewer'?'Manager':'Administrator';
 }).catch(function(){});
 </script>
+<script src="assets/js/admin-responsive.js"></script>
 </body>
 </html>
 

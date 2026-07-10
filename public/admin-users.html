@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/admin-responsive.css">
     <style>
         :root { --brand:#0b698b; --brand-dark:#08536e; --border:#e2e8f0; --text:#0f172a; --muted:#64748b; --bg:#f8fafc; }
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -115,6 +116,7 @@
     </style>
 </head>
 <body>
+<div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
 
 <!-- Session expired modal -->
 <div id="sessionModal">
@@ -182,7 +184,7 @@
     </aside>
 
     <div class="workspace">
-        <header class="topbar">
+        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button>
             <div>
                 <h1>Manage Admin Users</h1>
                 <p>Create viewer accounts and manage admin access levels</p>
@@ -447,6 +449,7 @@ fetch('/api/admin/check-session').then(r=>r.json()).then(d=>{
     if(r) r.textContent=d.role==='viewer'?'Manager':'Administrator';
 }).catch(()=>{});
 </script>
+<script src="assets/js/admin-responsive.js"></script>
 </body>
 </html>
 

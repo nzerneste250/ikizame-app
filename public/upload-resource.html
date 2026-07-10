@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/admin-responsive.css">
     <style>
         :root { 
             --brand: #0b698b; 
@@ -86,6 +87,7 @@
     </style>
 </head>
 <body>
+<div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
 <div id="sessionModal">
     <div class="session-modal-box">
         <div class="modal-icon"><i class="fa-solid fa-clock"></i></div>
@@ -124,7 +126,7 @@
     </aside>
     
     <div class="workspace">
-        <header class="topbar"><h1>Instructional Learning Materials</h1></header>
+        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><h1>Instructional Learning Materials</h1></header>
         <div class="form-container">
             <!-- Left Side Upload Panel Form -->
             <div class="card-panel">
@@ -318,6 +320,7 @@ fetch('/api/admin/check-session').then(function(r){return r.json();}).then(funct
     if(r) r.textContent=d.role==='viewer'?'Manager':'Administrator';
 }).catch(function(){});
 </script>
+<script src="assets/js/admin-responsive.js"></script>
 </body>
 </html>
 
