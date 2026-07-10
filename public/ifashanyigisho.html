@@ -12,7 +12,7 @@
     <style>
         :root { --brand:#0b698b; --brand-dark:#08536e; --brand-light:#e0f2fe; --bg:#f0f6fa; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0; }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-top:60px; }
         .navbar { position:fixed; top:0; left:0; right:0; z-index:5000; height:60px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 4%; border-bottom:1px solid #e2e8f0; box-shadow:0 1px 10px rgba(15,23,42,.03); width:100vw; box-sizing:border-box; }
         .navbar-brand-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
         .navbar-brand-wrap img { width:32px; height:32px; object-fit:contain; }
@@ -107,8 +107,7 @@
             <li><a href="school-auth">Amashuri (School Portal)</a></li>
             <li><a href="amanota">Amanota</a></li>
         </ul>
-    </nav>
-</header>
+    </nav>\r\n    <div class="lang-badge" onclick="">\r\n        <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>\r\n        <span>Kinyarwanda</span>\r\n    </div>\r\n</header>
 
 <section class="hero">
     <div class="hero-icon"><i class="fa-solid fa-book-open"></i></div>
@@ -242,3 +241,4 @@ function openViewer(idx) {
 </script>
 </body>
 </html>
+
