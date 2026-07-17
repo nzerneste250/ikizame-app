@@ -1,6 +1,7 @@
 const express = require('express');
 const axios   = require('axios');
 const crypto  = require('crypto');
+const { normalizeAndValidatePaymentPhone } = require('../helpers/paymentPhone');
 
 const PAYPACK_BASE     = 'https://payments.paypack.rw/api';
 const PAYPACK_CLIENT   = process.env.PAYPACK_CLIENT_ID;
@@ -85,10 +86,12 @@ module.exports = (db) => {
         if (!phoneNumber || !checkoutIntentType)
             return res.status(400).json({ success: false, error: 'Missing mandatory payment fields.' });
 
-        let phone = phoneNumber.toString().replace(/[\s\-\+]+/g, '').trim();
-        if (phone.startsWith('250')) phone = '0' + phone.substring(3);
-        if (phone.length < 10)
-            return res.status(400).json({ success: false, error: "Nomero yishuriwe ntabwo ari iy'i Rwanda." });
+        let phone;
+        try {
+            phone = normalizeAndValidatePaymentPhone(phoneNumber);
+        } catch (validationErr) {
+            return res.status(400).json({ success: false, error: validationErr.message });
+        }
 
         let amount = 0, planLabel = '', examCount = 0;
         if (checkoutIntentType === 'SCHOOL') {

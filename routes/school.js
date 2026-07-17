@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const axios  = require('axios');
+const { normalizeAndValidatePaymentPhone } = require('../helpers/paymentPhone');
 const BCRYPT_ROUNDS = 10;
 
 const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
@@ -160,9 +161,12 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
 
         if (!phoneNumber || phoneNumber.trim().length < 10) return res.status(400).json({ success: false, error: 'Injiza nomero ya telephone yuzuye.' });
 
-        let phone = phoneNumber.toString().replace(/[\s\-\+]+/g, '').trim();
-        if (phone.startsWith('250')) phone = '0' + phone.substring(3);
-        if (phone.length < 10) return res.status(400).json({ success: false, error: "Nomero yishuriwe ntabwo ari iy'i Rwanda." });
+        let phone;
+        try {
+            phone = normalizeAndValidatePaymentPhone(phoneNumber);
+        } catch (validationErr) {
+            return res.status(400).json({ success: false, error: validationErr.message });
+        }
 
         try {
             const token = await getToken();
