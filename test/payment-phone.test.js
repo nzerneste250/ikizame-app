@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const path = require('node:path');
 
 process.env.PAYPACK_TEST_MODE = 'true';
 
@@ -15,4 +16,17 @@ test('rejects non-test numbers in test mode', () => {
     () => normalizeAndValidatePaymentPhone('0781234567'),
     /test mode/i
   );
+});
+
+test('defaults to test mode unless explicitly disabled', () => {
+  delete process.env.PAYPACK_TEST_MODE;
+  delete require.cache[require.resolve('../helpers/paymentPhone')];
+  const { normalizeAndValidatePaymentPhone: validateWithoutFlag } = require('../helpers/paymentPhone');
+  assert.throws(
+    () => validateWithoutFlag('0781234567'),
+    /test mode/i
+  );
+  process.env.PAYPACK_TEST_MODE = 'true';
+  delete require.cache[require.resolve('../helpers/paymentPhone')];
+  require('../helpers/paymentPhone');
 });

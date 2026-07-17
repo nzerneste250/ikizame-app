@@ -1,4 +1,5 @@
-const TEST_MODE = process.env.PAYPACK_TEST_MODE === 'true' || process.env.NODE_ENV !== 'production';
+const PAYPACK_TEST_MODE_VALUE = process.env.PAYPACK_TEST_MODE;
+const TEST_MODE = PAYPACK_TEST_MODE_VALUE === undefined ? true : PAYPACK_TEST_MODE_VALUE === 'true';
 const ALLOWED_TEST_NUMBERS = new Set(['0786663377', '0789245524']);
 
 function normalizePhone(phoneString) {
