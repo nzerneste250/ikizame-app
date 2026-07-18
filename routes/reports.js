@@ -202,8 +202,10 @@ async function sendReport(db, transport, type) {
 }
 
 async function sendDailyReport(db, transport) {
-    const today    = new Date();
-    const dateStr  = fmt(today);
+    // Report runs at 7AM — always report on YESTERDAY (full 00:00 to 23:59)
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const dateStr  = fmt(yesterday);
     const dayStart = `${dateStr} 00:00:00`;
     const dayEnd   = `${dateStr} 23:59:59`;
 
