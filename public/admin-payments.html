@@ -209,8 +209,9 @@
                 <div class="summary-card">
                     <div class="summary-badge bg-teal"><i class="fa-solid fa-building-columns"></i></div>
                     <div>
-                        <p id="paypackBalance">—</p>
+                        <p id="paypackBalance" style="font-size:1.4rem;">—</p>
                         <h3>Paypack Balance (Net)</h3>
+                        <div id="paypackBreakdown" style="font-size:11px;color:#64748b;margin-top:3px;"></div>
                     </div>
                 </div>
             </div>
@@ -323,9 +324,16 @@
                 .then(r => r.json())
                 .then(b => {
                     const el = document.getElementById('paypackBalance');
+                    const bd = document.getElementById('paypackBreakdown');
                     if (b.error) { el.textContent = 'Error'; el.style.color = '#ef4444'; return; }
-                    el.textContent = 'RWF ' + (b.net || 0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-                    el.title = `Cashin: ${b.cashin} | Cashout: ${b.cashout} | Fee: ${b.fee}`;
+                    const net = parseFloat(b.net || 0);
+                    el.textContent = 'RWF ' + net.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+                    // Show MTN/Airtel breakdown if available, else cashin/fee
+                    if (b.mtn !== undefined && b.airtel !== undefined) {
+                        bd.innerHTML = `MTN: <b>RWF ${parseFloat(b.mtn||0).toFixed(1)}</b> &nbsp;|&nbsp; Airtel: <b>RWF ${parseFloat(b.airtel||0).toFixed(1)}</b>`;
+                    } else if (b.cashin !== undefined) {
+                        bd.innerHTML = `In: <b>${b.cashin}</b> &nbsp;Fee: <b>-${parseFloat(b.fee||0).toFixed(1)}</b>`;
+                    }
                 })
                 .catch(() => { document.getElementById('paypackBalance').textContent = 'N/A'; });
 
