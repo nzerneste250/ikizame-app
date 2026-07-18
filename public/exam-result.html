@@ -596,8 +596,15 @@
                     else if (isCor)          { cls = 'correct-target'; icon = `<i class="fa-solid fa-check opt-icon" style="color:#10b981;"></i>`; }
                     else if (isUserPick)     { cls = 'user-wrong'; icon = `<i class="fa-solid fa-xmark opt-icon" style="color:#ef4444;"></i>`; }
 
-                    const isGraphicAsset = typeof val === 'string' && /\.(png|jpg|jpeg|gif|webp)$/i.test(val.trim());
-                    const normalizedVal = normalizeQuestionImageAssetPath(val || '');
+                    const stringValue = typeof val === 'string' ? val.trim() : '';
+                    const isGraphicAsset = !!stringValue && (
+                        /\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue)
+                        || /^(option[A-D]_File-|option[A-D]_)/i.test(stringValue)
+                        || /^(assets\/|\/assets\/)/i.test(stringValue)
+                        || /^(uploads\/)/i.test(stringValue)
+                        || /^(?:[A-Za-z0-9_.-]+\/)*[A-Za-z0-9_.-]+\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue)
+                    );
+                    const normalizedVal = normalizeQuestionImageAssetPath(stringValue || '');
                     const contentHtml = isGraphicAsset
                         ? `<img src="${normalizedVal}" class="q-image" alt="Option ${l}" style="max-height:140px;margin:0;border:none;background:transparent;">`
                         : `<span>${val}</span>`;
