@@ -328,7 +328,7 @@
         /* ===== 📱 MOBILE OVERRIDES ===== */
         @media (max-width: 850px) {
             html, body { height: auto; overflow-y: auto; }
-            .workspace-scroll-container { margin-top: 115px; padding: 12px 4% 50px; overflow-y: auto; }
+            .workspace-scroll-container { margin-top: 0; padding: 12px 4% 50px; overflow-y: auto; padding-top: calc(var(--navbar-h, 130px) + 12px); }
             .pricing-split-layout { grid-template-columns: 1fr; gap: 14px; }
             .cards-column { max-width: none; gap: 12px; }
             .workspace-inner { height: auto; gap: 12px; overflow: visible; }
@@ -757,6 +757,16 @@
                     }
                 });
         };
+
+        // Measure navbar height and set CSS variable for accurate mobile offset
+        function setNavbarOffset() {
+            const navbar = document.querySelector('.navbar');
+            if (navbar) {
+                document.documentElement.style.setProperty('--navbar-h', navbar.offsetHeight + 'px');
+            }
+        }
+        setNavbarOffset();
+        window.addEventListener('resize', setNavbarOffset);
 
         window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };
 
