@@ -78,7 +78,7 @@ function fmt(date) {
     return date.toISOString().slice(0, 10);
 }
 
-function buildPDF(rows, summary, period, from, to) {
+function buildPDF(rows, summary, period, from, to, extra = {}) {
     return new Promise((resolve, reject) => {
         const doc    = new PDFDoc({ margin: 40, size: 'A4' });
         const chunks = [];
@@ -87,15 +87,17 @@ function buildPDF(rows, summary, period, from, to) {
         doc.on('error', reject);
 
         const brand = '#0b698b';
+        const W = doc.page.width;
 
-        doc.rect(0, 0, doc.page.width, 70).fill(brand);
+        doc.rect(0, 0, W, 70).fill(brand);
         doc.fillColor('#ffffff').fontSize(22).font('Helvetica-Bold').text('IKIZAME', 40, 20);
         doc.fontSize(10).font('Helvetica').text('Payment Revenue Report', 40, 46);
         doc.fillColor('#ffffff').fontSize(10).text(`Period: ${period.toUpperCase()} | ${fmt(from)} to ${fmt(to)}`, 40, 58, { align: 'right' });
 
         doc.moveDown(3);
 
-        doc.fillColor(brand).fontSize(12).font('Helvetica-Bold').text('Summary', 40, 90);
+        // Revenue summary boxes
+        doc.fillColor(brand).fontSize(12).font('Helvetica-Bold').text('Revenue Summary', 40, 90);
         doc.moveTo(40, 106).lineTo(555, 106).strokeColor(brand).lineWidth(1).stroke();
 
         const boxY = 115;
@@ -111,9 +113,26 @@ function buildPDF(rows, summary, period, from, to) {
             doc.fillColor('#0f172a').fontSize(16).font('Helvetica-Bold').text(String(b.value), x + 8, boxY + 22);
         });
 
-        doc.moveDown(5);
+        // Exam + visitor summary boxes
+        if (extra.totalExamsDone !== undefined) {
+            const boxY2 = boxY + 70;
+            doc.fillColor(brand).fontSize(12).font('Helvetica-Bold').text('Exam Activity & Visitors', 40, boxY2 - 14);
+            const boxes2 = [
+                { label: 'Exams Taken',     value: extra.totalExamsDone },
+                { label: 'Avg Score',       value: `${extra.avgScore}/20` },
+                { label: 'Pass Rate',       value: `${extra.passRate}%` },
+                { label: 'Unique Visitors', value: extra.uniqueVisitors },
+            ];
+            boxes2.forEach((b, i) => {
+                const x = 40 + i * 130;
+                doc.rect(x, boxY2, 120, 50).fillAndStroke('#f1f5f9', '#e2e8f0');
+                doc.fillColor('#64748b').fontSize(8).font('Helvetica').text(b.label, x + 6, boxY2 + 7);
+                doc.fillColor('#0f172a').fontSize(15).font('Helvetica-Bold').text(String(b.value), x + 6, boxY2 + 20);
+            });
+        }
 
-        const tableTop = boxY + 75;
+        // Transactions table
+        const tableTop = (extra.totalExamsDone !== undefined) ? boxY + 145 : boxY + 75;
         const colX     = [40, 140, 245, 430, 490];
         const colW     = [95, 100, 180,  55,  65];
         const headers  = ['Phone', 'Amount (RWF)', 'Plan / Package', 'Exams', 'Date'];
@@ -171,7 +190,29 @@ function queryReport(db, from, to) {
 async function sendReport(db, transport, type) {
     const { from, to } = getPeriodRange(type);
     const { rows, summary } = await queryReport(db, from, to);
-    const pdfBuf = await buildPDF(rows, summary, type, from, to);
+
+    // Fetch exam activity and visitors for the period
+    const [exams, visitors] = await Promise.all([
+        new Promise((res, rej) => db.query(
+            `SELECT COUNT(*) AS total, COALESCE(AVG(score),0) AS avg_score,
+             SUM(CASE WHEN score >= 12 THEN 1 ELSE 0 END) AS passed
+             FROM exam_attempts WHERE created_at BETWEEN ? AND ?`,
+            [from, to], (e, r) => e ? rej(e) : res(r[0])
+        )),
+        new Promise((res, rej) => db.query(
+            `SELECT COUNT(DISTINCT ip_address) AS unique_visitors, COALESCE(SUM(visit_count),0) AS total_visits
+             FROM site_visitors WHERE visit_date BETWEEN ? AND ?`,
+            [fmt(from), fmt(to)], (e, r) => e ? rej(e) : res(r[0])
+        ))
+    ]);
+
+    const totalExamsDone = Number(exams.total) || 0;
+    const avgScore       = parseFloat(exams.avg_score || 0).toFixed(1);
+    const passRate       = totalExamsDone > 0 ? Math.round((Number(exams.passed) / totalExamsDone) * 100) : 0;
+    const uniqueVisitors = Number(visitors.unique_visitors) || 0;
+    const totalVisits    = Number(visitors.total_visits) || 0;
+
+    const pdfBuf = await buildPDF(rows, summary, type, from, to, { totalExamsDone, avgScore, passRate, uniqueVisitors, totalVisits });
 
     const periodLabel = type === 'weekly' ? 'Weekly' : type === 'monthly' ? 'Monthly' : 'Yearly';
     const subject = `📊 IKIZAME ${periodLabel} Payment Report — ${fmt(from)} to ${fmt(to)}`;
@@ -185,10 +226,18 @@ async function sendReport(db, transport, type) {
                 <h2 style="color:#fff;margin:0;font-size:18px;">📊 IKIZAME — ${periodLabel} Payment Report</h2>
                 <p style="color:#bae6fd;margin:4px 0 0;font-size:12px;">Period: ${fmt(from)} → ${fmt(to)}</p>
             </div>
-            <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-                <tr><td style="padding:8px;background:#e0f2fe;font-weight:700;">Total Revenue</td><td style="padding:8px;font-size:18px;font-weight:800;color:#0b698b;">${Number(summary.total_amount||0).toLocaleString()} RWF</td></tr>
-                <tr><td style="padding:8px;">Total Transactions</td><td style="padding:8px;font-weight:700;">${summary.total_tx}</td></tr>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:13px;">
+                <tr><td colspan="2" style="padding:8px 12px;background:#e0f2fe;font-weight:800;color:#0b698b;">💰 Revenue</td></tr>
+                <tr><td style="padding:8px;">Total Revenue</td><td style="padding:8px;font-size:16px;font-weight:800;color:#0b698b;">${Number(summary.total_amount||0).toLocaleString()} RWF</td></tr>
+                <tr style="background:#f8fafc;"><td style="padding:8px;">Total Transactions</td><td style="padding:8px;font-weight:700;">${summary.total_tx}</td></tr>
                 <tr><td style="padding:8px;">Total Exams Sold</td><td style="padding:8px;font-weight:700;">${summary.total_exams}</td></tr>
+                <tr><td colspan="2" style="padding:8px 12px;background:#e0f2fe;font-weight:800;color:#0b698b;">📝 Exam Activity</td></tr>
+                <tr style="background:#f8fafc;"><td style="padding:8px;">Exams Taken</td><td style="padding:8px;font-weight:700;">${totalExamsDone}</td></tr>
+                <tr><td style="padding:8px;">Average Score</td><td style="padding:8px;font-weight:700;">${avgScore}/20</td></tr>
+                <tr style="background:#f8fafc;"><td style="padding:8px;">Pass Rate</td><td style="padding:8px;font-weight:700;color:${passRate>=60?'#15803d':'#b91c1c'}">${passRate}%</td></tr>
+                <tr><td colspan="2" style="padding:8px 12px;background:#e0f2fe;font-weight:800;color:#0b698b;">👥 Visitors</td></tr>
+                <tr style="background:#f8fafc;"><td style="padding:8px;">Unique Visitors</td><td style="padding:8px;font-weight:700;">${uniqueVisitors}</td></tr>
+                <tr><td style="padding:8px;">Total Page Visits</td><td style="padding:8px;font-weight:700;">${totalVisits}</td></tr>
             </table>
             <p style="color:#64748b;font-size:12px;">See the attached PDF for full transaction details.</p>
         </div>`,
