@@ -599,9 +599,9 @@
                     const stringValue = typeof val === 'string' ? val.trim() : '';
                     const normalizedVal = normalizeQuestionImageAssetPath(stringValue || '');
                     const looksLikeImageName = !!stringValue && /\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue);
-                    const looksLikeOptionAsset = !!stringValue && /^(option[A-D]_File-|option[A-D]_)/i.test(stringValue);
+                    const looksLikeOptionAsset = !!stringValue && (stringValue.includes('_File-') || stringValue.includes('optiona_File-') || stringValue.includes('optionA_File-'));
                     const looksLikeUploadPath = !!stringValue && /^(assets\/|\/assets\/|uploads\/)/i.test(stringValue);
-                    const isGraphicAsset = looksLikeImageName || looksLikeOptionAsset || looksLikeUploadPath || /^(?:[A-Za-z0-9_.-]+\/)*[A-Za-z0-9_.-]+\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue);
+                    const isGraphicAsset = looksLikeImageName || looksLikeOptionAsset || looksLikeUploadPath;
                     const contentHtml = isGraphicAsset
                         ? `<img src="${normalizedVal}" class="q-image" alt="Option ${l}" style="max-height:140px;margin:0;border:none;background:transparent;">`
                         : `<span>${val}</span>`;
