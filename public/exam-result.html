@@ -308,6 +308,13 @@
 
         /* Options list */
         .options-list { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 7px; }
+        .options-list.img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .options-list.img-grid .option-row { flex-direction: column; align-items: flex-start; padding: 8px; gap: 6px; }
+        .options-list.img-grid .option-row img { width: 100%; max-height: 160px; object-fit: contain; border-radius: 8px; margin: 0; border: none; background: transparent; }
+        @media (max-width: 640px) {
+            .options-list.img-grid { grid-template-columns: 1fr 1fr; }
+            .options-list.img-grid .option-row img { max-height: 110px; }
+        }
 
         .option-row {
             display: flex; align-items: center; gap: 10px;
@@ -585,6 +592,10 @@
                 }
 
                 const opts = ['A','B','C','D'];
+                const isImgOpts = opts.every(l => {
+                    const v = String(q[`option_${l.toLowerCase()}`] || '').trim();
+                    return !!v && (/\.(png|jpg|jpeg|gif|webp)$/i.test(v) || v.includes('_File-'));
+                });
                 const optHtml = opts.map(l => {
                     const val = q[`option_${l.toLowerCase()}`] || q[`option_${l}`] || '---';
                     const isUserPick = ans === l;
@@ -597,7 +608,7 @@
                     const stringValue = (val !== null && val !== undefined) ? String(val).trim() : '';
                     const isGraphicAsset = !!stringValue && (/\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue) || stringValue.includes('_File-'));
                     const contentHtml = isGraphicAsset
-                        ? `<img src="assets/uploads/${stringValue}" class="q-image" alt="Option ${l}" style="max-height:140px;margin:0;border:none;background:transparent;" onerror="this.style.display='none'">`
+                        ? `<img src="assets/uploads/${stringValue}" alt="Option ${l}" style="${isImgOpts ? 'width:100%;max-height:160px;object-fit:contain;border-radius:8px;' : 'max-height:140px;margin:0;border:none;background:transparent;'}" onerror="this.style.display='none'">`
                         : `<span>${stringValue || '---'}</span>`;
                     return `<div class="option-row ${cls}"><div class="opt-letter">${l}</div>${contentHtml}${icon}</div>`;
                 }).join('');
@@ -615,7 +626,7 @@
                             <div class="q-text">${q.question || q.question_text || 'Nta text ihari'}</div>
                             ${imgHtml}
                         </div>
-                        <div class="options-list">${optHtml}</div>
+                        <div class="options-list${isImgOpts ? ' img-grid' : ''}">${optHtml}</div>
                     </div>`;
             });
         });
