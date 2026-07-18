@@ -328,15 +328,35 @@
         /* ===== 📱 MOBILE OVERRIDES ===== */
         @media (max-width: 850px) {
             html, body { height: auto; overflow-y: auto; }
-            .workspace-scroll-container { margin-top: 110px; padding: 10px 4% 50px; overflow-y: auto; }
-            .pricing-split-layout { grid-template-columns: 1fr; gap: 12px; }
-            .cards-column { max-width: none; }
-            .workspace-inner { height: auto; gap: 10px; overflow: visible; }
-            .diagram-flow-row { flex-direction: column; gap: 8px; }
+            .workspace-scroll-container { margin-top: 115px; padding: 12px 4% 50px; overflow-y: auto; }
+            .pricing-split-layout { grid-template-columns: 1fr; gap: 14px; }
+            .cards-column { max-width: none; gap: 12px; }
+            .workspace-inner { height: auto; gap: 12px; overflow: visible; }
+            .section-header-meta { padding: 14px 16px; border-radius: 12px; margin-bottom: 0; }
+            .section-header-meta h2 { font-size: 1.05rem; margin-bottom: 5px; }
+            .section-header-meta p { font-size: 0.82rem; margin-bottom: 8px; }
+            .channel-support-banner { padding: 7px 14px; }
+            .channel-support-banner span { font-size: 0.78rem; }
+            .resource-glass-card { padding: 14px 16px; border-radius: 12px; }
+            .resource-card-body h3 { font-size: 1rem; margin-bottom: 5px; }
+            .price-badge-row { font-size: 1.2rem; margin-bottom: 8px; }
+            .perk-list { gap: 6px; margin-bottom: 12px; }
+            .perk-list li { font-size: 0.85rem; }
+            .btn-pay-trigger { padding: 10px 12px; font-size: 0.88rem; }
+            .payment-guide-container { padding: 14px 14px; border-radius: 12px; gap: 10px; }
+            .guide-card-header h3 { font-size: 0.9rem; }
+            .guide-card-header p { font-size: 0.78rem; }
+            .diagram-flow-row { flex-direction: column; gap: 10px; }
+            .diagram-step { padding: 10px 10px 8px; border-radius: 10px; }
+            .diagram-step h4 { font-size: 0.8rem; }
+            .diagram-step p { font-size: 0.74rem; }
             .diagram-arrow { transform: rotate(90deg); margin: -4px 0; }
             .ussd-commands-grid { flex-direction: column; gap: 8px; }
-            .resource-glass-card, .payment-guide-container { border-radius: 10px; }
-            .section-header-meta { padding: 8px 14px; }
+            .ussd-fallback-box { padding: 10px 12px; border-radius: 10px; }
+            .ussd-fallback-box h4 { font-size: 0.78rem; }
+            .ussd-code { font-size: 1.05rem; }
+            .carrier-logo-square-box { width: 44px; height: 44px; }
+            .balance-check-block #balanceStatusPanel { font-size: 0.82rem; min-height: 36px; }
         }
     </style>
 </head>
