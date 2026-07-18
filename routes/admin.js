@@ -654,6 +654,36 @@ module.exports = (db, loginLimiter) => {
         );
     });
 
+    // GET Paypack account balance (MTN + Airtel, net of fees)
+    router.get('/paypack-balance', requireAdminLogin, async (req, res) => {
+        try {
+            const token = await getAdminToken();
+            const { data } = await axios.get(
+                `${PAYPACK_BASE}/transactions/list?offset=0&limit=1000`,
+                { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }, timeout: 15000 }
+            );
+            const list = Array.isArray(data?.transactions) ? data.transactions
+                : Array.isArray(data) ? data : [];
+
+            let cashin = 0, cashout = 0, fee = 0;
+            list.forEach(tx => {
+                const amt = parseFloat(tx.amount) || 0;
+                const f   = parseFloat(tx.fee)    || 0;
+                if ((tx.kind || '').toUpperCase() === 'CASHIN') {
+                    cashin  += amt;
+                    fee     += f;
+                } else if ((tx.kind || '').toUpperCase() === 'CASHOUT') {
+                    cashout += amt;
+                }
+            });
+            const net = cashin - cashout - fee;
+            res.json({ cashin, cashout, fee, net, count: list.length });
+        } catch (err) {
+            const msg = err.response?.data?.message || err.message || 'Paypack API error';
+            res.status(502).json({ error: msg });
+        }
+    });
+
     // GET official Paypack merchant transactions (confirmed/successful)
     router.get('/paypack-transactions', requireAdminLogin, async (req, res) => {
         try {
