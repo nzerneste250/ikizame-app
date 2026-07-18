@@ -658,36 +658,28 @@ module.exports = (db, loginLimiter) => {
     router.get('/paypack-balance', requireAdminLogin, async (req, res) => {
         try {
             const token = await getAdminToken();
-            // Try the account/balance endpoint first
             const { data } = await axios.get(
-                `${PAYPACK_BASE}/account/balance`,
-                { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }, timeout: 10000 }
+                `${PAYPACK_BASE}/transactions/list?offset=0&limit=1000`,
+                { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }, timeout: 15000 }
             );
-            // Paypack returns { mtn: number, airtel: number } or similar
-            const mtn    = parseFloat(data?.mtn    || data?.mtn_balance    || data?.MTN    || 0);
-            const airtel = parseFloat(data?.airtel || data?.airtel_balance || data?.Airtel || 0);
-            const net    = mtn + airtel;
-            res.json({ mtn, airtel, net, raw: data });
+            const list = Array.isArray(data?.transactions) ? data.transactions : Array.isArray(data) ? data : [];
+
+            let cashin = 0, cashout = 0, fee = 0;
+            list.forEach(tx => {
+                const amt = parseFloat(tx.amount) || 0;
+                const f   = parseFloat(tx.fee)    || 0;
+                if ((tx.kind || '').toUpperCase() === 'CASHIN') {
+                    cashin  += amt;
+                    fee     += f;
+                } else if ((tx.kind || '').toUpperCase() === 'CASHOUT') {
+                    cashout += amt;
+                }
+            });
+            // Net balance = cashin - cashout - fee  (matches Paypack dashboard)
+            const net = Math.round((cashin - cashout - fee) * 10) / 10;
+            res.json({ cashin, cashout, fee: Math.round(fee * 10) / 10, net, count: list.length });
         } catch (err) {
-            // Fallback: calculate from transaction list
-            try {
-                const token = await getAdminToken();
-                const { data } = await axios.get(
-                    `${PAYPACK_BASE}/transactions/list?offset=0&limit=1000`,
-                    { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }, timeout: 15000 }
-                );
-                const list = Array.isArray(data?.transactions) ? data.transactions : Array.isArray(data) ? data : [];
-                let cashin = 0, cashout = 0, fee = 0;
-                list.forEach(tx => {
-                    const amt = parseFloat(tx.amount) || 0;
-                    const f   = parseFloat(tx.fee)    || 0;
-                    if ((tx.kind || '').toUpperCase() === 'CASHIN')  { cashin += amt; fee += f; }
-                    else if ((tx.kind || '').toUpperCase() === 'CASHOUT') { cashout += amt; }
-                });
-                res.json({ mtn: cashin - cashout - fee, airtel: 0, net: cashin - cashout - fee, cashin, cashout, fee });
-            } catch (fallbackErr) {
-                res.status(502).json({ error: fallbackErr.response?.data?.message || fallbackErr.message });
-            }
+            res.status(502).json({ error: err.response?.data?.message || err.message });
         }
     });
 

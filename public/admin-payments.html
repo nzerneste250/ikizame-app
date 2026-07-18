@@ -326,14 +326,8 @@
                     const el = document.getElementById('paypackBalance');
                     const bd = document.getElementById('paypackBreakdown');
                     if (b.error) { el.textContent = 'Error'; el.style.color = '#ef4444'; return; }
-                    const net = parseFloat(b.net || 0);
-                    el.textContent = 'RWF ' + net.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-                    // Show MTN/Airtel breakdown if available, else cashin/fee
-                    if (b.mtn !== undefined && b.airtel !== undefined) {
-                        bd.innerHTML = `MTN: <b>RWF ${parseFloat(b.mtn||0).toFixed(1)}</b> &nbsp;|&nbsp; Airtel: <b>RWF ${parseFloat(b.airtel||0).toFixed(1)}</b>`;
-                    } else if (b.cashin !== undefined) {
-                        bd.innerHTML = `In: <b>${b.cashin}</b> &nbsp;Fee: <b>-${parseFloat(b.fee||0).toFixed(1)}</b>`;
-                    }
+                    el.textContent = 'RWF ' + parseFloat(b.net || 0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+                    bd.innerHTML = `In: <b>RWF ${parseFloat(b.cashin||0).toFixed(1)}</b> &nbsp;Fee: <b style="color:#ef4444">-RWF ${parseFloat(b.fee||0).toFixed(1)}</b>`;
                 })
                 .catch(() => { document.getElementById('paypackBalance').textContent = 'N/A'; });
 
