@@ -487,6 +487,7 @@
         <i class="fa-solid fa-arrow-up"></i> Subira Hejuru
     </button>
 
+    <script src="/assets/js/exam-image-utils.js"></script>
     <script>
         // ── GUARD: redirect to amanota if no valid session data ──
         (function() {
@@ -577,9 +578,9 @@
 
                 let imgHtml = '';
                 const rawImg = q.image_path || q.image_url;
-                if (rawImg) {
-                    const src = rawImg.startsWith('assets/') ? rawImg : `assets/uploads/${rawImg}`;
-                    imgHtml = `<img src="${src}" class="q-image" alt="Ifoto y'ikibazo">`;
+                const normalizedImg = normalizeQuestionImageAssetPath(rawImg || '');
+                if (normalizedImg) {
+                    imgHtml = `<img src="${normalizedImg}" class="q-image" alt="Ifoto y'ikibazo">`;
                 }
 
                 const opts = ['A','B','C','D'];
@@ -591,7 +592,13 @@
                     if (isCor && isUserPick) { cls = 'user-correct'; icon = `<i class="fa-solid fa-check opt-icon" style="color:#10b981;"></i>`; }
                     else if (isCor)          { cls = 'correct-target'; icon = `<i class="fa-solid fa-check opt-icon" style="color:#10b981;"></i>`; }
                     else if (isUserPick)     { cls = 'user-wrong'; icon = `<i class="fa-solid fa-xmark opt-icon" style="color:#ef4444;"></i>`; }
-                    return `<div class="option-row ${cls}"><div class="opt-letter">${l}</div><span>${val}</span>${icon}</div>`;
+
+                    const isGraphicAsset = typeof val === 'string' && /\.(png|jpg|jpeg|gif|webp)$/i.test(val.trim());
+                    const normalizedVal = normalizeQuestionImageAssetPath(val || '');
+                    const contentHtml = isGraphicAsset
+                        ? `<img src="${normalizedVal}" class="q-image" alt="Option ${l}" style="max-height:140px;margin:0;border:none;background:transparent;">`
+                        : `<span>${val}</span>`;
+                    return `<div class="option-row ${cls}"><div class="opt-letter">${l}</div>${contentHtml}${icon}</div>`;
                 }).join('');
 
                 container.innerHTML += `

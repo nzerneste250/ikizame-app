@@ -343,6 +343,7 @@
     </div>
 </div>
 
+<script src="/assets/js/exam-image-utils.js"></script>
 <script>
 // Detect reload using PerformanceNavigationTiming (modern) with fallback
 const navEntry = performance.getEntriesByType('navigation')[0];
@@ -464,10 +465,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Image
-        if (q.image_path) {
+        const normalizedMainImage = normalizeQuestionImageAssetPath(q.image_path || q.image_url || '');
+        if (normalizedMainImage) {
             imgFrameEl.style.display = 'flex';
             qBodyEl.classList.remove('no-image');
-            imgFrameEl.innerHTML = `<img src="assets/uploads/${q.image_path}" alt="Ikimenyetso" decoding="async" fetchpriority="high" loading="eager">`;
+            imgFrameEl.innerHTML = `<img src="${normalizedMainImage}" alt="Ikimenyetso" decoding="async" fetchpriority="high" loading="eager">`;
         } else {
             imgFrameEl.style.display = 'none';
             qBodyEl.classList.add('no-image');
@@ -487,7 +489,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isImgOpts) {
             optsEl.className = 'options-list img-grid';
-            optsEl.innerHTML = opts.map(o => `
+            optsEl.innerHTML = opts.map(o => {
+                const normalizedValue = normalizeQuestionImageAssetPath(o.val || '');
+                return `
                 <label class="opt-row${saved===o.key?' selected':''}">
                     <div class="img-opt-head">
                         <input type="radio" name="choice" value="${o.key}" ${saved===o.key?'checked':''}
@@ -495,9 +499,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <strong>${o.key.toLowerCase()})</strong>
                     </div>
                     <div class="img-opt-box">
-                        <img src="assets/uploads/${o.val}" alt="Option ${o.key}" decoding="async">
+                        <img src="${normalizedValue}" alt="Option ${o.key}" decoding="async">
                     </div>
-                </label>`).join('');
+                </label>`;
+            }).join('');
         } else {
             optsEl.className = 'options-list';
             optsEl.innerHTML = opts.map(o => `
@@ -579,9 +584,12 @@ document.addEventListener('DOMContentLoaded', () => {
             render();
             setTimeout(() => {
                 questions.forEach(q => {
-                    if (q.image_path) { const i = new Image(); i.src = `assets/uploads/${q.image_path}`; }
+                    const mainSrc = normalizeQuestionImageAssetPath(q.image_path || q.image_url || '');
+                    if (mainSrc) { const i = new Image(); i.src = mainSrc; }
                     ['option_a','option_b','option_c','option_d'].forEach(k => {
-                        if (q[k] && /\.(png|jpg|jpeg|gif|webp)$/i.test(q[k])) { const i = new Image(); i.src = `assets/uploads/${q[k]}`; }
+                        const optValue = q[k];
+                        const normalizedOpt = normalizeQuestionImageAssetPath(optValue || '');
+                        if (optValue && /\.(png|jpg|jpeg|gif|webp)$/i.test(optValue)) { const i = new Image(); i.src = normalizedOpt; }
                     });
                 });
             }, 100);
