@@ -9,12 +9,12 @@ function normalizeQuestionImageAssetPath(rawValue) {
 
     const normalized = value.replace(/^\/+/, '').replace(/^assets\//i, '');
     if (normalized.startsWith('uploads/')) {
-        return `assets/${normalized}`;
+        return `/assets/${normalized}`;
     }
     if (normalized.startsWith('assets/uploads/')) {
-        return `assets/${normalized.replace(/^assets\//i, '')}`;
+        return `/assets/${normalized.replace(/^assets\//i, '')}`;
     }
-    return `assets/uploads/${normalized}`;
+    return `/assets/uploads/${normalized}`;
 }
 
 module.exports = {

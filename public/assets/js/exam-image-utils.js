@@ -6,7 +6,7 @@ function normalizeQuestionImageAssetPath(rawValue) {
     if (value.startsWith('data:')) return value;
 
     const cleaned = value.replace(/^\/+/, '').replace(/^assets\//i, '');
-    if (cleaned.startsWith('uploads/')) return `assets/${cleaned}`;
-    if (cleaned.startsWith('assets/uploads/')) return `assets/${cleaned.replace(/^assets\//i, '')}`;
-    return `assets/uploads/${cleaned}`;
+    if (cleaned.startsWith('uploads/')) return `/assets/${cleaned}`;
+    if (cleaned.startsWith('assets/uploads/')) return `/assets/${cleaned.replace(/^assets\//i, '')}`;
+    return `/assets/uploads/${cleaned}`;
 }
