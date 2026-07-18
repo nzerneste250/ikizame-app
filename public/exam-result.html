@@ -490,7 +490,6 @@
         <i class="fa-solid fa-arrow-up"></i> Subira Hejuru
     </button>
 
-    <script src="/assets/js/exam-image-utils.js?v=20260718-1"></script>
     <script>
         // ── GUARD: redirect to amanota if no valid session data ──
         (function() {
@@ -580,10 +579,9 @@
                         : '<i class="fa-solid fa-xmark"></i> WAGISUBIJE NABI';
 
                 let imgHtml = '';
-                const rawImg = q.image_path || q.image_url;
-                const normalizedImg = normalizeQuestionImageAssetPath(rawImg || '');
-                if (normalizedImg) {
-                    imgHtml = `<img src="${normalizedImg}" class="q-image" alt="Ifoto y'ikibazo">`;
+                const rawImg = (q.image_path || q.image_url || '').trim();
+                if (rawImg) {
+                    imgHtml = `<img src="assets/uploads/${rawImg}" class="q-image" alt="Ifoto y'ikibazo" onerror="this.style.display='none'">`;
                 }
 
                 const opts = ['A','B','C','D'];
@@ -596,15 +594,11 @@
                     else if (isCor)          { cls = 'correct-target'; icon = `<i class="fa-solid fa-check opt-icon" style="color:#10b981;"></i>`; }
                     else if (isUserPick)     { cls = 'user-wrong'; icon = `<i class="fa-solid fa-xmark opt-icon" style="color:#ef4444;"></i>`; }
 
-                    const stringValue = typeof val === 'string' ? val.trim() : '';
-                    const normalizedVal = normalizeQuestionImageAssetPath(stringValue || '');
-                    const looksLikeImageName = !!stringValue && /\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue);
-                    const looksLikeOptionAsset = !!stringValue && (stringValue.includes('_File-') || stringValue.includes('optiona_File-') || stringValue.includes('optionA_File-'));
-                    const looksLikeUploadPath = !!stringValue && /^(assets\/|\/assets\/|uploads\/)/i.test(stringValue);
-                    const isGraphicAsset = looksLikeImageName || looksLikeOptionAsset || looksLikeUploadPath;
+                    const stringValue = (val !== null && val !== undefined) ? String(val).trim() : '';
+                    const isGraphicAsset = !!stringValue && (/\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue) || stringValue.includes('_File-'));
                     const contentHtml = isGraphicAsset
-                        ? `<img src="${normalizedVal}" class="q-image" alt="Option ${l}" style="max-height:140px;margin:0;border:none;background:transparent;">`
-                        : `<span>${val}</span>`;
+                        ? `<img src="assets/uploads/${stringValue}" class="q-image" alt="Option ${l}" style="max-height:140px;margin:0;border:none;background:transparent;" onerror="this.style.display='none'">`
+                        : `<span>${stringValue || '---'}</span>`;
                     return `<div class="option-row ${cls}"><div class="opt-letter">${l}</div>${contentHtml}${icon}</div>`;
                 }).join('');
 
