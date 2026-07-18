@@ -490,7 +490,7 @@
         <i class="fa-solid fa-arrow-up"></i> Subira Hejuru
     </button>
 
-    <script src="/assets/js/exam-image-utils.js?v=20260718"></script>
+    <script src="/assets/js/exam-image-utils.js?v=20260718-1"></script>
     <script>
         // ── GUARD: redirect to amanota if no valid session data ──
         (function() {
@@ -597,14 +597,11 @@
                     else if (isUserPick)     { cls = 'user-wrong'; icon = `<i class="fa-solid fa-xmark opt-icon" style="color:#ef4444;"></i>`; }
 
                     const stringValue = typeof val === 'string' ? val.trim() : '';
-                    const isGraphicAsset = !!stringValue && (
-                        /\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue)
-                        || /^(option[A-D]_File-|option[A-D]_)/i.test(stringValue)
-                        || /^(assets\/|\/assets\/)/i.test(stringValue)
-                        || /^(uploads\/)/i.test(stringValue)
-                        || /^(?:[A-Za-z0-9_.-]+\/)*[A-Za-z0-9_.-]+\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue)
-                    );
                     const normalizedVal = normalizeQuestionImageAssetPath(stringValue || '');
+                    const looksLikeImageName = !!stringValue && /\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue);
+                    const looksLikeOptionAsset = !!stringValue && /^(option[A-D]_File-|option[A-D]_)/i.test(stringValue);
+                    const looksLikeUploadPath = !!stringValue && /^(assets\/|\/assets\/|uploads\/)/i.test(stringValue);
+                    const isGraphicAsset = looksLikeImageName || looksLikeOptionAsset || looksLikeUploadPath || /^(?:[A-Za-z0-9_.-]+\/)*[A-Za-z0-9_.-]+\.(png|jpg|jpeg|gif|webp)$/i.test(stringValue);
                     const contentHtml = isGraphicAsset
                         ? `<img src="${normalizedVal}" class="q-image" alt="Option ${l}" style="max-height:140px;margin:0;border:none;background:transparent;">`
                         : `<span>${val}</span>`;
