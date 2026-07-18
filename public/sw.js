@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ikizame-v2';
+const CACHE_NAME = 'ikizame-v3';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
@@ -26,13 +26,26 @@ self.addEventListener('activate', (e) => {
     self.clients.claim();
 });
 
-// Fetch Event: Serve directly from local cache fallback to internet if updated
+// Fetch Event: prefer fresh network for exam flows and app shell assets
 self.addEventListener('fetch', (e) => {
     const url = new URL(e.request.url);
-    if (url.pathname === '/exam-result' || url.pathname === '/exam-result.html' || url.pathname === '/exam') {
-        e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    const isNavigation = e.request.mode === 'navigate';
+    const isExamFlow = url.pathname === '/exam-result' || url.pathname === '/exam-result.html' || url.pathname === '/exam' || url.pathname === '/amanota';
+    const isAsset = /\.(css|js|png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf)$/.test(url.pathname);
+
+    if (isNavigation || isExamFlow || isAsset) {
+        e.respondWith(
+            fetch(e.request)
+                .then((response) => {
+                    const copy = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+                    return response;
+                })
+                .catch(() => caches.match(e.request).then((cached) => cached || fetch(e.request)))
+        );
         return;
     }
+
     e.respondWith(
         caches.match(e.request).then((cachedResponse) => {
             return cachedResponse || fetch(e.request);
