@@ -25,15 +25,14 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body {
-            min-height: 100vh;
+            height: 100vh;
             width: 100%;
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 50%, #fdfefe 100%);
             color: #0f172a;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
-            overflow-y: auto;
+            overflow: hidden;
         }
                 /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
         .navbar {
@@ -161,108 +160,106 @@
         .workspace-scroll-container {
             flex: 1;
             margin-top: 60px;
-            padding: 6px clamp(16px, 2.2vw, 24px) 24px;
+            padding: 6px clamp(10px, 1.8vw, 20px) 44px;
             display: flex;
             align-items: flex-start;
             justify-content: center;
             width: 100%;
-            min-height: calc(100vh - 60px);
-            overflow: visible;
+            overflow: hidden;
         }
         .workspace-inner {
             width: 100%;
             max-width: 1320px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             justify-content: flex-start;
-            overflow: visible;
+            overflow: hidden;
         }
         
         .section-header-meta {
-            text-align: center; padding: 32px 22px 26px;
+            text-align: center; padding: 10px 18px;
             background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
-            border-radius: 18px; color: #fff;
-            margin-bottom: 14px;
+            border-radius: 12px; color: #fff;
+            margin-bottom: 6px;
         }
-        .section-header-meta h2 { font-size: clamp(1.4rem, 1.8vw, 2rem); font-weight: 800; margin-bottom: 12px; color: #fff; }
-        .section-header-meta p { font-size: 0.94rem; color: rgba(255,255,255,0.88); margin-bottom: 18px; line-height: 1.6; max-width: 720px; margin-left: auto; margin-right: auto; }
+        .section-header-meta h2 { font-size: clamp(0.95rem, 1.3vw, 1.3rem); font-weight: 800; margin-bottom: 3px; color: #fff; }
+        .section-header-meta p { font-size: 0.75rem; color: rgba(255,255,255,0.88); margin-bottom: 6px; line-height: 1.4; max-width: 720px; margin-left: auto; margin-right: auto; }
 
         /* ── 🎯 CHANNEL RECONCILIATION CHANNELS BANNER ── */
         .channel-support-banner {
-            display: flex; align-items: center; gap: 14px;
+            display: flex; align-items: center; gap: 8px;
             background: rgba(255,255,255,0.16);
             border: 1px solid rgba(255,255,255,0.22);
-            padding: 14px 18px; border-radius: 18px;
-            margin: 0 auto; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            padding: 5px 12px; border-radius: 10px;
+            margin: 0 auto;
             flex-wrap: wrap; justify-content: center; width: min(760px, 100%);
         }
-        .channel-support-banner span { font-size: 0.83rem; font-weight: 800; color: #cffafe; text-transform: uppercase; letter-spacing: 0.6px; }
+        .channel-support-banner span { font-size: 0.72rem; font-weight: 800; color: #cffafe; text-transform: uppercase; letter-spacing: 0.6px; }
         .channel-support-banner .banner-label { color: #7dd3fc; }
-        .channel-inline-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
+        .channel-inline-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
 
         /* ===== TWO-COLUMN SYMMETRICAL SPLIT CONTENT GRADIENT ===== */
         .pricing-split-layout {
-            display: grid; grid-template-columns: minmax(310px, 0.96fr) minmax(410px, 1.12fr); gap: 16px;
+            display: grid; grid-template-columns: minmax(280px, 0.96fr) minmax(380px, 1.12fr); gap: 12px;
             width: 100%; align-items: start; min-height: 0;
         }
 
-        .cards-column { display: grid; gap: 10px; align-content: start; width: 100%; max-width: 520px; }
+        .cards-column { display: grid; gap: 8px; align-content: start; width: 100%; max-width: 520px; }
 
         .resource-glass-card {
             background: var(--surface); border: 1px solid var(--border-color);
-            border-radius: 14px; padding: 14px 18px 14px; display: flex; flex-direction: column;
+            border-radius: 10px; padding: 10px 14px; display: flex; flex-direction: column;
             justify-content: space-between; position: relative; transition: all 0.2s ease;
-            min-height: 0; box-shadow: 0 16px 36px rgba(15, 23, 42, 0.06);
+            min-height: 0; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
         }
         .resource-glass-card.featured { border-color: var(--brand); background: linear-gradient(135deg, #ffffff 0%, #f4fbff 100%); box-shadow: 0 20px 40px rgba(11, 105, 139, 0.12); }
         .featured-tag { position: absolute; top: -10px; left: 24px; background: var(--brand); color: #fff; font-size: 8px; font-weight: 800; padding: 4px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; }
 
-        .resource-card-body h3 { font-size: 1.08rem; font-weight: 800; color: #0f172a; margin-bottom: 7px; }
-        .price-badge-row { font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-bottom: 9px; line-height: 1.2; }
-        .price-badge-row span { font-size: 0.82rem; color: #64748b; font-weight: 500; }
+        .resource-card-body h3 { font-size: 0.92rem; font-weight: 800; color: #0f172a; margin-bottom: 3px; }
+        .price-badge-row { font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-bottom: 5px; line-height: 1.2; }
+        .price-badge-row span { font-size: 0.75rem; color: #64748b; font-weight: 500; }
         
-        .perk-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-        .perk-list li { font-size: 0.86rem; color: #334155; display: flex; align-items: center; gap: 8px; }
-        .perk-list li i { color: var(--success); font-size: 12px; }
+        .perk-list { list-style: none; display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+        .perk-list li { font-size: 0.78rem; color: #334155; display: flex; align-items: center; gap: 6px; }
+        .perk-list li i { color: var(--success); font-size: 11px; }
 
-        .btn-pay-trigger { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); border: none; color: #ffffff; padding: 10px 12px; border-radius: 10px; font-size: 0.88rem; font-weight: 700; width: 100%; cursor: pointer; transition: all 0.18s ease; text-align: center; box-shadow: 0 10px 20px rgba(11, 105, 139, 0.16); }
+        .btn-pay-trigger { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); border: none; color: #ffffff; padding: 7px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; width: 100%; cursor: pointer; transition: all 0.18s ease; text-align: center; box-shadow: 0 4px 12px rgba(11, 105, 139, 0.16); }
         .resource-glass-card:hover .btn-pay-trigger, .featured .btn-pay-trigger { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(11, 105, 139, 0.22); }
 
         /* ===== RIGHT PANEL PROCESS CONTAINER ===== */
         .payment-guide-container {
             background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%); border: 1px solid var(--border-color);
-            border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column;
-            gap: 8px; min-height: 100%; justify-content: flex-start; box-shadow: 0 16px 36px rgba(15, 23, 42, 0.05);
+            border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column;
+            gap: 6px; min-height: 100%; justify-content: flex-start; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
         }
-        .guide-card-header h3 { font-size: 0.92rem; font-weight: 800; color: #0f172a; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-        .guide-card-header p { font-size: 0.78rem; color: #475569; line-height: 1.45; }
+        .guide-card-header h3 { font-size: 0.82rem; font-weight: 800; color: #0f172a; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+        .guide-card-header p { font-size: 0.7rem; color: #475569; line-height: 1.35; }
 
-        .diagram-flow-row { display: flex; gap: 8px; align-items: stretch; }
-        .diagram-step { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 10px 10px; display: flex; flex-direction: column; gap: 4px; position: relative; flex: 1; min-height: 0; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04); }
-        .step-icon { width: 22px; height: 22px; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; position: absolute; top: -11px; left: 12px; box-shadow: 0 4px 12px rgba(11, 105, 139, 0.18); }
-        .diagram-step h4 { font-size: 0.78rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
-        .diagram-step p { font-size: 0.72rem; color: #475569; line-height: 1.35; }
-        .diagram-arrow { display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 12px; }
+        .diagram-flow-row { display: flex; gap: 6px; align-items: stretch; }
+        .diagram-step { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 8px 6px; display: flex; flex-direction: column; gap: 2px; position: relative; flex: 1; min-height: 0; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04); }
+        .step-icon { width: 18px; height: 18px; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; position: absolute; top: -9px; left: 10px; box-shadow: 0 2px 8px rgba(11, 105, 139, 0.18); }
+        .diagram-step h4 { font-size: 0.7rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+        .diagram-step p { font-size: 0.65rem; color: #475569; line-height: 1.3; }
+        .diagram-arrow { display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 10px; }
 
-        .balance-check-block { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2px; transition: background 0.2s ease, border-color 0.2s ease; border-radius: 22px; }
-        .balance-check-block.balance-check-good { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); padding: 14px; }
-        .balance-check-block.balance-check-empty { background: rgba(255,0,0,0.08); border: 1px solid rgba(255,0,0,0.25); padding: 14px; }
-        .balance-check-block.balance-check-low { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); padding: 14px; }
+        .balance-check-block { display: flex; flex-direction: column; gap: 5px; margin-bottom: 2px; transition: background 0.2s ease, border-color 0.2s ease; border-radius: 10px; }
+        .balance-check-block.balance-check-good { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); padding: 8px; }
+        .balance-check-block.balance-check-empty { background: rgba(255,0,0,0.08); border: 1px solid rgba(255,0,0,0.25); padding: 8px; }
+        .balance-check-block.balance-check-low { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); padding: 8px; }
         .balance-check-block .btn-pay-trigger { width: 100%; }
         .balance-check-block #balanceStatusPanel {
-            min-height: 52px;
-            padding: 16px 14px;
-            border-radius: 20px;
+            min-height: 30px;
+            padding: 6px 10px;
+            border-radius: 8px;
             background: rgba(255,255,255,0.12);
             border: 1px solid transparent;
-            box-shadow: 0 10px 18px rgba(15,23,42,0.06);
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            font-size: 0.88rem;
-            line-height: 1.55;
+            font-size: 0.75rem;
+            line-height: 1.4;
             color: #334155;
             font-weight: 700;
             transition: all 0.2s ease;
@@ -287,31 +284,31 @@
 
         /* ===== HIGH-VISIBILITY LOGO SQUARE BADGE EMBEDS ===== */
         .carrier-logo-square-box { 
-            width: 86px; /* 🎯 Enhanced layout width parameter */
-            height: 86px; 
-            border-radius: 14px; 
+            width: 48px;
+            height: 48px; 
+            border-radius: 8px; 
             overflow: hidden; 
-            border: 2px solid #e2e8f0; 
+            border: 1px solid #e2e8f0; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-shrink: 0; 
             background: #ffffff;  
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
-        .carrier-logo-square-box img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
-        .carrier-logo-square-box.modal-badge { width: 100px; height: 100px; border: 2px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-        .carrier-logo-square-box.header-payment-badge { width: 54px; height: 54px; border-radius: 12px; }
-.ussd-fallback-box { background: linear-gradient(135deg, #f4fbff 0%, #eef7ff 100%); border: 1px dashed rgba(11, 105, 139, 0.2); border-radius: 12px; padding: 10px 12px; }
-        .ussd-fallback-box h4 { font-size: 0.8rem; font-weight: 700; color: #0b698b; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .carrier-logo-square-box img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+        .carrier-logo-square-box.modal-badge { width: 70px; height: 70px; border: 2px solid #cbd5e1; }
+        .carrier-logo-square-box.header-payment-badge { width: 30px; height: 30px; border-radius: 6px; }
+        .ussd-fallback-box { background: linear-gradient(135deg, #f4fbff 0%, #eef7ff 100%); border: 1px dashed rgba(11, 105, 139, 0.2); border-radius: 8px; padding: 7px 10px; }
+        .ussd-fallback-box h4 { font-size: 0.7rem; font-weight: 700; color: #0b698b; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
         
-        .ussd-commands-grid { display: flex; gap: 14px; }
-        .ussd-card { background: #ffffff; color: #0f172a; border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .ussd-meta-wrap { display: flex; align-items: center; gap: 10px; }
+        .ussd-commands-grid { display: flex; gap: 8px; }
+        .ussd-card { background: #ffffff; color: #0f172a; border-radius: 8px; padding: 6px 8px; display: flex; align-items: center; justify-content: space-between; flex: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .ussd-meta-wrap { display: flex; align-items: center; gap: 8px; }
         
         .ussd-text-info { display: flex; flex-direction: column; }
-        .ussd-text-info span { font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; }
-        .ussd-code { font-size: 1.2rem; font-weight: 800; color: #0f172a; font-family: monospace; }
+        .ussd-text-info span { font-size: 8px; font-weight: 800; color: #64748b; text-transform: uppercase; }
+        .ussd-code { font-size: 0.95rem; font-weight: 800; color: #0f172a; font-family: monospace; }
 
         /* ===== MODALS INTERFACES ===== */
         .payment-modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 16px; width: 100vw; height: 100vh; }
@@ -331,16 +328,15 @@
         /* ===== 📱 MOBILE OVERRIDES ===== */
         @media (max-width: 850px) {
             html, body { height: auto; overflow-y: auto; }
-            .workspace-scroll-container { margin-top: 170px; padding: 14px 4% 28px; min-height: auto; }
-            .pricing-split-layout { grid-template-columns: 1fr; }
+            .workspace-scroll-container { margin-top: 110px; padding: 10px 4% 50px; overflow-y: auto; }
+            .pricing-split-layout { grid-template-columns: 1fr; gap: 12px; }
             .cards-column { max-width: none; }
-            .workspace-inner { height: auto; gap: 16px; }
-            .pricing-split-layout { grid-template-columns: 1fr; height: auto; gap: 18px; }
-            .diagram-flow-row { flex-direction: column; gap: 12px; }
+            .workspace-inner { height: auto; gap: 10px; overflow: visible; }
+            .diagram-flow-row { flex-direction: column; gap: 8px; }
             .diagram-arrow { transform: rotate(90deg); margin: -4px 0; }
-            .ussd-commands-grid { flex-direction: column; gap: 10px; }
-            .resource-glass-card, .payment-guide-container { border-radius: 16px; }
-            .section-header-meta { padding-top: 4px; }
+            .ussd-commands-grid { flex-direction: column; gap: 8px; }
+            .resource-glass-card, .payment-guide-container { border-radius: 10px; }
+            .section-header-meta { padding: 8px 14px; }
         }
     </style>
 </head>
@@ -371,7 +367,7 @@
                 <h2>Gura Ibizamini Byoroshye kandi Bihendutse</h2>
                 <p>Urahawe uburyo bwihuse bwo kugura ibizamini, kureba ibisigaye ku nomero yawe, no kwishyura ukoresheje MTN MoMo cyangwa Airtel Money.</p>
                 
-                <div class="channel-support-banner" style="margin-top: 18px;">
+                <div class="channel-support-banner" style="margin-top: 6px;">
                     <span class="banner-label">Uburyo bwizewe bwo kwishyura:</span>
                     <div class="channel-inline-row">
                         <div class="carrier-logo-square-box header-payment-badge"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN"></div>
@@ -416,13 +412,13 @@
                         <p>Reba ibisigaye kuri nomero yawe mbere yo kugura. Ukoreshe neza credits zawe, kandi uhite ubona uko amahitamo yawe ahagaze.</p>
                     </div>
 
-                    <div class="balance-check-block" style="margin-bottom: 18px;">
+                    <div class="balance-check-block" style="margin-bottom: 6px;">
                         <div class="input-form-field">
                             <label>Reba ibisigaye kuri terefone</label>
                             <input type="tel" id="balancePhoneInput" placeholder="0788000000" oninput="sanitizeBalancePhoneInput()">
                         </div>
-                        <button class="btn-pay-trigger" id="balanceCheckBtn" style="margin-bottom: 12px;" onclick="fetchRemainingExamBalance()">Reba ibisigaye</button>
-                        <div id="balanceStatusPanel" style="min-height: 52px; font-size: 0.88rem; line-height: 1.6; padding: 16px 14px; border-radius: 20px; display: flex; align-items: center; justify-content: center; text-align: center; width: 100%;"></div>
+                        <button class="btn-pay-trigger" id="balanceCheckBtn" style="margin-bottom: 4px;" onclick="fetchRemainingExamBalance()">Reba ibisigaye</button>
+                        <div id="balanceStatusPanel" style="min-height: 30px; font-size: 0.75rem; line-height: 1.4; padding: 6px 10px; border-radius: 8px; display: flex; align-items: center; justify-content: center; text-align: center; width: 100%;"></div>
                     </div>
 
                     <div class="diagram-flow-row">
