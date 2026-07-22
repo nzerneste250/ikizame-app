@@ -205,7 +205,7 @@
 
         /* Attempts table */
         .attempts-section-title { font-size: 0.78rem; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-        .attempts-table-wrap { position: relative; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; }
+        .attempts-table-wrap { position: relative; border: 1px solid #e2e8f0; border-radius: 10px; overflow: visible; }
         .attempts-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
         .attempts-table thead tr { background: #f1f5f9; }
         .attempts-table th { padding: 9px 10px; font-weight: 800; color: #475569; text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid #e2e8f0; }
@@ -224,9 +224,9 @@
         .status-dot.fail { color: #dc2626; }
         .btn-open-review { border: none; background: var(--brand); color: #ffffff; padding: 5px 11px; font-size: 0.75rem; font-weight: 700; border-radius: 5px; cursor: pointer; transition: background 0.1s; white-space: nowrap; }
         .btn-open-review:hover { background: var(--brand-dark); }
-        .attempts-scroll { max-height: 60vh; overflow-y: auto; overflow-x: hidden; position: relative; -webkit-overflow-scrolling: touch; }
+        .attempts-scroll { max-height: none; overflow: visible; position: relative; }
         .back-to-top-btn {
-            position: absolute; right: 12px; bottom: 12px; z-index: 20;
+            position: fixed; right: 18px; bottom: 64px; z-index: 950;
             border: none; background: linear-gradient(135deg, #0b698b 0%, #0ea5e9 100%);
             color: #fff; padding: 10px 14px; border-radius: 999px; font-size: 0.8rem;
             font-weight: 800; cursor: pointer; box-shadow: 0 10px 24px rgba(11,105,139,0.25);
@@ -426,25 +426,27 @@
             const resultsScrollTarget = document.getElementById('resultsListScrollTarget');
             const backBtn = document.getElementById('backToLookupBtn');
 
-            const attemptsScroll = document.querySelector('.attempts-scroll');
             const toggleBackToTop = () => {
-                if (!backToTopBtn || !attemptsScroll) return;
-                const shouldShow = attemptsScroll.scrollTop > 140;
+                const container = document.querySelector('.workspace-scroll-container');
+                if (!backToTopBtn || !container) return;
+                const shouldShow = container.scrollTop > 260;
                 backToTopBtn.classList.toggle('show', shouldShow);
             };
 
             if (backToTopBtn) {
                 backToTopBtn.addEventListener('click', () => {
-                    if (attemptsScroll) {
-                        attemptsScroll.scrollTo({ top: 0, behavior: 'smooth' });
+                    const container = document.querySelector('.workspace-scroll-container');
+                    if (container) {
+                        container.scrollTo({ top: 0, behavior: 'smooth' });
                     } else {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                 });
             }
 
-            if (attemptsScroll) {
-                attemptsScroll.addEventListener('scroll', toggleBackToTop, { passive: true });
+            const container = document.querySelector('.workspace-scroll-container');
+            if (container) {
+                container.addEventListener('scroll', toggleBackToTop, { passive: true });
                 toggleBackToTop();
             }
 
