@@ -205,6 +205,8 @@
 
         /* Attempts table */
         .attempts-section-title { font-size: 0.78rem; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .attempts-table-actions { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+        .attempts-top-btn { border: none; background: #e0f2fe; color: #0b698b; padding: 6px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
         .attempts-table-wrap { border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; }
         .attempts-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
         .attempts-table thead tr { background: #f1f5f9; }
@@ -384,6 +386,9 @@
                 <!-- Attempts table -->
                 <div>
                     <div class="attempts-section-title"><i class="fa-solid fa-list-check" style="margin-right:5px;color:var(--brand)"></i>Ibizamini Biherutse Gukorwa, <span id="attemptsCount">0</span> tests</div>
+                    <div class="attempts-table-actions">
+                        <button class="attempts-top-btn" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i> Subira hejuru</button>
+                    </div>
                     <div class="attempts-table-wrap">
                         <div class="attempts-scroll">
                             <table class="attempts-table">
