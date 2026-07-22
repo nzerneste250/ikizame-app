@@ -12,9 +12,9 @@
     <style>
         :root { --brand:#0b698b; --brand-dark:#08536e; --brand-light:#e0f2fe; --bg:#f0f6fa; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0; }
         * { margin:0; padding:0; box-sizing:border-box; }
-        html, body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; }
+        html, body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100%; height:auto; overflow-x:hidden; }
         body { display:flex; flex-direction:column; padding-top:60px; }
-        .navbar { position:fixed; top:0; left:0; right:0; z-index:5000; height:60px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 4%; border-bottom:1px solid #e2e8f0; box-shadow:0 1px 10px rgba(15,23,42,.03); width:100vw; box-sizing:border-box; }
+        .navbar { position:fixed; top:0; left:0; right:0; z-index:5000; height:60px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 4%; border-bottom:1px solid #e2e8f0; box-shadow:0 1px 10px rgba(15,23,42,.03); width:100%; box-sizing:border-box; }
         .navbar-brand-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
         .navbar-brand-wrap img { width:32px; height:32px; object-fit:contain; }
         .navbar-brand { font-family:'Inter',sans-serif; font-size:1.65rem; font-weight:800; color:#0b698b; letter-spacing:-.5px; text-transform:uppercase; line-height:1; }
@@ -29,7 +29,7 @@
         .hero-icon { width:48px; height:48px; background:rgba(255,255,255,.15); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; color:#fff; margin:0 auto 10px; }
         .hero h1 { font-size:clamp(1.2rem,3vw,1.7rem); font-weight:800; color:#fff; margin-bottom:6px; }
         .hero p { font-size:.85rem; color:rgba(255,255,255,.8); max-width:520px; margin:0 auto; line-height:1.5; }
-        .main { flex:1; min-height:0; max-width:1100px; width:100%; margin:0 auto; padding:20px 5% 50px; display:flex; flex-direction:column; }
+        .main { flex:1; min-height:0; max-width:1100px; width:100%; margin:0 auto; padding:20px 5% 80px; display:flex; flex-direction:column; }
         .search-wrap { position:relative; margin-bottom:14px; }
         .s-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.9rem; pointer-events:none; }
         .search-input { width:100%; padding:11px 44px; border:1.5px solid var(--border); border-radius:12px; font-size:.9rem; font-family:inherit; color:var(--text); background:var(--surface); outline:none; }
