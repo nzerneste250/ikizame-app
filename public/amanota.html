@@ -55,11 +55,12 @@
 
         /* ===== CONTAINER CANVAS ===== */
         .workspace-scroll-container { 
-            flex: 1; margin-top: 60px; padding: 40px 16px 60px; 
+            flex: 1; margin-top: 60px; padding: 40px 16px 80px; 
             display: flex; align-items: center; justify-content: center; width: 100%; 
+            overflow-y: auto; overflow-x: hidden;
         }
         .workspace-scroll-container.results-open {
-            padding: 0; align-items: flex-start;
+            padding: 0 16px 80px; align-items: flex-start;
         }
 
         /* ===== SEARCH FORM CARD ===== */
@@ -223,7 +224,15 @@
         .status-dot.fail { color: #dc2626; }
         .btn-open-review { border: none; background: var(--brand); color: #ffffff; padding: 5px 11px; font-size: 0.75rem; font-weight: 700; border-radius: 5px; cursor: pointer; transition: background 0.1s; white-space: nowrap; }
         .btn-open-review:hover { background: var(--brand-dark); }
-        .attempts-scroll { max-height: 320px; overflow-y: auto; }
+        .attempts-scroll { max-height: none; overflow-y: visible; }
+        .back-to-top-btn {
+            position: fixed; right: 18px; bottom: 58px; z-index: 950;
+            border: none; background: linear-gradient(135deg, #0b698b 0%, #0ea5e9 100%);
+            color: #fff; padding: 10px 14px; border-radius: 999px; font-size: 0.8rem;
+            font-weight: 800; cursor: pointer; box-shadow: 0 10px 24px rgba(11,105,139,0.25);
+            display: none; align-items: center; gap: 6px;
+        }
+        .back-to-top-btn.show { display: inline-flex; }
 
         .footer { height: 40px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; }
         .footer strong { color: #38bdf8; }
@@ -399,6 +408,8 @@
 
     </div><!-- /workspace-scroll-container -->
 
+    <button class="back-to-top-btn" id="backToTopBtn" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i> Subira inyuma</button>
+
     <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
 
     <script src="assets/js/enter-to-action.js"></script>
@@ -406,6 +417,7 @@
         let globalLoadedAttemptsArray = [];
 
         document.addEventListener('DOMContentLoaded', () => {
+            const backToTopBtn = document.getElementById('backToTopBtn');
             const lookupPhoneInp = document.getElementById('lookupPhoneNumber');
             const lookupPhoneHint = document.getElementById('lookupPhoneHint');
             const submitLookupBtn = document.getElementById('submitLookupBtn');
@@ -413,6 +425,19 @@
             const resultsListView = document.getElementById('amanotaResultsListView');
             const resultsScrollTarget = document.getElementById('resultsListScrollTarget');
             const backBtn = document.getElementById('backToLookupBtn');
+
+            const toggleBackToTop = () => {
+                const container = document.querySelector('.workspace-scroll-container');
+                if (!backToTopBtn || !container) return;
+                const shouldShow = container.scrollTop > 300;
+                backToTopBtn.classList.toggle('show', shouldShow);
+            };
+
+            const container = document.querySelector('.workspace-scroll-container');
+            if (container) {
+                container.addEventListener('scroll', toggleBackToTop);
+                toggleBackToTop();
+            }
 
             // Reset any stuck "Mushake..." buttons when user returns to this page
             document.addEventListener('visibilitychange', () => {
