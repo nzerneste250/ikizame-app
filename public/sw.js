@@ -1,7 +1,8 @@
-const CACHE_NAME = 'ikizame-v3';
+const CACHE_NAME = 'ikizame-v4';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
+    '/ifashanyigisho.html',
     '/exam.html',
     '/exam-result.html',
     '/assets/js/exam-image-utils.js?v=20260718',
