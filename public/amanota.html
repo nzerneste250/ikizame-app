@@ -244,8 +244,8 @@
             .rem-big-num { font-size: 2.8rem; }
             .rem-buy-btn { width: 100%; justify-content: center; }
             .attempts-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-            .attempts-table { min-width: 480px; }
-            .attempts-table th:nth-child(3), .attempts-table td:nth-child(3) { display: none; }
+            .attempts-table { min-width: 620px; }
+            .attempts-table th:nth-child(4), .attempts-table td:nth-child(4) { display: none; }
             .results-header-row h4 { font-size: 0.95rem; }
         }
     </style>
@@ -381,6 +381,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Amazina</th>
                                         <th>Code</th>
                                         <th>Itariki</th>
                                         <th>Imimerere</th>
@@ -563,6 +564,7 @@
                             const statusLabel = isPassed ? 'Yatsinze' : 'Watsinzwe';
                             return `<tr>
                                 <td>${i + 1}</td>
+                                <td>${att.student_name || '—'}</td>
                                 <td class="code-cell">#${att.id}</td>
                                 <td>${dateFormatted}</td>
                                 <td><span class="status-dot ${statusClass}">${statusLabel}</span></td>
