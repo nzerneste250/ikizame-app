@@ -2,6 +2,13 @@
 // IKIZAME SERVER
 // ==========================================================================
 require('dotenv').config();
+
+// Force live PayPack processing unless explicitly overridden in code paths.
+if (process.env.PAYPACK_TEST_MODE === 'true') {
+    console.warn('⚠️ PAYPACK_TEST_MODE=true detected; forcing live PayPack mode for payments.');
+}
+process.env.PAYPACK_TEST_MODE = 'false';
+
 const express     = require('express');
 const mysql       = require('mysql2');
 const path        = require('path');
