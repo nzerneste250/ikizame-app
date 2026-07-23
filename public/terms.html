@@ -5,97 +5,536 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terms & Conditions | IKIZAME</title>
   <link rel="icon" type="image/png" href="assets/uploads/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
       --bg: #f5fbff;
       --card: #ffffff;
       --text: #0f172a;
-      --muted: #475569;
+      --muted: #64748b;
       --brand: #0b698b;
-      --border: rgba(11, 105, 139, 0.14);
+      --brand-light: #38bdf8;
+      --accent: #f97316;
+      --border: rgba(11, 105, 139, 0.1);
     }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, var(--bg), #edf7ff);
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--bg) 0%, #edf7ff 48%, #f9fcff 100%);
       color: var(--text);
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .page {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 32px 20px 60px;
+
+    /* ===== HEADER/NAVBAR ===== */
+    header {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(11, 105, 139, 0.12);
+      padding: 14px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
     }
-    .card {
+
+    .navbar-brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .navbar-brand-wrap img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .navbar-brand {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--brand);
+      letter-spacing: 0.5px;
+    }
+
+    nav {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: 2px;
+      list-style: none;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .navbar-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      color: #475569;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .navbar-links a:hover {
+      background: rgba(11, 105, 139, 0.08);
+      color: var(--brand);
+    }
+
+    .navbar-links a.active {
+      color: var(--brand);
+      font-weight: 700;
+      background: rgba(11, 105, 139, 0.1);
+    }
+
+    .lang-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1e293b;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 12px;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 1000px;
+      margin: 48px auto;
+      padding: 0 5%;
+    }
+
+    .page-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
-      padding: 28px;
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      padding: 48px;
+      animation: slideUp 0.6s ease-out;
     }
-    .brand {
-      color: var(--brand);
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header {
+      margin-bottom: 36px;
+    }
+
+    .page-badge {
+      display: inline-block;
+      font-size: 0.75rem;
       font-weight: 800;
-      font-size: 0.88rem;
-      letter-spacing: 0.2em;
       text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent);
+      background: rgba(249, 115, 22, 0.12);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+      padding: 8px 16px;
+      border-radius: 40px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--brand) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 600px;
+    }
+
+    .content-section {
+      margin-bottom: 36px;
+    }
+
+    .content-section p, .content-section li {
+      line-height: 1.8;
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 16px;
+      margin-top: 32px;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 12px;
+      margin-top: 18px;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+      margin-bottom: 16px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .links {
+      margin-top: 36px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+      border: 2px solid transparent;
+      padding: 12px 24px;
+      border-radius: 48px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      box-shadow: 0 10px 24px rgba(11, 105, 139, 0.2);
+    }
+
+    .links a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(11, 105, 139, 0.28);
+    }
+
+    .links a.secondary {
+      background: var(--card);
+      color: var(--brand);
+      border: 2px solid var(--border);
+      box-shadow: none;
+    }
+
+    .links a.secondary:hover {
+      background: rgba(11, 105, 139, 0.08);
+      border-color: var(--brand);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: rgba(15, 23, 42, 0.96);
+      color: rgba(255, 255, 255, 0.8);
+      padding: 48px 5%;
+      margin-top: 64px;
+      border-top: 1px solid rgba(11, 105, 139, 0.2);
+      font-size: 0.95rem;
+    }
+
+    .footer-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 36px;
+      margin-bottom: 36px;
+    }
+
+    .footer-section h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .footer-section a {
+      display: block;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+    }
+
+    .footer-section a:hover {
+      color: #f97316;
+      padding-left: 4px;
+    }
+
+    .footer-divider {
+      height: 1px;
+      background: rgba(11, 105, 139, 0.2);
+      margin: 32px 0;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .footer-copyright {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
       margin-bottom: 8px;
     }
-    h1 { font-size: 2rem; margin: 0 0 12px; }
-    h2 { font-size: 1.1rem; margin-top: 18px; }
-    p, li { line-height: 1.75; color: var(--muted); }
-    ul { padding-left: 20px; }
-    .links { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
-    .links a {
-      text-decoration: none;
-      color: var(--brand);
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      border-radius: 999px;
+
+    .footer-copyright strong {
+      color: #f97316;
       font-weight: 700;
     }
-    .links a:hover { background: #f4fbff; }
-    footer {
-      text-align: center;
-      margin-top: 48px;
-      padding-top: 32px;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
+
+    .footer-bottom-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
     }
-    footer p { margin: 8px 0; color: var(--muted); }
-    .copyright { font-weight: 600; }
+
+    .footer-bottom-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .footer-bottom-links a:hover {
+      color: #f97316;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px 4%;
+      }
+
+      nav {
+        width: 100%;
+      }
+
+      .navbar-links {
+        gap: 4px;
+        width: 100%;
+      }
+
+      .navbar-links a {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+      }
+
+      .page-card {
+        padding: 32px 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+      }
+
+      .links {
+        flex-direction: column;
+      }
+
+      .links a {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .footer-bottom-links {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="card">
-      <div class="brand">IKIZAME</div>
-      <h1>Terms &amp; Conditions</h1>
-      <p>By using the IKIZAME platform, you agree to comply with these Terms and Conditions. Please read them carefully before using our services.</p>
-      <h2>1. Use of Services</h2>
-      <p>IKIZAME provides digital learning and exam preparation resources for educational purposes. Users must use the platform responsibly and in accordance with applicable laws.</p>
-      <h2>2. Account Responsibility</h2>
-      <p>Users are responsible for keeping their account details secure and for all actions taken under their account.</p>
-      <h2>3. Payments and Access</h2>
-      <p>Payments made for exam packages or learning services are subject to the stated pricing and service terms. Access to services is granted after successful payment confirmation.</p>
-      <h2>4. Content Use</h2>
-      <p>All content provided on the platform is intended for educational use. Users must not copy, redistribute, or misuse materials without permission.</p>
-      <h2>5. Limitation of Liability</h2>
-      <p>IKIZAME strives to provide accurate and reliable services, but we do not guarantee uninterrupted access or error-free performance.</p>
-      <h2>6. Changes to Terms</h2>
-      <p>We may update these terms from time to time. Continued use of the platform means you accept the latest version of these terms.</p>
-      <div class="links">
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-      </div>
-      <footer>
-        <p class="copyright">© 2026 IKIZAME</p>
-        <p>Developed by <strong style="color: var(--brand);">Dotado Stationery Store Ltd</strong></p>
-      </footer>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <a href="/" class="navbar-brand-wrap">
+      <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+      <div class="navbar-brand">IKIZAME</div>
+    </a>
+    <nav>
+      <ul class="navbar-links">
+        <li><a href="/" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
+        <li><a href="/ubufasha" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-hand-holding-heart"></i><span>Help</span></a></li>
+        <li><a href="/ifashanyigisho" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-book-open"></i><span>Resources</span></a></li>
+        <li><a href="/ibiciro" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-tags"></i><span>Pricing</span></a></li>
+        <li><a href="/about" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-circle-info"></i><span>About</span></a></li>
+        <li><a href="/terms" class="active" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-file-lines"></i><span>Terms</span></a></li>
+      </ul>
+    </nav>
+    <div class="lang-badge">
+      <svg class="rw-flag-svg" style="width:18px;height:13px;border-radius:2px;" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/></svg>
+      <span>English</span>
     </div>
-  </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main>
+    <div class="page-card">
+      <div class="page-header">
+        <span class="page-badge">Legal</span>
+        <h1>Terms & Conditions</h1>
+        <p class="page-subtitle">Please read these terms carefully before using the IKIZAME platform</p>
+      </div>
+
+      <div class="content-section">
+        <h2>1. Agreement to Terms</h2>
+        <p>By accessing and using IKIZAME, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please refrain from using this platform. IKIZAME reserves the right to modify these terms at any time, and your continued use of the platform constitutes acceptance of the updated terms.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>2. Use of Services</h2>
+        <p>IKIZAME provides digital learning and exam preparation resources for educational purposes. You agree to:</p>
+        <ul>
+          <li>Use the platform responsibly and in accordance with applicable laws</li>
+          <li>Not engage in any unlawful or harmful activities</li>
+          <li>Respect intellectual property rights</li>
+          <li>Provide accurate information when registering</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>3. Account Responsibility</h2>
+        <p>You are solely responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify IKIZAME immediately of any unauthorized access or breach of your account.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>4. Payments and Access</h2>
+        <p>Payments made for exam packages or learning services are subject to the stated pricing and service terms. Access to services is granted after successful payment confirmation. All prices are stated in Rwandan Francs (RWF) unless otherwise specified. Refunds are subject to IKIZAME's refund policy.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>5. Content Use and Intellectual Property</h2>
+        <p>All content provided on the IKIZAME platform, including but not limited to exam questions, explanations, study materials, and design elements, is the intellectual property of IKIZAME or its content partners. You agree that:</p>
+        <ul>
+          <li>Content is intended for your personal educational use only</li>
+          <li>You shall not copy, reproduce, or redistribute materials without permission</li>
+          <li>You shall not modify or adapt any content</li>
+          <li>Unauthorized use may result in legal action</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2>6. Limitation of Liability</h2>
+        <p>IKIZAME strives to provide accurate, reliable, and uninterrupted services. However, we make no warranty regarding:</p>
+        <ul>
+          <li>Uninterrupted access to the platform</li>
+          <li>Error-free performance</li>
+          <li>Fitness for a particular purpose</li>
+          <li>Guaranteed exam success rates</li>
+        </ul>
+        <p>IKIZAME shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the platform.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>7. Termination</h2>
+        <p>IKIZAME reserves the right to suspend or terminate your account if you violate these terms or engage in prohibited conduct. Upon termination, your right to access the platform ceases immediately.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>8. Changes to Terms</h2>
+        <p>We may update these terms from time to time without prior notice. Continued use of the platform following such changes means you accept the latest version of these terms. We encourage you to review this page periodically for updates.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>9. Governing Law</h2>
+        <p>These terms shall be governed by and construed in accordance with the laws of the Republic of Rwanda, without regard to its conflict of law provisions.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>10. Contact Us</h2>
+        <p>If you have questions about these Terms and Conditions, please contact us through our support page or email us directly through the platform.</p>
+      </div>
+
+      <div class="links">
+        <a href="/" style="display:inline-flex;align-items:center;gap:8px;"><i class="fa-solid fa-arrow-left"></i>Back to Home</a>
+        <a href="/about" class="secondary" style="display:inline-flex;align-items:center;gap:8px;"><i class="fa-solid fa-info-circle"></i>Learn About Us</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Platform</h3>
+        <a href="/">Home</a>
+        <a href="/ifashanyigisho">Learning Resources</a>
+        <a href="/ibiciro">Pricing Plans</a>
+        <a href="/school-auth">For Schools</a>
+      </div>
+      <div class="footer-section">
+        <h3>Company</h3>
+        <a href="/about">About IKIZAME</a>
+        <a href="/terms">Terms & Conditions</a>
+        <a href="/ubufasha">Contact Support</a>
+      </div>
+      <div class="footer-section">
+        <h3>Resources</h3>
+        <a href="/amanota">Learning Statistics</a>
+        <a href="/">Practice Exams</a>
+        <a href="/ifashanyigisho">Study Guides</a>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2026 IKIZAME — Empowering Learners Across Rwanda</p>
+      <p class="footer-copyright">Developed by <strong>Dotado Stationery Store Ltd</strong></p>
+      <div class="footer-bottom-links">
+        <a href="/terms">Terms & Conditions</a>
+        <a href="/about">About</a>
+        <a href="/ubufasha">Support</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
