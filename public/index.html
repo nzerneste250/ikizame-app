@@ -665,7 +665,8 @@
 
         /* ===== FOOTER ===== */
         .footer {
-            height: 40px;
+            min-height: 48px;
+            padding: 10px 16px;
             background: #0f172a;
             display: flex;
             align-items: center;
@@ -677,8 +678,11 @@
             left: 0;
             right: 0;
             z-index: 900;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .footer strong { color: #38bdf8; }
+        .footer a:hover { opacity: 0.9; }
                 /* ── 🚀 INNOVATIVE LOGO ENTRANCE & GLOW ANIMATION MATRIX ── */
         @keyframes logoEntranceScale {
             0% {
