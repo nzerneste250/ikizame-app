@@ -1,6 +1,3 @@
-const PAYPACK_TEST_MODE_VALUE = process.env.PAYPACK_TEST_MODE;
-const TEST_MODE = PAYPACK_TEST_MODE_VALUE === 'true';
-
 function normalizePhone(phoneString) {
   if (typeof phoneString !== 'string') {
     throw new Error('Phone number is required.');
@@ -27,5 +24,4 @@ function normalizeAndValidatePaymentPhone(phoneString) {
 module.exports = {
   normalizePhone,
   normalizeAndValidatePaymentPhone,
-  TEST_MODE,
 };
