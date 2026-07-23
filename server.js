@@ -71,6 +71,7 @@ const otpLimiter = rateLimit({
 
 // ── STAGING ACCESS GATE (disabled in production) ──────────────────────────
 const { restrictAccessToAuthorizedUsers, getAdminSessionState, redirectToAdminLogin } = require('./middleware/auth');
+const { renderPublicPage } = require('./helpers/publicPageRenderer');
 
 if (!isProduction) {
     app.use((req, res, next) => {
@@ -162,8 +163,8 @@ app.get('/sitemap.xml', (req, res) => res.sendFile(path.join(__dirname, 'public'
 app.get('/robots.txt',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'robots.txt')));
 
 // ── PAGE ROUTES ───────────────────────────────────────────────────────────
-app.get('/',               (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.get('/index',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/',               (req, res) => renderPublicPage('index.html', res));
+app.get('/index',          (req, res) => renderPublicPage('index.html', res));
 app.get('/admin-login',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
 app.get('/ifashanyigisho', (req, res) => res.sendFile(path.join(__dirname, 'public', 'ifashanyigisho.html')));
 app.get('/ibiciro',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'ibiciro.html')));
