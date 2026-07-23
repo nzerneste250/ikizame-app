@@ -77,6 +77,7 @@ if (!isProduction) {
     app.use((req, res, next) => {
         if (req.path.startsWith('/assets/')) return next();
         if (req.path.startsWith('/school-') || req.path.startsWith('/api/school/')) return next();
+        if (req.path === '/about' || req.path === '/terms') return next();
         return restrictAccessToAuthorizedUsers(req, res, next);
     });
 }
