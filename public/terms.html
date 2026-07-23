@@ -7,45 +7,50 @@
   <link rel="icon" type="image/png" href="assets/uploads/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
-      --bg: #f5fbff;
-      --card: #ffffff;
+      --brand: #0b698b;
+      --brand-dark: #08536e;
+      --brand-light: #e0f2fe;
+      --bg: #f0f6fa;
+      --surface: #fff;
       --text: #0f172a;
       --muted: #64748b;
-      --brand: #0b698b;
-      --brand-light: #38bdf8;
-      --accent: #f97316;
-      --border: rgba(11, 105, 139, 0.1);
+      --border: #e2e8f0;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
-      font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
-      background: linear-gradient(135deg, var(--bg) 0%, #edf7ff 48%, #f9fcff 100%);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      min-height: 100%;
+      height: auto;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
     }
 
     /* ===== HEADER/NAVBAR ===== */
     header {
-      background: rgba(255, 255, 255, 0.97);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(11, 105, 139, 0.12);
-      padding: 14px 5%;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 4%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
-      position: sticky;
+      height: 60px;
+      position: fixed;
       top: 0;
-      z-index: 100;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+      left: 0;
+      right: 0;
+      z-index: 5000;
+      width: 100%;
+      box-sizing: border-box;
+      box-shadow: 0 1px 10px rgba(15, 23, 42, 0.03);
     }
 
     .navbar-brand-wrap {
@@ -57,18 +62,18 @@
     }
 
     .navbar-brand-wrap img {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
     }
-
     .navbar-brand {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1.2rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.65rem;
       font-weight: 800;
       color: var(--brand);
-      letter-spacing: 0.5px;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      line-height: 1;
     }
 
     nav {
@@ -79,65 +84,81 @@
 
     .navbar-links {
       display: flex;
-      gap: 2px;
       list-style: none;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .navbar-links a {
-      display: inline-flex;
+      gap: 22px;
       align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar-links a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 700;
       color: #475569;
       text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border-radius: 8px;
-      transition: all 0.2s;
+      padding: 20px 0 18px;
       position: relative;
+      transition: color 0.15s;
+      white-space: nowrap;
+      display: inline-block;
     }
-
-    .navbar-links a:hover {
-      background: rgba(11, 105, 139, 0.08);
-      color: var(--brand);
-    }
-
+    .navbar-links a:hover { color: var(--brand); }
     .navbar-links a.active {
       color: var(--brand);
-      font-weight: 700;
-      background: rgba(11, 105, 139, 0.1);
+      font-weight: 800;
+    }
+    .navbar-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--brand);
+      border-radius: 2px 2px 0 0;
     }
 
     .lang-badge {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
       font-size: 0.8rem;
       font-weight: 700;
       color: #1e293b;
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
+      background: #fff;
+      border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 6px 12px;
+      padding: 5px 12px;
+      user-select: none;
+    }
+    .rw-flag-svg {
+      width: 20px;
+      height: 14px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
     }
 
     /* ===== MAIN CONTENT ===== */
     main {
       flex: 1;
+      min-height: 0;
+      max-width: 1100px;
       width: 100%;
-      max-width: 1000px;
-      margin: 48px auto;
-      padding: 0 5%;
+      margin: 0 auto;
+      padding: 20px 5% 80px;
+      display: flex;
+      flex-direction: column;
+      margin-top: 60px;
     }
 
     .page-card {
-      background: var(--card);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
-      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+      padding: 24px;
       animation: slideUp 0.6s ease-out;
     }
 
@@ -152,52 +173,45 @@
 
     .page-badge {
       display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 800;
+      font-size: 0.78rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--accent);
-      background: rgba(249, 115, 22, 0.12);
-      border: 1px solid rgba(249, 115, 22, 0.2);
-      padding: 8px 16px;
-      border-radius: 40px;
+      letter-spacing: 0.5px;
+      color: var(--brand);
+      background: var(--brand-light);
+      padding: 4px 12px;
+      border-radius: 20px;
       margin-bottom: 16px;
     }
-
     h1 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 2.8rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 2rem;
       font-weight: 800;
       line-height: 1.2;
       margin-bottom: 12px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--brand) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--text);
     }
 
     .page-subtitle {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       color: var(--muted);
       line-height: 1.6;
       max-width: 600px;
     }
-
     .content-section {
-      margin-bottom: 36px;
+      margin-bottom: 24px;
     }
-
     .content-section p, .content-section li {
-      line-height: 1.8;
+      line-height: 1.6;
       color: var(--muted);
-      font-size: 1rem;
+      font-size: 0.9rem;
       margin-bottom: 12px;
     }
 
     h2 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
       margin-bottom: 16px;
       margin-top: 32px;
     }
@@ -260,84 +274,25 @@
     }
 
     /* ===== FOOTER ===== */
-    footer {
-      background: rgba(15, 23, 42, 0.96);
-      color: rgba(255, 255, 255, 0.8);
-      padding: 48px 5%;
-      margin-top: 64px;
-      border-top: 1px solid rgba(11, 105, 139, 0.2);
-      font-size: 0.95rem;
-    }
-
-    .footer-content {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 36px;
-      margin-bottom: 36px;
-    }
-
-    .footer-section h3 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 16px;
-    }
-
-    .footer-section a {
-      display: block;
-      color: rgba(255, 255, 255, 0.7);
-      text-decoration: none;
-      margin-bottom: 10px;
-      transition: all 0.2s;
-    }
-
-    .footer-section a:hover {
-      color: #f97316;
-      padding-left: 4px;
-    }
-
-    .footer-divider {
-      height: 1px;
-      background: rgba(11, 105, 139, 0.2);
-      margin: 32px 0;
-    }
-
-    .footer-bottom {
-      text-align: center;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .footer-copyright {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 8px;
-    }
-
-    .footer-copyright strong {
-      color: #f97316;
-      font-weight: 700;
-    }
-
-    .footer-bottom-links {
+    .footer {
+      min-height: 48px;
+      padding: 10px 16px;
+      background: #0f172a;
       display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 24px;
+      font-size: 11px;
+      color: #64748b;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 900;
       flex-wrap: wrap;
+      gap: 8px;
     }
-
-    .footer-bottom-links a {
-      color: rgba(255, 255, 255, 0.7);
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .footer-bottom-links a:hover {
-      color: #f97316;
-    }
+    .footer strong { color: #38bdf8; }
+    .footer a:hover { opacity: 0.9; }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
@@ -380,16 +335,6 @@
       .links a {
         width: 100%;
         justify-content: center;
-      }
-
-      .footer-content {
-        grid-template-columns: 1fr;
-        gap: 24px;
-      }
-
-      .footer-bottom-links {
-        flex-direction: column;
-        gap: 12px;
       }
     }
   </style>
@@ -502,17 +447,16 @@
     </div>
   </main>
 
-  <!-- ===== FOOTER ===== -->
-  <footer>
-    <div style="max-width:1000px;margin:0 auto;text-align:center;">
-      <p style="font-size:0.9rem;color:rgba(255,255,255,0.6);margin-bottom:8px;">© 2026 IKIZAME — Empowering Learners Across Rwanda</p>
-      <p style="font-size:0.9rem;color:rgba(255,255,255,0.6);margin-bottom:16px;">Developed by <strong style="color:#f97316;font-weight:700;">Dotado Stationery Store Ltd</strong></p>
-      <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;font-size:0.9rem;">
-        <a href="/terms" style="color:rgba(255,255,255,0.7);text-decoration:none;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Amategeko</a>
-        <a href="/about" style="color:rgba(255,255,255,0.7);text-decoration:none;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Ibisobanuro</a>
-        <a href="/ubufasha" style="color:rgba(255,255,255,0.7);text-decoration:none;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Ubufasha</a>
-      </div>
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
+        <span style="font-size:0.9rem;">© 2026 IKIZAME — Empowering Learners Across Rwanda</span>
+        <span style="color:rgba(255,255,255,0.3);">|</span>
+        <span style="font-size:0.9rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
+        <span style="color:rgba(255,255,255,0.3);">|</span>
+        <a href="/about" style="color:#38bdf8; text-decoration:none; font-weight:700; font-size:0.9rem;">About</a>
+        <a href="/terms" style="color:#38bdf8; text-decoration:none; font-weight:700; font-size:0.9rem;">Terms &amp; Conditions</a>
     </div>
-  </footer>
+</footer>
 </body>
 </html>
