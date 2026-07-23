@@ -18,14 +18,11 @@ test('rejects non-test numbers in test mode', () => {
   );
 });
 
-test('defaults to test mode unless explicitly disabled', () => {
+test('defaults to live mode unless explicitly enabled', () => {
   delete process.env.PAYPACK_TEST_MODE;
   delete require.cache[require.resolve('../helpers/paymentPhone')];
   const { normalizeAndValidatePaymentPhone: validateWithoutFlag } = require('../helpers/paymentPhone');
-  assert.throws(
-    () => validateWithoutFlag('0781234567'),
-    /test mode/i
-  );
+  assert.equal(validateWithoutFlag('0781234567'), '0781234567');
   process.env.PAYPACK_TEST_MODE = 'true';
   delete require.cache[require.resolve('../helpers/paymentPhone')];
   require('../helpers/paymentPhone');
