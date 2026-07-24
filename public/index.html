@@ -547,7 +547,7 @@
         /* ===== WHATSAPP FLOAT ===== */
         .wa-float {
             position: fixed;
-            bottom: 25px;
+            bottom: 50px;
             right: 25px;
             width: 60px;
             height: 60px;
@@ -580,7 +580,7 @@
         /* ===== WHATSAPP POPUP ===== */
         .wa-popup {
             position: fixed;
-            bottom: 95px;
+            bottom: 120px;
             right: 25px;
             width: 320px;
             background: #fff;
@@ -677,7 +677,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            z-index: 900;
+            z-index: 1100;
             flex-wrap: wrap;
             gap: 6px;
         }
@@ -728,12 +728,16 @@
 @media (max-width: 900px) {
     .workspace {
         grid-template-columns: 1fr;
-        padding: 170px 4% 60px;
-        gap: 28px;
+        padding: 140px 4% 50px;
+        gap: 20px;
     }
     .hero-copy { text-align: center; align-items: center; }
     .hero-desc { max-width: 100%; }
-    .reg-card { margin: 0 auto; order: -1; }
+    .reg-card { margin: 0 auto; order: -1; max-width: 100%; }
+    .card-body { padding: 22px 18px; gap: 16px; }
+    .hero-h1 { font-size: clamp(1.8rem, 6vw, 2.6rem); }
+    .hero-support-row { display: none; }
+    .pill-row { justify-content: center; }
 }
         /* ===== 🎯 FIXED GLOBAL BRAND NAVIGATION LAYOUT MATRIX ===== */
         .navbar { 
