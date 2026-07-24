@@ -3,344 +3,200 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Terms & Conditions | IKIZAME</title>
+  <title>Terms &amp; Conditions | IKIZAME</title>
   <link rel="icon" type="image/png" href="assets/uploads/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
       --brand: #0b698b;
       --brand-dark: #08536e;
       --brand-light: #e0f2fe;
-      --bg: #f0f6fa;
-      --surface: #fff;
+      --cyan: #38bdf8;
+      --bg: linear-gradient(135deg, #f5fbff 0%, #edf7ff 48%, #f9fcff 100%);
+      --surface: #ffffff;
       --text: #0f172a;
-      --muted: #64748b;
+      --muted: #475569;
       --border: #e2e8f0;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html, body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100%;
-      height: auto;
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    /* ===== HEADER/NAVBAR ===== */
+    /* NAVBAR */
     header {
       background: #fff;
       border-bottom: 1px solid var(--border);
       padding: 0 4%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 60px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 5000;
-      width: 100%;
-      box-sizing: border-box;
-      box-shadow: 0 1px 10px rgba(15, 23, 42, 0.03);
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: fixed; top: 0; left: 0; right: 0;
+      z-index: 5000; box-shadow: 0 1px 10px rgba(15,23,42,0.04);
     }
-
-    .navbar-brand-wrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      flex-shrink: 0;
-    }
-
-    .navbar-brand-wrap img {
-      width: 32px;
-      height: 32px;
-      object-fit: contain;
-    }
-    .navbar-brand {
-      font-family: 'Inter', sans-serif;
-      font-size: 1.65rem;
-      font-weight: 800;
-      color: var(--brand);
-      letter-spacing: -0.5px;
-      text-transform: uppercase;
-      line-height: 1;
-    }
-
-    nav {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-    }
-
-    .navbar-links {
-      display: flex;
-      list-style: none;
-      gap: 22px;
-      align-items: center;
-      margin: 0;
-      padding: 0;
-    }
-    .navbar-links a {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: #475569;
-      text-decoration: none;
-      padding: 20px 0 18px;
-      position: relative;
-      transition: color 0.15s;
-      white-space: nowrap;
-      display: inline-block;
-    }
+    .navbar-brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .navbar-brand-wrap img { width: 32px; height: 32px; object-fit: contain; }
+    .navbar-brand { font-family: 'Inter', sans-serif; font-size: 1.65rem; font-weight: 800; color: var(--brand); letter-spacing: -0.5px; text-transform: uppercase; line-height: 1; }
+    nav { flex: 1; display: flex; justify-content: center; }
+    .navbar-links { display: flex; list-style: none; gap: 22px; align-items: center; margin: 0; padding: 0; }
+    .navbar-links a { font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 700; color: #475569; text-decoration: none; padding: 20px 0 18px; position: relative; transition: color 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
     .navbar-links a:hover { color: var(--brand); }
-    .navbar-links a.active {
-      color: var(--brand);
-      font-weight: 800;
-    }
-    .navbar-links a.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--brand);
-      border-radius: 2px 2px 0 0;
+    .navbar-links a.active { color: var(--brand); font-weight: 800; }
+    .navbar-links a.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--brand); border-radius: 2px 2px 0 0; }
+    .lang-badge { display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #1e293b; background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; user-select: none; }
+    .rw-flag-svg { width: 20px; height: 14px; border-radius: 2px; border: 1px solid var(--border); flex-shrink: 0; }
+    @media (max-width: 900px) {
+      header { flex-direction: column !important; height: auto !important; padding: 10px 4% 8px !important; gap: 6px !important; }
+      .navbar-links { gap: 12px 16px !important; width: 100% !important; justify-content: center !important; flex-wrap: wrap !important; }
+      .navbar-links a { font-size: 0.78rem !important; padding: 6px 0 !important; }
     }
 
-    .lang-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #1e293b;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 5px 12px;
-      user-select: none;
-    }
-    .rw-flag-svg {
-      width: 20px;
-      height: 14px;
-      border-radius: 2px;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    /* ===== MAIN CONTENT ===== */
-    main {
-      flex: 1;
-      min-height: 0;
-      max-width: 1100px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 20px 5% 80px;
-      display: flex;
-      flex-direction: column;
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
+      padding: 52px 5% 44px; text-align: center; color: #fff;
       margin-top: 60px;
     }
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22);
+      color: #fff; font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      padding: 6px 16px; border-radius: 30px; margin-bottom: 18px;
+    }
+    .hero h1 { font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; margin-bottom: 12px; }
+    .hero p { font-size: 0.95rem; color: rgba(255,255,255,0.85); max-width: 540px; margin: 0 auto; line-height: 1.65; }
+    .hero-meta { font-size: 0.78rem; color: rgba(255,255,255,0.55); margin-top: 10px; }
 
-    .page-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
-      padding: 24px;
-      animation: slideUp 0.6s ease-out;
+    /* TOC */
+    .toc {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 24px;
+      box-shadow: 0 4px 18px rgba(15,23,42,0.05);
     }
+    .toc-title { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--brand); margin-bottom: 12px; display: flex; align-items: center; gap: 7px; }
+    .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; }
+    .toc-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; font-weight: 600; color: var(--muted);
+      text-decoration: none; padding: 7px 10px; border-radius: 8px;
+      border: 1px solid transparent; transition: all 0.15s;
+    }
+    .toc-item:hover { color: var(--brand); background: var(--brand-light); border-color: rgba(11,105,139,0.15); }
+    .toc-item i { color: var(--brand); font-size: 0.75rem; width: 14px; }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    /* MAIN */
+    main { max-width: 1000px; width: 100%; margin: 0 auto; padding: 32px 5% 80px; display: flex; flex-direction: column; gap: 20px; }
 
-    .page-header {
-      margin-bottom: 36px;
+    /* SECTION CARD */
+    .section-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 32px;
+      box-shadow: 0 4px 18px rgba(15,23,42,0.05);
+      animation: slideUp 0.5s ease-out both;
+      scroll-margin-top: 80px;
     }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-    .page-badge {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--brand);
-      background: var(--brand-light);
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 16px;
+    .section-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--cyan) 100%);
+      color: #fff; font-size: 0.82rem; font-weight: 800;
+      flex-shrink: 0; margin-bottom: 12px;
     }
-    h1 {
-      font-family: 'Inter', sans-serif;
-      font-size: 2rem;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 12px;
-      color: var(--text);
+    .section-card h2 {
+      font-size: 1.05rem; font-weight: 800; color: var(--text);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
     }
+    .section-card h2 i { color: var(--brand); font-size: 0.95rem; }
+    .section-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.75; margin-bottom: 10px; }
+    .section-card p:last-child { margin-bottom: 0; }
 
-    .page-subtitle {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.6;
-      max-width: 600px;
+    /* LIST */
+    .policy-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+    .policy-list-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 14px; border-radius: 9px;
+      background: #f8fbff; border: 1px solid rgba(11,105,139,0.08);
+      font-size: 0.86rem; color: var(--muted); line-height: 1.55;
     }
-    .content-section {
-      margin-bottom: 24px;
-    }
-    .content-section p, .content-section li {
-      line-height: 1.6;
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 12px;
-    }
+    .policy-list-item i { color: var(--brand); font-size: 0.8rem; margin-top: 2px; flex-shrink: 0; }
 
-    h2 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 16px;
-      margin-top: 32px;
+    /* WARNING / INFO BOXES */
+    .info-box {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 16px; border-radius: 10px; margin-top: 12px;
+      font-size: 0.86rem; line-height: 1.6;
     }
+    .info-box.warning { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2); color: #991b1b; }
+    .info-box.info { background: rgba(11,105,139,0.07); border: 1px solid rgba(11,105,139,0.18); color: var(--brand-dark); }
+    .info-box.success { background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.2); color: #065f46; }
+    .info-box i { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
 
-    h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--brand);
-      margin-bottom: 12px;
-      margin-top: 18px;
+    /* CONTACT CARD */
+    .contact-card {
+      background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
+      border-radius: 14px; padding: 24px 28px; color: #fff;
     }
-
-    ul, ol {
-      padding-left: 24px;
-      margin-bottom: 16px;
+    .contact-card h2 { color: #fff; margin-bottom: 6px; }
+    .contact-card p { color: rgba(255,255,255,0.8); margin-bottom: 16px; }
+    .contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    .contact-row {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 9px; padding: 10px 14px;
+      font-size: 0.84rem; font-weight: 600; color: #fff; text-decoration: none;
+      transition: background 0.15s;
     }
+    .contact-row:hover { background: rgba(255,255,255,0.2); }
+    .contact-row i { font-size: 0.9rem; color: var(--cyan); flex-shrink: 0; }
 
-    li {
-      margin-bottom: 10px;
+    /* CTA */
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--cyan) 100%);
+      color: #fff; text-decoration: none; padding: 12px 24px;
+      border-radius: 48px; font-weight: 700; font-size: 0.9rem;
+      box-shadow: 0 8px 22px rgba(11,105,139,0.22); transition: transform 0.2s;
     }
-
-    .links {
-      margin-top: 36px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: var(--brand); text-decoration: none;
+      padding: 12px 24px; border-radius: 48px; font-weight: 700; font-size: 0.9rem;
+      border: 2px solid var(--border); transition: border-color 0.2s, background 0.2s;
     }
+    .btn-secondary:hover { border-color: var(--brand); background: var(--brand-light); }
 
-    .links a {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      color: #ffffff;
-      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
-      border: 2px solid transparent;
-      padding: 12px 24px;
-      border-radius: 48px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      transition: all 0.3s;
-      box-shadow: 0 10px 24px rgba(11, 105, 139, 0.2);
-    }
-
-    .links a:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 32px rgba(11, 105, 139, 0.28);
-    }
-
-    .links a.secondary {
-      background: var(--card);
-      color: var(--brand);
-      border: 2px solid var(--border);
-      box-shadow: none;
-    }
-
-    .links a.secondary:hover {
-      background: rgba(11, 105, 139, 0.08);
-      border-color: var(--brand);
-    }
-
-    /* ===== FOOTER ===== */
+    /* FOOTER */
     .footer {
-      min-height: 40px;
-      padding: 7px 16px;
-      background: #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      color: #64748b;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 900;
-      flex-wrap: wrap;
-      gap: 6px;
+      min-height: 40px; padding: 7px 16px;
+      background: #0f172a; display: flex; align-items: center; justify-content: center;
+      font-size: 9px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0;
+      z-index: 900; flex-wrap: wrap; gap: 6px;
     }
     .footer strong { color: #38bdf8; }
     .footer a:hover { opacity: 0.9; }
 
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        gap: 12px;
-        padding: 12px 4%;
-      }
-
-      nav {
-        width: 100%;
-      }
-
-      .navbar-links {
-        gap: 4px;
-        width: 100%;
-      }
-
-      .navbar-links a {
-        font-size: 0.8rem;
-        padding: 6px 10px;
-      }
-
-      .page-card {
-        padding: 32px 20px;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      h2 {
-        font-size: 1.2rem;
-      }
-
-      .links {
-        flex-direction: column;
-      }
-
-      .links a {
-        width: 100%;
-        justify-content: center;
-      }
+      main { padding: 20px 4% 80px; }
+      .section-card { padding: 20px 18px; }
+      .hero { padding: 36px 5% 32px; }
+      .contact-card { padding: 18px 20px; }
     }
   </style>
 </head>
 <body>
-  <!-- ===== HEADER ===== -->
+
   <header>
     <a href="/" class="navbar-brand-wrap">
       <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
@@ -348,115 +204,169 @@
     </a>
     <nav>
       <ul class="navbar-links">
-        <li><a href="/" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-house"></i><span>Ahabanza</span></a></li>
-        <li><a href="/ubufasha" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-hand-holding-heart"></i><span>Ubufasha</span></a></li>
-        <li><a href="/ifashanyigisho" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-book-open"></i><span>Imfashanyigisho</span></a></li>
-        <li><a href="/ibiciro" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-tags"></i><span>Ibiciro</span></a></li>
-        <li><a href="/school-auth" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-school"></i><span>Amashuri</span></a></li>
-        <li><a href="/amanota" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-chart-line"></i><span>Amanota</span></a></li>
+        <li><a href="/"><i class="fa-solid fa-house"></i><span>Ahabanza</span></a></li>
+        <li><a href="/ubufasha"><i class="fa-solid fa-hand-holding-heart"></i><span>Ubufasha</span></a></li>
+        <li><a href="/ifashanyigisho"><i class="fa-solid fa-book-open"></i><span>Imfashanyigisho</span></a></li>
+        <li><a href="/ibiciro"><i class="fa-solid fa-tags"></i><span>Ibiciro</span></a></li>
+        <li><a href="/school-auth"><i class="fa-solid fa-school"></i><span>Amashuri</span></a></li>
+        <li><a href="/amanota"><i class="fa-solid fa-chart-line"></i><span>Amanota</span></a></li>
       </ul>
     </nav>
     <div class="lang-badge">
-      <svg class="rw-flag-svg" style="width:18px;height:13px;border-radius:2px;" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/></svg>
+      <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
       <span>English</span>
     </div>
   </header>
 
-  <!-- ===== MAIN CONTENT ===== -->
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-pill"><i class="fa-solid fa-file-contract"></i> Legal Document</div>
+    <h1>Terms &amp; Conditions</h1>
+    <p>Products, Services, Refund and Cancellation Policy for the IKIZAME platform operated by DOTADO STATIONERY STORE LTD.</p>
+    <div class="hero-meta">Last updated: 2026 &nbsp;|&nbsp; Website: ikizame.rw</div>
+  </div>
+
   <main>
-    <div class="page-card">
-      <div class="page-header">
-        <span class="page-badge">Legal</span>
-        <h1>Terms & Conditions</h1>
-        <p class="page-subtitle">Please read these terms carefully before using the IKIZAME platform</p>
-      </div>
 
-      <div class="content-section">
-        <h2>1. Agreement to Terms</h2>
-        <p>By accessing and using IKIZAME, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please refrain from using this platform. IKIZAME reserves the right to modify these terms at any time, and your continued use of the platform constitutes acceptance of the updated terms.</p>
-      </div>
-
-      <div class="content-section">
-        <h2>2. Use of Services</h2>
-        <p>IKIZAME provides digital learning and exam preparation resources for educational purposes. You agree to:</p>
-        <ul>
-          <li>Use the platform responsibly and in accordance with applicable laws</li>
-          <li>Not engage in any unlawful or harmful activities</li>
-          <li>Respect intellectual property rights</li>
-          <li>Provide accurate information when registering</li>
-        </ul>
-      </div>
-
-      <div class="content-section">
-        <h2>3. Account Responsibility</h2>
-        <p>You are solely responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify IKIZAME immediately of any unauthorized access or breach of your account.</p>
-      </div>
-
-      <div class="content-section">
-        <h2>4. Payments and Access</h2>
-        <p>Payments made for exam packages or learning services are subject to the stated pricing and service terms. Access to services is granted after successful payment confirmation. All prices are stated in Rwandan Francs (RWF) unless otherwise specified. Refunds are subject to IKIZAME's refund policy.</p>
-      </div>
-
-      <div class="content-section">
-        <h2>5. Content Use and Intellectual Property</h2>
-        <p>All content provided on the IKIZAME platform, including but not limited to exam questions, explanations, study materials, and design elements, is the intellectual property of IKIZAME or its content partners. You agree that:</p>
-        <ul>
-          <li>Content is intended for your personal educational use only</li>
-          <li>You shall not copy, reproduce, or redistribute materials without permission</li>
-          <li>You shall not modify or adapt any content</li>
-          <li>Unauthorized use may result in legal action</li>
-        </ul>
-      </div>
-
-      <div class="content-section">
-        <h2>6. Limitation of Liability</h2>
-        <p>IKIZAME strives to provide accurate, reliable, and uninterrupted services. However, we make no warranty regarding:</p>
-        <ul>
-          <li>Uninterrupted access to the platform</li>
-          <li>Error-free performance</li>
-          <li>Fitness for a particular purpose</li>
-          <li>Guaranteed exam success rates</li>
-        </ul>
-        <p>IKIZAME shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the platform.</p>
-      </div>
-
-      <div class="content-section">
-        <h2>7. Termination</h2>
-        <p>IKIZAME reserves the right to suspend or terminate your account if you violate these terms or engage in prohibited conduct. Upon termination, your right to access the platform ceases immediately.</p>
-      </div>
-
-      <div class="content-section">
-        <h2>8. Changes to Terms</h2>
-        <p>We may update these terms from time to time without prior notice. Continued use of the platform following such changes means you accept the latest version of these terms. We encourage you to review this page periodically for updates.</p>
-      </div>
-
-      <div class="content-section">
-        <h2>9. Governing Law</h2>
-        <p>These terms shall be governed by and construed in accordance with the laws of the Republic of Rwanda, without regard to its conflict of law provisions.</p>
-      </div>
-
-      <div class="content-section">
-        <h2>10. Contact Us</h2>
-        <p>If you have questions about these Terms and Conditions, please contact us through our support page or email us directly through the platform.</p>
-      </div>
-
-      <div class="links">
-        <a href="/" style="display:inline-flex;align-items:center;gap:8px;"><i class="fa-solid fa-arrow-left"></i>Back to Home</a>
-        <a href="/about" class="secondary" style="display:inline-flex;align-items:center;gap:8px;"><i class="fa-solid fa-info-circle"></i>Learn About Us</a>
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+      <div class="toc-title"><i class="fa-solid fa-list"></i> Table of Contents</div>
+      <div class="toc-grid">
+        <a href="#s1" class="toc-item"><i class="fa-solid fa-chevron-right"></i> 1. Company Overview</a>
+        <a href="#s2" class="toc-item"><i class="fa-solid fa-chevron-right"></i> 2. Products &amp; Services</a>
+        <a href="#s3" class="toc-item"><i class="fa-solid fa-chevron-right"></i> 3. Payment Information</a>
+        <a href="#s4" class="toc-item"><i class="fa-solid fa-chevron-right"></i> 4. Refund Policy</a>
+        <a href="#s5" class="toc-item"><i class="fa-solid fa-chevron-right"></i> 5. Non-Refundable Situations</a>
+        <a href="#s6" class="toc-item"><i class="fa-solid fa-chevron-right"></i> 6. Cancellation Policy</a>
+        <a href="#s7" class="toc-item"><i class="fa-solid fa-chevron-right"></i> 7. Customer Support</a>
+        <a href="#s8" class="toc-item"><i class="fa-solid fa-chevron-right"></i> 8. Policy Updates</a>
       </div>
     </div>
+
+    <!-- 1. COMPANY OVERVIEW -->
+    <div class="section-card" id="s1">
+      <h2><i class="fa-solid fa-landmark"></i> 1. Company Overview</h2>
+      <p><strong>DOTADO STATIONERY STORE LTD</strong> operates IKIZAME, an online learning and preparation platform designed to help candidates prepare for the official provisional driving license theory examination provided by the Rwanda National Police.</p>
+      <p>IKIZAME provides users with access to educational resources and practice tests that help them evaluate their knowledge, improve their understanding of road safety rules, and increase their readiness before attending the official examination.</p>
+      <div class="info-box warning">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>IKIZAME is an independent educational platform. It is <strong>not affiliated with, endorsed by, or operated by the Rwanda National Police</strong> or any government institution. IKIZAME does not conduct official driving examinations, issue driving licenses, or provide official examination certificates.</span>
+      </div>
+    </div>
+
+    <!-- 2. PRODUCTS & SERVICES -->
+    <div class="section-card" id="s2">
+      <h2><i class="fa-solid fa-layer-group"></i> 2. Description of Products and Services</h2>
+      <p>IKIZAME provides the following digital educational services:</p>
+      <div class="policy-list">
+        <div class="policy-list-item"><i class="fa-solid fa-circle-check"></i><span>Online practice tests designed to help candidates prepare before taking the official provisional driving license examination provided by Rwanda National Police.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-circle-check"></i><span>Access to driving theory practice questions and learning materials.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-circle-check"></i><span>Mock examinations that simulate the format and experience of a theory test.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-circle-check"></i><span>Instant results and performance evaluation to help users identify areas for improvement.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-circle-check"></i><span>Premium access plans providing additional practice tests and educational content.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-circle-check"></i><span>Continuous improvement and updating of learning materials.</span></div>
+      </div>
+      <div class="info-box info">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>All services are delivered electronically through the IKIZAME website after successful payment activation. The purpose of IKIZAME is to support learners through preparation and self-assessment before participating in the official examination process managed by the Rwanda National Police.</span>
+      </div>
+    </div>
+
+    <!-- 3. PAYMENT -->
+    <div class="section-card" id="s3">
+      <h2><i class="fa-solid fa-credit-card"></i> 3. Payment Information</h2>
+      <p>IKIZAME is currently in the process of integrating an online payment gateway with DPO Group.</p>
+      <p>After completion of the merchant approval and integration process, customers will be able to make secure online payments using supported payment methods available in Rwanda, including Mobile Money services.</p>
+      <div class="info-box info">
+        <i class="fa-solid fa-clock"></i>
+        <span>At the date of this document, online payment functionality has not yet been fully activated on the IKIZAME platform. Payments are currently processed via MTN MoMo and Airtel Money.</span>
+      </div>
+    </div>
+
+    <!-- 4. REFUND POLICY -->
+    <div class="section-card" id="s4">
+      <h2><i class="fa-solid fa-rotate-left"></i> 4. Refund Policy</h2>
+      <p>IKIZAME provides access to digital educational services and learning materials. Due to the immediate availability of digital content after payment, purchases are generally considered <strong>non-refundable</strong>.</p>
+      <p>However, refunds may be considered in exceptional cases, including:</p>
+      <div class="policy-list">
+        <div class="policy-list-item"><i class="fa-solid fa-circle-check"></i><span>Duplicate payments made accidentally by a customer.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-circle-check"></i><span>Payment completed successfully but the purchased service was not activated due to a verified technical problem.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-circle-check"></i><span>Incorrect charges caused by a confirmed system or payment processing error.</span></div>
+      </div>
+      <div class="info-box success">
+        <i class="fa-solid fa-calendar-check"></i>
+        <span>Refund requests must be submitted within <strong>7 calendar days</strong> from the payment date and will be reviewed individually.</span>
+      </div>
+    </div>
+
+    <!-- 5. NON-REFUNDABLE -->
+    <div class="section-card" id="s5">
+      <h2><i class="fa-solid fa-ban"></i> 5. Non-Refundable Situations</h2>
+      <p>Refunds will normally <strong>not</strong> be provided in the following cases:</p>
+      <div class="policy-list">
+        <div class="policy-list-item"><i class="fa-solid fa-xmark" style="color:#ef4444;"></i><span>The customer has already accessed or used the purchased digital learning content.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-xmark" style="color:#ef4444;"></i><span>The customer changes their decision after purchasing the service.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-xmark" style="color:#ef4444;"></i><span>Incorrect information provided by the customer causes service delivery problems.</span></div>
+        <div class="policy-list-item"><i class="fa-solid fa-xmark" style="color:#ef4444;"></i><span>The purchased access period has already started or has been used.</span></div>
+      </div>
+    </div>
+
+    <!-- 6. CANCELLATION -->
+    <div class="section-card" id="s6">
+      <h2><i class="fa-solid fa-circle-xmark"></i> 6. Cancellation Policy</h2>
+      <p>Customers may cancel future subscription renewals before the next billing period.</p>
+      <p>Cancellation will stop future charges but will <strong>not refund</strong> payments already completed for the active subscription period.</p>
+      <div class="info-box info">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Users will continue to access the purchased services until the end of their paid period after cancellation.</span>
+      </div>
+    </div>
+
+    <!-- 7. SUPPORT -->
+    <div class="contact-card" id="s7">
+      <h2><i class="fa-solid fa-headset"></i> 7. Customer Support Information</h2>
+      <p>For questions related to payments, subscriptions, or refund requests, customers may contact:</p>
+      <div class="contact-grid">
+        <div class="contact-row"><i class="fa-solid fa-building"></i><span>DOTADO STATIONERY STORE LTD</span></div>
+        <div class="contact-row"><i class="fa-solid fa-globe"></i><span>ikizame.rw</span></div>
+        <a href="mailto:dotadostationarystore@gmail.com" class="contact-row"><i class="fa-solid fa-envelope"></i><span>dotadostationarystore@gmail.com</span></a>
+        <a href="tel:+250786663377" class="contact-row"><i class="fa-solid fa-phone"></i><span>+250 786 663 377</span></a>
+        <a href="https://wa.me/250786663377" target="_blank" rel="noopener" class="contact-row"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp Support</span></a>
+      </div>
+    </div>
+
+    <!-- 8. POLICY UPDATES -->
+    <div class="section-card" id="s8">
+      <h2><i class="fa-solid fa-arrows-rotate"></i> 8. Policy Updates</h2>
+      <p>DOTADO STATIONERY STORE LTD may update this Products, Services, Refund and Cancellation Policy when necessary.</p>
+      <div class="info-box info">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Any changes will be published on the IKIZAME website at <strong>ikizame.rw</strong> and will become effective after publication. We encourage you to review this page periodically.</span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="section-card" style="text-align:center; padding:28px;">
+      <p style="font-weight:700; font-size:0.95rem; margin-bottom:16px;">Have questions about these terms?</p>
+      <div class="cta-row" style="justify-content:center;">
+        <a href="/" class="btn-primary"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        <a href="/about" class="btn-secondary"><i class="fa-solid fa-info-circle"></i> About IKIZAME</a>
+        <a href="/ubufasha" class="btn-secondary"><i class="fa-solid fa-headset"></i> Contact Support</a>
+      </div>
+    </div>
+
   </main>
 
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
+  <footer class="footer">
     <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
-        <span style="font-size:0.7rem;">© 2026 IKIZAME Empowering Learners Across Rwanda</span>
-        <span style="color:rgba(255,255,255,0.3);">|</span>
-        <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
-        <span style="color:rgba(255,255,255,0.3);">|</span>
-        <a href="/about" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
-        <a href="/terms" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
+      <span style="font-size:0.7rem;">© 2026 IKIZAME Empowering Learners Across Rwanda</span>
+      <span style="color:rgba(255,255,255,0.3);">|</span>
+      <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
+      <span style="color:rgba(255,255,255,0.3);">|</span>
+      <a href="/about" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
+      <a href="/terms" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
     </div>
-</footer>
+  </footer>
+
 </body>
 </html>
