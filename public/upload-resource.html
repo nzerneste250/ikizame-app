@@ -58,24 +58,58 @@
         
         .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .form-field label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-field input, .form-field textarea { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; outline: none; background: #f8fafc; font-family: inherit; }
-        .form-field input:focus, .form-field textarea:focus { border-color: var(--brand); background: #fff; }
-        
-        .checkbox-row { display: flex; gap: 20px; margin: 8px 0 20px; }
-        .checkbox-label { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--text-main); cursor: pointer; user-select: none; }
-        .checkbox-label input { width: 16px; height: 16px; accent-color: var(--brand); cursor: pointer; }
-        
-        .btn-submit { background: var(--brand); color: #fff; border: none; padding: 12px; border-radius: 8px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; width: 100%; }
-        .btn-submit:hover { background: var(--brand-dark); }
+        .form-field input, .form-field textarea, .form-field select { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; outline: none; background: #f8fafc; font-family: inherit; transition: border-color 0.15s, box-shadow 0.15s; }
+        .form-field input:focus, .form-field textarea:focus { border-color: var(--brand); background: #fff; box-shadow: 0 0 0 3px rgba(11,105,139,0.1); }
+
+        /* Access toggles */
+        .toggle-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .toggle-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 8px; border: 1.5px solid #e2e8f0; background: #f8fafc; cursor: pointer; user-select: none; transition: all 0.15s; font-size: 12.5px; font-weight: 700; color: #475569; }
+        .toggle-chip input[type=checkbox] { display: none; }
+        .toggle-chip.checked { border-color: var(--brand); background: rgba(11,105,139,0.07); color: var(--brand); }
+        .toggle-chip i { font-size: 13px; }
+
+        /* Paid/Free toggle */
+        .access-type-row { display: flex; gap: 10px; margin-bottom: 16px; }
+        .access-btn { flex: 1; padding: 10px; border-radius: 8px; border: 1.5px solid #e2e8f0; background: #f8fafc; cursor: pointer; font-size: 13px; font-weight: 700; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.15s; }
+        .access-btn.active-free { border-color: #16a34a; background: #f0fdf4; color: #16a34a; }
+        .access-btn.active-paid { border-color: #d97706; background: #fffbeb; color: #d97706; }
+
+        /* Price field */
+        .price-field { display: none; margin-bottom: 16px; }
+        .price-field.visible { display: flex; flex-direction: column; gap: 6px; }
+        .price-field label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .price-input-wrap { position: relative; }
+        .price-input-wrap span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 700; color: #64748b; }
+        .price-input-wrap input { padding-left: 52px !important; }
+
+        /* File drop zone */
+        .file-drop-zone { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.15s; background: #f8fafc; margin-bottom: 16px; }
+        .file-drop-zone:hover, .file-drop-zone.dragover { border-color: var(--brand); background: rgba(11,105,139,0.04); }
+        .file-drop-zone i { font-size: 28px; color: #94a3b8; margin-bottom: 8px; display: block; }
+        .file-drop-zone .drop-text { font-size: 13px; font-weight: 600; color: #64748b; }
+        .file-drop-zone .drop-sub { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+        .file-drop-zone .file-chosen { font-size: 12.5px; font-weight: 700; color: var(--brand); margin-top: 6px; }
+        .file-drop-zone input[type=file] { display: none; }
+
+        .section-divider { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: #94a3b8; margin: 18px 0 12px; display: flex; align-items: center; gap: 8px; }
+        .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+
+        .btn-submit { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #fff; border: none; padding: 13px; border-radius: 8px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.15s, transform 0.15s; width: 100%; box-shadow: 0 4px 14px rgba(11,105,139,0.2); }
+        .btn-submit:hover { opacity: 0.92; transform: translateY(-1px); }
+        .btn-reset { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 8px; font-family: inherit; transition: background 0.15s; }
+        .btn-reset:hover { background: #e2e8f0; }
         
         .resource-deck-list { display: flex; flex-direction: column; gap: 12px; }
-        .resource-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; border: 1px solid var(--border); border-radius: 8px; background: #fafafa; gap: 16px; }
+        .resource-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: #fafafa; gap: 16px; transition: box-shadow 0.15s; }
+        .resource-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); background: #fff; }
         .resource-meta { flex: 1; min-width: 0; }
         .resource-meta h4 { font-size: 13.5px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .resource-meta p { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
-        .policy-tag { font-size: 10px; font-weight: 700; background: #e2e8f0; color: #475569; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; margin-right: 4px; }
+        .policy-tag { font-size: 10px; font-weight: 700; background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-right: 4px; }
         .policy-tag.allowed { background: #dcfce7; color: #15803d; }
         .policy-tag.blocked { background: #fee2e2; color: #b91c1c; }
+        .policy-tag.paid-tag { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+        .policy-tag.free-tag { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
         
         .actions-cell { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
         .btn-text-action { background: none; border: none; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: inherit; }
@@ -130,32 +164,66 @@
         <div class="form-container">
             <!-- Left Side Upload Panel Form -->
             <div class="card-panel">
-                <h2 id="formPanelMainTitle">Upload New Resource</h2>
+                <h2 id="formPanelMainTitle" style="display:flex;align-items:center;gap:8px;margin-bottom:20px;"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand);"></i> Upload New Resource</h2>
                 <form action="/api/resources/add" method="POST" enctype="multipart/form-data" id="resourcesManagementForm">
+
                     <div class="form-field">
-                        <label>Resource Title</label>
+                        <label>Resource Title *</label>
                         <input type="text" name="title" id="resourceTitleInput" required placeholder="e.g., Amategeko y'Umuhanda PDF">
                     </div>
+
                     <div class="form-field">
                         <label>Description</label>
-                        <textarea name="description" id="resourceDescriptionInput" rows="3" placeholder="Brief note about this guide..."></textarea>
+                        <textarea name="description" id="resourceDescriptionInput" rows="2" placeholder="Brief note about this resource..."></textarea>
                     </div>
-                    
-                    <!-- 🎯 NEW: ACCESS SECURITY POLICY BINDINGS -->
-                    <div class="checkbox-row">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="canRead" id="resourceCanReadCheck" checked> Allow View
+
+                    <div class="section-divider">Access Permissions</div>
+
+                    <div class="toggle-row">
+                        <label class="toggle-chip checked" id="chipRead" onclick="toggleChip(this,'resourceCanReadCheck')">
+                            <input type="checkbox" name="canRead" id="resourceCanReadCheck" checked>
+                            <i class="fa-solid fa-eye"></i> Allow View
                         </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="canDownload" id="resourceCanDownloadCheck" checked> Allow Download
+                        <label class="toggle-chip checked" id="chipDownload" onclick="toggleChip(this,'resourceCanDownloadCheck')">
+                            <input type="checkbox" name="canDownload" id="resourceCanDownloadCheck" checked>
+                            <i class="fa-solid fa-download"></i> Allow Download
                         </label>
                     </div>
-                    
-                    <div class="form-field">
-                        <label id="fileInputCustomLabel">Select Document (PDF, Word, Image)</label>
+
+                    <div class="section-divider">Pricing</div>
+
+                    <div class="access-type-row">
+                        <button type="button" class="access-btn active-free" id="btnFree" onclick="setPricing('free')">
+                            <i class="fa-solid fa-unlock"></i> Free
+                        </button>
+                        <button type="button" class="access-btn" id="btnPaid" onclick="setPricing('paid')">
+                            <i class="fa-solid fa-lock"></i> Paid
+                        </button>
+                    </div>
+                    <input type="hidden" name="isPaid" id="isPaidHidden" value="">
+
+                    <div class="price-field" id="priceFieldWrap">
+                        <label>Price (RWF) *</label>
+                        <div class="price-input-wrap">
+                            <span>RWF</span>
+                            <input type="number" name="price" id="priceInput" placeholder="e.g., 500" min="1" step="1">
+                        </div>
+                    </div>
+
+                    <div class="section-divider">File</div>
+
+                    <div class="file-drop-zone" id="fileDropZone" onclick="document.getElementById('resourceFileInput').click()">
+                        <i class="fa-solid fa-file-arrow-up"></i>
+                        <div class="drop-text">Click to select or drag & drop</div>
+                        <div class="drop-sub">PDF, Word, PNG, JPG — max 20MB</div>
+                        <div class="file-chosen" id="fileChosenName" style="display:none;"></div>
                         <input type="file" name="resourceFile" id="resourceFileInput" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
                     </div>
-                    <button type="submit" class="btn-submit" id="resourceSubmitButton"><i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Document</button>
+
+                    <button type="submit" class="btn-submit" id="resourceSubmitButton">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish
+                    </button>
+                    <button type="button" class="btn-reset" id="resetFormBtn" onclick="resetForm()">Reset Form</button>
                 </form>
             </div>
             
@@ -172,101 +240,147 @@
 
 <footer class="admin-footer">&copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>izo service quicky</strong></footer>
 <script>
+// ── Form UI helpers ──
+function toggleChip(label, checkId) {
+    const cb = document.getElementById(checkId);
+    cb.checked = !cb.checked;
+    label.classList.toggle('checked', cb.checked);
+}
+
+function setPricing(type) {
+    const isPaid = type === 'paid';
+    document.getElementById('btnFree').className = 'access-btn' + (isPaid ? '' : ' active-free');
+    document.getElementById('btnPaid').className = 'access-btn' + (isPaid ? ' active-paid' : '');
+    document.getElementById('isPaidHidden').value = isPaid ? 'on' : '';
+    const wrap = document.getElementById('priceFieldWrap');
+    wrap.classList.toggle('visible', isPaid);
+    document.getElementById('priceInput').required = isPaid;
+}
+
+function resetForm() {
+    const form = document.getElementById('resourcesManagementForm');
+    form.action = '/api/resources/add';
+    form.reset();
+    document.getElementById('formPanelMainTitle').innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand);"></i> Upload New Resource';
+    document.getElementById('resourceSubmitButton').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish';
+    document.getElementById('chipRead').classList.add('checked');
+    document.getElementById('chipDownload').classList.add('checked');
+    document.getElementById('resourceCanReadCheck').checked = true;
+    document.getElementById('resourceCanDownloadCheck').checked = true;
+    setPricing('free');
+    document.getElementById('fileChosenName').style.display = 'none';
+    document.getElementById('resourceFileInput').removeAttribute('required');
+    // remove hidden edit fields
+    ['editResourceIdHiddenField','editResourceFileHiddenField','editResourceTypeHiddenField'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.remove();
+    });
+}
+
+// File drop zone
 document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('resourceFileInput');
+    const dropZone  = document.getElementById('fileDropZone');
+    const chosenName = document.getElementById('fileChosenName');
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files[0]) {
+            chosenName.textContent = '📎 ' + fileInput.files[0].name;
+            chosenName.style.display = 'block';
+        }
+    });
+    ['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('dragover'); }));
+    ['dragleave','drop'].forEach(e => dropZone.addEventListener(e, () => dropZone.classList.remove('dragover')));
+    dropZone.addEventListener('drop', ev => {
+        ev.preventDefault();
+        if (ev.dataTransfer.files[0]) {
+            fileInput.files = ev.dataTransfer.files;
+            chosenName.textContent = '📎 ' + ev.dataTransfer.files[0].name;
+            chosenName.style.display = 'block';
+        }
+    });
+
     const listTarget = document.getElementById('resourcesListTarget');
     const resourceForm = document.getElementById('resourcesManagementForm');
-    const formTitle = document.getElementById('formPanelMainTitle');
-    const submitBtn = document.getElementById('resourceSubmitButton');
-    const fileLabel = document.getElementById('fileInputCustomLabel');
-    const fileInput = document.getElementById('resourceFileInput');
-
     let cachedResourcesArray = [];
-    
+
     function loadResources() {
         fetch('/api/resources')
             .then(r => r.json())
             .then(data => {
                 cachedResourcesArray = data || [];
-                if(cachedResourcesArray.length === 0) { 
-                    listTarget.innerHTML = `<p style="font-style:italic; font-size:13px; color:var(--text-muted); padding:10px;">No learning materials published yet.</p>`; 
-                    return; 
+                if (!cachedResourcesArray.length) {
+                    listTarget.innerHTML = `<p style="font-style:italic;font-size:13px;color:var(--text-muted);padding:10px;">No learning materials published yet.</p>`;
+                    return;
                 }
-                
                 listTarget.innerHTML = cachedResourcesArray.map(res => {
-                    // 🎯 RECALIBRATED: Reads allow_read and allow_download keys from the database payload record
-                    const readTag = res.allow_read === 1 ? '<span class="policy-tag allowed">View: OK</span>' : '<span class="policy-tag blocked">View: Locked</span>';
-                    const downTag = res.allow_download === 1 ? '<span class="policy-tag allowed">Download: OK</span>' : '<span class="policy-tag blocked">Download: Locked</span>';
-                    
+                    const readTag  = res.allow_read === 1 ? '<span class="policy-tag allowed">View ✓</span>' : '<span class="policy-tag blocked">View ✗</span>';
+                    const downTag  = res.allow_download === 1 ? '<span class="policy-tag allowed">Download ✓</span>' : '<span class="policy-tag blocked">Download ✗</span>';
+                    const paidTag  = res.is_paid === 1
+                        ? `<span class="policy-tag paid-tag">💰 RWF ${Number(res.price).toLocaleString()}</span>`
+                        : '<span class="policy-tag free-tag">Free</span>';
                     return `
                         <div class="resource-item">
                             <div class="resource-meta">
                                 <h4>${res.title}</h4>
-                                <p style="margin-bottom:4px;">${res.description || 'No description notes added'}</p>
-                                <div>${readTag}${downTag}<span class="policy-tag" style="background:#f1f5f9;color:#334155;">${res.file_type}</span></div>
+                                <p style="margin-bottom:5px;">${res.description || 'No description'}</p>
+                                <div>${readTag}${downTag}${paidTag}<span class="policy-tag" style="background:#f1f5f9;color:#334155;">${res.file_type}</span></div>
                             </div>
                             <div class="actions-cell">
                                 <button onclick="triggerResourceEditWorkflow(${res.id})" class="btn-text-action btn-edit-link">Edit</button>
-                                <span style="color:#cbd5e1; font-size:11px; user-select:none;">|</span>
+                                <span style="color:#cbd5e1;font-size:11px;user-select:none;">|</span>
                                 <button onclick="deleteResource(${res.id})" class="btn-text-action btn-delete-link">Delete</button>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 }).join('');
             });
     }
 
-    // 🎯 REACTIVE DATA PRE-POPULATION FORM MUTATOR LOOP
     window.triggerResourceEditWorkflow = function(resourceId) {
         const res = cachedResourcesArray.find(item => item.id === resourceId);
-        if(!res) return;
+        if (!res) return;
 
-        // Mutate Form Action to Route into Edit Endpoint
         resourceForm.action = '/api/resources/edit';
-        formTitle.textContent = "Modify Active Resource Content";
-        submitBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Update & Save Material`;
-        fileLabel.textContent = "Replace Document (Leave blank to keep current file)";
-        fileInput.removeAttribute('required');
+        document.getElementById('formPanelMainTitle').innerHTML = '<i class="fa-solid fa-pen-to-square" style="color:var(--brand);"></i> Edit Resource';
+        document.getElementById('resourceSubmitButton').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Update & Save';
+        document.getElementById('resourceFileInput').removeAttribute('required');
+        document.getElementById('fileChosenName').textContent = '📎 Current: ' + (res.file_name || '');
+        document.getElementById('fileChosenName').style.display = 'block';
 
-        // Inject dynamic tracker fields if missing
         let hiddenIdField = document.getElementById('editResourceIdHiddenField');
-        let hiddenFileField = document.getElementById('editResourceFileHiddenField');
-        let hiddenTypeField = document.getElementById('editResourceTypeHiddenField');
-        
-        if(!hiddenIdField) {
+        if (!hiddenIdField) {
             resourceForm.insertAdjacentHTML('beforeend', `
                 <input type="hidden" id="editResourceIdHiddenField" name="id">
                 <input type="hidden" id="editResourceFileHiddenField" name="existingFileName">
                 <input type="hidden" id="editResourceTypeHiddenField" name="existingFileType">
             `);
-            hiddenIdField = document.getElementById('editResourceIdHiddenField');
-            hiddenFileField = document.getElementById('editResourceFileHiddenField');
-            hiddenTypeField = document.getElementById('editResourceTypeHiddenField');
         }
-
-        // Pre-populate structural values
-        hiddenIdField.value = res.id;
-        hiddenFileField.value = res.file_name;
-        hiddenTypeField.value = res.file_type;
+        document.getElementById('editResourceIdHiddenField').value = res.id;
+        document.getElementById('editResourceFileHiddenField').value = res.file_name;
+        document.getElementById('editResourceTypeHiddenField').value = res.file_type;
 
         document.getElementById('resourceTitleInput').value = res.title;
         document.getElementById('resourceDescriptionInput').value = res.description || '';
-        
-        // 🎯 FIXED DATA MATCH: Correctly targets database fields allow_read & allow_download
-        document.getElementById('resourceCanReadCheck').checked = res.allow_read === 1;
-        document.getElementById('resourceCanDownloadCheck').checked = res.allow_download === 1;
-        
+
+        const readChecked = res.allow_read === 1;
+        const downChecked = res.allow_download === 1;
+        document.getElementById('resourceCanReadCheck').checked = readChecked;
+        document.getElementById('resourceCanDownloadCheck').checked = downChecked;
+        document.getElementById('chipRead').classList.toggle('checked', readChecked);
+        document.getElementById('chipDownload').classList.toggle('checked', downChecked);
+
+        const isPaid = res.is_paid === 1;
+        setPricing(isPaid ? 'paid' : 'free');
+        if (isPaid) document.getElementById('priceInput').value = res.price || '';
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     window.deleteResource = function(id) {
-        if(!confirm("Urareba neza ko ushaka gusiba iyi mfashanyigisho burundu muri sisitemu?")) return;
+        if (!confirm('Delete this resource permanently?')) return;
         fetch(`/api/resources/delete/${id}`, { method: 'DELETE' })
             .then(r => r.json())
-            .then(res => {
-                if(res.success) loadResources();
-                else alert('Gusiba byanze, biba sisitemu ihagaze.');
-            })
-            .catch(() => alert('Network error occurred during execution loop.'));
+            .then(res => { if (res.success) loadResources(); else alert('Delete failed.'); })
+            .catch(() => alert('Network error.'));
     };
 
     loadResources();

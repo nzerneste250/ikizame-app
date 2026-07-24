@@ -35,6 +35,9 @@ const resourceUpload = multer({ storage: resourceStorage, limits: { fileSize: 20
 module.exports = (db, isPublic = false) => {
     const router = express.Router();
 
+    // Ensure is_paid and price columns exist
+    db.query(`ALTER TABLE learning_resources ADD COLUMN IF NOT EXISTS is_paid TINYINT(1) NOT NULL DEFAULT 0`, () => {});
+    db.query(`ALTER TABLE learning_resources ADD COLUMN IF NOT EXISTS price DECIMAL(10,2) NOT NULL DEFAULT 0.00`, () => {});
     // GET list — filtered for students, full for admin
     router.get('/', (req, res) => {
         if (isPublic) {
@@ -62,19 +65,21 @@ module.exports = (db, isPublic = false) => {
 
     // POST add resource (admin only)
     router.post('/add', requireAdminLogin, resourceUpload.single('resourceFile'), (req, res) => {
-        const { title, description, canRead, canDownload } = req.body;
+        const { title, description, canRead, canDownload, isPaid, price } = req.body;
         if (!req.file || !title) return res.status(400).send('Title and file are required.');
 
-        const fileName     = req.file.filename;
-        const fileType     = path.extname(req.file.originalname).toLowerCase().replace('.', '');
-        const allowRead    = canRead    === 'on' ? 1 : 0;
+        const fileName      = req.file.filename;
+        const fileType      = path.extname(req.file.originalname).toLowerCase().replace('.', '');
+        const allowRead     = canRead     === 'on' ? 1 : 0;
         const allowDownload = canDownload === 'on' ? 1 : 0;
+        const paidFlag      = isPaid === 'on' ? 1 : 0;
+        const finalPrice    = paidFlag ? (parseFloat(price) || 0) : 0;
 
         compressUploadedFile(req.file.path);
 
         db.query(
-            `INSERT INTO learning_resources (title, description, file_name, file_type, allow_read, allow_download) VALUES (?, ?, ?, ?, ?, ?)`,
-            [title.trim(), description ? description.trim() : '', fileName, fileType, allowRead, allowDownload],
+            `INSERT INTO learning_resources (title, description, file_name, file_type, allow_read, allow_download, is_paid, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [title.trim(), description ? description.trim() : '', fileName, fileType, allowRead, allowDownload, paidFlag, finalPrice],
             (err) => {
                 if (err) return res.status(500).send('Database error: ' + err.message);
                 res.redirect('/upload-resource');
@@ -84,18 +89,20 @@ module.exports = (db, isPublic = false) => {
 
     // POST edit resource (admin only)
     router.post('/edit', requireAdminLogin, resourceUpload.single('resourceFile'), (req, res) => {
-        const { id, title, description, existingFileName, existingFileType, canRead, canDownload } = req.body;
+        const { id, title, description, existingFileName, existingFileType, canRead, canDownload, isPaid, price } = req.body;
 
         const finalFileName = req.file ? req.file.filename : existingFileName;
         const finalFileType = req.file ? path.extname(req.file.originalname).toLowerCase().replace('.', '') : existingFileType;
 
         if (req.file) compressUploadedFile(req.file.path);
-        const allowRead     = canRead    === 'on' ? 1 : 0;
-        const allowDownload  = canDownload === 'on' ? 1 : 0;
+        const allowRead     = canRead     === 'on' ? 1 : 0;
+        const allowDownload = canDownload === 'on' ? 1 : 0;
+        const paidFlag      = isPaid === 'on' ? 1 : 0;
+        const finalPrice    = paidFlag ? (parseFloat(price) || 0) : 0;
 
         db.query(
-            `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=? WHERE id=?`,
-            [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, id],
+            `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=?, is_paid=?, price=? WHERE id=?`,
+            [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, paidFlag, finalPrice, id],
             (err) => {
                 if (err) return res.status(500).send('Update error: ' + err.message);
                 res.redirect('/upload-resource');
