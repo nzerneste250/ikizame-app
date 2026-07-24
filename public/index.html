@@ -573,14 +573,17 @@
         }
         @media (max-width: 900px) {
             .wa-float {
-                width: 40px;
-                height: 40px;
-                bottom: 55px;
-                right: 12px;
+                position: absolute;
+                width: 48px;
+                height: 48px;
+                bottom: auto;
+                right: auto;
+                top: 0;
+                left: 0;
             }
-            .wa-float svg { width: 20px; height: 20px; }
+            .wa-float svg { width: 22px; height: 22px; }
             .wa-float::before { inset: -3px; }
-            .wa-popup { right: 12px; width: calc(100vw - 24px); max-width: 320px; bottom: 105px; }
+            .wa-popup { right: 12px; width: calc(100vw - 24px); max-width: 320px; bottom: 105px; position: fixed; }
         }
         @keyframes waPulse {
             0%   { transform: scale(0.95); opacity: 1; }
