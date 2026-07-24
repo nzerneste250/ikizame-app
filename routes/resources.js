@@ -84,6 +84,7 @@ module.exports = (db, isPublic = false) => {
 
         const fileName      = req.file.filename;
         const fileType      = path.extname(req.file.originalname).toLowerCase().replace('.', '');
+        const fileSize      = req.file.size || 0;
         const allowRead     = canRead     === 'on' ? 1 : 0;
         const allowDownload = canDownload === 'on' ? 1 : 0;
         const paidFlag      = isPaid === 'on' ? 1 : 0;
@@ -92,8 +93,8 @@ module.exports = (db, isPublic = false) => {
         compressUploadedFile(req.file.path);
 
         db.query(
-            `INSERT INTO learning_resources (title, description, file_name, file_type, allow_read, allow_download, is_paid, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [title.trim(), description ? description.trim() : '', fileName, fileType, allowRead, allowDownload, paidFlag, finalPrice],
+            `INSERT INTO learning_resources (title, description, file_name, file_type, file_size, allow_read, allow_download, is_paid, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [title.trim(), description ? description.trim() : '', fileName, fileType, fileSize, allowRead, allowDownload, paidFlag, finalPrice],
             (err) => {
                 if (err) return res.status(500).send('Database error: ' + err.message);
                 res.redirect('/upload-resource');
@@ -107,6 +108,7 @@ module.exports = (db, isPublic = false) => {
 
         const finalFileName = req.file ? req.file.filename : existingFileName;
         const finalFileType = req.file ? path.extname(req.file.originalname).toLowerCase().replace('.', '') : existingFileType;
+        const finalFileSize = req.file ? req.file.size : null;
 
         if (req.file) compressUploadedFile(req.file.path);
         const allowRead     = canRead     === 'on' ? 1 : 0;
@@ -114,10 +116,14 @@ module.exports = (db, isPublic = false) => {
         const paidFlag      = isPaid === 'on' ? 1 : 0;
         const finalPrice    = paidFlag ? (parseFloat(price) || 0) : 0;
 
-        db.query(
-            `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=?, is_paid=?, price=? WHERE id=?`,
-            [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, paidFlag, finalPrice, id],
-            (err) => {
+        const sql = finalFileSize !== null
+            ? `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, file_size=?, allow_read=?, allow_download=?, is_paid=?, price=? WHERE id=?`
+            : `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=?, is_paid=?, price=? WHERE id=?`;
+        const params = finalFileSize !== null
+            ? [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, finalFileSize, allowRead, allowDownload, paidFlag, finalPrice, id]
+            : [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, paidFlag, finalPrice, id];
+
+        db.query(sql, params, (err) => {
                 if (err) return res.status(500).send('Update error: ' + err.message);
                 res.redirect('/upload-resource');
             }
