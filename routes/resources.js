@@ -50,8 +50,8 @@ module.exports = (db, isPublic = false) => {
     const router = express.Router();
 
     // Ensure is_paid and price columns exist
-    db.query(`ALTER TABLE learning_resources ADD COLUMN IF NOT EXISTS is_paid TINYINT(1) NOT NULL DEFAULT 0`, () => {});
-    db.query(`ALTER TABLE learning_resources ADD COLUMN IF NOT EXISTS price DECIMAL(10,2) NOT NULL DEFAULT 0.00`, () => {});
+    db.query(`ALTER TABLE learning_resources ADD COLUMN is_paid TINYINT(1) NOT NULL DEFAULT 0`, () => {});
+    db.query(`ALTER TABLE learning_resources ADD COLUMN price DECIMAL(10,2) NOT NULL DEFAULT 0.00`, () => {});
     // GET list — filtered for students, full for admin
     router.get('/', (req, res) => {
         if (isPublic) {
