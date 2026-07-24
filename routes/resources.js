@@ -7,15 +7,29 @@ const { requireAdminLogin } = require('../middleware/auth');
 
 function compressUploadedFile(filePath) {
     const ext = path.extname(filePath).toLowerCase();
+    const sizeMB = fs.statSync(filePath).size / (1024 * 1024);
     try {
         if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
-            execSync(`convert "${filePath}" -resize '800x800>' -quality 82 "${filePath}"`, { timeout: 15000 });
+            // Aggressive compression for large images
+            const quality = sizeMB > 2 ? 72 : 82;
+            const resize  = sizeMB > 5 ? '1200x1200>' : '800x800>';
+            execSync(`convert "${filePath}" -resize '${resize}' -quality ${quality} -strip "${filePath}"`, { timeout: 30000 });
         } else if (ext === '.pdf') {
             const tmp = filePath + '_tmp.pdf';
-            execSync(`gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${tmp}" "${filePath}"`, { timeout: 60000 });
-            fs.renameSync(tmp, filePath);
+            // Use /screen for >5MB, /ebook for smaller
+            const setting = sizeMB > 5 ? '/screen' : '/ebook';
+            execSync(`gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=${setting} -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${tmp}" "${filePath}"`, { timeout: 120000 });
+            if (fs.existsSync(tmp)) {
+                const tmpSize = fs.statSync(tmp).size;
+                // Only replace if compressed version is actually smaller
+                if (tmpSize < fs.statSync(filePath).size) {
+                    fs.renameSync(tmp, filePath);
+                } else {
+                    fs.unlinkSync(tmp);
+                }
+            }
         }
-        console.log(`✅ Compressed resource: ${path.basename(filePath)}`);
+        console.log(`✅ Compressed resource: ${path.basename(filePath)} (${sizeMB.toFixed(2)}MB)`);
     } catch(e) {
         console.warn(`⚠️ Compression skipped for ${path.basename(filePath)}:`, e.message);
     }
