@@ -152,6 +152,7 @@
             .navbar-links a.active::after { 
                 bottom: -2px !important; 
             }
+            .lang-badge { display: none !important; }
         }
         /* ── TWO-COLUMN LAYOUT ── */
         .workspace-scroll-container {
@@ -227,7 +228,13 @@
         }
 
         @media (max-width: 768px) {
-            .workspace-scroll-container { height: auto; overflow-y: auto; padding: 20px 4% 80px; margin-top: 0; padding-top: 120px; }
+            .workspace-scroll-container {
+                height: auto !important;
+                overflow: visible !important;
+                margin-top: 0 !important;
+                padding: 110px 4% 80px !important;
+                align-items: flex-start !important;
+            }
             .auth-layout { grid-template-columns: 1fr; gap: 16px; }
             .auth-card-frame { order: -1; }
         }
