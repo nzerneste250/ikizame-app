@@ -145,25 +145,28 @@ module.exports = (db, isPublic = false) => {
 
         compressUploadedFile(req.file.path);
 
-        db.query(
-            `INSERT INTO learning_resources (title, description, file_name, file_type, file_size, allow_read, allow_download, is_paid, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [title.trim(), description ? description.trim() : '', fileName, fileType, fileSize, allowRead, allowDownload, paidFlag, finalPrice],
-            (err) => {
-                if (err && isSchemaError(err)) {
-                    db.query(
-                        `INSERT INTO learning_resources (title, description, file_name, file_type, file_size, allow_read, allow_download) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                        [title.trim(), description ? description.trim() : '', fileName, fileType, fileSize, allowRead, allowDownload],
-                        (fallbackErr) => {
-                            if (fallbackErr) return res.status(500).send('Database error: ' + fallbackErr.message);
-                            res.redirect('/upload-resource');
-                        }
-                    );
-                    return;
+        ensureResourceColumns((schemaErr) => {
+            if (schemaErr) return res.status(500).send('Database error: ' + schemaErr.message);
+            db.query(
+                `INSERT INTO learning_resources (title, description, file_name, file_type, file_size, allow_read, allow_download, is_paid, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [title.trim(), description ? description.trim() : '', fileName, fileType, fileSize, allowRead, allowDownload, paidFlag, finalPrice],
+                (err) => {
+                    if (err && isSchemaError(err)) {
+                        db.query(
+                            `INSERT INTO learning_resources (title, description, file_name, file_type, file_size, allow_read, allow_download) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                            [title.trim(), description ? description.trim() : '', fileName, fileType, fileSize, allowRead, allowDownload],
+                            (fallbackErr) => {
+                                if (fallbackErr) return res.status(500).send('Database error: ' + fallbackErr.message);
+                                res.redirect('/upload-resource');
+                            }
+                        );
+                        return;
+                    }
+                    if (err) return res.status(500).send('Database error: ' + err.message);
+                    res.redirect('/upload-resource');
                 }
-                if (err) return res.status(500).send('Database error: ' + err.message);
-                res.redirect('/upload-resource');
-            }
-        );
+            );
+        });
     });
 
     // POST edit resource (admin only)
@@ -180,31 +183,34 @@ module.exports = (db, isPublic = false) => {
         const paidFlag      = isPaid === 'on' ? 1 : 0;
         const finalPrice    = paidFlag ? (parseFloat(price) || 0) : 0;
 
-        const sql = finalFileSize !== null
-            ? `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, file_size=?, allow_read=?, allow_download=?, is_paid=?, price=? WHERE id=?`
-            : `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=?, is_paid=?, price=? WHERE id=?`;
-        const params = finalFileSize !== null
-            ? [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, finalFileSize, allowRead, allowDownload, paidFlag, finalPrice, id]
-            : [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, paidFlag, finalPrice, id];
+        ensureResourceColumns((schemaErr) => {
+            if (schemaErr) return res.status(500).send('Update error: ' + schemaErr.message);
+            const sql = finalFileSize !== null
+                ? `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, file_size=?, allow_read=?, allow_download=?, is_paid=?, price=? WHERE id=?`
+                : `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=?, is_paid=?, price=? WHERE id=?`;
+            const params = finalFileSize !== null
+                ? [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, finalFileSize, allowRead, allowDownload, paidFlag, finalPrice, id]
+                : [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, paidFlag, finalPrice, id];
 
-        db.query(sql, params, (err) => {
-                if (err && isSchemaError(err)) {
-                    const fallbackSql = finalFileSize !== null
-                        ? `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, file_size=?, allow_read=?, allow_download=? WHERE id=?`
-                        : `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=? WHERE id=?`;
-                    const fallbackParams = finalFileSize !== null
-                        ? [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, finalFileSize, allowRead, allowDownload, id]
-                        : [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, id];
-                    db.query(fallbackSql, fallbackParams, (fallbackErr) => {
-                        if (fallbackErr) return res.status(500).send('Update error: ' + fallbackErr.message);
-                        res.redirect('/upload-resource');
-                    });
-                    return;
+            db.query(sql, params, (err) => {
+                    if (err && isSchemaError(err)) {
+                        const fallbackSql = finalFileSize !== null
+                            ? `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, file_size=?, allow_read=?, allow_download=? WHERE id=?`
+                            : `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=? WHERE id=?`;
+                        const fallbackParams = finalFileSize !== null
+                            ? [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, finalFileSize, allowRead, allowDownload, id]
+                            : [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, id];
+                        db.query(fallbackSql, fallbackParams, (fallbackErr) => {
+                            if (fallbackErr) return res.status(500).send('Update error: ' + fallbackErr.message);
+                            res.redirect('/upload-resource');
+                        });
+                        return;
+                    }
+                    if (err) return res.status(500).send('Update error: ' + err.message);
+                    res.redirect('/upload-resource');
                 }
-                if (err) return res.status(500).send('Update error: ' + err.message);
-                res.redirect('/upload-resource');
-            }
-        );
+            );
+        });
     });
 
     // DELETE resource (admin only)
