@@ -61,7 +61,8 @@
       header { flex-direction: column !important; height: auto !important; padding: 10px 4% 8px !important; gap: 6px !important; }
       .navbar-links { gap: 12px 16px !important; width: 100% !important; justify-content: center !important; flex-wrap: wrap !important; }
       .navbar-links a { font-size: 0.78rem !important; padding: 6px 0 !important; }
-      .hero { margin-top: 0; padding-top: 130px; }
+      .lang-badge { display: none !important; }
+      .hero { margin-top: 0 !important; }
     }
 
     /* HERO BANNER */
@@ -192,7 +193,7 @@
       main { padding: 24px 4% 80px; }
       .section-card { padding: 20px 18px; }
       .contact-strip { padding: 18px 20px; }
-      .hero { padding: 36px 5% 32px; }
+      .hero { padding: 36px 5% 32px; margin-top: 0 !important; }
     }
   </style>
 </head>
@@ -326,5 +327,15 @@
     </div>
   </footer>
 
+  <script>
+    function adjustHeroOffset() {
+      const h = document.querySelector('header');
+      const hero = document.querySelector('.hero');
+      if (h && hero) hero.style.marginTop = h.offsetHeight + 'px';
+    }
+    adjustHeroOffset();
+    window.addEventListener('resize', adjustHeroOffset);
+    document.fonts.ready.then(adjustHeroOffset);
+  </script>
 </body>
 </html>
