@@ -75,32 +75,30 @@
         .section-title { font-size: 1.1rem; font-weight: 800; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
         .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-        /* CONTACT CARDS */
-        .contact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        @media (max-width: 1100px) { .contact-grid { grid-template-columns: repeat(3, 1fr) !important; } }
-        @media (max-width: 700px) { .contact-grid { grid-template-columns: repeat(2, 1fr) !important; } }
-        @media (max-width: 480px) { .contact-grid { grid-template-columns: 1fr !important; } }
-
-        .contact-card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 16px; padding: 28px 20px;
-            display: flex; flex-direction: column; align-items: center; gap: 14px;
-            text-decoration: none; color: var(--text);
-            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-            text-align: center;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+        /* CONTACT CARD — terms style */
+        .contact-card-wrap {
+            background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
+            border-radius: 14px; padding: 24px 28px; color: #fff;
+            margin-bottom: 0;
         }
-        .contact-card:hover { transform: translateY(-6px); box-shadow: 0 18px 38px rgba(11, 105, 139, 0.12); border-color: rgba(11,105,139,0.20); }
-        .contact-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
-        .contact-card.wa .contact-icon { background: #25d366; box-shadow: 0 6px 20px rgba(37,211,102,0.3); }
-        .contact-card.ig .contact-icon { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); box-shadow: 0 6px 20px rgba(220,39,67,0.3); }
-        .contact-card.fb .contact-icon { background: #1877f2; box-shadow: 0 6px 20px rgba(24,119,242,0.3); }
-        .contact-card.tw .contact-icon { background: #000; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
-        .contact-card.call .contact-icon { background: linear-gradient(135deg, #0b698b, #38bdf8); box-shadow: 0 6px 20px rgba(11,105,139,0.4); }
-        .contact-card h4 { font-size: 1rem; font-weight: 800; }
-        .contact-card p { font-size: 0.8rem; color: var(--muted); }
-        .contact-badge { font-size: 0.7rem; font-weight: 700; background: rgba(56,189,248,0.12); color: var(--cyan); border: 1px solid rgba(56,189,248,0.2); padding: 3px 10px; border-radius: 20px; }
-        .contact-badge.green { background: rgba(34,197,94,0.12); color: #4ade80; border-color: rgba(34,197,94,0.25); }
+        .contact-card-wrap h3 { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .contact-card-wrap .sub { font-size: 0.82rem; color: rgba(255,255,255,0.75); margin-bottom: 16px; }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+        .contact-row {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 9px; padding: 10px 14px;
+            font-size: 0.84rem; font-weight: 600; color: #fff; text-decoration: none;
+            transition: background 0.15s; overflow: hidden; min-width: 0;
+        }
+        .contact-row:hover { background: rgba(255,255,255,0.2); }
+        .contact-row i { font-size: 1rem; flex-shrink: 0; }
+        .contact-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+        .contact-row.wa-row i { color: #25d366; }
+        .contact-row.email-row i { color: #38bdf8; }
+        .contact-row.phone-row i { color: #a78bfa; }
+        .contact-row.web-row i { color: #fbbf24; }
+        .contact-row.company-row i { color: #94a3b8; }
 
         /* 24/7 BANNER */
         .support-banner {
@@ -207,53 +205,16 @@
             </div>
 
             <!-- CONTACT -->
-            <div class="section-title">Tutuganire</div>
-            <div class="contact-grid" style="grid-template-columns: repeat(5, 1fr);">
-                <a href="https://wa.me/250786663377?text=Muraho!%20Ndashaka%20ubufasha." target="_blank" rel="noopener" class="contact-card wa">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 448 512" width="26" height="26" fill="#fff"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
-                    </div>
-                    <h4>WhatsApp</h4>
-                    <p>0786 663 377</p>
-                    <span class="contact-badge">Arasubiza vuba</span>
-                </a>
-
-                <a href="https://instagram.com/ikizame_portal" target="_blank" rel="noopener" class="contact-card ig">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 448 512" width="24" height="24" fill="#fff"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9s-58-34.5-93.9-36.2c-36.9-2.1-147.9-2.1-184.8 0-35.9 1.7-67.7 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 36.9-2.1 147.9 0 184.8 1.7 35.9 9.9 67.7 36.2 93.9s58 34.5 93.9 36.2c36.9 2.1 147.9 2.1 184.8 0 35.9-1.7 67.7-9.9 93.9-36.2s34.5-58 36.2-93.9c2.1-36.9 2.1-147.9 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.5-29.5 11.7-99.5 9-135.7 9s-106.2 2.6-135.7-9c-19.6-7.8-34.7-22.9-42.5-42.6-11.7-29.5-9-99.5-9-135.7s-2.6-106.2 9-135.7c7.8-19.6 22.9-34.7 42.6-42.5 29.5-11.7 99.5-9 135.7-9s106.2-2.6 135.7 9c19.6 7.8 34.7 22.9 42.5 42.6 11.7 29.5 9 99.5 9 135.7s2.6 106.2-9 135.7z"/></svg>
-                    </div>
-                    <h4>Instagram</h4>
-                    <p>@ikizame_portal</p>
-                    <span class="contact-badge">Dukurikire</span>
-                </a>
-
-                <a href="https://facebook.com" target="_blank" rel="noopener" class="contact-card fb">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 512 512" width="24" height="24" fill="#fff"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg>
-                    </div>
-                    <h4>Facebook</h4>
-                    <p>IKIZAME Platform</p>
-                    <span class="contact-badge">Dukurikire</span>
-                </a>
-
-                <a href="https://x.com/ikizame_rw" target="_blank" rel="noopener" class="contact-card tw">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 512 512" width="22" height="22" fill="#fff"><path d="M182.6 242.1L20 48h54.1l132.3 162L319.4 48h151.1L298.3 268.4 485 464h-54.1L285.3 304.3 173 464H22L182.6 242.1zM265.6 279.6l24.3 35.1L405.3 432h21.1L309.4 259.9l-24.3-35.1L168.1 72h-21.1l118.6 171.3z"/></svg>
-                    </div>
-                    <h4>X (Twitter)</h4>
-                    <p>@ikizame_rw</p>
-                    <span class="contact-badge">Dukurikire</span>
-                </a>
-
-                <!-- CALL CARD -->
-                <a href="tel:+250786663377" class="contact-card call">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.08 6.08l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    </div>
-                    <h4>Telefoni</h4>
-                    <p>0786 663 377</p>
-                    <span class="contact-badge green">● Arahari 24/7</span>
-                </a>
+            <div class="contact-card-wrap">
+                <h3><i class="fa-solid fa-headset"></i> Tutuganire</h3>
+                <p class="sub">Twandikire cyangwa utubone ukoresheje uburyo bukurikira. Turakwitabira igihe cyose.</p>
+                <div class="contact-grid">
+                    <div class="contact-row company-row"><i class="fa-solid fa-building"></i><span>DOTADO STATIONERY STORE LTD</span></div>
+                    <a href="mailto:dotadostationarystore@gmail.com" class="contact-row email-row" style="grid-column: span 2;"><i class="fa-solid fa-envelope"></i><span>dotadostationarystore@gmail.com</span></a>
+                    <a href="tel:+250786663377" class="contact-row phone-row"><i class="fa-solid fa-phone"></i><span>+250 786 663 377</span></a>
+                    <a href="https://wa.me/250786663377?text=Muraho!%20Ndashaka%20ubufasha." target="_blank" rel="noopener" class="contact-row wa-row"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp Support</span></a>
+                    <a href="https://ikizame.rw" target="_blank" rel="noopener" class="contact-row web-row"><i class="fa-solid fa-globe"></i><span>ikizame.rw</span></a>
+                </div>
             </div>
 
             <!-- TIMELINE + FAQ -->
