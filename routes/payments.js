@@ -83,6 +83,49 @@ function getPricePerExam(qty) {
 // In-memory map: paypackRef -> pending tx data (cleared on webhook)
 const pendingMap = new Map();
 
+function insertPaymentTransaction(db, pending, paypackRef, done) {
+    const serviceType = pending.serviceType || 'EXAMS';
+    const resourceIdValue = pending.resourceId || null;
+    const resourceTitleValue = pending.resourceTitle || null;
+    const baseValues = [pending.phone, pending.amount, pending.planLabel, paypackRef, paypackRef,
+        pending.examCount, pending.examCount, pending.priceToStore, pending.school_id || null];
+
+    db.query(`SELECT COUNT(*) AS count FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'payment_transactions' AND column_name = 'service_type'`, (colErr, colRows) => {
+        if (colErr) return done(colErr);
+        const hasServiceColumns = Number(colRows?.[0]?.count || 0) > 0;
+        if (!hasServiceColumns) {
+            db.query(
+                `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id)
+                 VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?)`,
+                baseValues,
+                (err) => done(err)
+            );
+            return;
+        }
+
+        db.query(`SELECT COUNT(*) AS count FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'payment_transactions' AND column_name = 'resource_id'`, (resourceErr, resourceRows) => {
+            if (resourceErr) return done(resourceErr);
+            const hasResourceColumns = Number(resourceRows?.[0]?.count || 0) > 0;
+            if (!hasResourceColumns) {
+                db.query(
+                    `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id, service_type)
+                     VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?, ?)`,
+                    [...baseValues, serviceType],
+                    (err) => done(err)
+                );
+                return;
+            }
+
+            db.query(
+                `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id, service_type, resource_id, resource_title)
+                 VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?, ?, ?, ?)`,
+                [...baseValues, serviceType, resourceIdValue, resourceTitleValue],
+                (err) => done(err)
+            );
+        });
+    });
+}
+
 module.exports = (db) => {
     const router = express.Router();
     ensurePaymentColumns(db);
@@ -202,22 +245,16 @@ module.exports = (db) => {
         pendingMap.delete(paypackRef);
 
         // Insert confirmed transaction into DB
-        db.query(
-            `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id)
-             VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?)`,
-            [pending.phone, pending.amount, pending.planLabel, paypackRef, paypackRef,
-             pending.examCount, pending.examCount, pending.priceToStore, pending.school_id || null],
-            (err) => {
-                if (err) { console.error('❌ Webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
-                console.log(`✅ Paypack webhook: ${paypackRef} → SUCCESS (inserted)`);
-                sendPaymentNotification(req.app.get('emailTransport'), {
-                    phone: pending.phone, amount: pending.amount,
-                    planLabel: pending.planLabel, examCount: pending.examCount,
-                    paypackRef, type: pending.serviceType === 'RESOURCES' ? 'Resource Payment' : 'Self Payment'
-                });
-                res.json({ ok: true });
-            }
-        );
+        insertPaymentTransaction(db, pending, paypackRef, (err) => {
+            if (err) { console.error('❌ Webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
+            console.log(`✅ Paypack webhook: ${paypackRef} → SUCCESS (inserted)`);
+            sendPaymentNotification(req.app.get('emailTransport'), {
+                phone: pending.phone, amount: pending.amount,
+                planLabel: pending.planLabel, examCount: pending.examCount,
+                paypackRef, type: pending.serviceType === 'RESOURCES' ? 'Resource Payment' : 'Self Payment'
+            });
+            res.json({ ok: true });
+        });
     });
 
     // GET — poll payment status (check if webhook has inserted the record)
@@ -256,19 +293,22 @@ function handleSchoolWebhook(db, paypackRef, txData, res) {
     }
     schoolPendingMap.delete(paypackRef);
     const planLabel = `School Driving Pass (${pending.schoolName})`;
-    db.query(
-        `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id)
-         VALUES (?, 10000, ?, ?, ?, 'SUCCESS', 9999, 9999, ?, ?)`
-        [pending.phone, planLabel, paypackRef, paypackRef, Number((10000/9999).toFixed(2)), pending.schoolId],
-        (err) => {
-            if (err) { console.error('❌ School webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
-            console.log(`✅ School webhook: ${paypackRef} → SUCCESS (inserted)`);
-            sendPaymentNotification(res.req.app.get('emailTransport'), {
-                phone: pending.phone, amount: 10000,
-                planLabel, examCount: 9999,
-                paypackRef, type: 'School Payment'
-            });
-            res.json({ ok: true });
-        }
-    );
+    insertPaymentTransaction(db, {
+        phone: pending.phone,
+        amount: 10000,
+        planLabel,
+        examCount: 9999,
+        priceToStore: Number((10000/9999).toFixed(2)),
+        school_id: pending.schoolId,
+        serviceType: 'SCHOOL'
+    }, paypackRef, (err) => {
+        if (err) { console.error('❌ School webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
+        console.log(`✅ School webhook: ${paypackRef} → SUCCESS (inserted)`);
+        sendPaymentNotification(res.req.app.get('emailTransport'), {
+            phone: pending.phone, amount: 10000,
+            planLabel, examCount: 9999,
+            paypackRef, type: 'School Payment'
+        });
+        res.json({ ok: true });
+    });
 }
