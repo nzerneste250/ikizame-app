@@ -91,13 +91,15 @@ module.exports = (db) => {
 
             if (req.session && req.session.isAdminAuthenticated) return res.json(results);
 
-            if (req.session.lockedExamQuestionIds && req.session.lockedExamQuestionIds.length > 0) {
+            // Return locked set only if it has exactly 20 questions (valid exam in progress)
+            if (req.session.lockedExamQuestionIds && req.session.lockedExamQuestionIds.length === 20) {
                 const lockedQuestions = req.session.lockedExamQuestionIds
                     .map(id => results.find(q => q.id === id))
                     .filter(Boolean);
-                return res.json(lockedQuestions);
+                if (lockedQuestions.length === 20) return res.json(lockedQuestions);
             }
 
+            // Shuffle all questions
             const pool = [...results];
             for (let i = pool.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -107,10 +109,10 @@ module.exports = (db) => {
             // Exclude recently seen questions so student never gets same set twice
             const recentIds = new Set(req.session.recentExamQuestionIds || []);
             const fresh = pool.filter(q => !recentIds.has(q.id));
+            // Only use fresh pool if we have enough; otherwise reset and use full pool
             const source = fresh.length >= 20 ? fresh : pool;
 
-            const examSize = Math.min(20, source.length);
-            const selectedQuestions = source.slice(0, examSize);
+            const selectedQuestions = source.slice(0, 20);
 
             // Keep a rolling history of last 40 seen question IDs
             const allSeen = [...recentIds, ...selectedQuestions.map(q => q.id)];
