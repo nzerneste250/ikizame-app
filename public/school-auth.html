@@ -167,7 +167,7 @@
         }
         .auth-layout {
             display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
+            grid-template-columns: 0.75fr 1.25fr;
             gap: 24px;
             width: 100%;
             max-width: 1000px;
@@ -178,14 +178,15 @@
         .guide-card {
             background: linear-gradient(135deg, #0b698b 0%, #0e4f6b 100%);
             border-radius: 18px;
-            padding: 26px 22px;
+            padding: 22px 20px;
             color: #fff;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
+            opacity: 0.88;
         }
-        .guide-card-title { font-size: 0.95rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
-        .guide-card-sub { font-size: 0.76rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: -8px; }
+        .guide-card-title { font-size: 0.88rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+        .guide-card-sub { font-size: 0.72rem; color: rgba(255,255,255,0.65); line-height: 1.5; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.12); }
         .guide-steps { display: flex; flex-direction: column; gap: 0; }
         .guide-step { display: flex; gap: 12px; position: relative; }
         .guide-step:not(:last-child)::after {
