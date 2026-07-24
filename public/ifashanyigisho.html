@@ -85,8 +85,9 @@
         .no-results { grid-column:1/-1; text-align:center; padding:48px 20px; }
         .no-results i { font-size:2.5rem; color:#cbd5e1; display:block; margin-bottom:12px; }
         .no-results p { font-size:.9rem; font-weight:600; color:var(--muted); }
-        footer { height: 40px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; }
+        footer { min-height: 40px; padding: 7px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; flex-wrap: wrap; gap: 6px; }
         footer strong { color: #38bdf8; }
+        footer a:hover { opacity: 0.9; }
         @media(max-width:900px) { .navbar { flex-direction:column!important; height:auto!important; padding:10px 4% 8px!important; gap:6px!important; } .navbar-links { gap:12px 16px!important; width:100%!important; justify-content:center!important; flex-wrap:wrap!important; } .navbar-links a { font-size:.78rem!important; padding:6px 0!important; } .navbar-links a.active::after { bottom:-2px!important; } }
         @media(max-width:768px) {
             html, body { height:auto; overflow-y:auto; }
@@ -165,7 +166,16 @@
     </div>
 </main>
 
-<footer>&copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>Developed by Dotado Stationery Store Ltd</strong></footer>
+<footer>
+    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
+        <span style="font-size:0.7rem;">© 2026 IKIZAME — Empowering Learners Across Rwanda</span>
+        <span style="color:rgba(255,255,255,0.3);">|</span>
+        <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
+        <span style="color:rgba(255,255,255,0.3);">|</span>
+        <a href="/about" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
+        <a href="/terms" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
+    </div>
+</footer>
 
 <script src="assets/js/enter-to-action.js"></script>
 <script>

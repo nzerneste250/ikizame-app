@@ -235,8 +235,9 @@
         }
         .back-to-top-btn.show { display: inline-flex; opacity: 1; transform: translateY(0); }
 
-        .footer { height: 40px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; }
+        .footer { min-height: 40px; padding: 7px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; flex-wrap: wrap; gap: 6px; }
         .footer strong { color: #38bdf8; }
+        .footer a:hover { opacity: 0.9; }
 
         @media (max-width: 768px) {
             .workspace-scroll-container { margin-top: 105px; padding: 20px 16px 50px; }
@@ -410,7 +411,16 @@
 
     </div><!-- /workspace-scroll-container -->
 
-    <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
+    <footer class="footer">
+        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
+            <span style="font-size:0.7rem;">© 2026 IKIZAME — Empowering Learners Across Rwanda</span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <a href="/about" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
+            <a href="/terms" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
+        </div>
+    </footer>
 
     <script src="assets/js/enter-to-action.js"></script>
     <script>
