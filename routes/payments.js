@@ -35,6 +35,13 @@ function sendPaymentNotification(transport, { phone, amount, planLabel, examCoun
 let cachedToken  = null;
 let tokenExpires = 0;
 let tokenRefreshPromise = null;
+
+function ensurePaymentColumns(db) {
+    db.query(`ALTER TABLE payment_transactions ADD COLUMN service_type VARCHAR(50) NOT NULL DEFAULT 'EXAMS'`, () => {});
+    db.query(`ALTER TABLE payment_transactions ADD COLUMN resource_id INT NULL`, () => {});
+    db.query(`ALTER TABLE payment_transactions ADD COLUMN resource_title VARCHAR(255) NULL`, () => {});
+}
+
 async function getAccessToken() {
     if (cachedToken && Date.now() < tokenExpires - 60000) return cachedToken;
     // Deduplicate concurrent token refresh calls
@@ -78,10 +85,11 @@ const pendingMap = new Map();
 
 module.exports = (db) => {
     const router = express.Router();
+    ensurePaymentColumns(db);
 
     // POST — initiate USSD push, do NOT write to DB yet
     router.post('/momo-push', async (req, res) => {
-        const { phoneNumber, checkoutIntentType, examQuantityVolume, pricePerExam } = req.body;
+        const { phoneNumber, checkoutIntentType, examQuantityVolume, pricePerExam, resourceId, resourceTitle, resourcePrice } = req.body;
 
         if (!phoneNumber || !checkoutIntentType)
             return res.status(400).json({ success: false, error: 'Missing mandatory payment fields.' });
@@ -93,9 +101,19 @@ module.exports = (db) => {
             return res.status(400).json({ success: false, error: validationErr.message });
         }
 
-        let amount = 0, planLabel = '', examCount = 0;
+        let amount = 0, planLabel = '', examCount = 0, serviceType = 'EXAMS', resourceIdValue = null, resourceTitleValue = null;
         if (checkoutIntentType === 'SCHOOL') {
-            amount = 10000; planLabel = 'School Driving Center Monthly Pass'; examCount = 9999;
+            amount = 10000; planLabel = 'School Driving Center Monthly Pass'; examCount = 9999; serviceType = 'SCHOOL';
+        } else if (checkoutIntentType === 'RESOURCE') {
+            const parsedPrice = Number(resourcePrice || 0);
+            if (!resourceTitle || !resourceId || !parsedPrice) {
+                return res.status(400).json({ success: false, error: 'Resource payment details are incomplete.' });
+            }
+            amount = parsedPrice;
+            planLabel = `Resource Access — ${resourceTitle}`;
+            serviceType = 'RESOURCES';
+            resourceIdValue = resourceId;
+            resourceTitleValue = resourceTitle;
         } else {
             const qty = parseInt(examQuantityVolume, 10) || 1;
             examCount = qty;
@@ -130,6 +148,9 @@ module.exports = (db) => {
             pendingMap.set(paypackRef, {
                 phone, amount, planLabel, examCount, priceToStore,
                 school_id: null,
+                serviceType,
+                resourceId: resourceIdValue,
+                resourceTitle: resourceTitleValue,
                 expires: Date.now() + 5 * 60 * 1000 // 5 min TTL
             });
 
@@ -192,7 +213,7 @@ module.exports = (db) => {
                 sendPaymentNotification(req.app.get('emailTransport'), {
                     phone: pending.phone, amount: pending.amount,
                     planLabel: pending.planLabel, examCount: pending.examCount,
-                    paypackRef, type: 'Self Payment'
+                    paypackRef, type: pending.serviceType === 'RESOURCES' ? 'Resource Payment' : 'Self Payment'
                 });
                 res.json({ ok: true });
             }
@@ -237,7 +258,7 @@ function handleSchoolWebhook(db, paypackRef, txData, res) {
     const planLabel = `School Driving Pass (${pending.schoolName})`;
     db.query(
         `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id)
-         VALUES (?, 10000, ?, ?, ?, 'SUCCESS', 9999, 9999, ?, ?)`,
+         VALUES (?, 10000, ?, ?, ?, 'SUCCESS', 9999, 9999, ?, ?)`
         [pending.phone, planLabel, paypackRef, paypackRef, Number((10000/9999).toFixed(2)), pending.schoolId],
         (err) => {
             if (err) { console.error('❌ School webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }

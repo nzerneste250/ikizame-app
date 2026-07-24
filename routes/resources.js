@@ -49,32 +49,85 @@ const resourceUpload = multer({ storage: resourceStorage, limits: { fileSize: 20
 module.exports = (db, isPublic = false) => {
     const router = express.Router();
 
-    // Ensure is_paid and price columns exist
-    db.query(`ALTER TABLE learning_resources ADD COLUMN is_paid TINYINT(1) NOT NULL DEFAULT 0`, () => {});
-    db.query(`ALTER TABLE learning_resources ADD COLUMN price DECIMAL(10,2) NOT NULL DEFAULT 0.00`, () => {});
+    function isSchemaError(err) {
+        return !!(err && /Unknown column|doesn't exist|unknown column/i.test(err.message));
+    }
+
+    function ensureResourceColumns(next) {
+        db.query(`SELECT COUNT(*) AS count FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'learning_resources' AND column_name = 'is_paid'`, (err, rows) => {
+            if (err) return next(err);
+            const hasPaid = Number(rows?.[0]?.count || 0) > 0;
+            if (!hasPaid) {
+                db.query(`ALTER TABLE learning_resources ADD COLUMN is_paid TINYINT(1) NOT NULL DEFAULT 0`, (alterErr) => {
+                    if (alterErr) return next(alterErr);
+                    db.query(`SELECT COUNT(*) AS count FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'learning_resources' AND column_name = 'price'`, (priceErr, priceRows) => {
+                        if (priceErr) return next(priceErr);
+                        const hasPrice = Number(priceRows?.[0]?.count || 0) > 0;
+                        if (!hasPrice) {
+                            db.query(`ALTER TABLE learning_resources ADD COLUMN price DECIMAL(10,2) NOT NULL DEFAULT 0.00`, (priceAlterErr) => next(priceAlterErr || null));
+                        } else {
+                            next();
+                        }
+                    });
+                });
+            } else {
+                db.query(`SELECT COUNT(*) AS count FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'learning_resources' AND column_name = 'price'`, (priceErr, priceRows) => {
+                    if (priceErr) return next(priceErr);
+                    const hasPrice = Number(priceRows?.[0]?.count || 0) > 0;
+                    if (!hasPrice) {
+                        db.query(`ALTER TABLE learning_resources ADD COLUMN price DECIMAL(10,2) NOT NULL DEFAULT 0.00`, (priceAlterErr) => next(priceAlterErr || null));
+                    } else {
+                        next();
+                    }
+                });
+            }
+        });
+    }
+
     // GET list — filtered for students, full for admin
     router.get('/', (req, res) => {
-        if (isPublic) {
-            db.query(
-                `SELECT id, title, description, file_name, file_type, allow_read, allow_download FROM learning_resources WHERE allow_read = 1 ORDER BY id DESC`,
-                (err, results) => {
-                    if (err) return res.status(500).json({ error: 'Gushaka imfashanyigisho byanze.' });
-                    res.json(results.map(row => ({
-                        id:               row.id,
-                        title:            row.title,
-                        description:      row.description,
-                        file_path:        `assets/uploads/${row.file_name}`,
-                        file_type:        row.file_type,
-                        allow_download:   parseInt(row.allow_download, 10)
-                    })));
-                }
-            );
-        } else {
-            db.query('SELECT * FROM learning_resources ORDER BY id DESC', (err, results) => {
-                if (err) return res.status(500).json({ error: err.message });
-                res.json(results);
-            });
-        }
+        ensureResourceColumns((err) => {
+            if (err) return res.status(500).json({ error: 'Gushaka imfashanyigisho byanze.' });
+            if (isPublic) {
+                db.query(
+                    `SELECT id, title, description, file_name, file_type, allow_read, allow_download, is_paid, price FROM learning_resources WHERE allow_read = 1 ORDER BY id DESC`,
+                    (queryErr, results) => {
+                        if (queryErr && isSchemaError(queryErr)) {
+                            db.query(`SELECT id, title, description, file_name, file_type, allow_read, allow_download FROM learning_resources WHERE allow_read = 1 ORDER BY id DESC`, (fallbackErr, fallbackResults) => {
+                                if (fallbackErr) return res.status(500).json({ error: 'Gushaka imfashanyigisho byanze.' });
+                                res.json(fallbackResults.map(row => ({
+                                    id:               row.id,
+                                    title:            row.title,
+                                    description:      row.description,
+                                    file_path:        `assets/uploads/${row.file_name}`,
+                                    file_type:        row.file_type,
+                                    allow_download:   parseInt(row.allow_download, 10),
+                                    is_paid:          0,
+                                    price:            0
+                                })));
+                            });
+                            return;
+                        }
+                        if (queryErr) return res.status(500).json({ error: 'Gushaka imfashanyigisho byanze.' });
+                        res.json(results.map(row => ({
+                            id:               row.id,
+                            title:            row.title,
+                            description:      row.description,
+                            file_path:        `assets/uploads/${row.file_name}`,
+                            file_type:        row.file_type,
+                            allow_download:   parseInt(row.allow_download, 10),
+                            is_paid:          parseInt(row.is_paid, 10),
+                            price:            parseFloat(row.price || 0)
+                        })));
+                    }
+                );
+            } else {
+                db.query('SELECT * FROM learning_resources ORDER BY id DESC', (queryErr, results) => {
+                    if (queryErr) return res.status(500).json({ error: queryErr.message });
+                    res.json(results);
+                });
+            }
+        });
     });
 
     // POST add resource (admin only)
@@ -96,6 +149,17 @@ module.exports = (db, isPublic = false) => {
             `INSERT INTO learning_resources (title, description, file_name, file_type, file_size, allow_read, allow_download, is_paid, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [title.trim(), description ? description.trim() : '', fileName, fileType, fileSize, allowRead, allowDownload, paidFlag, finalPrice],
             (err) => {
+                if (err && isSchemaError(err)) {
+                    db.query(
+                        `INSERT INTO learning_resources (title, description, file_name, file_type, file_size, allow_read, allow_download) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                        [title.trim(), description ? description.trim() : '', fileName, fileType, fileSize, allowRead, allowDownload],
+                        (fallbackErr) => {
+                            if (fallbackErr) return res.status(500).send('Database error: ' + fallbackErr.message);
+                            res.redirect('/upload-resource');
+                        }
+                    );
+                    return;
+                }
                 if (err) return res.status(500).send('Database error: ' + err.message);
                 res.redirect('/upload-resource');
             }
@@ -124,6 +188,19 @@ module.exports = (db, isPublic = false) => {
             : [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, paidFlag, finalPrice, id];
 
         db.query(sql, params, (err) => {
+                if (err && isSchemaError(err)) {
+                    const fallbackSql = finalFileSize !== null
+                        ? `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, file_size=?, allow_read=?, allow_download=? WHERE id=?`
+                        : `UPDATE learning_resources SET title=?, description=?, file_name=?, file_type=?, allow_read=?, allow_download=? WHERE id=?`;
+                    const fallbackParams = finalFileSize !== null
+                        ? [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, finalFileSize, allowRead, allowDownload, id]
+                        : [title.trim(), description ? description.trim() : '', finalFileName, finalFileType, allowRead, allowDownload, id];
+                    db.query(fallbackSql, fallbackParams, (fallbackErr) => {
+                        if (fallbackErr) return res.status(500).send('Update error: ' + fallbackErr.message);
+                        res.redirect('/upload-resource');
+                    });
+                    return;
+                }
                 if (err) return res.status(500).send('Update error: ' + err.message);
                 res.redirect('/upload-resource');
             }

@@ -69,6 +69,9 @@
         .btn-download { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; padding:10px 14px; border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; text-decoration:none; font-family:inherit; }
         .btn-download:hover { background:#dcfce7; }
         .btn-download.locked { background:#f8fafc; color:#cbd5e1; border-color:#e2e8f0; cursor:not-allowed; pointer-events:none; }
+        .btn-pay { background:#f59e0b; color:#fff; }
+        .btn-pay:hover { background:#d97706; }
+        .pay-pill { display:inline-flex; align-items:center; gap:6px; font-size:.72rem; font-weight:700; padding:3px 9px; border-radius:20px; background:#fef3c7; color:#b45309; }
         .skeleton-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; display:flex; flex-direction:column; gap:14px; }
         .skel { background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:8px; }
         .skel-icon { width:52px; height:52px; border-radius:14px; }
@@ -181,6 +184,35 @@
 <script>
 var allDocs = [];
 
+function getUnlockedResourceMap() {
+    try {
+        return JSON.parse(localStorage.getItem('ikizameUnlockedResources') || '{}');
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveUnlockedResourceMap(map) {
+    localStorage.setItem('ikizameUnlockedResources', JSON.stringify(map));
+}
+
+function isResourceUnlocked(doc) {
+    if (!doc || doc.is_paid !== 1) return true;
+    var map = getUnlockedResourceMap();
+    return Boolean(map[String(doc.id)]);
+}
+
+function markResourceUnlocked(doc) {
+    if (!doc) return;
+    var map = getUnlockedResourceMap();
+    map[String(doc.id)] = true;
+    saveUnlockedResourceMap(map);
+}
+
+function formatAmount(amount) {
+    return 'RWF ' + Number(amount || 0).toLocaleString();
+}
+
 document.addEventListener('DOMContentLoaded', loadDocs);
 
 function loadDocs() {
@@ -238,29 +270,112 @@ function buildCard(doc, idx) {
     var iconClass = isPdf ? 'icon-pdf' : isWord ? 'icon-word' : 'icon-img';
     var iconFA = isPdf ? 'fa-file-pdf' : isWord ? 'fa-file-word' : 'fa-file-image';
     var tagClass = isPdf ? 'tag-pdf' : 'tag-word';
-    var dlBtn = doc.allow_download === 1
-        ? '<a href="/' + doc.file_path + '" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> Gukura</a>'
-        : '<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>';
+    var isLocked = doc.is_paid === 1 && !isResourceUnlocked(doc);
     var desc = doc.description ? '<p>' + doc.description + '</p>' : '';
-    return '<div class="doc-card" onclick="openViewer(' + idx + ')">'
+    var actionBtn = isLocked
+        ? '<button class="btn-read btn-pay" onclick="event.stopPropagation(); payForResource(allDocs[' + idx + '])"><i class="fa-solid fa-credit-card"></i> Ishyura ' + formatAmount(doc.price) + '</button>'
+        : '<button class="btn-read" onclick="event.stopPropagation(); openViewer(' + idx + ')"><i class="fa-solid fa-book-open"></i> Soma Hano</button>';
+    var dlBtn = isLocked
+        ? ''
+        : (doc.allow_download === 1
+            ? '<a href="/' + doc.file_path + '" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> Gukura</a>'
+            : '<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>');
+    return '<div class="doc-card" onclick="handleResourceAction(' + idx + ')">'
         + '<div class="doc-card-top">'
         + '<div class="doc-type-icon ' + iconClass + '"><i class="fa-solid ' + iconFA + '"></i></div>'
         + '<div class="doc-info"><h3>' + doc.title + '</h3>' + desc + '</div>'
         + '</div>'
         + '<div class="doc-meta-row">'
         + '<span class="doc-tag ' + tagClass + '">' + ext.toUpperCase() + '</span>'
-        + '<span class="doc-tag tag-read"><i class="fa-solid fa-eye" style="font-size:9px"></i> Soma</span>'
+        + (isLocked ? '<span class="pay-pill"><i class="fa-solid fa-lock"></i> Ishyura</span>' : '<span class="doc-tag tag-read"><i class="fa-solid fa-eye" style="font-size:9px"></i> Soma</span>')
         + '</div>'
         + '<div class="doc-actions" onclick="event.stopPropagation()">'
-        + '<button class="btn-read" onclick="openViewer(' + idx + ')"><i class="fa-solid fa-book-open"></i> Soma Hano</button>'
+        + actionBtn
         + dlBtn
         + '</div>'
         + '</div>';
 }
 
-function openViewer(idx) {
+function handleResourceAction(idx) {
     var doc = allDocs[idx];
     if (!doc) return;
+    if (doc.is_paid === 1 && !isResourceUnlocked(doc)) {
+        payForResource(doc);
+        return;
+    }
+    openViewer(doc);
+}
+
+function payForResource(doc) {
+    if (!doc) return;
+    if (doc.is_paid !== 1) {
+        openViewer(doc);
+        return;
+    }
+
+    var phone = window.prompt('Andika nomero ya telefone yawe (urugero 0788000000):', '');
+    if (!phone) return;
+
+    var cleanPhone = phone.replace(/[\s\-+]/g, '');
+    if (cleanPhone.length < 10) {
+        alert('Injiza nomero ya telephone yuzuye.');
+        return;
+    }
+
+    if (!window.confirm('Ishyura ' + formatAmount(doc.price) + ' kugira ngo usome iyi nyandiko?')) {
+        return;
+    }
+
+    fetch('/api/payments/momo-push', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            phoneNumber: cleanPhone,
+            checkoutIntentType: 'RESOURCE',
+            resourceId: doc.id,
+            resourceTitle: doc.title,
+            resourcePrice: doc.price
+        })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (!data.success) {
+            alert(data.error || 'Kwishyura byanze.');
+            return;
+        }
+
+        alert('Tegereza gato. Twitegereje ubwishyu bwahise.');
+        var referenceId = data.referenceId;
+        var attempts = 0;
+        var timer = setInterval(function() {
+            attempts += 1;
+            fetch('/api/payments/verify/' + referenceId)
+                .then(function(r2) { return r2.json(); })
+                .then(function(statusData) {
+                    if (statusData.status === 'SUCCESS') {
+                        clearInterval(timer);
+                        markResourceUnlocked(doc);
+                        openViewer(doc);
+                        alert('Kwishyura byagenze neza! Ubu ushobora gusoma cyangwa gukurura iyi nyandiko.');
+                    } else if (attempts >= 20) {
+                        clearInterval(timer);
+                        alert('Igihe cyarangiye. Ongera ugerageze.');
+                    }
+                });
+        }, 2000);
+    })
+    .catch(function() {
+        alert('Ikibazo cya internet. Ongera ugerageze.');
+    });
+}
+
+function openViewer(docOrIdx) {
+    var doc = typeof docOrIdx === 'number' ? allDocs[docOrIdx] : docOrIdx;
+    if (!doc) return;
+    if (doc.is_paid === 1 && !isResourceUnlocked(doc)) {
+        payForResource(doc);
+        return;
+    }
     window.open(window.location.origin + '/' + doc.file_path, '_blank', 'noopener');
 }
 </script>
