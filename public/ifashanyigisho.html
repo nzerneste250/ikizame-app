@@ -71,7 +71,16 @@
         .btn-download.locked { background:#f8fafc; color:#cbd5e1; border-color:#e2e8f0; cursor:not-allowed; pointer-events:none; }
         .btn-pay { background:#f59e0b; color:#fff; }
         .btn-pay:hover { background:#d97706; }
+        .btn-secondary { background:#fff7ed; color:#c2410c; border:1px solid #fdba74; }
+        .btn-secondary:hover { background:#ffedd5; }
         .pay-pill { display:inline-flex; align-items:center; gap:6px; font-size:.72rem; font-weight:700; padding:3px 9px; border-radius:20px; background:#fef3c7; color:#b45309; }
+        .resource-payment-panel { display:none; margin-top:10px; padding:12px; border:1px solid #fde68a; background:#fffbeb; border-radius:12px; flex-direction:column; gap:8px; }
+        .resource-payment-panel.open { display:flex; }
+        .resource-payment-panel .pay-form-label { font-size:.78rem; font-weight:800; color:#92400e; display:flex; align-items:center; gap:6px; }
+        .resource-payment-panel .pay-note { font-size:.74rem; color:#a16207; line-height:1.45; }
+        .resource-payment-panel input { width:100%; border:1px solid #fcd34d; padding:10px 12px; border-radius:10px; font:inherit; color:var(--text); background:#fff; }
+        .resource-payment-panel .pay-inline-actions { display:flex; gap:8px; flex-wrap:wrap; }
+        .resource-payment-panel .payment-status { font-size:.74rem; color:#b45309; font-weight:700; }
         .skeleton-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; display:flex; flex-direction:column; gap:14px; }
         .skel { background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:8px; }
         .skel-icon { width:52px; height:52px; border-radius:14px; }
@@ -228,7 +237,7 @@ function loadDocs() {
             }
             allDocs = docs;
             badge.textContent = docs.length + ' inyandiko';
-            grid.innerHTML = allDocs.map(function(doc, i) { return buildCard(doc, i); }).join('');
+            renderDocs();
         })
         .catch(function() {
             document.getElementById('cardsGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habayeho ikosa</h3><p>Gushaka inyandiko byanze. Gerageza kongera.</p><button onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera Ugerageze</button></div>';
@@ -236,24 +245,30 @@ function loadDocs() {
         });
 }
 
-function filterDocs(q) {
-    var clearBtn = document.getElementById('searchClear');
-    var badge = document.getElementById('docCountBadge');
+function renderDocs() {
     var grid = document.getElementById('cardsGrid');
-    var term = q.trim().toLowerCase();
-    clearBtn.classList.toggle('show', term.length > 0);
-    if (!term) {
-        grid.innerHTML = allDocs.map(function(doc, i) { return buildCard(doc, i); }).join('');
-        badge.textContent = allDocs.length + ' inyandiko';
+    var badge = document.getElementById('docCountBadge');
+    var input = document.getElementById('searchInput');
+    var term = (input ? input.value : '').trim().toLowerCase();
+    if (!allDocs || allDocs.length === 0) {
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta nyandiko zihari ubu</h3><p>Inyandiko zizashyirwaho vuba. Subira nyuma.</p></div>';
+        badge.textContent = '0 inyandiko';
         return;
     }
-    var filtered = allDocs.filter(function(doc) {
+    var filtered = !term ? allDocs : allDocs.filter(function(doc) {
         return doc.title.toLowerCase().includes(term) || (doc.description && doc.description.toLowerCase().includes(term));
     });
-    badge.textContent = filtered.length + ' ibisubizo';
+    badge.textContent = filtered.length + (term ? ' ibisubizo' : ' inyandiko');
     grid.innerHTML = filtered.length
         ? filtered.map(function(doc) { return buildCard(doc, allDocs.indexOf(doc)); }).join('')
         : '<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zibonetse.</p></div>';
+}
+
+function filterDocs(q) {
+    var clearBtn = document.getElementById('searchClear');
+    var term = q.trim().toLowerCase();
+    clearBtn.classList.toggle('show', term.length > 0);
+    renderDocs();
 }
 
 function clearSearch() {
@@ -273,13 +288,14 @@ function buildCard(doc, idx) {
     var isLocked = doc.is_paid === 1 && !isResourceUnlocked(doc);
     var desc = doc.description ? '<p>' + doc.description + '</p>' : '';
     var actionBtn = isLocked
-        ? '<button class="btn-read btn-pay" onclick="event.stopPropagation(); payForResource(allDocs[' + idx + '])"><i class="fa-solid fa-credit-card"></i> Ishyura ' + formatAmount(doc.price) + '</button>'
+        ? '<button class="btn-read btn-pay" onclick="event.stopPropagation(); openResourcePayment(' + idx + ')"><i class="fa-solid fa-credit-card"></i> Ishyura ' + formatAmount(doc.price) + '</button>'
         : '<button class="btn-read" onclick="event.stopPropagation(); openViewer(' + idx + ')"><i class="fa-solid fa-book-open"></i> Soma Hano</button>';
     var dlBtn = isLocked
         ? ''
         : (doc.allow_download === 1
             ? '<a href="/' + doc.file_path + '" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> Gukura</a>'
             : '<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>');
+    var paymentPanel = isLocked ? '<div class="resource-payment-panel" id="resource-payment-panel-' + idx + '"><div class="pay-form-label"><i class="fa-solid fa-mobile-screen-button"></i> Kwishyura kuri telephone</div><div class="pay-note">Andika nomero ya telephone yawe, uhitamo ubwishyu, maze ukomeze.</div><input type="tel" id="resource-phone-' + idx + '" placeholder="0788000000" autocomplete="tel"><div class="pay-inline-actions"><button class="btn-read btn-pay" type="button" onclick="event.stopPropagation(); submitResourcePayment(' + idx + ')"><i class="fa-solid fa-credit-card"></i> Ishyura ' + formatAmount(doc.price) + '</button><button class="btn-secondary btn-read" type="button" onclick="event.stopPropagation(); closeResourcePayment(' + idx + ')"><i class="fa-solid fa-xmark"></i> Funga</button></div><div class="payment-status" id="resource-payment-status-' + idx + '"></div></div>' : '';
     return '<div class="doc-card" onclick="handleResourceAction(' + idx + ')">'
         + '<div class="doc-card-top">'
         + '<div class="doc-type-icon ' + iconClass + '"><i class="fa-solid ' + iconFA + '"></i></div>'
@@ -293,6 +309,7 @@ function buildCard(doc, idx) {
         + actionBtn
         + dlBtn
         + '</div>'
+        + paymentPanel
         + '</div>';
 }
 
@@ -300,32 +317,51 @@ function handleResourceAction(idx) {
     var doc = allDocs[idx];
     if (!doc) return;
     if (doc.is_paid === 1 && !isResourceUnlocked(doc)) {
-        payForResource(doc);
+        openResourcePayment(idx);
         return;
     }
     openViewer(doc);
 }
 
-function payForResource(doc) {
-    if (!doc) return;
-    if (doc.is_paid !== 1) {
+function openResourcePayment(idx) {
+    var doc = allDocs[idx];
+    if (!doc || doc.is_paid !== 1) {
         openViewer(doc);
         return;
     }
+    var panel = document.getElementById('resource-payment-panel-' + idx);
+    if (!panel) return;
+    var allPanels = document.querySelectorAll('.resource-payment-panel.open');
+    Array.prototype.forEach.call(allPanels, function(openPanel) { openPanel.classList.remove('open'); });
+    panel.classList.add('open');
+    var input = document.getElementById('resource-phone-' + idx);
+    if (input) {
+        input.focus();
+        input.value = input.value || '';
+    }
+    var status = document.getElementById('resource-payment-status-' + idx);
+    if (status) status.textContent = '';
+}
 
-    var phone = window.prompt('Andika nomero ya telefone yawe (urugero 0788000000):', '');
-    if (!phone) return;
+function closeResourcePayment(idx) {
+    var panel = document.getElementById('resource-payment-panel-' + idx);
+    if (panel) panel.classList.remove('open');
+}
 
-    var cleanPhone = phone.replace(/[\s\-+]/g, '');
+function submitResourcePayment(idx) {
+    var doc = allDocs[idx];
+    if (!doc) return;
+    var phoneInput = document.getElementById('resource-phone-' + idx);
+    var status = document.getElementById('resource-payment-status-' + idx);
+    var panel = document.getElementById('resource-payment-panel-' + idx);
+    if (!phoneInput || !status) return;
+    var cleanPhone = (phoneInput.value || '').replace(/[\s\-+]/g, '');
     if (cleanPhone.length < 10) {
-        alert('Injiza nomero ya telephone yuzuye.');
+        status.textContent = 'Injiza nomero ya telephone yuzuye.';
         return;
     }
-
-    if (!window.confirm('Ishyura ' + formatAmount(doc.price) + ' kugira ngo usome iyi nyandiko?')) {
-        return;
-    }
-
+    status.textContent = 'Tegereza gato...';
+    if (panel) panel.classList.add('open');
     fetch('/api/payments/momo-push', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -340,11 +376,10 @@ function payForResource(doc) {
     .then(function(r) { return r.json(); })
     .then(function(data) {
         if (!data.success) {
-            alert(data.error || 'Kwishyura byanze.');
+            status.textContent = data.error || 'Kwishyura byanze.';
             return;
         }
-
-        alert('Tegereza gato. Twitegereje ubwishyu bwahise.');
+        status.textContent = 'Tegereza gato. Twitegereje ubwishyu bwahise.';
         var referenceId = data.referenceId;
         var attempts = 0;
         var timer = setInterval(function() {
@@ -355,17 +390,18 @@ function payForResource(doc) {
                     if (statusData.status === 'SUCCESS') {
                         clearInterval(timer);
                         markResourceUnlocked(doc);
+                        closeResourcePayment(idx);
+                        loadDocs();
                         openViewer(doc);
-                        alert('Kwishyura byagenze neza! Ubu ushobora gusoma cyangwa gukurura iyi nyandiko.');
                     } else if (attempts >= 20) {
                         clearInterval(timer);
-                        alert('Igihe cyarangiye. Ongera ugerageze.');
+                        status.textContent = 'Igihe cyarangiye. Ongera ugerageze.';
                     }
                 });
         }, 2000);
     })
     .catch(function() {
-        alert('Ikibazo cya internet. Ongera ugerageze.');
+        status.textContent = 'Ikibazo cya internet. Ongera ugerageze.';
     });
 }
 
@@ -373,7 +409,7 @@ function openViewer(docOrIdx) {
     var doc = typeof docOrIdx === 'number' ? allDocs[docOrIdx] : docOrIdx;
     if (!doc) return;
     if (doc.is_paid === 1 && !isResourceUnlocked(doc)) {
-        payForResource(doc);
+        openResourcePayment(allDocs.indexOf(doc));
         return;
     }
     window.open(window.location.origin + '/' + doc.file_path, '_blank', 'noopener');
