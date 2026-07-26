@@ -1,10 +1,13 @@
 const cron   = require('node-cron');
 const PDFDoc = require('pdfkit');
 
-const DAILY_REPORT_EMAIL = 'dotadostationarystore@gmail.com';
 const PASSWORD_REMINDER_EMAIL = 'nzerneste250@gmail.com';
-const PASSWORD_EXPIRY_DAYS = 14;
 const PASSWORD_WARN_DAYS  = 3;
+
+function getReportRecipient() {
+    return process.env.DAILY_REPORT_EMAIL || process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationarystore@gmail.com';
+}
+const PASSWORD_EXPIRY_DAYS = 14;
 
 // Track password change date in memory (set via env or default to app start)
 // Set PASS_CHANGED_AT=YYYY-MM-DD in .env when you change the password
@@ -219,7 +222,7 @@ async function sendReport(db, transport, type) {
 
     await transport.sendMail({
         from: `"IKIZAME Reports" <${process.env.SMTP_USER}>`,
-        to:   process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER,
+        to:   getReportRecipient(),
         subject,
         html: `<div style="font-family:Inter,sans-serif;background:#f8fafc;padding:24px;border-radius:8px;max-width:500px;">
             <div style="background:#0b698b;padding:16px 20px;border-radius:6px;margin-bottom:16px;">
@@ -299,7 +302,7 @@ async function sendDailyReport(db, transport) {
 
     await transport.sendMail({
         from: `"IKIZAME Reports" <${process.env.SMTP_USER}>`,
-        to:   DAILY_REPORT_EMAIL,
+        to:   getReportRecipient(),
         subject: `📋 IKIZAME Daily Report — ${dateStr}`,
         html: `<div style="font-family:Inter,sans-serif;background:#f8fafc;padding:24px;max-width:560px;">
             <div style="background:#0b698b;padding:18px 22px;border-radius:8px;margin-bottom:18px;">
@@ -328,7 +331,7 @@ async function sendDailyReport(db, transport) {
             contentType: 'application/pdf'
         }]
     });
-    console.log(`✅ Daily report sent for ${dateStr} → ${DAILY_REPORT_EMAIL}`);
+    console.log(`✅ Daily report sent for ${dateStr} → ${getReportRecipient()}`);
 }
 
 function buildDailyPDF(d) {

@@ -430,7 +430,7 @@ app.post('/api/reports/submit', (req, res) => {
     const reportType = payload.reportType || 'general';
     const senderName = payload.senderName || payload.name || 'Unknown';
     const senderEmail = payload.senderEmail || payload.email || '';
-    const recipient = process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationerystoreikizame@gmail.com';
+    const recipient = process.env.DAILY_REPORT_EMAIL || process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationarystore@gmail.com';
 
     const html = `
         <div style="font-family:Inter,sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#f8fafc;border-radius:12px;">
