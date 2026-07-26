@@ -107,13 +107,20 @@ db.getConnection((err, conn) => {
 });
 
 // ── SESSION STORE ────────────────────────────────────────────────
-const MySQLStore = require('express-mysql-session')(session);
-const sessionStore = new MySQLStore({
-    expiration:          4 * 60 * 60 * 1000,
-    createDatabaseTable: false,
-    connectionLimit:     2,
-    endConnectionOnClose: true
-}, db.promise());
+let sessionStore;
+try {
+    const MySQLStore = require('express-mysql-session')(session);
+    sessionStore = new MySQLStore({
+        expiration:          4 * 60 * 60 * 1000,
+        createDatabaseTable: false,
+        connectionLimit:     2,
+        endConnectionOnClose: true
+    }, db.promise());
+    console.log('✅ MySQL session store initialized');
+} catch (storeErr) {
+    console.warn('⚠️ Falling back to in-memory session store:', storeErr.message);
+    sessionStore = new session.MemoryStore();
+}
 
 app.use(session({
     secret:            process.env.SESSION_SECRET || 'fallback_dev_secret_change_me',
