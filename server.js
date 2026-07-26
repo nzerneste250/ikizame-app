@@ -381,12 +381,13 @@ if (isProduction) {
 }
 
 // ── ERROR ALERT EMAIL ────────────────────────────────────────────────────
-const ALERT_EMAIL = process.env.ALERT_EMAIL || process.env.SMTP_USER;
+const ALERT_EMAIL = process.env.ALERT_EMAIL || process.env.REPORT_EMAIL || process.env.SMTP_USER;
 function sendErrorAlert(subject, body) {
-    if (!ALERT_EMAIL) return;
+    const recipient = process.env.ERROR_EMAIL || process.env.ALERT_EMAIL || process.env.REPORT_EMAIL || process.env.SMTP_USER;
+    if (!recipient) return;
     emailTransport.sendMail({
         from: `"IKIZAME Alerts" <${process.env.SMTP_USER}>`,
-        to: ALERT_EMAIL,
+        to: recipient,
         subject: `🚨 IKIZAME: ${subject}`,
         html: `<div style="font-family:monospace;background:#0f172a;color:#f8fafc;padding:24px;border-radius:8px;">
             <h2 style="color:#ef4444;margin:0 0 12px;">🚨 ${subject}</h2>
