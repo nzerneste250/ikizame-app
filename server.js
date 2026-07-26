@@ -50,7 +50,12 @@ app.set('trust proxy', 1);
 // ── SECURITY & PERFORMANCE ────────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(compression());
-app.use(express.json());
+app.use(express.json({
+    limit: '10mb',
+    verify: (req, res, buf) => {
+        req.rawBody = buf;
+    }
+}));
 app.use(express.urlencoded({ extended: true }));
 
 // ── RATE LIMITERS ─────────────────────────────────────────────────────────
@@ -415,6 +420,64 @@ app.get('/api/admin/test-report/:type', (req, res) => {
     runner
         .then(() => res.json({ ok: true, message: `${type} report sent` }))
         .catch(e => res.status(500).json({ ok: false, error: e.message }));
+});
+
+// ── REPORT SUBMISSION ENDPOINT ─────────────────────────────────────────────
+app.post('/api/reports/submit', (req, res) => {
+    const payload = (req.body && typeof req.body === 'object') ? req.body : {};
+    const title = payload.title || payload.subject || 'System report';
+    const message = payload.message || payload.body || '';
+    const reportType = payload.reportType || 'general';
+    const senderName = payload.senderName || payload.name || 'Unknown';
+    const senderEmail = payload.senderEmail || payload.email || '';
+    const recipient = process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationerystoreikizame@gmail.com';
+
+    const html = `
+        <div style="font-family:Inter,sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#f8fafc;border-radius:12px;">
+            <div style="background:#0b698b;padding:16px 20px;border-radius:8px;color:#fff;">
+                <h2 style="margin:0;font-size:18px;">📩 New IKIZAME Report</h2>
+                <p style="margin:6px 0 0;font-size:12px;opacity:0.9;">Type: ${reportType}</p>
+            </div>
+            <div style="margin-top:16px;padding:16px;background:#fff;border-radius:8px;border:1px solid #e2e8f0;">
+                <p style="margin:0 0 8px;font-weight:700;">${title}</p>
+                <p style="margin:0 0 8px;color:#475569;white-space:pre-wrap;">${String(message).replace(/\n/g, '<br>')}</p>
+                <p style="margin:8px 0 0;font-size:12px;color:#64748b;">From: ${senderName}${senderEmail ? ` &lt;${senderEmail}&gt;` : ''}</p>
+            </div>
+        </div>
+    `;
+
+    emailTransport.sendMail({
+        from: `"IKIZAME Reports" <${process.env.SMTP_USER || 'dotadostationerystoreikizame@gmail.com'}>`,
+        to: recipient,
+        subject: `📩 IKIZAME Report — ${title}`,
+        html
+    }, (err) => {
+        if (err) {
+            console.error('❌ Report email failed:', err.message);
+            return res.status(500).json({ success: false, error: 'Report email could not be sent.' });
+        }
+        res.json({ success: true, message: 'Report submitted successfully.' });
+    });
+});
+
+// ── JSON PARSE RECOVERY FOR MALFORMED REQUESTS ───────────────────────────
+app.use((err, req, res, next) => {
+    if (err && err.type === 'entity.parse.failed') {
+        const raw = req.rawBody ? req.rawBody.toString('utf8') : '';
+        if (raw) {
+            try {
+                const safeRaw = raw.replace(/\\(?!["\\/bfnrtu])/g, '\\\\');
+                req.body = JSON.parse(safeRaw);
+                req._body = true;
+                return next();
+            } catch (parseErr) {
+                req.body = {};
+                req._body = true;
+                return next();
+            }
+        }
+    }
+    next(err);
 });
 
 // ── GLOBAL EXPRESS ERROR HANDLER ────────────────────────────────────────────────────
