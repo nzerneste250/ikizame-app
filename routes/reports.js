@@ -402,4 +402,5 @@ module.exports = function startReportScheduler(db, transport) {
 
 module.exports.sendReport = sendReport;
 module.exports.sendDailyReport = sendDailyReport;
+module.exports.sendDailyReport = sendDailyReport;
 module.exports.sendPasswordExpiryReminder = sendPasswordExpiryReminder;
