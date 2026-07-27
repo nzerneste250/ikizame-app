@@ -42,14 +42,18 @@
         .lang-badge { display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #1e293b; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 12px; user-select: none; }
         .rw-flag-svg { width: 20px; height: 14px; border-radius: 2px; border: 1px solid #e2e8f0; flex-shrink: 0; }
         @media (max-width: 900px) {
-            .navbar { flex-direction: column !important; height: auto !important; padding: 10px 4% 8px !important; gap: 6px !important; }
-            .navbar-links { gap: 4px 6px !important; width: 100% !important; justify-content: center !important; flex-wrap: wrap !important; }
-            .navbar-links a { font-size: 0.78rem !important; padding: 5px 10px !important; }
+            .navbar { flex-direction: row !important; flex-wrap: wrap !important; height: auto !important; padding: 8px 3% !important; gap: 4px !important; }
+            .navbar-brand { font-size: 1.2rem !important; }
+            .navbar-links { gap: 2px !important; width: 100% !important; justify-content: space-around !important; flex-wrap: nowrap !important; }
+            .navbar-links a { font-size: 0.7rem !important; padding: 5px 6px !important; flex-direction: column !important; gap: 2px !important; align-items: center !important; }
+            .navbar-links a span { display: none !important; }
+            .navbar-links a i { font-size: 1.1rem !important; }
+            .lang-badge { display: none !important; }
         }
 
         /* PAGE */
         .page { padding-top: 80px; padding-bottom: 60px; }
-        @media (max-width: 900px) { .page { padding-top: 130px; } }
+        @media (max-width: 900px) { .page { padding-top: 90px; } }
 
         /* HERO */
         .hero {
