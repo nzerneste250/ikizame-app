@@ -82,32 +82,25 @@
         .navbar-links a { 
             font-family: 'Inter', sans-serif;
             font-size: 0.84rem; 
-            font-weight: 700; 
+            font-weight: 600; 
             color: #475569; 
             text-decoration: none; 
-            padding: 20px 0 18px; 
+            padding: 6px 12px;
+            border-radius: 8px;
             position: relative;
-            transition: color 0.15s ease;
+            transition: color 0.18s ease, background 0.18s ease;
             white-space: nowrap;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
         }
         .navbar-links a:hover { 
-            color: #0b698b; 
+            color: #0b698b;
+            background: rgba(11, 105, 139, 0.08);
         }
-        
         .navbar-links a.active { 
             color: #0b698b; 
-            font-weight: 800; 
-        }
-        .navbar-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px; 
-            background: #0b698b;
-            border-radius: 2px 2px 0 0;
+            font-weight: 700;
+            background: rgba(11, 105, 139, 0.10);
         }
 
         .lang-badge { 
