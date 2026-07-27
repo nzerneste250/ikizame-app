@@ -183,20 +183,24 @@
         }
         .hero-support-row {
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
+            flex-wrap: nowrap;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 2px;
         }
         .hero-support-pill {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 14px 18px;
+            gap: 8px;
+            padding: 8px 12px;
             border-radius: 999px;
             background: rgba(8, 83, 110, 0.08);
             color: #0b698b;
-            font-size: 0.92rem;
+            font-size: 0.78rem;
             font-weight: 700;
             border: 1px solid rgba(11, 105, 139, 0.14);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         .hero-support-pill i {
             color: #0b698b;
@@ -974,9 +978,9 @@
             </h1>
             <p class="hero-desc">Koresha urubuga rwizewe rwo kwiga amategeko y'umuhanda, gukora imyitozo y'ikizamini, kumenya aho ukeneye kongera kwiga, no gutegura neza ikizamini cyawe ku buryo bworoshye kandi bwihuse.</p>
             <div class="hero-support-row">
-                <div class="hero-support-pill"><i class="fa-solid fa-bolt"></i> Imyitozo ihuta kandi ikoroheye</div>
-                <div class="hero-support-pill"><i class="fa-solid fa-mobile-screen-button"></i> Ikora ku telefone na mudasobwa</div>
-                <div class="hero-support-pill"><i class="fa-solid fa-graduation-cap"></i> Kwiga no kugenzura imbere</div>
+                <div class="hero-support-pill"><i class="fa-solid fa-bolt"></i> Imyitozo ihuta</div>
+                <div class="hero-support-pill"><i class="fa-solid fa-mobile-screen-button"></i> Ku telefone na mudasobwa</div>
+                <div class="hero-support-pill"><i class="fa-solid fa-graduation-cap"></i> Kwiga no kugenzura</div>
             </div>
         </section>
 
