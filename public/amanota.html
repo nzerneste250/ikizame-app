@@ -244,6 +244,7 @@
         .footer { min-height: 40px; padding: 7px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; flex-wrap: wrap; gap: 6px; }
         .footer strong { color: #38bdf8; }
         .footer a:hover { opacity: 0.9; }
+        @media (max-width: 900px) { .footer { position: static !important; } .workspace-scroll-container { padding-bottom: 16px !important; } }
 
         @media (max-width: 768px) {
             .workspace-scroll-container { margin-top: 80px; padding: 20px 16px 50px; }
