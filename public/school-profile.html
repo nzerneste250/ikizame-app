@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/design-system.css">
     <style>
         :root {
             --brand: #0b698b;
@@ -75,7 +76,7 @@
         }
         .profile-container {
             width: 100%;
-            max-width: 680px;
+            max-width: 720px;
             display: flex;
             flex-direction: column;
             gap: 24px;
@@ -101,13 +102,14 @@
 
         /* ── INFO CARD (read-only) ── */
         .info-card {
-            background: rgba(255,255,255,0.02);
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(10,30,48,0.28) 100%);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
+            border-radius: 18px;
             padding: 22px 24px;
             display: flex;
             flex-direction: column;
             gap: 14px;
+            box-shadow: 0 14px 28px rgba(2, 8, 24, 0.14);
         }
         .info-card-title {
             font-size: 11px; font-weight: 800; text-transform: uppercase;
@@ -131,13 +133,14 @@
 
         /* ── FORM CARD ── */
         .form-card {
-            background: rgba(255,255,255,0.02);
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(10,30,48,0.28) 100%);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
+            border-radius: 18px;
             padding: 22px 24px;
             display: flex;
             flex-direction: column;
             gap: 18px;
+            box-shadow: 0 14px 28px rgba(2, 8, 24, 0.14);
         }
         .form-card-title {
             font-size: 11px; font-weight: 800; text-transform: uppercase;
@@ -179,15 +182,15 @@
 
         /* ── BUTTONS ── */
         .btn-primary {
-            background: var(--brand); color: #fff; border: none;
-            padding: 13px 20px; border-radius: 8px;
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #fff; border: none;
+            padding: 13px 20px; border-radius: 10px;
             font-size: 0.9rem; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 12px rgba(11,105,139,0.25);
-            transition: background 0.1s;
+            box-shadow: 0 10px 24px rgba(11,105,139,0.2);
+            transition: transform 0.15s, box-shadow 0.15s;
             width: 100%;
         }
-        .btn-primary:hover { background: var(--brand-dark); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(11,105,139,0.22); }
         .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
 
         /* ── ALERT MESSAGES ── */

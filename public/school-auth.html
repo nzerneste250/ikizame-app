@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/design-system.css">
     <style>
         :root {
             --brand: #0b698b;
@@ -277,6 +278,25 @@
         .auth-alert.show { display: block; }
         .auth-alert.error { background: #fff1f2; border: 1px solid #fecaca; color: #991b1b; }
         .auth-alert.success { background: #ecfdf5; border: 1px solid #bbf7d0; color: #065f46; }
+
+        .guide-card,
+        .auth-card-frame {
+            box-shadow: 0 22px 46px rgba(15, 23, 42, 0.08);
+        }
+        .guide-card {
+            border-radius: 22px;
+        }
+        .auth-card-frame {
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,251,255,0.96) 100%);
+        }
+        .btn-auth-submit {
+            box-shadow: 0 14px 28px rgba(11, 105, 139, 0.18);
+        }
+        .input-form-field input {
+            border-radius: 12px;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
     </style>
 </head>
 <body>

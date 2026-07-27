@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/design-system.css">
     <style>
         :root {
             --blue: #1a56db;
@@ -279,6 +280,144 @@
             .prog-mobile .prog-dot { width: 26px; height: 26px; }
             .prog-mobile .prog-row { gap: 3px; }
             .btn { padding: 10px 14px; font-size: 0.82rem; }
+        }
+
+        :root {
+            --brand: #0b698b;
+            --brand-2: #0e7aa0;
+            --surface: #f8fbff;
+            --surface-2: #ffffff;
+            --border: #dce7f1;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        html, body {
+            background: radial-gradient(circle at top left, #eef8ff 0%, #f7fbff 38%, #f3f5f8 100%);
+            color: var(--text);
+        }
+
+        .page {
+            padding: 18px 20px 10px;
+            gap: 14px;
+        }
+
+        .timer-card {
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 18px;
+            padding: 12px 24px;
+            box-shadow: 0 16px 30px rgba(11, 105, 139, 0.18);
+        }
+
+        .timer-label {
+            color: rgba(255,255,255,0.88);
+            letter-spacing: 0.15em;
+        }
+
+        .timer-val {
+            color: #ffffff;
+            font-size: 2rem;
+            letter-spacing: 0.04em;
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.96);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 22px 24px 18px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+        }
+
+        .prog-dot {
+            border-color: #cddbe5;
+            background: #ffffff;
+            box-shadow: inset 0 1px 2px rgba(15,23,42,0.03);
+        }
+
+        .prog-dot.answered {
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+            border-color: var(--brand);
+            color: #ffffff;
+        }
+
+        .prog-dot.current:not(.answered) {
+            border-color: var(--brand);
+            border-width: 3px;
+            box-shadow: 0 0 0 3px rgba(11, 105, 139, 0.12);
+        }
+
+        .q-text {
+            background: linear-gradient(135deg, #f8fbff 0%, #f2f7ff 100%);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: 1.05rem;
+            line-height: 1.65;
+        }
+
+        .img-frame {
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: inset 0 1px 3px rgba(15,23,42,0.04);
+        }
+
+        .opt-row {
+            border: 1px solid #e6edf4;
+            border-radius: 12px;
+            padding: 13px 14px;
+            margin-bottom: 8px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .opt-row:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+        }
+
+        .opt-row.selected {
+            background: linear-gradient(135deg, #eef9ff 0%, #f8fbff 100%);
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgba(11, 105, 139, 0.1);
+        }
+
+        .nav-bar {
+            border-top: 1px solid #e8eef4;
+            padding-top: 12px;
+        }
+
+        .btn {
+            border-radius: 10px;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+        }
+
+        .btn-back {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        .btn-next, .btn-submit {
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        }
+
+        .footer {
+            color: #64748b;
+            padding-bottom: 6px;
+        }
+
+        @media (max-width: 640px) {
+            .page {
+                padding: 12px 10px 16px;
+            }
+
+            .question-card {
+                padding: 14px 14px 16px;
+            }
+
+            .q-text {
+                font-size: 0.97rem;
+            }
         }
     </style>
 </head>

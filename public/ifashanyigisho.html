@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/design-system.css">
     <style>
         :root { --brand:#0b698b; --brand-dark:#08536e; --brand-light:#e0f2fe; --bg:#f0f6fa; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0; }
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -110,6 +111,34 @@
         @media(max-width:480px) {
             .doc-actions { flex-direction:column; }
             .btn-download { justify-content:center; }
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 -1px 0 rgba(255,255,255,0.14);
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: auto -10% -20% auto;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 70%);
+            pointer-events: none;
+        }
+        .search-input {
+            border-radius: 14px;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+        .doc-card {
+            border-radius: 18px;
+            box-shadow: 0 16px 34px rgba(15, 23, 42, 0.05);
+        }
+        .btn-read,
+        .btn-download {
+            box-shadow: 0 8px 18px rgba(11, 105, 139, 0.12);
         }
     </style>
 </head>
