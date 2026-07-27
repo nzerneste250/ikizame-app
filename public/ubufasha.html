@@ -36,17 +36,15 @@
         .navbar-brand-wrap img { width: 32px; height: 32px; object-fit: contain; }
         .navbar-brand { font-family: 'Inter', sans-serif; font-size: 1.65rem; font-weight: 800; color: #0b698b; letter-spacing: -0.5px; text-transform: uppercase; }
         .navbar-links { display: flex; list-style: none; gap: 22px; align-items: center; margin: 0; padding: 0; }
-        .navbar-links a { font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 700; color: #475569; text-decoration: none; padding: 20px 0 18px; position: relative; transition: color 0.15s; white-space: nowrap; display: inline-block; }
-        .navbar-links a:hover { color: #0b698b; }
-        .navbar-links a.active { color: #0b698b; font-weight: 800; }
-        .navbar-links a.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #0b698b; border-radius: 2px 2px 0 0; }
+        .navbar-links a { font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 600; color: #475569; text-decoration: none; padding: 6px 12px; border-radius: 8px; position: relative; transition: color 0.18s ease, background 0.18s ease; white-space: nowrap; display: inline-flex; align-items: center; }
+        .navbar-links a:hover { color: #0b698b; background: rgba(11,105,139,0.08); }
+        .navbar-links a.active { color: #0b698b; font-weight: 700; background: rgba(11,105,139,0.10); }
         .lang-badge { display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #1e293b; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 12px; user-select: none; }
         .rw-flag-svg { width: 20px; height: 14px; border-radius: 2px; border: 1px solid #e2e8f0; flex-shrink: 0; }
         @media (max-width: 900px) {
             .navbar { flex-direction: column !important; height: auto !important; padding: 10px 4% 8px !important; gap: 6px !important; }
-            .navbar-links { gap: 12px 16px !important; width: 100% !important; justify-content: center !important; flex-wrap: wrap !important; }
-            .navbar-links a { font-size: 0.78rem !important; padding: 6px 0 !important; }
-            .navbar-links a.active::after { bottom: -2px !important; }
+            .navbar-links { gap: 4px 6px !important; width: 100% !important; justify-content: center !important; flex-wrap: wrap !important; }
+            .navbar-links a { font-size: 0.78rem !important; padding: 5px 10px !important; }
         }
 
         /* PAGE */
