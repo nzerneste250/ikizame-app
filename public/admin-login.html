@@ -42,9 +42,9 @@
         .top-bar-brand { font-family: 'Inter', sans-serif; font-size: 1.3rem; font-weight: 800; color: #fff; letter-spacing: 3px; }
 
         .card {
-            width: 100%; max-width: 420px; background: #fff;
-            border-radius: 22px; padding: 22px 24px 18px;
-            box-shadow: 0 24px 48px -12px rgba(0,0,0,0.16);
+            width: 100%; max-width: 420px; background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+            border-radius: 24px; padding: 22px 24px 18px;
+            box-shadow: 0 24px 60px rgba(15,23,42,0.12);
             border: 1px solid #e2e8f0;
             position: relative; z-index: 5;
             animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
@@ -95,7 +95,7 @@
             display: flex; align-items: center; justify-content: center; gap: 8px;
             transition: background 0.2s, transform 0.15s;
         }
-        .btn-primary { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #fff; box-shadow: 0 10px 22px var(--brand-glow); }
+        .btn-primary { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #fff; box-shadow: 0 10px 24px var(--brand-glow); border-radius: 999px; }
         .btn-primary:hover { transform: translateY(-1px); }
         .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
         .btn-ghost { background: none; color: var(--text-muted); font-size: 12px; padding: 5px; }

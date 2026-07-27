@@ -16,14 +16,16 @@
         :root {
             --brand: #0b698b;
             --brand-dark: #08536e;
-            --bg-primary: #f8fafc;
-            --bg-white: #ffffff;
+            --primary: #0066FF;
+            --primary-soft: #EBF3FF;
+            --bg-primary: linear-gradient(135deg, #f8fbff 0%, #eef7ff 45%, #fdfefe 100%);
+            --bg-white: rgba(255,255,255,0.96);
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
             --focus: #0284c7;
-            --sidebar-bg: #0f172a;
-            --sidebar-border: #1e293b;
+            --sidebar-bg: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+            --sidebar-border: rgba(255,255,255,0.10);
             --sidebar-muted: #94a3b8;
             
             --success: #10b981;
@@ -39,11 +41,13 @@
             width: 240px; background: var(--sidebar-bg);
             display: flex; flex-direction: column; flex-shrink: 0;
             border-right: 1px solid var(--sidebar-border);
+            box-shadow: 8px 0 24px rgba(15,23,42,0.10);
         }
         .sidebar-brand {
             padding: 24px 20px 20px; font-family: 'Black Han Sans', sans-serif;
             font-size: 1.1rem; color: #38bdf8; letter-spacing: 2px;
             border-bottom: 1px solid var(--sidebar-border); display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.03);
         }
         .sidebar-nav { padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
         .sidebar-nav a {
@@ -68,6 +72,7 @@
         .topbar {
             height: 74px; background: var(--bg-white); border-bottom: 1px solid var(--border);
             display: flex; align-items: center; justify-content: space-between; padding: 0 32px; flex-shrink: 0;
+            backdrop-filter: blur(14px);
         }
         .topbar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #0d1b2a; }
         .topbar p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
@@ -97,11 +102,11 @@
             flex-shrink: 0; 
         }
         .summary-card {
-            background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px;
-            display: flex; align-items: center; gap: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.01);
+            background: linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(248,251,255,0.95) 100%); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px;
+            display: flex; align-items: center; gap: 16px; box-shadow: 0 14px 32px rgba(15,23,42,0.05);
             cursor: pointer; transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
         }
-        .summary-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); transform: translateY(-2px); border-color: #94a3b8; }
+        .summary-card:hover { box-shadow: 0 20px 40px rgba(15,23,42,0.08); transform: translateY(-2px); border-color: rgba(0,102,255,0.16); }
         .summary-card.active-filter { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(11,105,139,0.15); }
         .badge-square { width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         .bg-blue { background: #e0f2fe; color: #0369a1; }
@@ -123,10 +128,10 @@
 
         /* 🎯 ULTRA-ISOLATED INTERIOR SCROLL COMPARTMENT */
         .table-container {
-            background: #fff; 
+            background: linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(248,251,255,0.96) 100%); 
             border: 1px solid var(--border); 
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); 
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(15,23,42,0.06); 
             overflow-y: auto; 
             overflow-x: auto;
             flex: 1; 

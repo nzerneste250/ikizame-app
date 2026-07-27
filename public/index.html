@@ -25,6 +25,9 @@
             --border-color: rgba(15, 23, 42, 0.08);
             --error-crimson: #ef4444;
             --success-emerald: #10b981;
+            --primary: #0066FF;
+            --primary-soft: #EBF3FF;
+            --secondary: #00B8D9;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -136,8 +139,7 @@
             flex: 1;
             position: relative;
             z-index: 5;
-            width: 100%;
-            max-width: 1180px;
+            width: min(1180px, calc(100% - 32px));
             margin: 0 auto;
             padding: 56px 5%;
             display: grid;
@@ -149,6 +151,7 @@
             border: 1px solid rgba(11, 105, 139, 0.12);
             border-radius: 36px;
             box-shadow: 0 32px 90px rgba(15, 23, 42, 0.12);
+            animation: fadeInUp 0.6s ease both;
         }
 
         /* ===== HERO COPY ===== */
@@ -213,12 +216,12 @@
 
         .hero-h1 {
             font-family: 'Poppins', 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(2.8rem, 4.3vw, 4.1rem);
-            line-height: 1.08;
+            font-size: clamp(2.7rem, 4.3vw, 4.2rem);
+            line-height: 1.06;
             letter-spacing: -0.03em;
             font-weight: 800;
             color: #0f172a;
-            max-width: 560px;
+            max-width: 620px;
             text-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
         }
         .hero-h1 em {
@@ -230,11 +233,11 @@
         }
 
         .hero-desc {
-            font-size: 1rem;
+            font-size: 1.04rem;
             font-weight: 500;
             color: #475569;
             line-height: 1.75;
-            max-width: 560px;
+            max-width: 600px;
         }
 
         .hero-cta {
@@ -242,7 +245,7 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-cyan) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             border: 2px solid transparent;
             color: #ffffff;
             text-decoration: none;
@@ -252,7 +255,7 @@
             border-radius: 48px;
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
-            box-shadow: 0 16px 32px rgba(11, 105, 139, 0.22);
+            box-shadow: 0 16px 32px rgba(0, 102, 255, 0.22);
         }
         .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(11, 105, 139, 0.24); }
         .hero-cta svg { width: 16px; height: 16px; }
@@ -922,21 +925,26 @@
                 <span class="pill">Isuzuma Rihuse</span>
                 <span class="pill">Amategeko 2026</span>
             </div>
-            <h1 class="hero-h1">
-                Iga, Isuzume,<br>
-                <em>Utsinde</em><br>
-                Ikizamini!
-            </h1>
-            <p class="hero-desc">Ikizame ni urubuga rugufasha kwiga amategeko y'umuhanda no gukora imyitozo y'ikizamini cy'uruhushya rw'agateganyo rwo gutwara ibinyabiziga mu Rwanda, vuba, neza, kandi ukoresheje telefone yawe.</p>
-            <div class="hero-support-row">
-                <div class="hero-support-pill"><i class="fa-solid fa-bolt"></i> Byihuse kandi byoroshye</div>
-                <div class="hero-support-pill"><i class="fa-solid fa-mobile-screen-button"></i> Kuri telefone yawe</div>
-                <div class="hero-support-pill"><i class="fa-solid fa-graduation-cap"></i> Kwiga neza</div>
+            <div class="pill-row">
+                <span class="pill">10,000+ Abigishwa</span>
+                <span class="pill">50,000+ Ibibazo</span>
+                <span class="pill">Amanota y'ukuri</span>
             </div>
-            <button class="hero-cta" onclick="document.getElementById('guideOverlay').classList.add('open')">
-                Reba Uko Bigenda
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </button>
+            <h1 class="hero-h1">
+                Witegure Ikizamini cyo Gutwara Ibinyabiziga<br>
+                <em>mu Rwanda</em><br>
+                kandi utsinde ku nshuro ya mbere.
+            </h1>
+            <p class="hero-desc">Koresha urubuga rwizewe rwo kwiga amategeko y'umuhanda, gukora imyitozo y'ikizamini, kumenya aho ukeneye kongera kwiga, no gutegura neza ikizamini cyawe ku buryo bworoshye kandi bwihuse.</p>
+            <div class="hero-support-row">
+                <div class="hero-support-pill"><i class="fa-solid fa-bolt"></i> Imyitozo ihuta kandi ikoroheye</div>
+                <div class="hero-support-pill"><i class="fa-solid fa-mobile-screen-button"></i> Ikora ku telefone na mudasobwa</div>
+                <div class="hero-support-pill"><i class="fa-solid fa-graduation-cap"></i> Kwiga no kugenzura imbere</div>
+            </div>
+            <div class="hero-support-row" style="margin-top:4px;">
+                <a href="#features" class="hero-cta" style="text-decoration:none;">Tangira Kwiga</a>
+                <a href="ibiciro" class="hero-cta" style="background:#fff;color:var(--accent-teal);border:1px solid rgba(11,105,139,0.16);box-shadow:none;text-decoration:none;">Reba Ibiciro</a>
+            </div>
         </section>
 
         <!-- Registration Card -->
@@ -984,6 +992,67 @@
             </div>
         </section>
     </main>
+
+    <section class="page-shell" style="width:min(1180px, calc(100% - 32px)); margin:0 auto 40px; padding:0 0 24px;">
+        <div class="section-shell section-shell--soft" id="features" style="margin-bottom:20px;">
+            <div class="badge-row" style="margin-bottom:14px;"><span class="pill" style="background:#fff;">Ibyo uzabona</span></div>
+            <h2 class="section-title">Guteranya ibikoresho byoroshye byatuma ushimishe ikizamini</h2>
+            <p class="section-subtitle">Ikizame igufasha kwiga, kwisuzumisha, no kumenya aho ukeneye kongera kwiga mu buryo bworoshye kandi buri gihe.</p>
+            <div class="feature-grid" style="margin-top:24px;">
+                <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-clipboard-check"></i></div><h3>Imyitozo y'ikizamini</h3><p>Yiga ibibazo by'ubwoko buhuje n'ikizamini cya Rwanda, ugahita usuzuma ubumenyi bwawe.</p></div>
+                <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-traffic-light"></i></div><h3>Ibimenyetso n'amategeko</h3><p>Wiga amategeko y'umuhanda, ibimenyetso, n'ibisobanuro by'ingenzi bishobora kugufasha gutsinda.</p></div>
+                <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div><h3>Amanota y'uko wigaga</h3><p>Reba uko wigaga, uko wakoze, n'ahantu ugomba kongera kwiga kugira ngo ushitse ku ntego.</p></div>
+                <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-mobile-screen-button"></i></div><h3>Wakoresha ku telefone</h3><p>Wigane aho uri hose. IKIZAME ikora neza kuri telefone, tableti, na mudasobwa.</p></div>
+                <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Ubumenyi bwizewe</h3><p>Byo kurusha ubusanzwe mu buryo bworoshye, bwihuse, kandi bwizewe ku banyeshuri.</p></div>
+                <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-headset"></i></div><h3>Ubufasha bwihuse</h3><p>Ufite ikibazo? Twafasha vuba kandi neza mu buryo bworoshye.</p></div>
+            </div>
+        </div>
+
+        <div class="section-shell" style="margin-bottom:20px;">
+            <h2 class="section-title">Uko bigenda</h2>
+            <div class="timeline" style="margin-top:20px;">
+                <div class="timeline-item"><div class="timeline-step">1</div><h3>Fungura konti</h3><p>Injiza amazina yawe n'inomero ya telefone kugira ngo utangire kwiga.</p></div>
+                <div class="timeline-item"><div class="timeline-step">2</div><h3>Hitamo imyitozo</h3><p>Guhitamo ibibazo by'amategeko, ibimenyetso, cyangwa ikizamini ryuzuye.</p></div>
+                <div class="timeline-item"><div class="timeline-step">3</div><h3>Subiza ibibazo</h3><p>Witaho igihe, usubize ibibazo byoroshye kandi ubone ibitekerezo by'ingenzi.</p></div>
+                <div class="timeline-item"><div class="timeline-step">4</div><h3>Reba ibisubizo</h3><p>Umva amanota yawe, urebe ahantu waba ukeneye kongera kwiga.</p></div>
+            </div>
+        </div>
+
+        <div class="section-shell" style="margin-bottom:20px;">
+            <h2 class="section-title">Kuki abanyeshuri bashyira IKIZAME mu mwanya wa mbere</h2>
+            <div class="trust-grid" style="margin-top:20px;">
+                <div class="trust-card"><h3>Uburyo bwo kwishyura bwizewe</h3><p>Twubahiriza uburyo bwizewe bwo kwishyura kandi dukomeza ubufasha mu cyiciro cya buri wese.</p></div>
+                <div class="trust-card"><h3>Ibibazo bihoraho</h3><p>Ibibazo by'ikizamini biba bishyizweho mu buryo bworoshye, kandi bifite uburemere bwuzuye.</p></div>
+                <div class="trust-card"><h3>Ikoraniro ry'ubwoko bwose</h3><p>Ikora neza kuri telefone, tableti na mudasobwa, bityo ukoresha uburyo bworoshye.</p></div>
+                <div class="trust-card"><h3>Ubufasha bwumvikana</h3><p>Tugufasha mu buryo bwihuse no kuburyo bworoshye niba ufite ikibazo cyangwa ukeneye ubusobanuro.</p></div>
+            </div>
+        </div>
+
+        <div class="section-shell" style="margin-bottom:20px;">
+            <h2 class="section-title">Ibitekerezo by'abigishwa</h2>
+            <div class="testimonial-grid" style="margin-top:20px;">
+                <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p>“Niboneye uburyo bwiza bwo kwiga. Nshoboye gusobanukirwa amategeko y'umuhanda kandi no gukora imyitozo byanshoboje.”</p><strong>Uwase Marie</strong><br/><span style="color:#64748b;">Kigali</span></div>
+                <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p>“Ikizamini cyari gitandukanye neza, kandi nashoboye kumenya aho nari nkeneye kongera kwiga.”</p><strong>Iradukunda Eric</strong><br/><span style="color:#64748b;">Musanze</span></div>
+                <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p>“Ndashima uburyo bworoheje. Nshobora kwiga no gukora imyitozo kuri telefone yanjye aho ari ho hose.”</p><strong>Mukeshimana Grace</strong><br/><span style="color:#64748b;">Huye</span></div>
+            </div>
+        </div>
+
+        <div class="section-shell">
+            <h2 class="section-title">Ibibazo bisanzwe</h2>
+            <div class="faq-list" style="margin-top:20px;">
+                <div class="faq-item"><button class="faq-trigger" type="button">Uko IKIZAME ikora <i class="fa-solid fa-plus"></i></button><div class="faq-panel"><p>Wuzura amazina yawe, utangire imyitozo, uhitemo ibibazo, usubize, maze urebe amanota yawe.</p></div></div>
+                <div class="faq-item"><button class="faq-trigger" type="button">Uburyo bwo kwishyura <i class="fa-solid fa-plus"></i></button><div class="faq-panel"><p>Woshyura ukoresheje uburyo bwo kwishyura bwemewe, maze ukomeze uhabwa ibibazo byo kwitoza.</p></div></div>
+                <div class="faq-item"><button class="faq-trigger" type="button">Ese irashobora gukoreshwa ku telefone? <i class="fa-solid fa-plus"></i></button><div class="faq-panel"><p>Yee, ikora neza kuri telefone, tableti, na mudasobwa.</p></div></div>
+                <div class="faq-item"><button class="faq-trigger" type="button">Ese ndashobora kwigana inshuro nyinshi? <i class="fa-solid fa-plus"></i></button><div class="faq-panel"><p>Yee, ushobora kwigana inshuro nyinshi ugamije gukomeza kwitegura neza.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-band" style="width:min(1180px, calc(100% - 32px)); margin:0 auto 40px;">
+        <h2>Yitegure neza uyu munsi</h2>
+        <p>Witangiye kwiga mu buryo bwiza, buno bwaba ubwa mbere cyangwa se washatse kongera ubuhanga bwawe. Tangira ikizamini uno munsi maze ube hafi yo gutsinda.</p>
+        <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;"><a href="/#" class="hero-cta" style="background:#fff;color:var(--accent-teal);box-shadow:none;">Tangira Ikizamini</a><a href="ibiciro" class="hero-cta" style="background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;box-shadow:none;">Reba Ibiciro</a></div>
+    </section>
 
     <!-- ===== GUIDE MODAL ===== -->
     <div class="guide-overlay" id="guideOverlay" onclick="if(event.target===this)this.classList.remove('open')">

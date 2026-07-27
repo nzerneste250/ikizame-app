@@ -16,8 +16,10 @@
       --brand-dark: #08536e;
       --brand-light: #e0f2fe;
       --cyan: #38bdf8;
+      --primary: #0066FF;
+      --primary-soft: #ebf3ff;
       --bg: linear-gradient(135deg, #f5fbff 0%, #edf7ff 48%, #f9fcff 100%);
-      --surface: #ffffff;
+      --surface: rgba(255,255,255,0.96);
       --text: #0f172a;
       --muted: #475569;
       --border: #e2e8f0;
@@ -31,7 +33,19 @@
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.1;
+      filter: blur(20px);
+    }
+    body::before { width: 420px; height: 420px; background: var(--brand); top: -120px; left: -120px; }
+    body::after { width: 360px; height: 360px; background: #38bdf8; right: -100px; bottom: 120px; }
 
     /* NAVBAR */
     header {
@@ -64,9 +78,22 @@
 
     /* HERO */
     .hero {
+      position: relative;
+      overflow: hidden;
       background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
-      padding: 52px 5% 44px; text-align: center; color: #fff;
+      padding: 56px 5% 48px; text-align: center; color: #fff;
       margin-top: 60px;
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.12);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: auto -6% -18% auto;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 70%);
+      pointer-events: none;
     }
     .hero-pill {
       display: inline-flex; align-items: center; gap: 8px;
@@ -101,11 +128,19 @@
 
     /* SECTION CARD */
     .section-card {
+      position: relative;
+      z-index: 1;
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; padding: 28px 32px;
-      box-shadow: 0 4px 18px rgba(15,23,42,0.05);
+      border-radius: 22px; padding: 28px 32px;
+      box-shadow: 0 18px 42px rgba(15,23,42,0.06);
       animation: slideUp 0.5s ease-out both;
       scroll-margin-top: 80px;
+      backdrop-filter: blur(10px);
+    }
+    .section-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 54px rgba(15,23,42,0.08);
+      border-color: rgba(0,102,255,0.16);
     }
     @keyframes slideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -128,9 +163,10 @@
     .policy-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
     .policy-list-item {
       display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 14px; border-radius: 9px;
-      background: #f8fbff; border: 1px solid rgba(11,105,139,0.08);
+      padding: 10px 14px; border-radius: 12px;
+      background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 100%); border: 1px solid rgba(11,105,139,0.12);
       font-size: 0.86rem; color: var(--muted); line-height: 1.55;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.04);
     }
     .policy-list-item i { color: var(--brand); font-size: 0.8rem; margin-top: 2px; flex-shrink: 0; }
 
@@ -148,7 +184,8 @@
     /* CONTACT CARD */
     .contact-card {
       background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
-      border-radius: 14px; padding: 24px 28px; color: #fff;
+      border-radius: 20px; padding: 24px 28px; color: #fff;
+      box-shadow: 0 20px 42px rgba(11,105,139,0.16);
     }
     .contact-card h2 { color: #fff; margin-bottom: 6px; }
     .contact-card p { color: rgba(255,255,255,0.8); margin-bottom: 16px; }
