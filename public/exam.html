@@ -173,8 +173,18 @@
         .btn-submit:hover { background: linear-gradient(135deg, #15803D, #16A34A); }
 
         /* ── FOOTER ── */
-        .footer { text-align: center; font-size: 0.7rem; color: #9ca3af; padding-bottom: 4px; flex-shrink: 0; }
-        .footer strong { color: #6b7280; }
+        .footer {
+            width: 100%; background: #0f172a;
+            display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+            gap: 6px; padding: 7px 16px; flex-shrink: 0;
+            font-size: 0.7rem; color: #64748b;
+        }
+        .footer strong { color: #38bdf8; }
+        .footer a { color: #a78bfa; text-decoration: none; font-weight: 700; }
+        .footer a:hover { opacity: 0.9; }
+        @media (max-width: 640px) {
+            .footer { font-size: 0.65rem; padding: 8px 12px; gap: 4px; }
+        }
 
         .options-list::-webkit-scrollbar { width: 3px; }
         .options-list::-webkit-scrollbar-track { background: transparent; }
@@ -405,12 +415,7 @@
             background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
         }
 
-        .footer {
-            color: #64748b;
-            padding-bottom: 6px;
-        }
-
-        @media (max-width: 640px) {
+@media (max-width: 640px) {
             .page {
                 padding: 12px 10px 16px;
             }
@@ -470,9 +475,16 @@
         </div>
     </div>
 
-    <div class="footer">
-        &copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong>
-    </div>
+    <footer class="footer">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;text-align:center;">
+            <span>© 2026 IKIZAME Empowering Learners Across Rwanda</span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <span>Developed by <strong>Dotado Stationery Store Ltd</strong></span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <a href="/about">About</a>
+            <a href="/terms">Terms &amp; Conditions</a>
+        </div>
+    </footer>
 </div>
 
 <!-- Custom submit confirm modal -->
