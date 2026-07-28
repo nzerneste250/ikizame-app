@@ -82,6 +82,19 @@
             width: 100%; padding: 10px 18px; border: 1px solid #cbd5e1; border-radius: 30px;
             font-size: 13px; color: var(--text-main); outline: none; background: #f8fafc;
         }
+        .analytics-search-box {
+            width: 100%; max-width: 420px; margin-top: 10px;
+        }
+        .analytics-search-box input {
+            width: 100%; padding: 12px 18px; border: 1px solid #cbd5e1; border-radius: 999px;
+            font-size: 13px; color: var(--text-main); outline: none; background: #f8fafc; box-shadow: inset 0 1px 2px rgba(15,23,42,0.05);
+        }
+        .search-highlight {
+            background: #fde68a;
+            color: #92400e;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
 
         /* 🎯 ABSOLUTE OUTER VIEWPORT LOCKDOWN */
         .form-scroll { 
@@ -568,6 +581,15 @@
                     </div>
                 </div>
 
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+                    <div>
+                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Imikorere y'Abanyeshuri</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Shakisha abanyeshuri hakoreshejwe izina cyangwa numero ya telefone.</p>
+                    </div>
+                    <div class="analytics-search-box">
+                        <input id="studentPerformanceSearchInput" type="text" placeholder="Shakisha abanyeshuri ku izina cyangwa telefone..." autocomplete="off">
+                    </div>
+                </div>
                 <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start;">
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
                         <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Imikorere y'Abanyeshuri</h3>
@@ -634,6 +656,7 @@ document.addEventListener('keydown', function(e) {
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('questionsMasterTableBody');
     const searchInp = document.getElementById('dashboardSearchInput');
+    const studentPerformanceSearchInput = document.getElementById('studentPerformanceSearchInput');
         const duplicateToggle = document.getElementById('duplicateToggleSwitch');
     
     const cardTotalQuestions = document.getElementById('cardTotalQuestions');
@@ -679,6 +702,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<span>${val}</span>`;
     }
 
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function escapeRegex(value) {
+        return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function highlightText(value, query) {
+        if (!query || !value) return escapeHtml(value);
+        const safeValue = escapeHtml(value);
+        const regex = new RegExp(escapeRegex(query), 'gi');
+        return safeValue.replace(regex, match => `<span class="search-highlight">${match}</span>`);
+    }
+
     function renderReviewContentHTML(val) {
         if (!val || !val.trim()) return `<span style="color:#94a3b8; font-style:italic;">None</span>`;
         if (checkIsGraphicAssetString(val)) {
@@ -719,6 +762,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             `;
         }).join('');
+    }
+
+    let allStudentPerformanceRecords = [];
+
+    function renderStudentPerformanceTable(studentRecords, query) {
+        const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
+        if (!leaderboardTarget) return;
+
+        if (!studentRecords || studentRecords.length === 0) {
+            leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#64748b; font-style:italic;">Nta bizamini byabonetse kuri uyu munyeshuri.</td></tr>`;
+            return;
+        }
+
+        const normalizedQuery = normalizeStringContentForComparison(query);
+        leaderboardTarget.innerHTML = studentRecords.map(s => {
+            const avgNum = parseFloat(s.averageScore);
+            const passColor = avgNum >= 12 ? '#166534' : '#991b1b';
+            const passBg    = avgNum >= 12 ? '#dcfce7' : '#fee2e2';
+            const formattedDate = new Date(s.lastAttemptDate).toLocaleDateString('rw-RW', { month: 'short', day: 'numeric' });
+
+            const highlightedName = normalizedQuery ? highlightText(s.studentName, query) : escapeHtml(s.studentName);
+            const highlightedPhone = normalizedQuery ? highlightText(s.phoneNumber, query) : escapeHtml(s.phoneNumber);
+
+            const safePhone = s.phoneNumber.replace(/'/g, "\\'");
+            const safeName  = (s.studentName || 'Unknown').replace(/'/g, "\\'");
+            return `
+                            <tr style="border-bottom: 1px solid #f1f5f9; cursor:pointer;"
+                                onclick="openStudentAttemptsModal('${safePhone}', '${safeName}')"
+                                onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                                <td style="padding:12px 8px; font-weight:600; color:#0f172a; line-height:1.3;">${highlightedName}<br><span style="font-size:11px; color:#64748b; font-weight:400;">${highlightedPhone}</span></td>
+                                <td style="padding:12px 8px; text-align:center; font-weight:700; color:#0b698b;">${s.totalExams}</td>
+                                <td style="padding:12px 8px; text-align:center;"><span style="background:${passBg}; color:${passColor}; font-weight:800; padding:2px 8px; border-radius:4px;">${s.averageScore}/20</span></td>
+                                <td style="padding:12px 8px; text-align:right; color:#64748b;">${formattedDate}</td>
+                            </tr>
+                        `;
+        }).join('');
+    }
+
+    function applyStudentPerformanceSearch() {
+        const query = studentPerformanceSearchInput ? studentPerformanceSearchInput.value : '';
+        const normalizedQuery = normalizeStringContentForComparison(query);
+        if (!normalizedQuery) {
+            renderStudentPerformanceTable(allStudentPerformanceRecords, '');
+            return;
+        }
+
+        const filteredRecords = allStudentPerformanceRecords.filter(s => {
+            return normalizeStringContentForComparison(s.studentName).includes(normalizedQuery) ||
+                   normalizeStringContentForComparison(s.phoneNumber).includes(normalizedQuery);
+        });
+
+        renderStudentPerformanceTable(filteredRecords, query);
     }
 
     function applyFiltersSearchAndDuplicateLogic() {
@@ -905,30 +1000,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     return res.json();
                 })
                 .then(students => {
-                    const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
+                    allStudentPerformanceRecords = Array.isArray(students) ? students : [];
                     if (!students || students.length === 0) {
+                        const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
                         leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#64748b; font-style:italic;">No exam history recorded yet.</td></tr>`;
                         return;
                     }
 
-                    leaderboardTarget.innerHTML = students.map(s => {
-                        const avgNum = parseFloat(s.averageScore);
-                        const passColor = avgNum >= 12 ? '#166534' : '#991b1b';
-                        const passBg    = avgNum >= 12 ? '#dcfce7' : '#fee2e2';
-                        const formattedDate = new Date(s.lastAttemptDate).toLocaleDateString('rw-RW', { month: 'short', day: 'numeric' });
-                        const safePhone = s.phoneNumber.replace(/'/g, "\\'");
-                        const safeName  = (s.studentName || 'Unknown').replace(/'/g, "\\'");
-                        return `
-                            <tr style="border-bottom: 1px solid #f1f5f9; cursor:pointer;"
-                                onclick="openStudentAttemptsModal('${safePhone}', '${safeName}')"
-                                onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                                <td style="padding:12px 8px; font-weight:600; color:#0f172a;">${s.studentName || 'Unknown'}<br><span style="font-size:11px; color:#64748b; font-weight:400;">${s.phoneNumber}</span></td>
-                                <td style="padding:12px 8px; text-align:center; font-weight:700; color:#0b698b;">${s.totalExams}</td>
-                                <td style="padding:12px 8px; text-align:center;"><span style="background:${passBg}; color:${passColor}; font-weight:800; padding:2px 8px; border-radius:4px;">${s.averageScore}/20</span></td>
-                                <td style="padding:12px 8px; text-align:right; color:#64748b;">${formattedDate}</td>
-                            </tr>
-                        `;
-                    }).join('');
+                    applyStudentPerformanceSearch();
                 })
                 .catch(err => {
                     console.error('Failed to load student performance:', err);
@@ -936,6 +1015,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#ef4444;">Gushaka byanze (${err.message}). Reba console kugira ngo umenye impamvu.</td></tr>`;
                 });
 
+            if (studentPerformanceSearchInput) {
+                studentPerformanceSearchInput.value = '';
+                studentPerformanceSearchInput.addEventListener('input', applyStudentPerformanceSearch);
+            }
         } else {
             analyticsWorkspaceView.style.display = 'none';
             questionsTableContainer.style.display = 'block';
