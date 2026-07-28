@@ -1297,16 +1297,13 @@
                     })
                     .then(r => r.json())
                     .then(data => {
-                        if (data.status === 'first_time') {
-                            // New user — go straight to register then exam
-                            return doRegister(name, fullFormattedPhone, submitBtn);
-                        } else if (data.status === 'has_unfinished') {
+                        if (data.status === 'has_unfinished') {
                             // Has a bought exam not yet finished — resume
                             phoneHint.textContent = `Ufite ${data.remaining || 0} bizamini bisigaye. Ukomereze aho.`;
                             phoneHint.className = "hint success";
                             return doRegister(name, fullFormattedPhone, submitBtn);
                         } else if (data.status === 'all_finished') {
-                            // All exams used up — redirect to buy page
+                            // No paid exams available — redirect to buy page
                             if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
                             phoneHint.textContent = "Nta bizamini bisigaye kuri iyi nomero. Gura ibindi ku gice cy'Ibiciro.";
                             phoneHint.className = "hint error";

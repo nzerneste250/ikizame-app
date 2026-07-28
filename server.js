@@ -289,20 +289,15 @@ app.post('/api/check-phone', (req, res) => {
 
     const phone = normalizePhone(phoneNumber);
 
-    db.query(`SELECT COUNT(*) AS cnt FROM exam_attempts WHERE RIGHT(phone_number, 9) = RIGHT(?, 9)`, [phone], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (rows[0].cnt === 0) return res.json({ status: 'first_time', remaining: 1 });
-
-        db.query(
-            `SELECT COALESCE(SUM(remaining_exams), 0) AS remaining FROM payment_transactions WHERE RIGHT(phone_number, 9) = ? AND status = 'SUCCESS'`,
-            [phone.slice(-9)],
-            (balErr, balRows) => {
-                if (balErr) return res.status(500).json({ error: balErr.message });
-                const remaining = parseInt(balRows[0].remaining, 10) || 0;
-                return res.json({ status: remaining > 0 ? 'has_unfinished' : 'all_finished', remaining });
-            }
-        );
-    });
+    db.query(
+        `SELECT COALESCE(SUM(remaining_exams), 0) AS remaining FROM payment_transactions WHERE RIGHT(phone_number, 9) = ? AND status = 'SUCCESS'`,
+        [phone.slice(-9)],
+        (balErr, balRows) => {
+            if (balErr) return res.status(500).json({ error: balErr.message });
+            const remaining = parseInt(balRows[0].remaining, 10) || 0;
+            return res.json({ status: remaining > 0 ? 'has_unfinished' : 'all_finished', remaining });
+        }
+    );
 });
 
 app.post('/api/register', (req, res) => {
@@ -311,35 +306,22 @@ app.post('/api/register', (req, res) => {
 
     const phone = normalizePhone(phoneNumber);
 
-    db.query(`SELECT COUNT(*) AS cnt FROM exam_attempts WHERE RIGHT(phone_number, 9) = RIGHT(?, 9)`, [phone], (histErr, histRows) => {
-        if (histErr) return res.status(500).json({ error: histErr.message });
-
-        if (histRows[0].cnt === 0) {
+    db.query(
+        `SELECT id, remaining_exams FROM payment_transactions WHERE RIGHT(phone_number, 9) = RIGHT(?, 9) AND status = 'SUCCESS' AND remaining_exams > 0 ORDER BY id DESC LIMIT 1`,
+        [phone],
+        (accessErr, results) => {
+            if (accessErr) return res.status(500).json({ error: accessErr.message });
+            if (!results || results.length === 0) {
+                return res.status(403).json({ ok: false, error: "Nta madorandore afite inshuro usigaje kuri iyi nomero. Gura ibizamini bishya ku gice cy'Ibiciro!" });
+            }
             req.session.examStudentName        = studentName.trim();
             req.session.examPhoneNumber        = phone;
-            req.session.activePaymentRecordId  = null;
+            req.session.activePaymentRecordId  = results[0].id;
             req.session.lockedExamQuestionIds  = [];
             req.session.hasCompletedActiveExamToken = false;
-            return res.json({ ok: true, remaining: 1 });
+            res.json({ ok: true, remaining: results[0].remaining_exams });
         }
-
-        db.query(
-            `SELECT id, remaining_exams FROM payment_transactions WHERE phone_number = ? AND status = 'SUCCESS' AND remaining_exams > 0 ORDER BY id DESC LIMIT 1`,
-            [phone],
-            (accessErr, results) => {
-                if (accessErr) return res.status(500).json({ error: accessErr.message });
-                if (!results || results.length === 0) {
-                    return res.status(403).json({ ok: false, error: "Nta madorandore afite inshuro usigaje kuri iyi nomero. Gura ibizamini bishya ku gice cy'Ibiciro!" });
-                }
-                req.session.examStudentName        = studentName.trim();
-                req.session.examPhoneNumber        = phone;
-                req.session.activePaymentRecordId  = results[0].id;
-                req.session.lockedExamQuestionIds  = [];
-                req.session.hasCompletedActiveExamToken = false;
-                res.json({ ok: true, remaining: results[0].remaining_exams });
-            }
-        );
-    });
+    );
 });
 
 app.post('/api/clear-session', (req, res) => {
