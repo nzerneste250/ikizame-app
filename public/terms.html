@@ -128,7 +128,7 @@
     .toc-item i { color: var(--brand); font-size: 0.75rem; width: 14px; }
 
     /* MAIN */
-    main { max-width: 1000px; width: 100%; margin: 0 auto; padding: 32px 5% 80px; display: flex; flex-direction: column; gap: 20px; }
+    main { max-width: 1300px; width: 100%; margin: 0 auto; padding: 32px 4% 80px; display: flex; flex-direction: column; gap: 20px; }
 
     /* SECTION CARD */
     .section-card {
@@ -193,7 +193,7 @@
     }
     .contact-card h2 { color: #fff; margin-bottom: 6px; }
     .contact-card p { color: rgba(255,255,255,0.8); margin-bottom: 16px; }
-    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .contact-grid { display: grid; grid-template-columns: repeat(3, minmax(320px, 1fr)); gap: 12px; }
     .contact-row {
       display: flex; align-items: center; gap: 10px;
       background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
@@ -201,9 +201,8 @@
       font-size: 0.82rem; font-weight: 600; color: #fff; text-decoration: none;
       transition: background 0.15s; overflow: hidden; min-width: 0;
     }
-    .contact-row:hover { background: rgba(255,255,255,0.2); }
     .contact-row i { font-size: 0.9rem; color: var(--cyan); flex-shrink: 0; }
-    .contact-row span { overflow: visible; text-overflow: initial; white-space: normal; word-break: break-word; min-width: 0; }
+    .contact-row span { overflow: visible; text-overflow: clip; white-space: nowrap; min-width: 0; }
     .contact-row.email-row span { font-size: 0.78rem; }
     .contact-row.company-row span { font-size: 0.78rem; }
 
