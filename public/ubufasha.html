@@ -99,7 +99,9 @@
         }
         .contact-row:hover { background: rgba(255,255,255,0.2); }
         .contact-row i { font-size: 1rem; flex-shrink: 0; }
-        .contact-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+        .contact-row span { overflow: visible; text-overflow: initial; white-space: normal; word-break: break-word; min-width: 0; }
+        .contact-row.email-row span { font-size: 0.78rem; }
+        .contact-row.company-row span { font-size: 0.78rem; }
         .contact-row.wa-row i { color: #25d366; }
         .contact-row.email-row i { color: #38bdf8; }
         .contact-row.phone-row i { color: #a78bfa; }

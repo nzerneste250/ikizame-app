@@ -203,8 +203,9 @@
     }
     .contact-row:hover { background: rgba(255,255,255,0.2); }
     .contact-row i { font-size: 0.9rem; color: var(--cyan); flex-shrink: 0; }
-    .contact-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+    .contact-row span { overflow: visible; text-overflow: initial; white-space: normal; word-break: break-word; min-width: 0; }
     .contact-row.email-row span { font-size: 0.78rem; }
+    .contact-row.company-row span { font-size: 0.78rem; }
 
     /* CTA */
     .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
