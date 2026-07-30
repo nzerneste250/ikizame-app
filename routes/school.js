@@ -374,10 +374,84 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
 
         ensureSchoolStudentsTable((tableErr) => {
             if (tableErr) return res.status(500).json({ success: false, error: tableErr.message });
-            db.query('UPDATE school_students SET student_name = ?, phone_number = ?, assigned_exams = ? WHERE id = ? AND school_id = ?', [trimmedName, cleanedPhone, assignedExams, studentId, req.session.schoolAccountId], (err, result) => {
-                if (err) return res.status(500).json({ success: false, error: err.message });
-                if (!result || result.affectedRows === 0) return res.status(404).json({ success: false, error: 'Student not found.' });
-                res.json({ success: true, message: 'Student record updated.' });
+            // Fetch current assigned_exams for this student to compute delta
+            db.query('SELECT assigned_exams FROM school_students WHERE id = ? AND school_id = ?', [studentId, req.session.schoolAccountId], (fErr, fRows) => {
+                if (fErr) return res.status(500).json({ success: false, error: fErr.message });
+                if (!fRows || fRows.length === 0) return res.status(404).json({ success: false, error: 'Student not found.' });
+
+                const currentAssigned = parseInt(fRows[0].assigned_exams || 0, 10);
+                const delta = assignedExams - currentAssigned;
+
+                const finalizeUpdate = () => {
+                    db.query('UPDATE school_students SET student_name = ?, phone_number = ?, assigned_exams = ? WHERE id = ? AND school_id = ?', [trimmedName, cleanedPhone, assignedExams, studentId, req.session.schoolAccountId], (err, result) => {
+                        if (err) return res.status(500).json({ success: false, error: err.message });
+                        if (!result || result.affectedRows === 0) return res.status(404).json({ success: false, error: 'Student not found.' });
+                        res.json({ success: true, message: 'Student record updated.' });
+                    });
+                };
+
+                if (delta === 0) return finalizeUpdate();
+
+                // If exams increased, allocate from school's payment_transactions
+                if (delta > 0) {
+                    const schoolId = req.session.schoolAccountId;
+                    db.query('SELECT id, remaining_exams FROM payment_transactions WHERE school_id = ? AND status = ? AND remaining_exams > 0 ORDER BY id ASC', [schoolId, 'SUCCESS'], (payErr, paymentRows) => {
+                        if (payErr) return res.status(500).json({ success: false, error: payErr.message });
+
+                        let remainingNeeded = delta;
+                        const updates = [];
+                        let canAllocate = true;
+
+                        paymentRows.forEach((row) => {
+                            if (!canAllocate) return;
+                            if (remainingNeeded <= 0) return;
+                            if (row.remaining_exams >= remainingNeeded) {
+                                updates.push({ id: row.id, remaining: row.remaining_exams - remainingNeeded });
+                                remainingNeeded = 0;
+                            } else {
+                                updates.push({ id: row.id, remaining: 0 });
+                                remainingNeeded -= row.remaining_exams;
+                            }
+                        });
+
+                        if (remainingNeeded > 0) return res.status(400).json({ success: false, error: 'Ishuri rifite ibizamini bike cyane. Ntabwo bivuye ku isoko.' });
+
+                        let pending = updates.length;
+                        if (pending === 0) return finalizeUpdate();
+
+                        updates.forEach((entry) => {
+                            db.query('UPDATE payment_transactions SET remaining_exams = ? WHERE id = ?', [entry.remaining, entry.id], (uErr) => {
+                                if (uErr) canAllocate = false;
+                                pending -= 1;
+                                if (pending === 0) {
+                                    if (!canAllocate) return res.status(500).json({ success: false, error: 'Guhindura ibizamini byanze.' });
+                                    return finalizeUpdate();
+                                }
+                            });
+                        });
+                    });
+                    return;
+                }
+
+                // If exams decreased, return credits back to school's pool (add to most recent payment)
+                if (delta < 0) {
+                    const returnCount = Math.abs(delta);
+                    const schoolId = req.session.schoolAccountId;
+                    db.query('SELECT id, remaining_exams FROM payment_transactions WHERE school_id = ? AND status = ? ORDER BY id DESC LIMIT 1', [schoolId, 'SUCCESS'], (pErr, pRows) => {
+                        if (pErr) return res.status(500).json({ success: false, error: pErr.message });
+                        if (!pRows || pRows.length === 0) {
+                            // No payment row to credit, just finalize update
+                            return finalizeUpdate();
+                        }
+                        const target = pRows[0];
+                        const newRemaining = (parseInt(target.remaining_exams || 0, 10) + returnCount);
+                        db.query('UPDATE payment_transactions SET remaining_exams = ? WHERE id = ?', [newRemaining, target.id], (updErr) => {
+                            if (updErr) return res.status(500).json({ success: false, error: updErr.message });
+                            return finalizeUpdate();
+                        });
+                    });
+                    return;
+                }
             });
         });
     });
