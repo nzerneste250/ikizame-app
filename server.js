@@ -12,6 +12,7 @@ process.env.PAYPACK_TEST_MODE = 'false';
 const express     = require('express');
 const mysql       = require('mysql2');
 const path        = require('path');
+const fs          = require('fs');
 const session     = require('express-session');
 const nodemailer  = require('nodemailer');
 const rateLimit   = require('express-rate-limit');
@@ -175,6 +176,55 @@ app.use((req, res, next) => {
 app.get('/sitemap.xml', (req, res) => res.sendFile(path.join(__dirname, 'public', 'sitemap.xml')));
 app.get('/robots.txt',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'robots.txt')));
 
+function sendSchoolAwarePage(req, res, fileName) {
+    const filePath = path.join(__dirname, 'public', fileName);
+    fs.readFile(filePath, 'utf8', (err, html) => {
+        if (err) {
+            console.error(`❌ Failed to load ${fileName}:`, err.message);
+            return res.status(404).send('Page not found');
+        }
+
+        const schoolHeaderMarkup = `
+            <header>
+                <a href="/school-dashboard" class="navbar-brand-wrap">
+                    <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+                    <div class="navbar-brand">IKIZAME</div>
+                </a>
+                <nav>
+                    <ul class="navbar-links">
+                        <li><a href="/school-dashboard">Dashboard</a></li>
+                        <li><a href="/school-profile"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
+                        <li><a href="#" class="logout-btn" onclick="handleSchoolLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                    </ul>
+                </nav>
+                <div class="lang-badge">
+                    <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+                    <span>Kinyarwanda</span>
+                </div>
+            </header>`;
+
+        const withSchoolHeader = html.replace(/<header[^>]*>[\s\S]*?<\/header>/i, schoolHeaderMarkup);
+        const withSchoolScript = withSchoolHeader.replace(
+            '</body>',
+            `<script>
+                async function handleSchoolLogout(event) {
+                    event.preventDefault();
+                    try {
+                        const res = await fetch('/api/school/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+                        if (res.ok) {
+                            window.location.replace('/school-auth');
+                            return;
+                        }
+                    } catch (err) {}
+                    window.location.replace('/school-auth');
+                }
+            </script></body>`
+        );
+
+        res.send(withSchoolScript);
+    });
+}
+
 // ── PAGE ROUTES ───────────────────────────────────────────────────────────
 app.get('/',               (req, res) => renderPublicPage('index.html', res));
 app.get('/index',          (req, res) => renderPublicPage('index.html', res));
@@ -185,8 +235,18 @@ app.get('/ubufasha',       (req, res) => res.sendFile(path.join(__dirname, 'publ
 app.get('/amanota',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'amanota.html')));
 app.get('/exam-result',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'exam-result.html')));
 app.get('/school-auth',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'school-auth.html')));
-app.get('/about',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'about.html')));
-app.get('/terms',          (req, res) => res.sendFile(path.join(__dirname, 'public', 'terms.html')));
+app.get('/about', (req, res) => {
+    if (req.session && req.session.isSchoolAuthenticated) {
+        return sendSchoolAwarePage(req, res, 'about.html');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'about.html'));
+});
+app.get('/terms', (req, res) => {
+    if (req.session && req.session.isSchoolAuthenticated) {
+        return sendSchoolAwarePage(req, res, 'terms.html');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'terms.html'));
+});
 
 app.get('/school-dashboard', (req, res) => {
     if (req.session && req.session.isSchoolAuthenticated)
