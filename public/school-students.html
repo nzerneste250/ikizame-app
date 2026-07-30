@@ -70,10 +70,16 @@
         .table-head h2 { font-size:1rem; font-weight:800; }
         .table-head p { color:var(--muted); font-size:0.88rem; }
         .table-wrap { margin-top:8px; overflow:auto; }
-        table { width:100%; border-collapse:collapse; min-width:600px; }
+        table { width:100%; border-collapse:collapse; min-width:700px; }
         th, td { padding:12px 10px; border-bottom:1px solid rgba(11,105,139,0.08); text-align:left; font-size:0.9rem; }
         th { color:#64748b; text-transform:uppercase; font-size:0.74rem; }
+        .table-actions { display:flex; flex-wrap:wrap; gap:8px; }
+        .table-actions button { border:1px solid rgba(11,105,139,0.16); border-radius:10px; background:#fff; color:#0b698b; padding:8px 10px; font-size:0.78rem; cursor:pointer; transition:transform 0.18s ease, background 0.18s ease; }
+        .table-actions button:hover { transform:translateY(-1px); background:rgba(11,105,139,0.08); }
         .pill { display:inline-block; padding:4px 8px; border-radius:999px; font-size:0.72rem; font-weight:700; background:rgba(16,185,129,0.15); color:#10b981; }
+        .pill.blocked { background:rgba(239,68,68,0.15); color:#b91c1c; }
+        .edit-panel { margin-top:18px; padding:16px; border:1px solid rgba(11,105,139,0.12); border-radius:14px; background:#f8fafc; display:none; }
+        .edit-panel.active { display:block; }
         .muted { color:var(--muted); }
         @media (max-width:760px){ .form-grid{grid-template-columns:1fr;} .navbar{flex-direction:column !important; height:auto !important; padding:10px 4% 8px !important; gap:6px !important;} .navbar-links{gap:12px 16px !important; width:100% !important; justify-content:center !important; flex-wrap:wrap !important;} .navbar-links a{font-size:0.78rem !important; padding:6px 0 !important;} .table-head{flex-direction:column; align-items:flex-start;} }
     </style>
@@ -132,6 +138,22 @@
             </div>
         </form>
         <div id="formMessage" class="form-message muted"></div>
+        <div id="editStudentPanel" class="edit-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div>
+                    <h3 style="margin:0 0 8px; font-size:1rem;">Edit Student Details</h3>
+                    <p style="margin:0; color:#64748b; font-size:0.9rem;">Update the student record or assigned exams.</p>
+                </div>
+                <button type="button" class="btn" style="background:transparent; color:#0b698b; border:1px solid rgba(11,105,139,0.16);" onclick="cancelStudentEdit()">Cancel</button>
+            </div>
+            <div class="form-grid" style="margin-top:16px;">
+                <div class="field"><label>Amazina y’umunyeshuri</label><input id="editStudentName" placeholder="e.g. Aline Uwase"></div>
+                <div class="field"><label>Telephone</label><input id="editStudentPhone" placeholder="0788000000"></div>
+                <div class="field"><label>Ibizamini byahawe</label><input id="editStudentExamCount" type="number" min="1"></div>
+                <div class="field" style="align-self:end;"><button id="studentEditSubmit" class="btn btn-primary" onclick="submitStudentEdit(event)"><i class="fa-solid fa-pen-to-square"></i> Save changes</button></div>
+            </div>
+            <div id="editFormMessage" class="form-message muted"></div>
+        </div>
         <div class="table-head">
             <h2>Registered students</h2>
             <p id="registeredSummary">No students registered yet.</p>
@@ -139,7 +161,7 @@
         <div class="table-wrap">
             <table>
                 <thead>
-                    <tr><th>Amazina</th><th>Telephone</th><th>Ibizamini byahawe</th><th>Status</th><th>Itariki</th></tr>
+                    <tr><th>Amazina</th><th>Telephone</th><th>Ibizamini byahawe</th><th>Status</th><th>Itariki</th><th>Actions</th></tr>
                 </thead>
                 <tbody id="studentsTableBody"></tbody>
             </table>
@@ -148,6 +170,7 @@
 </div>
 <script>
 let walletState = { remainingExams: 0, canRegister: false };
+let editStudentId = null;
 
 async function handleSchoolLogout(event){ event.preventDefault(); try{ const res=await fetch('/api/school/logout',{method:'POST',headers:{'Content-Type':'application/json'}}); if(res.ok){ window.location.replace('/school-auth'); return; } }catch(err){} window.location.replace('/school-auth'); }
 
@@ -191,14 +214,97 @@ async function loadStudents(){
   const countBadge=document.getElementById('registeredCount');
   const summary=document.getElementById('registeredSummary');
   if(!data.success || !data.students.length){
-    tbody.innerHTML='<tr><td colspan="5" class="muted">Nta banyeshuri banditswe.</td></tr>';
+    tbody.innerHTML='<tr><td colspan="6" class="muted">Nta banyeshuri banditswe.</td></tr>';
     countBadge.textContent='0';
     summary.textContent='No students registered yet.';
     return;
   }
   countBadge.textContent=data.students.length;
   summary.textContent=`${data.students.length} registered student${data.students.length === 1 ? '' : 's'} shown below.`;
-  tbody.innerHTML=data.students.map(s=>`<tr><td>${s.student_name}</td><td>${s.phone_number}</td><td>${s.assigned_exams}</td><td><span class="pill">${s.status||'ACTIVE'}</span></td><td>${new Date(s.created_at).toLocaleDateString('fr-FR')}</td></tr>`).join('');
+  tbody.innerHTML=data.students.map(s=>{
+    const statusClass = s.status === 'BLOCKED' ? 'pill blocked' : 'pill';
+    const actionLabel = s.status === 'BLOCKED' ? 'Unblock' : 'Block';
+    return `<tr>
+      <td>${s.student_name}</td>
+      <td>${s.phone_number}</td>
+      <td>${s.assigned_exams}</td>
+      <td><span class="${statusClass}">${s.status || 'ACTIVE'}</span></td>
+      <td>${new Date(s.created_at).toLocaleDateString('fr-FR')}</td>
+      <td>
+        <div class="table-actions">
+          <button type="button" onclick='startEditStudent(${JSON.stringify(s)})'><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+          <button type="button" onclick="toggleStudentStatus(${s.id}, '${s.status || 'ACTIVE'}')"><i class="fa-solid fa-ban"></i> ${actionLabel}</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function startEditStudent(student){
+  editStudentId = student.id;
+  document.getElementById('editStudentName').value = student.student_name || '';
+  document.getElementById('editStudentPhone').value = student.phone_number || '';
+  document.getElementById('editStudentExamCount').value = student.assigned_exams || 1;
+  document.getElementById('editFormMessage').className = 'form-message muted';
+  document.getElementById('editFormMessage').textContent = '';
+  document.getElementById('editStudentPanel').classList.add('active');
+  window.scrollTo({ top: document.getElementById('editStudentPanel').offsetTop - 80, behavior: 'smooth' });
+}
+
+function cancelStudentEdit(){
+  editStudentId = null;
+  document.getElementById('editStudentPanel').classList.remove('active');
+}
+
+async function submitStudentEdit(event){
+  event.preventDefault();
+  const message=document.getElementById('editFormMessage');
+  if (!editStudentId) return;
+  const name=document.getElementById('editStudentName').value.trim();
+  const phone=document.getElementById('editStudentPhone').value.trim();
+  const examCount=parseInt(document.getElementById('editStudentExamCount').value, 10) || 0;
+  if (!name || !phone || examCount < 1) {
+    message.className='form-message error';
+    message.textContent='Andika amazina, telefone, kandi uhitamo nibura 1 exam.';
+    return;
+  }
+  message.className='form-message muted';
+  message.textContent='Updating student...';
+  const res = await fetch(`/api/school/students/${editStudentId}`, {
+    method:'PATCH',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ studentName:name, phoneNumber:phone, examCount })
+  });
+  const data = await res.json();
+  if (!data.success) {
+    message.className='form-message error';
+    message.textContent=data.error || 'Update failed.';
+    return;
+  }
+  message.className='form-message success';
+  message.textContent=data.message || 'Student updated.';
+  await loadWalletMetrics();
+  await loadStudents();
+  setTimeout(() => cancelStudentEdit(), 800);
+}
+
+async function toggleStudentStatus(studentId, currentStatus){
+  const targetStatus = currentStatus === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED';
+  if (targetStatus === 'BLOCKED') {
+    const confirmed = window.confirm('Uri buze guhagarika uyu munyeshuri. Urabyemera?');
+    if (!confirmed) return;
+  }
+  const res = await fetch(`/api/school/students/${studentId}/status`, {
+    method:'PATCH',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ status: targetStatus })
+  });
+  const data = await res.json();
+  if (!data.success) {
+    alert(data.error || 'Action failed.');
+    return;
+  }
+  await loadStudents();
 }
 
 async function submitStudent(event){ event.preventDefault(); const name=document.getElementById('studentName').value.trim(); const phone=document.getElementById('studentPhone').value.trim(); const examCount=document.getElementById('examCount').value; const message=document.getElementById('formMessage');

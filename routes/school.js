@@ -360,6 +360,47 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
         });
     });
 
+    router.patch('/students/:id', (req, res) => {
+        if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });
+
+        const studentId = parseInt(req.params.id, 10);
+        const { studentName, phoneNumber, examCount } = req.body;
+        const trimmedName = (studentName || '').trim();
+        const cleanedPhone = (phoneNumber || '').toString().replace(/[^0-9+]/g, '').trim();
+        const assignedExams = parseInt(examCount || '0', 10);
+        if (!studentId || !trimmedName || !cleanedPhone || assignedExams <= 0) {
+            return res.status(400).json({ success: false, error: 'Andika amazina, telefone, kandi ubaze exams 1+.' });
+        }
+
+        ensureSchoolStudentsTable((tableErr) => {
+            if (tableErr) return res.status(500).json({ success: false, error: tableErr.message });
+            db.query('UPDATE school_students SET student_name = ?, phone_number = ?, assigned_exams = ? WHERE id = ? AND school_id = ?', [trimmedName, cleanedPhone, assignedExams, studentId, req.session.schoolAccountId], (err, result) => {
+                if (err) return res.status(500).json({ success: false, error: err.message });
+                if (!result || result.affectedRows === 0) return res.status(404).json({ success: false, error: 'Student not found.' });
+                res.json({ success: true, message: 'Student record updated.' });
+            });
+        });
+    });
+
+    router.patch('/students/:id/status', (req, res) => {
+        if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });
+
+        const studentId = parseInt(req.params.id, 10);
+        const { status } = req.body;
+        if (!studentId || !['ACTIVE', 'BLOCKED'].includes(status)) {
+            return res.status(400).json({ success: false, error: 'Status is invalid.' });
+        }
+
+        ensureSchoolStudentsTable((tableErr) => {
+            if (tableErr) return res.status(500).json({ success: false, error: tableErr.message });
+            db.query('UPDATE school_students SET status = ? WHERE id = ? AND school_id = ?', [status, studentId, req.session.schoolAccountId], (err, result) => {
+                if (err) return res.status(500).json({ success: false, error: err.message });
+                if (result.affectedRows === 0) return res.status(404).json({ success: false, error: 'Student not found.' });
+                res.json({ success: true, message: `Student status set to ${status}.` });
+            });
+        });
+    });
+
     // GET students performance
     router.get('/students-performance', (req, res) => {
         if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });
