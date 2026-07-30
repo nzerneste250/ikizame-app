@@ -276,19 +276,18 @@
 </head>
 <body>
 
-  <header>
-    <a href="/" class="navbar-brand-wrap">
+  <header class="navbar">
+    <a href="/school-dashboard" class="navbar-brand-wrap">
       <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
       <div class="navbar-brand">IKIZAME</div>
     </a>
     <nav>
       <ul class="navbar-links">
-        <li><a href="/" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-house"></i><span>Ahabanza</span></a></li>
-        <li><a href="ubufasha" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-hand-holding-heart"></i><span>Ubufasha</span></a></li>
-        <li><a href="ifashanyigisho" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-book-open"></i><span>Imfashanyigisho</span></a></li>
-        <li><a href="ibiciro" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-tags"></i><span>Ibiciro</span></a></li>
-        <li><a href="school-auth" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-school"></i><span>Amashuri</span></a></li>
-        <li><a href="amanota" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-chart-line"></i><span>Amanota</span></a></li>
+        <li><a href="/school-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+        <li><a href="/school-students"><i class="fa-solid fa-user-plus"></i> Students</a></li>
+        <li><a href="/school-performance"><i class="fa-solid fa-chart-line"></i> Performance</a></li>
+        <li><a href="/school-profile"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
+        <li><a href="#" class="logout-btn" onclick="handleSchoolLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
       </ul>
     </nav>
     <div class="lang-badge">
@@ -447,6 +446,14 @@
       <a href="/terms" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
     </div>
   </footer>
+
+  <script>
+    async function handleSchoolLogout(e){
+      e.preventDefault();
+      try{ await fetch('/api/school/logout',{method:'POST',headers:{'Content-Type':'application/json'}}); }catch(err){}
+      window.location.replace('/school-auth');
+    }
+  </script>
 
 </body>
 </html>
