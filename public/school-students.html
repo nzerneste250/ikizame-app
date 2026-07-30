@@ -40,6 +40,9 @@
         .navbar-links a.logout-btn { color: #ef4444; }
         .lang-badge { display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #1e293b; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 12px; user-select: none; }
         .rw-flag-svg { width: 20px; height: 14px; border-radius: 2px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+        .footer { min-height: 40px; padding: 7px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; flex-wrap: wrap; gap: 6px; }
+        .footer strong { color: #38bdf8; }
+        .footer a:hover { opacity: 0.9; }
 
         .page { max-width:1100px; margin:0 auto; padding:24px 16px 80px; width:100%; margin-top: 60px; }
         .card { background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:0 16px 34px rgba(2,8,23,0.12); }
@@ -220,5 +223,15 @@ async function submitStudent(event){ event.preventDefault(); const name=document
 }
 document.addEventListener('DOMContentLoaded', async () => { await loadWalletMetrics(); await loadStudents(); });
 </script>
+    <footer class="footer">
+        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
+            <span style="font-size:0.7rem;">© 2026 IKIZAME Empowering Learners Across Rwanda</span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <a href="/about-school" onclick="window.location.assign('/about-school'); return false;" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
+            <a href="/terms-school" onclick="window.location.assign('/terms-school'); return false;" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
+        </div>
+    </footer>
 </body>
 </html>

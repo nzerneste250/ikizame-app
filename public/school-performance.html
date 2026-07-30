@@ -50,6 +50,12 @@
         th, td { padding:12px 10px; border-bottom:1px solid rgba(11,105,139,0.08); text-align:left; font-size:0.9rem; }
         th { color:#64748b; text-transform:uppercase; font-size:0.74rem; }
         .muted { color:#64748b; }
+        .search-row { margin: 18px 0; display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+        .search-input { min-width: 280px; max-width: 420px; width: 100%; padding: 12px 14px; border: 1px solid rgba(11,105,139,0.14); border-radius: 10px; background: #fff; color: #0f172a; font-size: 0.95rem; outline: none; }
+        .search-input:focus { border-color: #0b698b; box-shadow: 0 0 0 4px rgba(11,105,139,0.08); }
+        .footer { min-height: 40px; padding: 7px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; flex-wrap: wrap; gap: 6px; }
+        .footer strong { color: #38bdf8; }
+        .footer a:hover { opacity: 0.9; }
         @media (max-width:760px){ .stats{grid-template-columns:1fr 1fr;} .navbar{flex-direction:column !important; height:auto !important; padding:10px 4% 8px !important; gap:6px !important;} .navbar-links{gap:12px 16px !important; width:100% !important; justify-content:center !important; flex-wrap:wrap !important;} .navbar-links a{font-size:0.78rem !important; padding:6px 0 !important;} }
     </style>
 </head>
@@ -77,6 +83,9 @@
     <section class="card">
         <h1 style="font-size:1.35rem;font-weight:800;margin-bottom:8px;">Students Performance</h1>
         <p class="muted" style="margin-bottom:16px;">Kureba amanota y'abanyeshuri, ibyakozwe, n'ibizamini byabo mu buryo bworoshye.</p>
+        <div class="search-row">
+            <input id="performanceSearch" class="search-input" type="search" placeholder="Search by student name or phone" oninput="filterPerformance()">
+        </div>
         <div class="stats" id="statsGrid"></div>
         <div class="table-wrap">
             <table>
@@ -96,13 +105,49 @@ async function loadPerformance(){
   const data=await res.json();
   const grid=document.getElementById('statsGrid');
   const tbody=document.getElementById('performanceBody');
-  if(!data.success){ tbody.innerHTML='<tr><td colspan="8" class="muted">Nta makuru yagaragaye.</td></tr>'; return; }
+  if(!data.success){ tbody.innerHTML='<tr><td colspan="8" class="muted">Nta makuru yagaragaye.</td></tr>'; window.performanceData = []; return; }
+  window.performanceData = data.data || [];
   const stats=data.stats || {};
   grid.innerHTML=`<div class="stat"><div class="label">Total Attempts</div><div class="value">${stats.total||0}</div></div><div class="stat"><div class="label">Passed</div><div class="value">${stats.passed||0}</div></div><div class="stat"><div class="label">Pass Rate</div><div class="value">${stats.passRate||0}%</div></div><div class="stat"><div class="label">Avg Score</div><div class="value">${stats.avgScore||0}</div></div>`;
-  if(!data.data||!data.data.length){ tbody.innerHTML='<tr><td colspan="8" class="muted">Nta makuru y\'ibizamini.</td></tr>'; return; }
-  tbody.innerHTML=data.data.map(a=>`<tr><td>${a.student_name||'—'}</td><td>${a.phone_number||'—'}</td><td>${a.score||0}</td><td>${a.total_questions||0}</td><td>${a.correct_count||0}</td><td>${a.wrong_count||0}</td><td>${a.skipped_count||0}</td><td>${new Date(a.created_at).toLocaleString('fr-FR')}</td></tr>`).join('');
+  if(!window.performanceData.length){ tbody.innerHTML='<tr><td colspan="8" class="muted">Nta makuru y\'ibizamini.</td></tr>'; return; }
+  renderPerformanceRows(window.performanceData);
+}
+function renderPerformanceRows(rows) {
+  const tbody=document.getElementById('performanceBody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="muted">No students found matching your search.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(a => `<tr><td>${a.student_name||'—'}</td><td>${a.phone_number||'—'}</td><td>${a.score||0}</td><td>${a.total_questions||0}</td><td>${a.correct_count||0}</td><td>${a.wrong_count||0}</td><td>${a.skipped_count||0}</td><td>${new Date(a.created_at).toLocaleString('fr-FR')}</td></tr>`).join('');
+}
+function filterPerformance() {
+  const query = document.getElementById('performanceSearch').value.trim().toLowerCase();
+  if (!window.performanceData || !window.performanceData.length) {
+    renderPerformanceRows([]);
+    return;
+  }
+  if (!query) {
+    renderPerformanceRows(window.performanceData);
+    return;
+  }
+  const filtered = window.performanceData.filter(item => {
+    const name = (item.student_name || '').toLowerCase();
+    const phone = (item.phone_number || '').toLowerCase();
+    return name.includes(query) || phone.includes(query);
+  });
+  renderPerformanceRows(filtered);
 }
 document.addEventListener('DOMContentLoaded', loadPerformance);
 </script>
+    <footer class="footer">
+        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
+            <span style="font-size:0.7rem;">© 2026 IKIZAME Empowering Learners Across Rwanda</span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <a href="/about-school" onclick="window.location.assign('/about-school'); return false;" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
+            <a href="/terms-school" onclick="window.location.assign('/terms-school'); return false;" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
+        </div>
+    </footer>
 </body>
 </html>
