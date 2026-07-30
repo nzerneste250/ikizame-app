@@ -146,7 +146,7 @@ module.exports = (db) => {
 
         let amount = 0, planLabel = '', examCount = 0, serviceType = 'EXAMS', resourceIdValue = null, resourceTitleValue = null;
         if (checkoutIntentType === 'SCHOOL') {
-            amount = 10000; planLabel = 'School Driving Center Monthly Pass'; examCount = 9999; serviceType = 'SCHOOL';
+            amount = 10000; planLabel = 'School Driving Program (200 Exams Package)'; examCount = 200; serviceType = 'SCHOOL';
         } else if (checkoutIntentType === 'RESOURCE') {
             const parsedPrice = Number(resourcePrice || 0);
             if (!resourceTitle || !resourceId || !parsedPrice) {
@@ -297,8 +297,8 @@ function handleSchoolWebhook(db, paypackRef, txData, res) {
         phone: pending.phone,
         amount: 10000,
         planLabel,
-        examCount: 9999,
-        priceToStore: Number((10000/9999).toFixed(2)),
+        examCount: 200,
+        priceToStore: Number((10000/200).toFixed(2)),
         school_id: pending.schoolId,
         serviceType: 'SCHOOL'
     }, paypackRef, (err) => {
@@ -306,7 +306,7 @@ function handleSchoolWebhook(db, paypackRef, txData, res) {
         console.log(`✅ School webhook: ${paypackRef} → SUCCESS (inserted)`);
         sendPaymentNotification(res.req.app.get('emailTransport'), {
             phone: pending.phone, amount: 10000,
-            planLabel, examCount: 9999,
+            planLabel, examCount: 200,
             paypackRef, type: 'School Payment'
         });
         res.json({ ok: true });
