@@ -97,19 +97,19 @@
             font-size: 22px; color: #38bdf8;
             flex-shrink: 0;
         }
-        .page-header h1 { font-size: 1.5rem; font-weight: 800; color: #fff; }
-        .page-header p  { font-size: 0.85rem; color: #64748b; margin-top: 3px; }
+        .page-header h1 { font-size: 1.5rem; font-weight: 800; color: #0f172a; }
+        .page-header p  { font-size: 0.85rem; color: #475569; margin-top: 3px; }
 
         /* ── INFO CARD (read-only) ── */
         .info-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(10,30,48,0.30) 100%);
+            background: rgba(255,255,255,0.95);
             border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 22px 24px;
             display: flex;
             flex-direction: column;
             gap: 14px;
-            box-shadow: 0 18px 36px rgba(2, 8, 24, 0.14);
+            box-shadow: 0 18px 36px rgba(2, 8, 24, 0.08);
         }
         .info-card-title {
             font-size: 11px; font-weight: 800; text-transform: uppercase;
@@ -129,18 +129,18 @@
             font-size: 14px; color: #64748b; flex-shrink: 0;
         }
         .info-row-body label { font-size: 10px; text-transform: uppercase; color: #475569; font-weight: 700; letter-spacing: 0.4px; }
-        .info-row-body span  { display: block; font-size: 0.95rem; font-weight: 700; color: #e2e8f0; margin-top: 2px; }
+        .info-row-body span  { display: block; font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
 
         /* ── FORM CARD ── */
         .form-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(10,30,48,0.30) 100%);
+            background: rgba(255,255,255,0.95);
             border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 22px 24px;
             display: flex;
             flex-direction: column;
             gap: 18px;
-            box-shadow: 0 18px 36px rgba(2, 8, 24, 0.14);
+            box-shadow: 0 18px 36px rgba(2, 8, 24, 0.08);
         }
         .form-card-title {
             font-size: 11px; font-weight: 800; text-transform: uppercase;
@@ -153,13 +153,13 @@
         .field label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.4px; }
         .field input {
             width: 100%; padding: 12px 14px;
-            border: 2px solid rgba(255,255,255,0.12);
+            border: 2px solid rgba(11,105,139,0.12);
             border-radius: 8px; font-size: 14px; font-weight: 600;
-            outline: none; background: rgba(255,255,255,0.03);
-            color: #fff; font-family: inherit;
+            outline: none; background: #fff;
+            color: #0f172a; font-family: inherit;
             transition: border-color 0.15s;
         }
-        .field input:focus { border-color: var(--brand); background: rgba(255,255,255,0.05); }
+        .field input:focus { border-color: var(--brand); background: #fff; }
         .pw-wrap { position: relative; }
         .pw-wrap input { padding-right: 44px; }
         .pw-eye {
@@ -228,7 +228,7 @@
         </a>
         <nav>
             <ul class="navbar-links">
-                <li><a href="/school-dashboard">Dashboard</a></li>
+                <li><a href="/school-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
                 <li><a href="/school-students"><i class="fa-solid fa-user-plus"></i> Students</a></li>
                 <li><a href="/school-performance"><i class="fa-solid fa-chart-line"></i> Performance</a></li>
                 <li><a href="/school-profile" class="active"><i class="fa-solid fa-user-circle"></i> Profile</a></li>

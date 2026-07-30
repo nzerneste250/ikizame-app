@@ -10,46 +10,81 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --brand:#0b698b; --brand-dark:#08536e; --bg:linear-gradient(135deg,#f5fbff 0%,#edf6ff 100%); --panel:rgba(255,255,255,0.92); --border:rgba(11,105,139,0.14); --text:#0f172a; --muted:#475569; }
+        :root { --brand:#0b698b; --brand-dark:#08536e; --bg:linear-gradient(135deg,#f5fbff 0%,#edf6ff 100%); --panel:rgba(255,255,255,0.95); --border:rgba(11,105,139,0.14); --text:#0f172a; --muted:#475569; }
         * { box-sizing:border-box; margin:0; padding:0; }
-        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-        .navbar { position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background:#fff; color:#0f172a; border-bottom:1px solid #e2e8f0; }
-        .navbar-brand { display:flex; align-items:center; gap:10px; font-weight:800; color:var(--brand); text-decoration:none; }
-        .navbar-brand img { width:32px; height:32px; }
-        .nav-links { display:flex; gap:16px; align-items:center; list-style:none; }
-        .nav-links a { text-decoration:none; color:#475569; font-weight:700; font-size:0.9rem; }
-        .nav-links a.active { color:var(--brand); }
-        .nav-links a.logout { color:#ef4444; }
-        .page { max-width:1100px; margin:0 auto; padding:24px 16px 80px; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
+
+        .navbar {
+            position:sticky; top:0; z-index:20;
+            display:flex; justify-content:space-between; align-items:center;
+            padding:14px 20px; background:#fff; color:#0f172a;
+            border-bottom:1px solid #e2e8f0; box-shadow:0 1px 10px rgba(15,23,42,0.03);
+        }
+        .navbar-brand-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
+        .navbar-brand-wrap img { width:32px; height:32px; }
+        .navbar-brand { font-family:'Inter',sans-serif; font-size:1.65rem; font-weight:800; color:var(--brand); letter-spacing:-0.5px; text-transform:uppercase; line-height:1; }
+        .navbar-links { display:flex; gap:22px; align-items:center; list-style:none; }
+        .navbar-links a { font-family:'Inter',sans-serif; font-size:0.84rem; font-weight:700; color:#475569; text-decoration:none; padding:20px 0 18px; position:relative; transition:color .15s; white-space:nowrap; display:inline-block; }
+        .navbar-links a:hover { color:var(--brand); }
+        .navbar-links a.active { color:var(--brand); font-weight:800; }
+        .navbar-links a.active::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--brand); border-radius:2px 2px 0 0; }
+        .navbar-links a.logout-btn { color:#ef4444; }
+        .lang-badge { display:flex; align-items:center; gap:8px; font-family:'Inter',sans-serif; font-size:0.8rem; font-weight:700; color:#1e293b; background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:5px 12px; user-select:none; }
+        .rw-flag-svg { width:20px; height:14px; border-radius:2px; border:1px solid #e2e8f0; flex-shrink:0; }
+
+        .page { max-width:1100px; margin:0 auto; padding:24px 16px 80px; width:100%; }
         .card { background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:0 16px 34px rgba(2,8,23,0.12); }
-        .hero { display:flex; flex-wrap:wrap; justify-content:space-between; gap:18px; align-items:center; margin-bottom:18px; }
+        .hero { display:flex; flex-wrap:wrap; justify-content:space-between; gap:18px; align-items:center; margin-bottom:16px; }
         .hero h1 { font-size:1.4rem; font-weight:800; margin-bottom:6px; }
         .hero p { color:var(--muted); font-size:0.95rem; }
+        .hero-actions { display:flex; flex-wrap:wrap; gap:10px; }
+        .hero-badge { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:rgba(11,105,139,0.08); color:var(--brand); font-size:0.82rem; font-weight:700; }
+        .hero-badge.secondary { background:rgba(16,185,129,0.1); color:#0f766e; }
+        .notice-card { margin:0 0 16px; padding:12px 14px; border-radius:12px; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:8px; }
+        .notice-card.info { background:rgba(11,105,139,0.08); color:var(--brand); border:1px solid rgba(11,105,139,0.14); }
+        .notice-card.success { background:rgba(16,185,129,0.12); color:#047857; border:1px solid rgba(16,185,129,0.2); }
+        .notice-card.warning { background:rgba(239,68,68,0.12); color:#b91c1c; border:1px solid rgba(239,68,68,0.2); }
         .form-grid { display:grid; gap:16px; grid-template-columns:1fr 1fr; margin-top:10px; }
         .field { display:flex; flex-direction:column; gap:6px; }
-        .field label { font-size:0.8rem; font-weight:700; color:#cbd5e1; text-transform:uppercase; }
+        .field label { font-size:0.8rem; font-weight:700; color:#64748b; text-transform:uppercase; }
         .field input, .field select { width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(11,105,139,0.14); background:#fff; color:#0f172a; }
+        .field input:disabled, .btn:disabled { opacity:0.6; cursor:not-allowed; }
         .btn { border:none; border-radius:999px; padding:12px 16px; font-weight:800; cursor:pointer; }
         .btn-primary { background:linear-gradient(135deg,var(--brand) 0%,#0ea5e9 100%); color:#fff; }
-        .table-wrap { margin-top:16px; overflow:auto; }
+        .form-message { margin-top:12px; display:block; font-size:0.9rem; font-weight:700; }
+        .form-message.success { color:#047857; }
+        .form-message.error { color:#b91c1c; }
+        .table-head { display:flex; justify-content:space-between; gap:12px; align-items:center; margin:16px 0 8px; }
+        .table-head h2 { font-size:1rem; font-weight:800; }
+        .table-head p { color:var(--muted); font-size:0.88rem; }
+        .table-wrap { margin-top:8px; overflow:auto; }
         table { width:100%; border-collapse:collapse; min-width:600px; }
         th, td { padding:12px 10px; border-bottom:1px solid rgba(11,105,139,0.08); text-align:left; font-size:0.9rem; }
         th { color:#64748b; text-transform:uppercase; font-size:0.74rem; }
         .pill { display:inline-block; padding:4px 8px; border-radius:999px; font-size:0.72rem; font-weight:700; background:rgba(16,185,129,0.15); color:#10b981; }
         .muted { color:var(--muted); }
-        @media (max-width:760px){ .form-grid{grid-template-columns:1fr;} .navbar{flex-wrap:wrap; gap:8px;} }
+        @media (max-width:760px){ .form-grid{grid-template-columns:1fr;} .navbar{flex-wrap:wrap; gap:8px;} .table-head{flex-direction:column; align-items:flex-start;} }
     </style>
 </head>
 <body>
 <header class="navbar">
-    <a class="navbar-brand" href="/school-dashboard"><img src="assets/uploads/logo.png" alt="IKIZAME logo"> <span>IKIZAME</span></a>
-    <ul class="nav-links">
-        <li><a href="/school-dashboard">Dashboard</a></li>
-        <li><a href="/school-students" class="active">Students</a></li>
-        <li><a href="/school-performance">Performance</a></li>
-        <li><a href="/school-profile">Profile</a></li>
-        <li><a href="#" class="logout" onclick="handleSchoolLogout(event)">Logout</a></li>
-    </ul>
+    <a href="/school-dashboard" class="navbar-brand-wrap">
+        <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+        <div class="navbar-brand">IKIZAME</div>
+    </a>
+    <nav>
+        <ul class="navbar-links">
+            <li><a href="/school-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+            <li><a href="/school-students" class="active"><i class="fa-solid fa-user-plus"></i> Students</a></li>
+            <li><a href="/school-performance"><i class="fa-solid fa-chart-line"></i> Performance</a></li>
+            <li><a href="/school-profile"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
+            <li><a href="#" class="logout-btn" onclick="handleSchoolLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </nav>
+    <div class="lang-badge">
+        <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+        <span>Kinyarwanda</span>
+    </div>
 </header>
 <div class="page">
     <section class="card">
@@ -58,8 +93,12 @@
                 <h1>Register Students & Assign Exams</h1>
                 <p>Andikisha abanyeshuri bawe, ubahaye ibizamini, kandi ubike ibiciro by'ibizamini mu dashboard ya ishuri.</p>
             </div>
-            <div class="muted"><i class="fa-solid fa-circle-info"></i> 1 package = 200 exams = 10,000 Frw</div>
+            <div class="hero-actions">
+                <div id="examBalanceBadge" class="hero-badge"><i class="fa-solid fa-coins"></i> Loading remaining exams...</div>
+                <div class="hero-badge secondary"><i class="fa-solid fa-users"></i> Registered students <span id="registeredCount">0</span></div>
+            </div>
         </div>
+        <div id="walletNotice" class="notice-card info"><i class="fa-solid fa-circle-info"></i> Loading your license balance...</div>
         <form id="studentForm" onsubmit="submitStudent(event)">
             <div class="form-grid">
                 <div class="field">
@@ -76,11 +115,15 @@
                 </div>
                 <div class="field">
                     <label>&nbsp;</label>
-                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-user-plus"></i> Andikisha & Tanga ibizamini</button>
+                    <button id="studentSubmit" class="btn btn-primary" type="submit"><i class="fa-solid fa-user-plus"></i> Andikisha & Tanga ibizamini</button>
                 </div>
             </div>
         </form>
-        <div id="formMessage" class="muted" style="margin-top:12px;"></div>
+        <div id="formMessage" class="form-message muted"></div>
+        <div class="table-head">
+            <h2>Registered students</h2>
+            <p id="registeredSummary">No students registered yet.</p>
+        </div>
         <div class="table-wrap">
             <table>
                 <thead>
@@ -92,23 +135,81 @@
     </section>
 </div>
 <script>
+let walletState = { remainingExams: 0, canRegister: false };
+
 async function handleSchoolLogout(event){ event.preventDefault(); try{ const res=await fetch('/api/school/logout',{method:'POST',headers:{'Content-Type':'application/json'}}); if(res.ok){ window.location.replace('/school-auth'); return; } }catch(err){} window.location.replace('/school-auth'); }
+
+async function loadWalletMetrics(){
+  const badge=document.getElementById('examBalanceBadge');
+  const notice=document.getElementById('walletNotice');
+  const submitButton=document.getElementById('studentSubmit');
+  const fields=[document.getElementById('studentName'), document.getElementById('studentPhone'), document.getElementById('examCount')];
+  try {
+    const res=await fetch('/api/school/wallet-metrics');
+    if(res.status===401){ window.location.replace('/school-auth'); return; }
+    const data=await res.json();
+    const remaining = Number(data.remainingExams || 0);
+    walletState = { remainingExams: remaining, canRegister: remaining > 0 };
+    badge.innerHTML = `<i class="fa-solid fa-coins"></i> Remaining exams: <strong>${remaining}</strong>`;
+    if (remaining > 0) {
+      notice.className = 'notice-card success';
+      notice.innerHTML = `<i class="fa-solid fa-circle-check"></i> You can register students now. You still have <strong>${remaining}</strong> exam credits left.`;
+      fields.forEach((field) => field.disabled = false);
+      submitButton.disabled = false;
+    } else {
+      notice.className = 'notice-card warning';
+      notice.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> No exam credits are available. Renew your license first to register students.`;
+      fields.forEach((field) => field.disabled = true);
+      submitButton.disabled = true;
+    }
+  } catch (err) {
+    badge.innerHTML = `<i class="fa-solid fa-coins"></i> Remaining exams: <strong>0</strong>`;
+    notice.className = 'notice-card warning';
+    notice.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> We could not load your exam balance. Please refresh the page.`;
+    fields.forEach((field) => field.disabled = true);
+    submitButton.disabled = true;
+  }
+}
+
 async function loadStudents(){
   const res=await fetch('/api/school/students');
   if(res.status===401){ window.location.replace('/school-auth'); return; }
   const data=await res.json();
   const tbody=document.getElementById('studentsTableBody');
-  if(!data.success || !data.students.length){ tbody.innerHTML='<tr><td colspan="5" class="muted">Nta banyeshuri banditswe.</td></tr>'; return; }
+  const countBadge=document.getElementById('registeredCount');
+  const summary=document.getElementById('registeredSummary');
+  if(!data.success || !data.students.length){
+    tbody.innerHTML='<tr><td colspan="5" class="muted">Nta banyeshuri banditswe.</td></tr>';
+    countBadge.textContent='0';
+    summary.textContent='No students registered yet.';
+    return;
+  }
+  countBadge.textContent=data.students.length;
+  summary.textContent=`${data.students.length} registered student${data.students.length === 1 ? '' : 's'} shown below.`;
   tbody.innerHTML=data.students.map(s=>`<tr><td>${s.student_name}</td><td>${s.phone_number}</td><td>${s.assigned_exams}</td><td><span class="pill">${s.status||'ACTIVE'}</span></td><td>${new Date(s.created_at).toLocaleDateString('fr-FR')}</td></tr>`).join('');
 }
+
 async function submitStudent(event){ event.preventDefault(); const name=document.getElementById('studentName').value.trim(); const phone=document.getElementById('studentPhone').value.trim(); const examCount=document.getElementById('examCount').value; const message=document.getElementById('formMessage');
+  if (!walletState.canRegister) {
+    message.className='form-message error';
+    message.textContent='You cannot register students until your school has active exam credits.';
+    return;
+  }
+  const requested = parseInt(examCount, 10) || 0;
+  if (requested > walletState.remainingExams) {
+    message.className='form-message error';
+    message.textContent=`You only have ${walletState.remainingExams} exam credits left. Choose a smaller number.`;
+    return;
+  }
+  message.className='form-message muted';
   message.textContent='...';
-  const res=await fetch('/api/school/register-student',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentName:name,phoneNumber:phone,examCount:parseInt(examCount,10)})});
+  const res=await fetch('/api/school/register-student',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentName:name,phoneNumber:phone,examCount:requested})});
   const data=await res.json();
+  message.className = data.success ? 'form-message success' : 'form-message error';
   message.textContent=data.message || data.error || 'Byakunze.';
-  if(data.success){ document.getElementById('studentForm').reset(); document.getElementById('examCount').value='1'; loadStudents(); }
+  if(data.success){ document.getElementById('studentForm').reset(); document.getElementById('examCount').value='1'; await loadWalletMetrics(); await loadStudents(); }
 }
-document.addEventListener('DOMContentLoaded', loadStudents);
+document.addEventListener('DOMContentLoaded', async () => { await loadWalletMetrics(); await loadStudents(); });
 </script>
 </body>
 </html>

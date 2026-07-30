@@ -10,17 +10,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --brand:#0b698b; --bg:linear-gradient(135deg,#f5fbff 0%,#edf6ff 100%); --panel:rgba(255,255,255,0.92); --border:rgba(11,105,139,0.14); --text:#0f172a; --muted:#475569; }
+        :root { --brand:#0b698b; --bg:linear-gradient(135deg,#f5fbff 0%,#edf6ff 100%); --panel:rgba(255,255,255,0.95); --border:rgba(11,105,139,0.14); --text:#0f172a; --muted:#475569; }
         * { box-sizing:border-box; margin:0; padding:0; }
-        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-        .navbar { position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background:#fff; color:#0f172a; border-bottom:1px solid #e2e8f0; }
-        .navbar-brand { display:flex; align-items:center; gap:10px; font-weight:800; color:var(--brand); text-decoration:none; }
-        .navbar-brand img { width:32px; height:32px; }
-        .nav-links { display:flex; gap:16px; align-items:center; list-style:none; }
-        .nav-links a { text-decoration:none; color:#475569; font-weight:700; font-size:0.9rem; }
-        .nav-links a.active { color:var(--brand); }
-        .nav-links a.logout { color:#ef4444; }
-        .page { max-width:1200px; margin:0 auto; padding:24px 16px 80px; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
+        .navbar {
+            position:sticky; top:0; z-index:20;
+            display:flex; justify-content:space-between; align-items:center;
+            padding:14px 20px; background:#fff; color:#0f172a;
+            border-bottom:1px solid #e2e8f0; box-shadow:0 1px 10px rgba(15,23,42,0.03);
+        }
+        .navbar-brand-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
+        .navbar-brand-wrap img { width:32px; height:32px; }
+        .navbar-brand { font-family:'Inter',sans-serif; font-size:1.65rem; font-weight:800; color:var(--brand); letter-spacing:-0.5px; text-transform:uppercase; line-height:1; }
+        .navbar-links { display:flex; gap:22px; align-items:center; list-style:none; }
+        .navbar-links a { font-family:'Inter',sans-serif; font-size:0.84rem; font-weight:700; color:#475569; text-decoration:none; padding:20px 0 18px; position:relative; transition:color .15s; white-space:nowrap; display:inline-block; }
+        .navbar-links a:hover { color:var(--brand); }
+        .navbar-links a.active { color:var(--brand); font-weight:800; }
+        .navbar-links a.active::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--brand); border-radius:2px 2px 0 0; }
+        .navbar-links a.logout-btn { color:#ef4444; }
+        .lang-badge { display:flex; align-items:center; gap:8px; font-family:'Inter',sans-serif; font-size:0.8rem; font-weight:700; color:#1e293b; background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:5px 12px; user-select:none; }
+        .rw-flag-svg { width:20px; height:14px; border-radius:2px; border:1px solid #e2e8f0; flex-shrink:0; }
+        .page { max-width:1200px; margin:0 auto; padding:24px 16px 80px; width:100%; }
         .card { background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:0 16px 34px rgba(2,8,23,0.12); }
         .stats { display:grid; gap:14px; grid-template-columns:repeat(4,1fr); margin-bottom:16px; }
         .stat { background:rgba(248,250,252,0.95); padding:16px; border-radius:14px; border:1px solid rgba(11,105,139,0.12); }
@@ -31,19 +41,28 @@
         th, td { padding:12px 10px; border-bottom:1px solid rgba(11,105,139,0.08); text-align:left; font-size:0.9rem; }
         th { color:#64748b; text-transform:uppercase; font-size:0.74rem; }
         .muted { color:#64748b; }
-        @media (max-width:760px){ .stats{grid-template-columns:1fr 1fr;} }
+        @media (max-width:760px){ .stats{grid-template-columns:1fr 1fr;} .navbar{flex-wrap:wrap; gap:8px;} }
     </style>
 </head>
 <body>
 <header class="navbar">
-    <a class="navbar-brand" href="/school-dashboard"><img src="assets/uploads/logo.png" alt="IKIZAME logo"> <span>IKIZAME</span></a>
-    <ul class="nav-links">
-        <li><a href="/school-dashboard">Dashboard</a></li>
-        <li><a href="/school-students">Students</a></li>
-        <li><a href="/school-performance" class="active">Performance</a></li>
-        <li><a href="/school-profile">Profile</a></li>
-        <li><a href="#" class="logout" onclick="handleSchoolLogout(event)">Logout</a></li>
-    </ul>
+    <a href="/school-dashboard" class="navbar-brand-wrap">
+        <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+        <div class="navbar-brand">IKIZAME</div>
+    </a>
+    <nav>
+        <ul class="navbar-links">
+            <li><a href="/school-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+            <li><a href="/school-students"><i class="fa-solid fa-user-plus"></i> Students</a></li>
+            <li><a href="/school-performance" class="active"><i class="fa-solid fa-chart-line"></i> Performance</a></li>
+            <li><a href="/school-profile"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
+            <li><a href="#" class="logout-btn" onclick="handleSchoolLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </nav>
+    <div class="lang-badge">
+        <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+        <span>Kinyarwanda</span>
+    </div>
 </header>
 <div class="page">
     <section class="card">
@@ -71,7 +90,7 @@ async function loadPerformance(){
   if(!data.success){ tbody.innerHTML='<tr><td colspan="8" class="muted">Nta makuru yagaragaye.</td></tr>'; return; }
   const stats=data.stats || {};
   grid.innerHTML=`<div class="stat"><div class="label">Total Attempts</div><div class="value">${stats.total||0}</div></div><div class="stat"><div class="label">Passed</div><div class="value">${stats.passed||0}</div></div><div class="stat"><div class="label">Pass Rate</div><div class="value">${stats.passRate||0}%</div></div><div class="stat"><div class="label">Avg Score</div><div class="value">${stats.avgScore||0}</div></div>`;
-  if(!data.data||!data.data.length){ tbody.innerHTML='<tr><td colspan="8" class="muted">Nta makuru y'ibizamini.</td></tr>'; return; }
+  if(!data.data||!data.data.length){ tbody.innerHTML='<tr><td colspan="8" class="muted">Nta makuru y\'ibizamini.</td></tr>'; return; }
   tbody.innerHTML=data.data.map(a=>`<tr><td>${a.student_name||'—'}</td><td>${a.phone_number||'—'}</td><td>${a.score||0}</td><td>${a.total_questions||0}</td><td>${a.correct_count||0}</td><td>${a.wrong_count||0}</td><td>${a.skipped_count||0}</td><td>${new Date(a.created_at).toLocaleString('fr-FR')}</td></tr>`).join('');
 }
 document.addEventListener('DOMContentLoaded', loadPerformance);
