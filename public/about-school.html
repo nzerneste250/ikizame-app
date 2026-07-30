@@ -11,12 +11,144 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="assets/css/design-system.css">
   <style>
-    /* Reuse desktop/site styles from public/about.html to keep appearance consistent for school users */
+    :root {
+      --brand: #0b698b;
+      --brand-dark: #08536e;
+      --brand-light: #e0f2fe;
+      --cyan: #38bdf8;
+      --primary: #0066FF;
+      --primary-soft: #ebf3ff;
+      --bg: linear-gradient(135deg, #f5fbff 0%, #edf7ff 48%, #f9fcff 100%);
+      --surface: rgba(255,255,255,0.96);
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100%;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.12;
+      filter: blur(20px);
+    }
+    body::before { width: 420px; height: 420px; background: var(--brand); top: -120px; left: -120px; }
+    body::after { width: 360px; height: 360px; background: #38bdf8; right: -100px; bottom: 120px; }
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 5000;
+      height: 60px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4%;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 1px 10px rgba(15,23,42,0.03);
+      width: 100vw;
+      box-sizing: border-box;
+    }
+    .navbar-brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .navbar-brand-wrap img { width: 32px; height: 32px; object-fit: contain; }
+    .navbar-brand { font-family: 'Inter', sans-serif; font-size: 1.65rem; font-weight: 800; color: #0b698b; letter-spacing: -0.5px; text-transform: uppercase; line-height: 1; }
+    .navbar-links { display: flex; list-style: none; gap: 22px; align-items: center; margin: 0; padding: 0; }
+    .navbar-links a { font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 700; color: #475569; text-decoration: none; padding: 20px 0 18px; position: relative; transition: color 0.15s; white-space: nowrap; display: inline-block; }
+    .navbar-links a:hover { color: #0b698b; }
+    .navbar-links a.active { color: #0b698b; font-weight: 800; }
+    .navbar-links a.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #0b698b; border-radius: 2px 2px 0 0; }
+    .navbar-links a.logout-btn { color: #ef4444; }
+    .lang-badge { display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #1e293b; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 12px; user-select: none; }
+    .rw-flag-svg { width: 20px; height: 14px; border-radius: 2px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
+      padding: 56px 5% 48px;
+      text-align: center;
+      color: #fff;
+      margin-top: 60px;
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.12);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: auto -8% -20% auto;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 70%);
+      pointer-events: none;
+    }
+    .hero-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); color: #fff; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 6px 16px; border-radius: 30px; margin-bottom: 18px; }
+    .hero h1 { font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; margin-bottom: 12px; }
+    .hero h1 span { color: #cffafe; }
+    .hero p { font-size: 0.95rem; color: rgba(255,255,255,0.85); max-width: 540px; margin: 0 auto; line-height: 1.65; }
+    .hero-disclaimer { display: inline-flex; align-items: center; gap: 8px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; font-size: 0.78rem; font-weight: 600; padding: 8px 16px; border-radius: 8px; margin-top: 18px; line-height: 1.4; max-width: 600px; }
+    main { max-width: 1000px; width: 100%; margin: 0 auto; padding: 40px 5% 80px; display: flex; flex-direction: column; gap: 24px; margin-top: 60px; }
+    .section-card { position: relative; z-index: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 28px 32px; box-shadow: 0 18px 42px rgba(15,23,42,0.06); animation: slideUp 0.5s ease-out both; backdrop-filter: blur(10px); }
+    .section-card:hover { transform: translateY(-2px); box-shadow: 0 24px 54px rgba(15,23,42,0.08); border-color: rgba(0,102,255,0.16); }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .section-label { display: inline-flex; align-items: center; gap: 7px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--brand); background: var(--brand-light); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+    .section-card h2 { font-size: 1.15rem; font-weight: 800; color: var(--text); margin-bottom: 12px; }
+    .section-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin-bottom: 10px; }
+    .section-card p:last-child { margin-bottom: 0; }
+    .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 4px; }
+    @media (max-width: 600px) { .feature-grid { grid-template-columns: 1fr; } }
+    .feature-item { display: flex; align-items: flex-start; gap: 12px; background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 100%); border: 1px solid rgba(11,105,139,0.12); border-radius: 16px; padding: 16px; box-shadow: 0 10px 24px rgba(15,23,42,0.04); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .feature-item:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(15,23,42,0.06); }
+    .feature-icon { width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0; background: linear-gradient(135deg, var(--brand) 0%, var(--cyan) 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.95rem; box-shadow: 0 4px 12px rgba(11,105,139,0.22); }
+    .feature-item h4 { font-size: 0.88rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .feature-item p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; margin: 0; }
+    .services-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+    .service-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; background: #f8fbff; border: 1px solid rgba(11,105,139,0.08); }
+    .service-row i { color: var(--brand); font-size: 0.95rem; width: 18px; flex-shrink: 0; }
+    .service-row span { font-size: 0.88rem; color: var(--muted); font-weight: 500; }
+    .contact-strip { display: flex; flex-wrap: wrap; gap: 12px; background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%); border-radius: 20px; padding: 22px 28px; align-items: center; box-shadow: 0 20px 42px rgba(11,105,139,0.16); }
+    .contact-strip .cs-title { font-size: 1rem; font-weight: 800; color: #fff; flex: 1; min-width: 180px; }
+    .contact-strip .cs-title span { display: block; font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.75); margin-top: 3px; }
+    .contact-item { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: #fff; text-decoration: none; font-size: 0.82rem; font-weight: 700; padding: 8px 14px; border-radius: 8px; transition: background 0.15s; }
+    .contact-item:hover { background: rgba(255,255,255,0.2); }
+    .contact-item i { font-size: 0.85rem; }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--primary) 0%, var(--cyan) 100%); color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 48px; font-weight: 700; font-size: 0.9rem; box-shadow: 0 10px 24px rgba(0,102,255,0.18); transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(11,105,139,0.3); }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--brand); text-decoration: none; padding: 12px 24px; border-radius: 48px; font-weight: 700; font-size: 0.9rem; border: 2px solid var(--border); transition: border-color 0.2s, background 0.2s, transform 0.2s; }
+    .btn-secondary:hover { border-color: var(--brand); background: var(--brand-light); transform: translateY(-1px); }
+    .footer { min-height: 40px; padding: 7px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; flex-wrap: wrap; gap: 6px; }
+    .footer strong { color: #38bdf8; }
+    .footer a:hover { opacity: 0.9; }
+    @media (max-width: 768px) {
+      main { padding: 24px 4% 24px; }
+      .section-card { padding: 20px 18px; }
+      .contact-strip { padding: 18px 20px; }
+      .hero { padding: 36px 5% 32px; }
+    }
+    @media (max-width: 900px) {
+      .footer { position: static !important; margin-top: 0; }
+    }
+    .hero { position: relative; overflow: hidden; box-shadow: inset 0 -1px 0 rgba(255,255,255,0.14); }
+    .hero::after { content: ''; position: absolute; inset: auto -8% -30% auto; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
+    .section-card { border-radius: 20px; padding: 26px 28px; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.06); background: rgba(255,255,255,0.96); }
+    .feature-item { border-radius: 16px; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04); }
+    .contact-strip { border-radius: 18px; box-shadow: 0 20px 42px rgba(11, 105, 139, 0.16); }
+    .btn-primary, .btn-secondary { box-shadow: 0 10px 22px rgba(11, 105, 139, 0.14); }
   </style>
 </head>
 <body>
 
-  <!-- Use canonical school header (copied from school-students) -->
   <header class="navbar">
     <a href="/school-dashboard" class="navbar-brand-wrap">
       <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
@@ -37,12 +169,95 @@
     </div>
   </header>
 
-  <!-- Main content: include the same content as public/about but scoped for school users -->
-  <main style="max-width:1100px; margin:0 auto; padding:80px 16px 120px;">
-    <!-- simple pointer to main about content -->
-    <h1>About IKIZAME</h1>
-    <p>IKIZAME provides learning materials and practice exams for learners. This page is the school-specific About document.</p>
-    <p>For full company information, see the public About page.</p>
+  <div class="hero">
+    <div class="hero-pill"><i class="fa-solid fa-building"></i> Company Overview</div>
+    <h1>About <span>IKIZAME</span></h1>
+    <p>An online learning and preparation platform operated by DOTADO STATIONERY STORE LTD, helping candidates prepare for the official provisional driving license theory examination in Rwanda.</p>
+    <div class="hero-disclaimer">
+      <i class="fa-solid fa-circle-info"></i>
+      IKIZAME is an independent educational platform. It is not affiliated with, endorsed by, or operated by the Rwanda National Police or any government institution.
+    </div>
+  </div>
+
+  <main>
+
+    <div class="section-card">
+      <div class="section-label"><i class="fa-solid fa-landmark"></i> Who We Are</div>
+      <h2>DOTADO STATIONERY STORE LTD operates IKIZAME</h2>
+      <p>IKIZAME provides users with access to educational resources and practice tests that help them evaluate their knowledge, improve their understanding of road safety rules, and increase their readiness before attending the official examination provided by the Rwanda National Police.</p>
+      <p>IKIZAME does not conduct official driving examinations, issue driving licenses, or provide official examination certificates. Our role is purely educational — to prepare you before you sit the real test.</p>
+    </div>
+
+    <div class="section-card">
+      <div class="section-label"><i class="fa-solid fa-list-check"></i> Our Services</div>
+      <h2>What IKIZAME Provides</h2>
+      <div class="services-list">
+        <div class="service-row"><i class="fa-solid fa-circle-check"></i><span>Online practice tests designed to simulate the official provisional driving license examination format</span></div>
+        <div class="service-row"><i class="fa-solid fa-circle-check"></i><span>Access to driving theory practice questions and learning materials</span></div>
+        <div class="service-row"><i class="fa-solid fa-circle-check"></i><span>Mock examinations that replicate the experience of a real theory test</span></div>
+        <div class="service-row"><i class="fa-solid fa-circle-check"></i><span>Instant results and performance evaluation to identify areas for improvement</span></div>
+        <div class="service-row"><i class="fa-solid fa-circle-check"></i><span>Premium access plans providing additional practice tests and educational content</span></div>
+        <div class="service-row"><i class="fa-solid fa-circle-check"></i><span>Continuous improvement and updating of learning materials</span></div>
+      </div>
+      <p style="margin-top:14px; font-size:0.82rem; color:#94a3b8;">All services are delivered electronically through the IKIZAME website after successful payment activation.</p>
+    </div>
+
+    <div class="section-card">
+      <div class="section-label"><i class="fa-solid fa-star"></i> Why Choose Us</div>
+      <h2>Why Choose IKIZAME?</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+          <div>
+            <h4>Fast & Accessible</h4>
+            <p>Study from your phone or computer, anytime and anywhere across Rwanda.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div>
+            <h4>Comprehensive Coverage</h4>
+            <p>Practice with questions covering all driving laws, road signs, and safety rules.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-tags"></i></div>
+          <div>
+            <h4>Affordable Pricing</h4>
+            <p>Quality exam preparation at prices designed for every Rwandan learner.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <div>
+            <h4>Instant Feedback</h4>
+            <p>See your results immediately and know exactly where to improve.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-strip">
+      <div class="cs-title">
+        Get in Touch
+        <span>We're available 24/7 to help you</span>
+      </div>
+      <div class="contact-item"><i class="fa-solid fa-location-dot"></i> Kigali - Kabuga</div>
+      <a href="https://wa.me/250786663377" target="_blank" rel="noopener" class="contact-item"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+      <a href="mailto:dotadostationarystore@gmail.com" class="contact-item"><i class="fa-solid fa-envelope"></i> Email</a>
+      <a href="tel:+250786663377" class="contact-item"><i class="fa-solid fa-phone"></i> +250 786 663 377</a>
+    </div>
+
+    <div class="section-card" style="text-align:center; padding: 32px;">
+      <p style="font-size:1rem; font-weight:700; color:var(--text); margin-bottom:6px;">Ready to start preparing?</p>
+      <p style="margin-bottom:20px;">Join thousands of learners who use IKIZAME to pass their driving theory exam.</p>
+      <div class="cta-row" style="justify-content:center;">
+        <a href="/" class="btn-primary"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        <a href="/ibiciro" class="btn-secondary"><i class="fa-solid fa-book"></i> View Pricing</a>
+        <a href="/terms-school" class="btn-secondary"><i class="fa-solid fa-file-contract"></i> Terms &amp; Conditions</a>
+      </div>
+    </div>
+
   </main>
 
   <footer class="footer">
@@ -57,7 +272,11 @@
   </footer>
 
   <script>
-    async function handleSchoolLogout(e){ e.preventDefault(); try{ await fetch('/api/school/logout',{method:'POST',headers:{'Content-Type':'application/json'}}); }catch(err){} window.location.replace('/school-auth'); }
+    async function handleSchoolLogout(e){
+      e.preventDefault();
+      try{ await fetch('/api/school/logout',{method:'POST',headers:{'Content-Type':'application/json'}}); }catch(err){}
+      window.location.replace('/school-auth');
+    }
   </script>
 </body>
 </html>
