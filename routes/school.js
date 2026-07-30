@@ -258,6 +258,108 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
         });
     });
 
+    function ensureSchoolStudentsTable(next) {
+        db.query(`
+            CREATE TABLE IF NOT EXISTS school_students (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                school_id INT NOT NULL,
+                student_name VARCHAR(150) NOT NULL,
+                phone_number VARCHAR(20) NOT NULL,
+                assigned_exams INT NOT NULL DEFAULT 0,
+                status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_school_students_school_id (school_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        `, (err) => next(err));
+    }
+
+    router.get('/students', (req, res) => {
+        if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });
+
+        ensureSchoolStudentsTable((tableErr) => {
+            if (tableErr) return res.status(500).json({ success: false, error: tableErr.message });
+            db.query(
+                'SELECT id, student_name, phone_number, assigned_exams, status, created_at FROM school_students WHERE school_id = ? ORDER BY id DESC',
+                [req.session.schoolAccountId],
+                (err, rows) => {
+                    if (err) return res.status(500).json({ success: false, error: err.message });
+                    res.json({ success: true, students: rows || [] });
+                }
+            );
+        });
+    });
+
+    router.post('/register-student', (req, res) => {
+        if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });
+
+        const { studentName, phoneNumber, examCount } = req.body;
+        const schoolId = req.session.schoolAccountId;
+        const trimmedName = (studentName || '').trim();
+        const cleanedPhone = (phoneNumber || '').toString().replace(/[^0-9+]/g, '').trim();
+        const assignedExams = parseInt(examCount || '0', 10);
+
+        if (!trimmedName || !cleanedPhone || assignedExams <= 0) {
+            return res.status(400).json({ success: false, error: 'Andika amazina, telephone, hamwe n’ibizamini byahawe.' });
+        }
+
+        ensureSchoolStudentsTable((tableErr) => {
+            if (tableErr) return res.status(500).json({ success: false, error: tableErr.message });
+
+            db.query('SELECT id, remaining_exams FROM payment_transactions WHERE school_id = ? AND status = ? AND remaining_exams > 0 ORDER BY id ASC', [schoolId, 'SUCCESS'], (payErr, paymentRows) => {
+                if (payErr) return res.status(500).json({ success: false, error: payErr.message });
+
+                let remainingNeeded = assignedExams;
+                const updates = [];
+                let canAllocate = true;
+
+                paymentRows.forEach((row) => {
+                    if (!canAllocate) return;
+                    if (remainingNeeded <= 0) return;
+                    if (row.remaining_exams >= remainingNeeded) {
+                        updates.push({ id: row.id, remaining: row.remaining_exams - remainingNeeded });
+                        remainingNeeded = 0;
+                    } else {
+                        updates.push({ id: row.id, remaining: 0 });
+                        remainingNeeded -= row.remaining_exams;
+                    }
+                });
+
+                if (remainingNeeded > 0) {
+                    return res.status(400).json({ success: false, error: 'Ishuri rifite ibizamini bike cyane. Vugurura package yawe mbere yo gutanga ibizamini.' });
+                }
+
+                const applyUpdates = () => {
+                    if (!updates.length) {
+                        return db.query('INSERT INTO school_students (school_id, student_name, phone_number, assigned_exams) VALUES (?, ?, ?, ?)', [schoolId, trimmedName, cleanedPhone, assignedExams], (insertErr) => {
+                            if (insertErr) return res.status(500).json({ success: false, error: insertErr.message });
+                            return res.json({ success: true, message: 'Umuyobozi yandikishije abanyeshuri kandi ibizamini byatangiwe.' });
+                        });
+                    }
+
+                    let pending = updates.length;
+                    updates.forEach((entry) => {
+                        db.query('UPDATE payment_transactions SET remaining_exams = ? WHERE id = ?', [entry.remaining, entry.id], (updateErr) => {
+                            if (updateErr) {
+                                canAllocate = false;
+                            }
+                            pending -= 1;
+                            if (pending === 0) {
+                                if (!canAllocate) return res.status(500).json({ success: false, error: 'Guhindura ibizamini byanze.' });
+                                db.query('INSERT INTO school_students (school_id, student_name, phone_number, assigned_exams) VALUES (?, ?, ?, ?)', [schoolId, trimmedName, cleanedPhone, assignedExams], (insertErr) => {
+                                    if (insertErr) return res.status(500).json({ success: false, error: insertErr.message });
+                                    res.json({ success: true, message: 'Umuyobozi yandikishije abanyeshuri kandi ibizamini byatangiwe.' });
+                                });
+                            }
+                        });
+                    });
+                };
+
+                applyUpdates();
+            });
+        });
+    });
+
     // GET students performance
     router.get('/students-performance', (req, res) => {
         if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });

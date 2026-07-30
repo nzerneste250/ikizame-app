@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <title>Students Performance | IKIZAME School Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --brand:#0b698b; --bg:linear-gradient(135deg,#0d1b2a 0%,#111827 100%); --panel:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.12); --text:#f8fafc; --muted:#94a3b8; }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+        .navbar { position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background:#fff; color:#0f172a; border-bottom:1px solid #e2e8f0; }
+        .navbar-brand { display:flex; align-items:center; gap:10px; font-weight:800; color:var(--brand); text-decoration:none; }
+        .navbar-brand img { width:32px; height:32px; }
+        .nav-links { display:flex; gap:16px; align-items:center; list-style:none; }
+        .nav-links a { text-decoration:none; color:#475569; font-weight:700; font-size:0.9rem; }
+        .nav-links a.active { color:var(--brand); }
+        .nav-links a.logout { color:#ef4444; }
+        .page { max-width:1200px; margin:0 auto; padding:24px 16px 80px; }
+        .card { background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:0 16px 34px rgba(2,8,23,0.12); }
+        .stats { display:grid; gap:14px; grid-template-columns:repeat(4,1fr); margin-bottom:16px; }
+        .stat { background:rgba(255,255,255,0.03); padding:16px; border-radius:14px; border:1px solid rgba(255,255,255,0.08); }
+        .stat .label { font-size:0.72rem; color:#94a3b8; text-transform:uppercase; margin-bottom:6px; }
+        .stat .value { font-size:1.25rem; font-weight:800; }
+        .table-wrap { overflow:auto; }
+        table { width:100%; min-width:780px; border-collapse:collapse; }
+        th, td { padding:12px 10px; border-bottom:1px solid rgba(255,255,255,0.08); text-align:left; font-size:0.9rem; }
+        th { color:#94a3b8; text-transform:uppercase; font-size:0.74rem; }
+        .muted { color:#94a3b8; }
+        @media (max-width:760px){ .stats{grid-template-columns:1fr 1fr;} }
+    </style>
+</head>
+<body>
+<header class="navbar">
+    <a class="navbar-brand" href="/school-dashboard"><img src="assets/uploads/logo.png" alt="IKIZAME logo"> <span>IKIZAME</span></a>
+    <ul class="nav-links">
+        <li><a href="/school-dashboard">Dashboard</a></li>
+        <li><a href="/school-students">Students</a></li>
+        <li><a href="/school-performance" class="active">Performance</a></li>
+        <li><a href="/school-profile">Profile</a></li>
+        <li><a href="#" class="logout" onclick="handleSchoolLogout(event)">Logout</a></li>
+    </ul>
+</header>
+<div class="page">
+    <section class="card">
+        <h1 style="font-size:1.35rem;font-weight:800;margin-bottom:8px;">Students Performance</h1>
+        <p class="muted" style="margin-bottom:16px;">Kureba amanota y'abanyeshuri, ibyakozwe, n'ibizamini byabo mu buryo bworoshye.</p>
+        <div class="stats" id="statsGrid"></div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Amazina</th><th>Telephone</th><th>Amanota</th><th>Igiteranyo</th><th>Correct</th><th>Wrong</th><th>Skipped</th><th>Igihe</th></tr>
+                </thead>
+                <tbody id="performanceBody"></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+<script>
+async function handleSchoolLogout(event){ event.preventDefault(); try{ const res=await fetch('/api/school/logout',{method:'POST',headers:{'Content-Type':'application/json'}}); if(res.ok){ window.location.replace('/school-auth'); return; } }catch(err){} window.location.replace('/school-auth'); }
+async function loadPerformance(){
+  const res=await fetch('/api/school/students-performance');
+  if(res.status===401){ window.location.replace('/school-auth'); return; }
+  const data=await res.json();
+  const grid=document.getElementById('statsGrid');
+  const tbody=document.getElementById('performanceBody');
+  if(!data.success){ tbody.innerHTML='<tr><td colspan="8" class="muted">Nta makuru yagaragaye.</td></tr>'; return; }
+  const stats=data.stats || {};
+  grid.innerHTML=`<div class="stat"><div class="label">Total Attempts</div><div class="value">${stats.total||0}</div></div><div class="stat"><div class="label">Passed</div><div class="value">${stats.passed||0}</div></div><div class="stat"><div class="label">Pass Rate</div><div class="value">${stats.passRate||0}%</div></div><div class="stat"><div class="label">Avg Score</div><div class="value">${stats.avgScore||0}</div></div>`;
+  if(!data.data||!data.data.length){ tbody.innerHTML='<tr><td colspan="8" class="muted">Nta makuru y'ibizamini.</td></tr>'; return; }
+  tbody.innerHTML=data.data.map(a=>`<tr><td>${a.student_name||'—'}</td><td>${a.phone_number||'—'}</td><td>${a.score||0}</td><td>${a.total_questions||0}</td><td>${a.correct_count||0}</td><td>${a.wrong_count||0}</td><td>${a.skipped_count||0}</td><td>${new Date(a.created_at).toLocaleString('fr-FR')}</td></tr>`).join('');
+}
+document.addEventListener('DOMContentLoaded', loadPerformance);
+</script>
+</body>
+</html>

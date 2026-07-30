@@ -260,6 +260,18 @@ app.get('/school-profile', (req, res) => {
     res.redirect('/school-auth');
 });
 
+app.get('/school-students', (req, res) => {
+    if (req.session && req.session.isSchoolAuthenticated)
+        return res.sendFile(path.join(__dirname, 'public', 'school-students.html'));
+    res.redirect('/school-auth');
+});
+
+app.get('/school-performance', (req, res) => {
+    if (req.session && req.session.isSchoolAuthenticated)
+        return res.sendFile(path.join(__dirname, 'public', 'school-performance.html'));
+    res.redirect('/school-auth');
+});
+
 app.get('/exam', (req, res) => {
     if (req.session && req.session.examStudentName)
         return res.sendFile(path.join(__dirname, 'public', 'exam.html'));
