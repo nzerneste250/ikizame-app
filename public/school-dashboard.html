@@ -95,7 +95,40 @@
             box-shadow: 0 24px 48px rgba(2,8,23,0.18);
         }
         .welcome-hero-banner h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; color: #fff; }
-        .welcome-hero-banner p { color: #94a3b8; font-size: 0.95rem; }
+        .welcome-hero-banner p { color: #e2e8f0; font-size: 0.95rem; line-height: 1.7; }
+        .hero-highlights { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+        .hero-chip {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border-radius: 999px;
+            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.16);
+            color: #f8fafc; font-size: 0.77rem; font-weight: 700;
+        }
+        .hero-chip strong { color: #fff; }
+
+        .info-grid {
+            display: grid; gap: 16px;
+            grid-template-columns: 1fr;
+        }
+        @media(min-width: 900px) { .info-grid { grid-template-columns: 1.2fr 0.8fr; } }
+        .info-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.03) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 18px; padding: 22px; box-shadow: 0 16px 34px rgba(2,8,23,0.12);
+        }
+        .info-card h3 { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+        .info-card p { font-size: 0.88rem; color: #cbd5e1; line-height: 1.65; margin-bottom: 12px; }
+        .step-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+        @media(min-width: 720px) { .step-grid { grid-template-columns: repeat(2, 1fr); } }
+        .step-card {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; padding: 14px; min-height: 100%;
+        }
+        .step-card .step-number { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; background: linear-gradient(135deg, var(--brand) 0%, #0ea5e9 100%); color: #fff; margin-bottom: 8px; }
+        .step-card h4 { font-size: 0.9rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+        .step-card p { font-size: 0.8rem; color: #94a3b8; margin: 0; }
+        .feature-list { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; }
+        .feature-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 0.84rem; color: #cbd5e1; }
+        .feature-list li i { color: #38bdf8; margin-top: 2px; flex-shrink: 0; }
 
         /* Wallet Metrics Cards Grid */
         .metrics-grid-row {
@@ -242,7 +275,12 @@
             
             <section class="welcome-hero-banner">
                 <h1 id="displaySchoolNameTitle">Muraho neza!</h1>
-                <p>Urakaza neza mu muryango mugari w'amashuri akoresha IKIZAME Portal. Aha washyiraho imirongo y'abanyeshuri bawe.</p>
+                <p>IKIZAME iragufasha kuyobora ibizamini by'ishuri ryawe mu buryo bworoshye, bwihuse, kandi kumenya uko abanyeshuri banyuzwe. Wabasha gushyiraho abanyeshuri, kubaha ibizamini, no gukurikirana amanota yabo byoroshye.</p>
+                <div class="hero-highlights">
+                    <span class="hero-chip"><i class="fa-solid fa-coins"></i> <strong>10,000 Frw</strong> ku package</span>
+                    <span class="hero-chip"><i class="fa-solid fa-file-circle-check"></i> <strong>50 Frw</strong> ku exam</span>
+                    <span class="hero-chip"><i class="fa-solid fa-layer-group"></i> <strong>200 exams / 10,000 Frw</strong></span>
+                </div>
             </section>
 
             <section class="metrics-grid-row">
@@ -264,20 +302,58 @@
 
             <!-- Inside-Page Renewal Form Panel Component -->
             <section class="action-form-panel">
-                <h3>Vugurura Lisansi y'Ukwezi</h3>
-                <p>Emeza itumanaho rya MoMo wishure 10,000 RWF wongeze inshuro z'ibizamini ku banyeshuri bawe bose.</p>
+                <h3>Vugurura lisansi y'ukwezi</h3>
+                <p>Iyo wishyuriye 10,000 Frw, uba ufite package ya 200 exams. Igiciro ku exam ni 50 Frw, kandi ibizamini birashobora gukoresha mu ishuri ryanyu byose.</p>
                 <div class="input-form-field">
                     <label>Nomero ya Telephone (MTN / Airtel)</label>
                     <input type="tel" id="renewMomoPhoneInput" placeholder="e.g., 0788000000" maxlength="10" oninput="validateRenewPhone(this)">
                     <span id="renewPhoneHint" style="font-size:11px; color:#94a3b8; margin-top:4px;">Tangira na 07, inimero 10 (078/079/073)</span>
                 </div>
                 <button class="btn-renew-submit" id="renewSubmitBtn" onclick="triggerSchoolLicenseRenewalRequest()">
-                    <span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>
+                    <span>Ishyura 10,000 Frw</span> <i class="fa-solid fa-credit-card"></i>
                 </button>
                 <div id="ussdSchoolHint" style="display:none; margin-top:12px; background:rgba(11,105,139,0.08); border:1px dashed rgba(56,189,248,0.3); border-radius:10px; padding:12px 14px;">
                     <div style="font-size:11px; font-weight:800; color:#38bdf8; margin-bottom:8px;"><i class="fa-solid fa-mobile-screen-button"></i> PIN Push itaje? Koresha USSD:</div>
                     <div id="ussdSchoolCode" style="font-size:1.3rem; font-weight:800; color:#fff; font-family:monospace; letter-spacing:1px;"></div>
-                    <div style="font-size:10px; color:#94a3b8; margin-top:4px;">Kanda iyo code kuri telephone yawe hanyuma emeza kwishyura 10,000 RWF.</div>
+                    <div style="font-size:10px; color:#94a3b8; margin-top:4px;">Kanda iyo code kuri telephone yawe hanyuma emeza kwishyura 10,000 Frw.</div>
+                </div>
+            </section>
+
+            <section class="info-grid">
+                <div class="info-card">
+                    <h3>Uko ishuri ryoshyiraho abanyeshuri n'ibizamini</h3>
+                    <p>Ishuri rishobora kwiyandikisha abanyeshuri bo mu rubuga, rikabashyiraho ibizamini, rikabikoresha mu buryo bworoshye. Abanyeshuri bashobora kwinjira bakarangiza ibizamini byabo uko bishakiye.</p>
+                    <div class="step-grid">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <h4>Andikisha abanyeshuri</h4>
+                            <p>Shyiramo amazina y'abanyeshuri kandi ubatange mu portal ya ishuri kugira ngo bagere ku ibizamini.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <h4>Shyiraho ibizamini</h4>
+                            <p>Nyuma yo guhabwa package ya 200 exams, ishuri rishobora kubaha abanyeshuri ibizamini bijyanye n'ubushobozi bwabo.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <h4>Gukurikirana amanota</h4>
+                            <p>Portal itanga amakuru y'ibizamini byakozwe, amanota, n'ibyavuye byoroshye kuri dashboard ya ishuri.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">4</div>
+                            <h4>Uburyo bworoshye</h4>
+                            <p>Abanyeshuri bashobora gukora ibizamini byabo, maze ishuri rikabona umusaruro w'ibizamini ku buryo bwihuse.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <h3>By'ingenzi</h3>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-circle-check"></i> Package ya 200 exams igura 10,000 Frw.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Igiciro ku exam ni 50 Frw.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Ishuri rishobora gutegeka no gukurikirana ibizamini by'abanyeshuri.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Amanota agaragara mu dashboard kugira ngo ayoborwe byoroshye.</li>
+                    </ul>
                 </div>
             </section>
 
