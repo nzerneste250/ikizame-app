@@ -479,35 +479,68 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
     router.get('/students-performance', (req, res) => {
         if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });
 
-        db.query('SELECT phone_number FROM driving_schools WHERE id = ?', [req.session.schoolAccountId], (err, rows) => {
-            if (err || !rows.length) return res.status(500).json({ success: false, error: 'Gushaka amakuru byanze.' });
+        // Fetch school phone and all registered students' phone numbers, then return attempts for those phones
+        const schoolId = req.session.schoolAccountId;
+        db.query('SELECT phone_number FROM driving_schools WHERE id = ?', [schoolId], (err, rows) => {
+            if (err) return res.status(500).json({ success: false, error: 'Gushaka amakuru byanze.' });
+            const schoolPhone = (rows && rows[0] && rows[0].phone_number) ? rows[0].phone_number : null;
 
-            const last9 = rows[0].phone_number.slice(-9);
-            db.query(
-                `SELECT id, student_name, phone_number, score, total_questions, correct_count, wrong_count, skipped_count, created_at FROM exam_attempts WHERE RIGHT(phone_number, 9) = ? ORDER BY id DESC`,
-                [last9],
-                (e2, attempts) => {
-                    if (e2) return res.status(500).json({ success: false, error: e2.message });
+            ensureSchoolStudentsTable((tableErr) => {
+                if (tableErr) return res.status(500).json({ success: false, error: tableErr.message });
 
-                    const total = attempts.length;
-                    const passed = attempts.filter(a => a.score >= Math.ceil((a.total_questions || 20) * 0.6)).length;
-                    const avgScore = total > 0 ? parseFloat((attempts.reduce((s, a) => s + (a.score || 0), 0) / total).toFixed(1)) : 0;
-                    const avgPct = total > 0 ? Math.round((attempts.reduce((s, a) => s + ((a.score / (a.total_questions || 20)) * 100), 0) / total)) : 0;
-                    const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+                db.query('SELECT id, student_name, phone_number FROM school_students WHERE school_id = ?', [schoolId], (sErr, students) => {
+                    if (sErr) return res.status(500).json({ success: false, error: sErr.message });
 
-                    const dist = { excellent: 0, good: 0, average: 0, poor: 0 };
-                    attempts.forEach(a => {
-                        const pct = (a.score / (a.total_questions || 20)) * 100;
-                        if (pct >= 85) dist.excellent++;
-                        else if (pct >= 70) dist.good++;
-                        else if (pct >= 50) dist.average++;
-                        else dist.poor++;
+                    const last9Set = new Set();
+                    if (schoolPhone) last9Set.add(schoolPhone.slice(-9));
+                    const studentMap = {};
+                    (students || []).forEach(s => {
+                        if (s.phone_number && s.phone_number.length >= 9) {
+                            const l9 = s.phone_number.slice(-9);
+                            last9Set.add(l9);
+                            studentMap[l9] = studentMap[l9] || [];
+                            studentMap[l9].push({ id: s.id, name: s.student_name });
+                        }
                     });
 
-                    const uniqueStudents = [...new Set(attempts.map(a => a.phone_number.slice(-9)))].length;
-                    res.json({ success: true, stats: { total, passed, passRate, avgScore, avgPct, uniqueStudents, dist }, data: attempts });
-                }
-            );
+                    const last9s = Array.from(last9Set).filter(Boolean);
+                    if (last9s.length === 0) return res.json({ success: true, stats: { total: 0, passed: 0, passRate: 0, avgScore: 0, avgPct: 0, uniqueStudents: 0, dist: { excellent:0, good:0, average:0, poor:0 } }, data: [] });
+
+                    const placeholders = last9s.map(() => '?').join(',');
+                    db.query(
+                        `SELECT id, student_name, phone_number, score, total_questions, correct_count, wrong_count, skipped_count, created_at FROM exam_attempts WHERE RIGHT(phone_number, 9) IN (${placeholders}) ORDER BY id DESC`,
+                        last9s,
+                        (e2, attempts) => {
+                            if (e2) return res.status(500).json({ success: false, error: e2.message });
+
+                            // Annotate attempts with matched student info when available
+                            const enriched = (attempts || []).map(a => {
+                                const l9 = a.phone_number.slice(-9);
+                                const matched = studentMap[l9] && studentMap[l9][0] ? studentMap[l9][0] : null;
+                                return Object.assign({}, a, { matchedStudent: matched });
+                            });
+
+                            const total = enriched.length;
+                            const passed = enriched.filter(a => a.score >= Math.ceil((a.total_questions || 20) * 0.6)).length;
+                            const avgScore = total > 0 ? parseFloat((enriched.reduce((s, a) => s + (a.score || 0), 0) / total).toFixed(1)) : 0;
+                            const avgPct = total > 0 ? Math.round((enriched.reduce((s, a) => s + ((a.score / (a.total_questions || 20)) * 100 || 0), 0) / total)) : 0;
+                            const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+
+                            const dist = { excellent: 0, good: 0, average: 0, poor: 0 };
+                            enriched.forEach(a => {
+                                const pct = (a.score / (a.total_questions || 20)) * 100;
+                                if (pct >= 85) dist.excellent++;
+                                else if (pct >= 70) dist.good++;
+                                else if (pct >= 50) dist.average++;
+                                else dist.poor++;
+                            });
+
+                            const uniqueStudents = [...new Set(enriched.map(a => a.phone_number.slice(-9)))].length;
+                            res.json({ success: true, stats: { total, passed, passRate, avgScore, avgPct, uniqueStudents, dist }, data: enriched });
+                        }
+                    );
+                });
+            });
         });
     });
 

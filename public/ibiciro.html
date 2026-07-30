@@ -793,39 +793,45 @@
                 return;
             }
 
-            const last9 = rawPhone.slice(-9);
+            const fullFormattedPhone = '+250' + rawPhone.substring(1);
             const balanceBlock = phoneInput.closest('.balance-check-block');
             if (balanceBlock) {
                 balanceBlock.classList.remove('balance-check-good', 'balance-check-empty', 'balance-check-low');
             }
             statusPanel.textContent = 'Iri gushakisha ibisigaye...';
             statusPanel.className = '';
-
-            fetch(`/api/amanota/remaining/${last9}`)
-                .then(res => res.json())
-                .then(data => {
-                    const remaining = Number(data.remaining || 0);
-                    if (remaining > 0) {
-                        statusPanel.textContent = `Ufite ${remaining} bizamini bisigaye kuri iyi nomero. Ushobora kongera ukagura andi.`;
-                        statusPanel.className = 'balance-status-good';
-                        if (balanceBlock) {
-                            balanceBlock.classList.add('balance-check-good');
-                        }
-                    } else {
-                        statusPanel.textContent = 'Nta bizamini bisigaye kuri iyi nomero. Gura andi kugira ngo ukomeze.';
-                        statusPanel.className = 'balance-status-empty';
-                        if (balanceBlock) {
-                            balanceBlock.classList.add('balance-check-empty');
-                        }
-                    }
-                })
-                .catch(() => {
-                    statusPanel.textContent = 'Gushaka ibisigaye byanze. Reba internet cyangwa ongera ugerageze.';
-                    statusPanel.className = 'balance-status-low';
-                    if (balanceBlock) {
-                        balanceBlock.classList.add('balance-check-low');
-                    }
-                });
+            fetch('/api/check-phone', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phoneNumber: fullFormattedPhone })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'has_unfinished') {
+                    const rem = data.remaining || 0;
+                    const pr = data.purchaseRemaining || 0;
+                    const ar = data.assignedRemaining || 0;
+                    statusPanel.textContent = `Ufite ${rem} bizamini bisigaye (${pr} byaguzwe, ${ar} byatanzwe n'ishuri).`;
+                    statusPanel.className = 'balance-status-good';
+                    if (balanceBlock) balanceBlock.classList.add('balance-check-good');
+                } else if (data.status === 'blocked_no_purchase') {
+                    statusPanel.textContent = data.error || 'Konti yafunzwe. Vugana n\'ishuri cyangwa gura ibizamini.';
+                    statusPanel.className = 'balance-status-empty';
+                    if (balanceBlock) balanceBlock.classList.add('balance-check-empty');
+                } else if (data.status === 'school_number') {
+                    statusPanel.textContent = data.error || 'Numero ya telephone ni iya ishuri.';
+                    statusPanel.className = 'balance-status-empty';
+                } else {
+                    statusPanel.textContent = 'Nta bizamini bisigaye kuri iyi nomero. Gura andi kugira ngo ukomeze.';
+                    statusPanel.className = 'balance-status-empty';
+                    if (balanceBlock) balanceBlock.classList.add('balance-check-empty');
+                }
+            })
+            .catch(() => {
+                statusPanel.textContent = 'Gushaka ibisigaye byanze. Reba internet cyangwa ongera ugerageze.';
+                statusPanel.className = 'balance-status-low';
+                if (balanceBlock) balanceBlock.classList.add('balance-check-low');
+            });
         };
 
         // Measure navbar height and set CSS variable for accurate mobile offset
