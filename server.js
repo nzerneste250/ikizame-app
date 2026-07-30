@@ -375,9 +375,10 @@ app.post('/api/check-phone', (req, res) => {
             COALESCE((SELECT SUM(remaining_exams) FROM payment_transactions WHERE RIGHT(phone_number, 9) = ? AND status = 'SUCCESS' AND remaining_exams > 0), 0) AS purchase_remaining,
             COALESCE((SELECT SUM(assigned_exams) FROM school_students WHERE RIGHT(phone_number, 9) = ? AND status = 'ACTIVE' AND assigned_exams > 0), 0) AS assigned_remaining,
             (SELECT COUNT(*) FROM driving_schools WHERE RIGHT(phone_number, 9) = ?) AS school_count,
-            (SELECT COUNT(*) FROM school_students WHERE RIGHT(phone_number, 9) = ? AND status = 'ACTIVE' AND assigned_exams > 0) AS student_count
+            (SELECT COUNT(*) FROM school_students WHERE RIGHT(phone_number, 9) = ? AND status = 'ACTIVE' AND assigned_exams > 0) AS student_count,
+            (SELECT COUNT(*) FROM school_students WHERE RIGHT(phone_number, 9) = ? AND status = 'BLOCKED') AS blocked_count
          `,
-        [last9, last9, last9, last9],
+        [last9, last9, last9, last9, last9],
         (balErr, balRows) => {
             if (balErr) return res.status(500).json({ error: balErr.message });
             const data = balRows[0] || {};
@@ -385,9 +386,15 @@ app.post('/api/check-phone', (req, res) => {
             const assignedRemaining = parseInt(data.assigned_remaining, 10) || 0;
             const isSchoolPhone = (parseInt(data.school_count, 10) || 0) > 0;
             const hasSchoolStudent = (parseInt(data.student_count, 10) || 0) > 0;
+            const hasBlockedStudent = (parseInt(data.blocked_count, 10) || 0) > 0;
 
             if (isSchoolPhone && !hasSchoolStudent) {
                 return res.json({ status: 'school_number', error: "Numero ya telephone ni iya ishuri kandi ntishobora gukoreshwa mu kizamini niba itanditsewe nk'umunyeshuri." });
+            }
+
+            // If the phone belongs to a blocked student and they have no purchased exams, instruct to buy
+            if (hasBlockedStudent && purchaseRemaining === 0 && assignedRemaining === 0) {
+                return res.json({ status: 'blocked_no_purchase', error: "Konti y'umunyeshuri yafunzwe. Niba ushaka gukora ikizamini, gura ibizamini ku gice cy'Ibiciro cyangwa vugana n'ishuri." });
             }
 
             const totalRemaining = purchaseRemaining + assignedRemaining;

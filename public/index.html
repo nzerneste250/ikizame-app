@@ -1316,6 +1316,12 @@
                             phoneHint.textContent = data.error || "Numero ya telephone ni iya ishuri kandi ntishobora gukoreshwa mu kizamini niba itanditsewe nk'umunyeshuri.";
                             phoneHint.className = "hint error";
                             return;
+                        } else if (data.status === 'blocked_no_purchase') {
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
+                            phoneHint.textContent = data.error || "Konti yafunzwe. Gura ibizamini ku gice cy'Ibiciro cyangwa vugana n'ishuri.";
+                            phoneHint.className = "hint error";
+                            setTimeout(() => { window.location.href = '/ibiciro'; }, 2500);
+                            return;
                         } else {
                             if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
                             phoneHint.textContent = data.error || "Habaye ikosa. Gerageza nanone.";
