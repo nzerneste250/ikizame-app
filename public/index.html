@@ -1298,8 +1298,11 @@
                     .then(r => r.json())
                     .then(data => {
                         if (data.status === 'has_unfinished') {
-                            // Has a bought exam not yet finished — resume
-                            phoneHint.textContent = `Ufite ${data.remaining || 0} bizamini bisigaye. Ukomereze aho.`;
+                            // Has purchased and/or assigned exams — resume
+                            const rem = data.remaining || 0;
+                            const pr = data.purchaseRemaining || 0;
+                            const ar = data.assignedRemaining || 0;
+                            phoneHint.textContent = `Ufite ${rem} bizamini bisigaye (${pr} byaguzwe, ${ar} byatanzwe n'ishuri). Ukomereze aho.`;
                             phoneHint.className = "hint success";
                             return doRegister(name, fullFormattedPhone, submitBtn);
                         } else if (data.status === 'all_finished') {
@@ -1308,6 +1311,11 @@
                             phoneHint.textContent = "Nta bizamini bisigaye kuri iyi nomero. Gura ibindi ku gice cy'Ibiciro.";
                             phoneHint.className = "hint error";
                             setTimeout(() => { window.location.href = '/ibiciro'; }, 2500);
+                        } else if (data.status === 'school_number') {
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
+                            phoneHint.textContent = data.error || "Numero ya telephone ni iya ishuri kandi ntishobora gukoreshwa mu kizamini niba itanditsewe nk'umunyeshuri.";
+                            phoneHint.className = "hint error";
+                            return;
                         } else {
                             if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
                             phoneHint.textContent = data.error || "Habaye ikosa. Gerageza nanone.";

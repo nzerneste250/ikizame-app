@@ -254,6 +254,14 @@ module.exports = (db) => {
                         );
                     }
 
+                    if (req.session.assignedStudentId) {
+                        db.query(
+                            `UPDATE school_students SET assigned_exams = GREATEST(0, assigned_exams - 1) WHERE id = ? AND assigned_exams > 0`,
+                            [req.session.assignedStudentId],
+                            (sDeductErr) => { if (sDeductErr) console.error('Assigned deduct error:', sDeductErr.message); }
+                        );
+                    }
+
                     req.session.hasCompletedActiveExamToken = true;
                     req.session.lockedExamQuestionIds = [];
                     res.json({ score, total: finalTotal });

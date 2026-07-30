@@ -368,14 +368,34 @@ app.post('/api/check-phone', (req, res) => {
     if (!phoneNumber) return res.status(400).json({ error: 'Telefone irakenewe.' });
 
     const phone = normalizePhone(phoneNumber);
+    const last9 = phone.slice(-9);
 
     db.query(
-        `SELECT COALESCE(SUM(remaining_exams), 0) AS remaining FROM payment_transactions WHERE RIGHT(phone_number, 9) = ? AND status = 'SUCCESS'`,
-        [phone.slice(-9)],
+        `SELECT
+            COALESCE((SELECT SUM(remaining_exams) FROM payment_transactions WHERE RIGHT(phone_number, 9) = ? AND status = 'SUCCESS' AND remaining_exams > 0), 0) AS purchase_remaining,
+            COALESCE((SELECT SUM(assigned_exams) FROM school_students WHERE RIGHT(phone_number, 9) = ? AND status = 'ACTIVE' AND assigned_exams > 0), 0) AS assigned_remaining,
+            (SELECT COUNT(*) FROM driving_schools WHERE RIGHT(phone_number, 9) = ?) AS school_count,
+            (SELECT COUNT(*) FROM school_students WHERE RIGHT(phone_number, 9) = ? AND status = 'ACTIVE' AND assigned_exams > 0) AS student_count
+         `,
+        [last9, last9, last9, last9],
         (balErr, balRows) => {
             if (balErr) return res.status(500).json({ error: balErr.message });
-            const remaining = parseInt(balRows[0].remaining, 10) || 0;
-            return res.json({ status: remaining > 0 ? 'has_unfinished' : 'all_finished', remaining });
+            const data = balRows[0] || {};
+            const purchaseRemaining = parseInt(data.purchase_remaining, 10) || 0;
+            const assignedRemaining = parseInt(data.assigned_remaining, 10) || 0;
+            const isSchoolPhone = (parseInt(data.school_count, 10) || 0) > 0;
+            const hasSchoolStudent = (parseInt(data.student_count, 10) || 0) > 0;
+
+            if (isSchoolPhone && !hasSchoolStudent) {
+                return res.json({ status: 'school_number', error: "Numero ya telephone ni iya ishuri kandi ntishobora gukoreshwa mu kizamini niba itanditsewe nk'umunyeshuri." });
+            }
+
+            const totalRemaining = purchaseRemaining + assignedRemaining;
+            if (totalRemaining > 0) {
+                return res.json({ status: 'has_unfinished', remaining: totalRemaining, purchaseRemaining, assignedRemaining });
+            }
+
+            return res.json({ status: 'all_finished', remaining: 0 });
         }
     );
 });
@@ -386,20 +406,44 @@ app.post('/api/register', (req, res) => {
 
     const phone = normalizePhone(phoneNumber);
 
+    const last9 = phone.slice(-9);
+
+    // First try to find a purchase with remaining exams for this phone
     db.query(
-        `SELECT id, remaining_exams FROM payment_transactions WHERE RIGHT(phone_number, 9) = RIGHT(?, 9) AND status = 'SUCCESS' AND remaining_exams > 0 ORDER BY id DESC LIMIT 1`,
-        [phone],
-        (accessErr, results) => {
-            if (accessErr) return res.status(500).json({ error: accessErr.message });
-            if (!results || results.length === 0) {
-                return res.status(403).json({ ok: false, error: "Nta madorandore afite inshuro usigaje kuri iyi nomero. Gura ibizamini bishya ku gice cy'Ibiciro!" });
+        `SELECT id, remaining_exams FROM payment_transactions WHERE RIGHT(phone_number, 9) = ? AND status = 'SUCCESS' AND remaining_exams > 0 ORDER BY id DESC LIMIT 1`,
+        [last9],
+        (payErr, payRows) => {
+            if (payErr) return res.status(500).json({ error: payErr.message });
+
+            if (payRows && payRows.length > 0) {
+                req.session.examStudentName = studentName.trim();
+                req.session.examPhoneNumber = phone;
+                req.session.activePaymentRecordId = payRows[0].id;
+                req.session.assignedStudentId = null;
+                req.session.lockedExamQuestionIds = [];
+                req.session.hasCompletedActiveExamToken = false;
+                return res.json({ ok: true, remaining: payRows[0].remaining_exams });
             }
-            req.session.examStudentName        = studentName.trim();
-            req.session.examPhoneNumber        = phone;
-            req.session.activePaymentRecordId  = results[0].id;
-            req.session.lockedExamQuestionIds  = [];
-            req.session.hasCompletedActiveExamToken = false;
-            res.json({ ok: true, remaining: results[0].remaining_exams });
+
+            // No direct purchase found; check if this phone is a registered active school student with assigned exams
+            db.query(
+                `SELECT id, student_name, assigned_exams FROM school_students WHERE RIGHT(phone_number, 9) = ? AND status = 'ACTIVE' AND assigned_exams > 0 ORDER BY id DESC LIMIT 1`,
+                [last9],
+                (stuErr, stuRows) => {
+                    if (stuErr) return res.status(500).json({ error: stuErr.message });
+                    if (stuRows && stuRows.length > 0) {
+                        req.session.examStudentName = studentName.trim();
+                        req.session.examPhoneNumber = phone;
+                        req.session.activePaymentRecordId = null;
+                        req.session.assignedStudentId = stuRows[0].id;
+                        req.session.lockedExamQuestionIds = [];
+                        req.session.hasCompletedActiveExamToken = false;
+                        return res.json({ ok: true, remaining: stuRows[0].assigned_exams });
+                    }
+
+                    return res.status(403).json({ ok: false, error: "Nta madorandore afite inshuro usigaje kuri iyi nomero. Gura ibizamini bishya ku gice cy'Ibiciro!" });
+                }
+            );
         }
     );
 });
