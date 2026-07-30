@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --brand:#0b698b; --bg:linear-gradient(135deg,#0d1b2a 0%,#111827 100%); --panel:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.12); --text:#f8fafc; --muted:#94a3b8; }
+        :root { --brand:#0b698b; --bg:linear-gradient(135deg,#f5fbff 0%,#edf6ff 100%); --panel:rgba(255,255,255,0.92); --border:rgba(11,105,139,0.14); --text:#0f172a; --muted:#475569; }
         * { box-sizing:border-box; margin:0; padding:0; }
         body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
         .navbar { position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background:#fff; color:#0f172a; border-bottom:1px solid #e2e8f0; }
@@ -23,14 +23,14 @@
         .page { max-width:1200px; margin:0 auto; padding:24px 16px 80px; }
         .card { background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:0 16px 34px rgba(2,8,23,0.12); }
         .stats { display:grid; gap:14px; grid-template-columns:repeat(4,1fr); margin-bottom:16px; }
-        .stat { background:rgba(255,255,255,0.03); padding:16px; border-radius:14px; border:1px solid rgba(255,255,255,0.08); }
-        .stat .label { font-size:0.72rem; color:#94a3b8; text-transform:uppercase; margin-bottom:6px; }
+        .stat { background:rgba(248,250,252,0.95); padding:16px; border-radius:14px; border:1px solid rgba(11,105,139,0.12); }
+        .stat .label { font-size:0.72rem; color:#64748b; text-transform:uppercase; margin-bottom:6px; }
         .stat .value { font-size:1.25rem; font-weight:800; }
         .table-wrap { overflow:auto; }
         table { width:100%; min-width:780px; border-collapse:collapse; }
-        th, td { padding:12px 10px; border-bottom:1px solid rgba(255,255,255,0.08); text-align:left; font-size:0.9rem; }
-        th { color:#94a3b8; text-transform:uppercase; font-size:0.74rem; }
-        .muted { color:#94a3b8; }
+        th, td { padding:12px 10px; border-bottom:1px solid rgba(11,105,139,0.08); text-align:left; font-size:0.9rem; }
+        th { color:#64748b; text-transform:uppercase; font-size:0.74rem; }
+        .muted { color:#64748b; }
         @media (max-width:760px){ .stats{grid-template-columns:1fr 1fr;} }
     </style>
 </head>

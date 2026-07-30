@@ -14,14 +14,14 @@
         :root {
             --brand: #0b698b;
             --brand-dark: #08536e;
-            --border-color: rgba(255,255,255,0.12);
+            --border-color: rgba(11, 105, 139, 0.14);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             min-height: 100%;
             font-family: 'Inter', sans-serif;
-            background-color: #0d1b2a;
-            color: #fff;
+            background: linear-gradient(135deg, #f5fbff 0%, #edf6ff 100%);
+            color: #0f172a;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
@@ -229,6 +229,8 @@
         <nav>
             <ul class="navbar-links">
                 <li><a href="/school-dashboard">Dashboard</a></li>
+                <li><a href="/school-students"><i class="fa-solid fa-user-plus"></i> Students</a></li>
+                <li><a href="/school-performance"><i class="fa-solid fa-chart-line"></i> Performance</a></li>
                 <li><a href="/school-profile" class="active"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
                 <li><a href="#" class="logout-btn" onclick="handleSchoolLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
             </ul>

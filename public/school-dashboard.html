@@ -16,9 +16,9 @@
             --brand-dark: #08536e;
             --primary: #0066FF;
             --primary-soft: #EBF3FF;
-            --bg-dark: linear-gradient(135deg, #0d1b2a 0%, #111827 100%);
+            --bg-dark: linear-gradient(135deg, #f5fbff 0%, #edf6ff 100%);
             --text-dark: #0f172a;
-            --border-color: rgba(255,255,255,0.12);
+            --border-color: rgba(11, 105, 139, 0.14);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -26,7 +26,7 @@
             height: 100%;
             font-family: 'Inter', sans-serif;
             background: var(--bg-dark);
-            color: #ffffff;
+            color: var(--text-dark);
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -88,22 +88,22 @@
         }
 
         .welcome-hero-banner {
-            background: linear-gradient(135deg, rgba(11, 105, 139, 0.22) 0%, rgba(13, 27, 42, 0.55) 100%);
+            background: linear-gradient(135deg, rgba(11, 105, 139, 0.08) 0%, rgba(14, 165, 233, 0.12) 100%);
             border: 1px solid var(--border-color);
             border-radius: 22px;
             padding: 28px 24px;
-            box-shadow: 0 24px 48px rgba(2,8,23,0.18);
+            box-shadow: 0 24px 48px rgba(2,8,23,0.08);
         }
-        .welcome-hero-banner h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; color: #fff; }
-        .welcome-hero-banner p { color: #e2e8f0; font-size: 0.95rem; line-height: 1.7; }
+        .welcome-hero-banner h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; color: #0f172a; }
+        .welcome-hero-banner p { color: #334155; font-size: 0.95rem; line-height: 1.7; }
         .hero-highlights { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
         .hero-chip {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 8px 12px; border-radius: 999px;
-            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.16);
-            color: #f8fafc; font-size: 0.77rem; font-weight: 700;
+            background: rgba(255,255,255,0.8); border: 1px solid rgba(11, 105, 139, 0.14);
+            color: #0f172a; font-size: 0.77rem; font-weight: 700;
         }
-        .hero-chip strong { color: #fff; }
+        .hero-chip strong { color: #0b698b; }
 
         .info-grid {
             display: grid; gap: 16px;
@@ -111,23 +111,23 @@
         }
         @media(min-width: 900px) { .info-grid { grid-template-columns: 1.2fr 0.8fr; } }
         .info-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.03) 100%);
+            background: rgba(255,255,255,0.9);
             border: 1px solid var(--border-color);
-            border-radius: 18px; padding: 22px; box-shadow: 0 16px 34px rgba(2,8,23,0.12);
+            border-radius: 18px; padding: 22px; box-shadow: 0 16px 34px rgba(2,8,23,0.08);
         }
-        .info-card h3 { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
-        .info-card p { font-size: 0.88rem; color: #cbd5e1; line-height: 1.65; margin-bottom: 12px; }
+        .info-card h3 { font-size: 1rem; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+        .info-card p { font-size: 0.88rem; color: #475569; line-height: 1.65; margin-bottom: 12px; }
         .step-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
         @media(min-width: 720px) { .step-grid { grid-template-columns: repeat(2, 1fr); } }
         .step-card {
-            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(248, 250, 252, 0.95); border: 1px solid rgba(11, 105, 139, 0.12);
             border-radius: 14px; padding: 14px; min-height: 100%;
         }
         .step-card .step-number { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; background: linear-gradient(135deg, var(--brand) 0%, #0ea5e9 100%); color: #fff; margin-bottom: 8px; }
-        .step-card h4 { font-size: 0.9rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
-        .step-card p { font-size: 0.8rem; color: #94a3b8; margin: 0; }
+        .step-card h4 { font-size: 0.9rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+        .step-card p { font-size: 0.8rem; color: #475569; margin: 0; }
         .feature-list { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; }
-        .feature-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 0.84rem; color: #cbd5e1; }
+        .feature-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 0.84rem; color: #334155; }
         .feature-list li i { color: #38bdf8; margin-top: 2px; flex-shrink: 0; }
 
         /* Wallet Metrics Cards Grid */
@@ -140,14 +140,14 @@
         @media(min-width: 640px) { .metrics-grid-row { grid-template-columns: repeat(2, 1fr); } }
 
         .metric-status-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
+            background: rgba(255,255,255,0.9);
             border: 1px solid var(--border-color);
             border-radius: 18px;
             padding: 24px;
             display: flex;
             align-items: center;
             gap: 20px;
-            box-shadow: 0 16px 34px rgba(2,8,23,0.12);
+            box-shadow: 0 16px 34px rgba(2,8,23,0.08);
         }
         .metric-icon-box {
             width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;
@@ -155,21 +155,21 @@
         .metric-icon-box.exams { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
         .metric-icon-box.status { background: rgba(16, 185, 129, 0.1); color: #10b981; }
 
-        .metric-info h4 { font-size: 11px; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .metric-info div { font-size: 1.6rem; font-weight: 800; color: #fff; }
+        .metric-info h4 { font-size: 11px; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .metric-info div { font-size: 1.6rem; font-weight: 800; color: #0f172a; }
 
         /* Inside-Page Payment Renewal Form Panel */
         .action-form-panel {
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
+            background: rgba(255,255,255,0.9);
             border: 1px solid var(--border-color);
             border-radius: 18px;
             padding: 24px;
             max-width: 500px;
             width: 100%;
-            box-shadow: 0 16px 34px rgba(2,8,23,0.12);
+            box-shadow: 0 16px 34px rgba(2,8,23,0.08);
         }
-        .action-form-panel h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
-        .action-form-panel p { font-size: 0.85rem; color: #94a3b8; margin-bottom: 18px; }
+        .action-form-panel h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; color: #0f172a; }
+        .action-form-panel p { font-size: 0.85rem; color: #475569; margin-bottom: 18px; }
 
         .input-form-field { display: flex; flex-direction: column; text-align: left; gap: 6px; margin-bottom: 16px; }
         .input-form-field label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
@@ -260,6 +260,8 @@
         <nav>
             <ul class="navbar-links">
                 <li><a href="/school-dashboard" class="active">Dashboard</a></li>
+                <li><a href="/school-students"><i class="fa-solid fa-user-plus"></i> Students</a></li>
+                <li><a href="/school-performance"><i class="fa-solid fa-chart-line"></i> Performance</a></li>
                 <li><a href="/school-profile"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
                 <li><a href="#" class="logout-btn" onclick="handleSchoolLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
             </ul>
@@ -357,93 +359,21 @@
                 </div>
             </section>
 
-            <!-- ===== PERFORMANCE DASHBOARD ===== -->
-            <section class="perf-section">
-                <div class="section-title">📊 Imikorere y'Abanyeshuri (Students Performance)</div>
-
-                <div id="perfLoadingState">⏳ Gushaka amakuru y'abanyeshuri...</div>
-                <div id="perfEmptyState">📭 Nta makuru y'ibizamini yabonetse kuri iyi konti.</div>
-
-                <!-- Stats Cards -->
-                <div class="stats-grid" id="statsGrid" style="display:none">
-                    <div class="stat-card">
-                        <div class="stat-val" id="statTotal">0</div>
-                        <div class="stat-lbl">Ibizamini Byose</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-val" id="statStudents">0</div>
-                        <div class="stat-lbl">Abanyeshuri</div>
-                    </div>
-                    <div class="stat-card avg">
-                        <div class="stat-val" id="statAvg">0</div>
-                        <div class="stat-lbl">Amanota Avr.</div>
-                    </div>
-                    <div class="stat-card avg">
-                        <div class="stat-val" id="statAvgPct">0%</div>
-                        <div class="stat-lbl">Avr. %</div>
-                    </div>
-                    <div class="stat-card pass">
-                        <div class="stat-val" id="statPassed">0</div>
-                        <div class="stat-lbl">Barapfuye ✓</div>
-                    </div>
-                    <div class="stat-card fail">
-                        <div class="stat-val" id="statPassRate">0%</div>
-                        <div class="stat-lbl">Pass Rate</div>
-                    </div>
-                </div>
-
-                <!-- Distribution + Top Students -->
-                <div class="two-col" id="twoColSection" style="display:none">
-                    <div class="panel">
-                        <div class="section-title" style="font-size:0.85rem;">📈 Ikigereranyo cy'Amanota</div>
-                        <div class="dist-row">
-                            <div class="dist-item">
-                                <span class="dist-label">🟢 Byiza (85%+)</span>
-                                <div class="dist-bar-wrap"><div class="dist-bar excellent" id="barExcellent" style="width:0%"></div></div>
-                                <span class="dist-count" id="cntExcellent">0</span>
-                            </div>
-                            <div class="dist-item">
-                                <span class="dist-label">🔵 Nziza (70%+)</span>
-                                <div class="dist-bar-wrap"><div class="dist-bar good" id="barGood" style="width:0%"></div></div>
-                                <span class="dist-count" id="cntGood">0</span>
-                            </div>
-                            <div class="dist-item">
-                                <span class="dist-label">🟡 Hagati (50%+)</span>
-                                <div class="dist-bar-wrap"><div class="dist-bar average" id="barAverage" style="width:0%"></div></div>
-                                <span class="dist-count" id="cntAverage">0</span>
-                            </div>
-                            <div class="dist-item">
-                                <span class="dist-label">🔴 Nke (&lt;50%)</span>
-                                <div class="dist-bar-wrap"><div class="dist-bar poor" id="barPoor" style="width:0%"></div></div>
-                                <span class="dist-count" id="cntPoor">0</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel">
-                        <div class="section-title" style="font-size:0.85rem;">🏆 Abanyeshuri 5 Baheruka</div>
-                        <div id="topStudentsList" style="display:flex;flex-direction:column;gap:8px;"></div>
-                    </div>
-                </div>
-
-                <!-- Full Attempts Table -->
-                <div class="panel" id="tablePanel" style="display:none">
-                    <div class="section-title" style="font-size:0.85rem;">📋 Amateka y'Ibizamini Byose</div>
-                    <div class="perf-table-wrap">
-                        <table class="perf-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Amazina</th>
-                                    <th>Telephone</th>
-                                    <th>Amanota</th>
-                                    <th>Score %</th>
-                                    <th>Ibibazo</th>
-                                    <th>Igihe</th>
-                                    <th>Imiterere</th>
-                                </tr>
-                            </thead>
-                            <tbody id="perfTableBody"></tbody>
-                        </table>
+            <section class="info-grid">
+                <div class="info-card">
+                    <h3>Uburyo bwihuse bwo gutangira</h3>
+                    <p>Hitamo ibikurikira kugirango ube utangiye gukoresha IKIZAME mu ishuri ryacu neza.</p>
+                    <div class="step-grid">
+                        <a href="/school-students" class="step-card" style="text-decoration:none; display:block;">
+                            <div class="step-number">1</div>
+                            <h4>Andikisha abanyeshuri</h4>
+                            <p>Shyiramo abanyeshuri bawe, ubahaye ibizamini byabo, kandi ubabaze uko bagomba gukoresha.</p>
+                        </a>
+                        <a href="/school-performance" class="step-card" style="text-decoration:none; display:block;">
+                            <div class="step-number">2</div>
+                            <h4>Reba imikorere</h4>
+                            <p>Reba amanota, ibizamini byakozwe, n'uburyo abanyeshuri bagiye kwitwara.</p>
+                        </a>
                     </div>
                 </div>
             </section>
