@@ -205,12 +205,13 @@
 
         /* ── FOOTER ── */
         .footer {
-            height: 40px; background: #0f172a;
+            min-height: 40px; padding: 7px 16px; background: #0f172a;
             display: flex; align-items: center; justify-content: center;
-            font-size: 11px; color: #64748b;
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+            font-size: 11px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+            flex-wrap: wrap; gap: 6px;
         }
         .footer strong { color: #38bdf8; }
+        .footer a:hover { opacity: 0.9; }
 
         /* ── SKELETON LOADER ── */
         .skeleton { background: rgba(255,255,255,0.06); border-radius: 6px; animation: pulse 1.4s ease-in-out infinite; }
@@ -221,7 +222,7 @@
 
     <!-- NAVBAR -->
     <header class="navbar">
-        <a href="/" class="navbar-brand-wrap">
+        <a href="/school-dashboard" class="navbar-brand-wrap">
             <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
             <div class="navbar-brand">IKIZAME</div>
         </a>
@@ -229,7 +230,7 @@
             <ul class="navbar-links">
                 <li><a href="/school-dashboard">Dashboard</a></li>
                 <li><a href="/school-profile" class="active"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
-                <li><a href="/api/school/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sohoka</a></li>
+                <li><a href="#" class="logout-btn" onclick="handleSchoolLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
             </ul>
         </nav>
         <div class="lang-badge">
@@ -319,15 +320,36 @@
         </div>
     </div>
 
-    <footer class="footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
+    <footer class="footer">
+        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
+            <span style="font-size:0.7rem;">© 2026 IKIZAME Empowering Learners Across Rwanda</span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <a href="/about" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
+            <a href="/terms" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
+        </div>
+    </footer>
 
     <script>
+        async function handleSchoolLogout(event) {
+            event.preventDefault();
+            try {
+                const res = await fetch('/api/school/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+                if (res.ok) {
+                    window.location.replace('/school-auth');
+                    return;
+                }
+            } catch (err) {}
+            window.location.replace('/school-auth');
+        }
+
         // ── Session guard + load profile info ──
         document.addEventListener('DOMContentLoaded', () => {
             fetch('/api/school/profile')
-                .then(r => { if (r.status === 401) { window.location.href = '/school-auth'; return null; } return r.json(); })
+                .then(r => { if (r.status === 401) { window.location.replace('/school-auth'); return null; } return r.json(); })
                 .then(data => {
-                    if (!data || !data.success) { window.location.href = '/school-auth'; return; }
+                    if (!data || !data.success) { window.location.replace('/school-auth'); return; }
                     document.getElementById('infoSchoolName').textContent = data.schoolName;
                     document.getElementById('infoEmail').textContent      = data.email;
                     document.getElementById('newSchoolName').value        = data.schoolName;

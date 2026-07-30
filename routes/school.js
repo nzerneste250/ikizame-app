@@ -126,6 +126,9 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
 
             bcrypt.compare(password.trim(), school.password_hash, (cmpErr, match) => {
                 if (cmpErr || !match) return res.status(401).json({ success: false, error: 'Email cyangwa Password ntabwo ari byo.' });
+                req.session.cookie.httpOnly = true;
+                req.session.cookie.sameSite = 'lax';
+                req.session.cookie.secure = req.secure || req.headers['x-forwarded-proto'] === 'https';
                 req.session.isSchoolAuthenticated = true;
                 req.session.schoolAccountId = school.id;
                 req.session.schoolAccountName = school.school_name;
@@ -346,7 +349,15 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
         });
     });
 
-    // GET logout
+    // POST logout
+    router.post('/logout', (req, res) => {
+        req.session.destroy((err) => {
+            if (err) return res.status(500).json({ success: false, error: 'Logout failed.' });
+            res.json({ success: true, redirect: '/school-auth' });
+        });
+    });
+
+    // GET logout (compatibility)
     router.get('/logout', (req, res) => {
         req.session.destroy(() => res.redirect('/school-auth'));
     });
