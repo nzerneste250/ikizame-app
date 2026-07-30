@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About IKIZAME - School Portal</title>
+  <link rel="icon" type="image/png" href="assets/uploads/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/design-system.css">
+  <style>
+    /* Reuse desktop/site styles from public/about.html to keep appearance consistent for school users */
+  </style>
+</head>
+<body>
+
+  <!-- Use canonical school header (copied from school-students) -->
+  <header class="navbar">
+    <a href="/school-dashboard" class="navbar-brand-wrap">
+      <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+      <div class="navbar-brand">IKIZAME</div>
+    </a>
+    <nav>
+      <ul class="navbar-links">
+        <li><a href="/school-dashboard" class="active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+        <li><a href="/school-students"><i class="fa-solid fa-user-plus"></i> Students</a></li>
+        <li><a href="/school-performance"><i class="fa-solid fa-chart-line"></i> Performance</a></li>
+        <li><a href="/school-profile"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
+        <li><a href="#" class="logout-btn" onclick="handleSchoolLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </nav>
+    <div class="lang-badge">
+      <svg class="rw-flag-svg" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+      <span>Kinyarwanda</span>
+    </div>
+  </header>
+
+  <!-- Main content: include the same content as public/about but scoped for school users -->
+  <main style="max-width:1100px; margin:0 auto; padding:80px 16px 120px;">
+    <!-- simple pointer to main about content -->
+    <h1>About IKIZAME</h1>
+    <p>IKIZAME provides learning materials and practice exams for learners. This page is the school-specific About document.</p>
+    <p>For full company information, see the public About page.</p>
+  </main>
+
+  <footer class="footer">
+    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
+      <span style="font-size:0.7rem;">© 2026 IKIZAME Empowering Learners Across Rwanda</span>
+      <span style="color:rgba(255,255,255,0.3);">|</span>
+      <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
+      <span style="color:rgba(255,255,255,0.3);">|</span>
+      <a href="/about-school" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
+      <a href="/terms-school" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
+    </div>
+  </footer>
+
+  <script>
+    async function handleSchoolLogout(e){ e.preventDefault(); try{ await fetch('/api/school/logout',{method:'POST',headers:{'Content-Type':'application/json'}}); }catch(err){} window.location.replace('/school-auth'); }
+  </script>
+</body>
+</html>

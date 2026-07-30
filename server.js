@@ -248,6 +248,14 @@ app.get('/terms', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'terms.html'));
 });
 
+// School-specific static copies of About/Terms used inside the school portal
+app.get('/about-school', (req, res) => {
+    return res.sendFile(path.join(__dirname, 'public', 'about-school.html'));
+});
+app.get('/terms-school', (req, res) => {
+    return res.sendFile(path.join(__dirname, 'public', 'terms-school.html'));
+});
+
 app.get('/school-dashboard', (req, res) => {
     if (req.session && req.session.isSchoolAuthenticated)
         return res.sendFile(path.join(__dirname, 'public', 'school-dashboard.html'));
