@@ -170,17 +170,17 @@
 <section class="hero">
     <div class="hero-icon"><i class="fa-solid fa-book-open"></i></div>
     <h1>Imfashanyigisho z'Amategeko</h1>
-    <p>Soma no gukura inyandiko z'amategeko y'umuhanda zikubiye hano kugirango witegure ikizamini cyawe neza.</p>
+    <p>aho ushobora Gusomera no gukura inyandiko z'amategeko y'umuhanda zitandukanye kugirango witegure ikizamini cyawe neza.</p>
 </section>
 
 <main class="main">
     <div class="section-head">
-        <h2><i class="fa-solid fa-folder-open"></i> Inyandiko Zihari</h2>
+        <h2><i class="fa-solid fa-folder-open"></i> Imfashanyigisho Zihari</h2>
         <span class="doc-count-badge" id="docCountBadge">Irimo gushaka...</span>
     </div>
     <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass s-icon"></i>
-        <input type="text" class="search-input" id="searchInput" placeholder="Shakisha inyandiko..." oninput="filterDocs(this.value)" autocomplete="off">
+        <input type="text" class="search-input" id="searchInput" placeholder="Shakisha imfashanyigisho..." oninput="filterDocs(this.value)" autocomplete="off">
         <button class="search-clear" id="searchClear" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="cards-grid" id="cardsGrid">
@@ -262,16 +262,16 @@ function loadDocs() {
             var grid = document.getElementById('cardsGrid');
             var badge = document.getElementById('docCountBadge');
             if (!docs || docs.length === 0) {
-                grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta nyandiko zihari ubu</h3><p>Inyandiko zizashyirwaho vuba. Subira nyuma.</p></div>';
-                badge.textContent = '0 inyandiko';
+                grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta imfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwaho vuba. Subira nyuma.</p></div>';
+                badge.textContent = '0 imfashanyigisho';
                 return;
             }
             allDocs = docs;
-            badge.textContent = docs.length + ' inyandiko';
+            badge.textContent = docs.length + ' imfashanyigisho';
             renderDocs();
         })
         .catch(function() {
-            document.getElementById('cardsGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habayeho ikosa</h3><p>Gushaka inyandiko byanze. Gerageza kongera.</p><button onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera Ugerageze</button></div>';
+            document.getElementById('cardsGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habayeho ikosa</h3><p>Gushaka imfashanyigisho byanze. Gerageza wongere.</p><button onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera Ugerageze</button></div>';
             document.getElementById('docCountBadge').textContent = 'Ikosa';
         });
 }
@@ -282,8 +282,8 @@ function renderDocs() {
     var input = document.getElementById('searchInput');
     var term = (input ? input.value : '').trim().toLowerCase();
     if (!allDocs || allDocs.length === 0) {
-        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta nyandiko zihari ubu</h3><p>Inyandiko zizashyirwaho vuba. Subira nyuma.</p></div>';
-        badge.textContent = '0 inyandiko';
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta imfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwaho vuba. Subira nyuma.</p></div>';
+        badge.textContent = '0 imfashanyigisho';
         return;
     }
     var filtered = !term ? allDocs : allDocs.filter(function(doc) {
