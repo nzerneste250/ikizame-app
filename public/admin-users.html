@@ -315,13 +315,13 @@ function loadSchools() {
 
 function toggleSchool(id, active) {
     fetch(`/api/admin/schools/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({active})})
-        .then(r=>r.json()).then(d=>{ if(d.ok) loadSchools(); else alert(d.error||'Byanze.'); });
+        .then(r=>r.json()).then(d=>{ if(d.ok) loadSchools(); else alert(d.error||'Failed.'); });
 }
 
 function deleteSchool(id, name) {
-    if (!confirm(`Urareba neza ko ushaka gusiba ishuri "${name}"?`)) return;
+    if (!confirm(`Are you sure you want to delete the school "${name}"?`)) return;
     fetch(`/api/admin/schools/${id}`,{method:'DELETE'})
-        .then(r=>r.json()).then(d=>{ if(d.ok) loadSchools(); else alert(d.error||'Gusiba byanze.'); });
+        .then(r=>r.json()).then(d=>{ if(d.ok) loadSchools(); else alert(d.error||'Delete failed.'); });
 }
 
 
@@ -369,7 +369,7 @@ function loadUsers() {
 function addUser() {
     const email = document.getElementById('newEmail').value.trim();
     const role  = document.getElementById('newRole').value;
-    if (!email) { showAlert('Injiza email.', 'error'); return; }
+    if (!email) { showAlert('Enter an email address.', 'error'); return; }
     const btn = document.getElementById('addBtn');
     btn.disabled = true;
     document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
@@ -377,8 +377,8 @@ function addUser() {
         .then(r => r.json()).then(d => {
             btn.disabled = false;
             document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
-            if (d.ok) { showAlert('Account yashyizweho neza!','success'); document.getElementById('newEmail').value=''; loadUsers(); }
-            else showAlert(d.error||'Gushyiraho byanze.','error');
+            if (d.ok) { showAlert('Account created successfully!','success'); document.getElementById('newEmail').value=''; loadUsers(); }
+            else showAlert(d.error||'Creation failed.','error');
         }).catch(() => { btn.disabled=false; document.getElementById('addLabel').innerHTML='<i class="fa-solid fa-user-plus"></i> Create Account'; showAlert('Network error.','error'); });
 }
 
@@ -394,28 +394,28 @@ function saveEdit() {
     const id    = document.getElementById('editId').value;
     const email = document.getElementById('editEmail').value.trim();
     const role  = document.getElementById('editRole').value;
-    if (!email) { alert('Email irakenewe.'); return; }
+    if (!email) { alert('Email is required.'); return; }
     fetch(`/api/admin/users/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,role}) })
         .then(r => r.json()).then(d => {
-            if (d.ok) { closeEdit(); showAlert('Byavuguruwe neza!','success'); loadUsers(); }
-            else alert(d.error||'Guhindura byanze.');
+            if (d.ok) { closeEdit(); showAlert('Updated successfully!','success'); loadUsers(); }
+            else alert(d.error||'Update failed.');
         }).catch(() => alert('Network error.'));
 }
 
 function toggleStatus(id, active) {
     fetch(`/api/admin/users/${id}/status`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({active}) })
         .then(r => r.json()).then(d => {
-            if (d.ok) { showAlert(active ? 'Konti yafunguwe.' : 'Konti yafunzwe.','success'); loadUsers(); }
-            else alert(d.error||'Byanze.');
+            if (d.ok) { showAlert(active ? 'Account enabled.' : 'Account disabled.','success'); loadUsers(); }
+            else alert(d.error||'Failed.');
         }).catch(() => alert('Network error.'));
 }
 
 function deleteUser(id, email) {
-    if (!confirm(`Urareba neza ko ushaka gusiba konti ya "${email}"?`)) return;
+    if (!confirm(`Are you sure you want to delete the account "${email}"?`)) return;
     fetch(`/api/admin/users/${id}`, { method:'DELETE' })
         .then(r => r.json()).then(d => {
-            if (d.ok) { showAlert('Konti yasibwe neza.','success'); loadUsers(); }
-            else alert(d.error||'Gusiba byanze.');
+            if (d.ok) { showAlert('Account deleted successfully.','success'); loadUsers(); }
+            else alert(d.error||'Delete failed.');
         }).catch(() => alert('Network error.'));
 }
 

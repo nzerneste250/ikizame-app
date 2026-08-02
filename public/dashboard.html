@@ -569,38 +569,38 @@
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #10b981;">
                         <div style="background: #dcfce7; color: #15803d; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-graduation-cap"></i></div>
-                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Ijanisha ry'Abatsinze</div><div style="font-size: 1.8rem; font-weight: 800;" id="statPassRate">--%</div></div>
+                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Pass Rate</div><div style="font-size: 1.8rem; font-weight: 800;" id="statPassRate">--%</div></div>
                     </div>
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #0284c7;">
                         <div style="background: #e0f2fe; color: #0369a1; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-user-clock"></i></div>
-                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Umubare w'Ibizamini</div><div style="font-size: 1.8rem; font-weight: 800;" id="statTotalAttempts">--</div></div>
+                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Total Exams</div><div style="font-size: 1.8rem; font-weight: 800;" id="statTotalAttempts">--</div></div>
                     </div>
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #6b21a8;">
                         <div style="background: #f3e8ff; color: #6b21a8; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-star"></i></div>
-                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Amanota y'Impuzandengo</div><div style="font-size: 1.8rem; font-weight: 800;" id="statAvgScore">--/20</div></div>
+                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Average Score</div><div style="font-size: 1.8rem; font-weight: 800;" id="statAvgScore">--/20</div></div>
                     </div>
                 </div>
 
                 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
                     <div>
-                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Imikorere y'Abanyeshuri</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Shakisha abanyeshuri hakoreshejwe izina cyangwa numero ya telefone.</p>
+                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Student Performance</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Search students by name or phone number.</p>
                     </div>
                     <div class="analytics-search-box">
-                        <input id="studentPerformanceSearchInput" type="text" placeholder="Shakisha abanyeshuri ku izina cyangwa telefone..." autocomplete="off">
+                        <input id="studentPerformanceSearchInput" type="text" placeholder="Search students by name or phone..." autocomplete="off">
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start;">
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Imikorere y'Abanyeshuri</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Kanda ku munyeshuri kugira ngo ubone ibizamini bye byose n'ibisubizo bye.</p>
+                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Student Performance</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Click a student to view all exams and answers.</p>
                         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
                             <thead>
                                 <tr style="border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 700;">
-                                    <th style="padding: 10px 8px;">Umunyeshuri</th>
-                                    <th style="padding: 10px 8px; text-align: center;">Ibizamini</th>
-                                    <th style="padding: 10px 8px; text-align: center;">Amanota y'Impuzandengo</th>
-                                    <th style="padding: 10px 8px; text-align: right;">Itariki ya Nyuma</th>
+                                    <th style="padding: 10px 8px;">Student</th>
+                                    <th style="padding: 10px 8px; text-align: center;">Exams</th>
+                                    <th style="padding: 10px 8px; text-align: center;">Average Score</th>
+                                    <th style="padding: 10px 8px; text-align: right;">Last Attempt</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboardTableBodyTarget"></tbody>
@@ -608,8 +608,8 @@
                     </div>
 
                     <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Ibibazo 5 Bigoye Cyane</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Ibibazo abanyeshuri benshi basubiza nabi mu bizamini.</p>
+                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Top 5 Most Difficult Questions</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Questions most frequently answered incorrectly by students.</p>
                         <div style="display: flex; flex-direction: column; gap: 12px;" id="trickyQuestionsListTarget"></div>
                     </div>
                 </div>
@@ -771,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!leaderboardTarget) return;
 
         if (!studentRecords || studentRecords.length === 0) {
-            leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#64748b; font-style:italic;">Nta bizamini byabonetse kuri uyu munyeshuri.</td></tr>`;
+            leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#64748b; font-style:italic;">No exam history found for this student.</td></tr>`;
             return;
         }
 
@@ -976,7 +976,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const trickyTarget = document.getElementById('trickyQuestionsListTarget');
                     const trickyQuestions = Array.isArray(data.trickyQuestions) ? data.trickyQuestions : [];
                     if (trickyQuestions.length === 0) {
-                        trickyTarget.innerHTML = `<p style="text-align:center; padding:15px; font-style:italic; color:#64748b; font-size:13px;">Nta makuru aboneka ubu.</p>`;
+                        trickyTarget.innerHTML = `<p style="text-align:center; padding:15px; font-style:italic; color:#64748b; font-size:13px;">No tricky question data available.</p>`;
                     } else {
                         trickyTarget.innerHTML = trickyQuestions.map((q, idx) => {
                             return `
@@ -1039,7 +1039,7 @@ document.addEventListener('DOMContentLoaded', () => {
         studentNameElem.textContent = studentName || 'Unknown Student';
         studentPhoneElem.textContent = phoneNumber;
         attemptsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:24px; color:#64748b;
-            font-style:italic;"><i class="fa-solid fa-spinner fa-spin"></i> Gushakisha ibizamini...</td></tr>`;
+            font-style:italic;"><i class="fa-solid fa-spinner fa-spin"></i> Searching exam attempts...</td></tr>`;
         modal.style.display = 'flex';
 
         fetch(`/api/admin/student-attempts/${encodeURIComponent(phoneNumber)}?name=${encodeURIComponent(studentName)}`)
@@ -1049,8 +1049,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(attempts => {
                 if (!Array.isArray(attempts) || attempts.length === 0) {
-                    attemptsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:24px; color:#64748b; font-style:italic;">Nta bizamini byabonetse kuri uyu munyeshuri.</td></tr>`;
-                    return;
+                    attemptsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:24px; color:#64748b; font-style:italic;">No exam attempts found for this student.</td></tr>`;
                 }
 
                 attemptsBody.innerHTML = attempts.map(attempt => {
@@ -1061,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <tr style="border-bottom:1px solid #f1f5f9;">
                             <td style="padding:12px 8px;">${examDate}<br><span style="font-size:11px;color:#94a3b8;">${attemptName}</span></td>
                             <td style="padding:12px 8px; text-align:center; font-weight:700; color:#0b698b;">${scoreLabel}</td>
-                            <td style="padding:12px 8px; text-align:left;"><button type="button" onclick="openAnswerSheetModal(${attempt.id}, '${attemptName.replace(/'/g, "\\'")}', '${phoneNumber.replace(/'/g, "\\'")}')" style="background:#0b698b; color:#fff; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-size:13px;">Fungura</button></td>
+                            <td style="padding:12px 8px; text-align:left;"><button type="button" onclick="openAnswerSheetModal(${attempt.id}, '${attemptName.replace(/'/g, "\\'")}', '${phoneNumber.replace(/'/g, "\\'")}')" style="background:#0b698b; color:#fff; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-size:13px;">Open</button></td>
                         </tr>
                     `;
                 }).join('');
@@ -1099,7 +1098,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const modal = document.getElementById('answerSheetModal');
         const body = document.getElementById('answerSheetBody');
 
-        body.innerHTML = `<p style="text-align:center; padding:30px; color:#64748b; font-style:italic;"><i class="fa-solid fa-spinner fa-spin"></i> Gufungura ibisubizo...</p>`;
+        body.innerHTML = `<p style="text-align:center; padding:30px; color:#64748b; font-style:italic;"><i class="fa-solid fa-spinner fa-spin"></i> Opening answer sheet...</p>`;
         modal.style.display = 'flex';
 
         fetch(`/api/amanota/review/${encodeURIComponent(attemptId)}`)
@@ -1124,7 +1123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const attemptDate = (data.created_at || data.createdAt) ? formatReviewDate(data.created_at || data.createdAt) : '---';
 
                 if (questions.length === 0) {
-                    body.innerHTML = `<p style="text-align:center; padding:30px; color:#64748b; font-style:italic;">Nta byerekanwa byabonywe ku bizamini.</p>`;
+                    body.innerHTML = `<p style="text-align:center; padding:30px; color:#64748b; font-style:italic;">No answer details were found for this exam.</p>`;
                     return;
                 }
 
@@ -1141,25 +1140,25 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div style="flex:1; min-width:180px;">
                                 <div class="review-status-pill ${passed ? 'pass' : 'fail'}">
                                     <i class="fa-solid ${passed ? 'fa-trophy' : 'fa-rotate-right'}"></i>
-                                    ${passed ? 'Yatsinze' : 'Yatsinzwe'}
+                                    ${passed ? 'Passed' : 'Failed'}
                                 </div>
                                 <div class="review-progress" style="margin-top:14px;">
                                     <div class="review-progress-bar"><div class="review-progress-fill ${passed ? 'pass' : 'fail'}" style="width:${percentage}%"></div></div>
                                 </div>
-                                <div class="review-info-label" style="margin-top:8px;">Ijanisha ry'amanota</div>
+                                <div class="review-info-label" style="margin-top:8px;">Score Rate</div>
                             </div>
                         </div>
                         <div class="review-info-grid">
-                            <div class="review-info-card"><div class="review-info-label">Umunyeshuri</div><div class="review-info-value">${studentName || 'Unknown'}</div></div>
-                            <div class="review-info-card"><div class="review-info-label">Telephone</div><div class="review-info-value">${phoneNumber}</div></div>
-                            <div class="review-info-card"><div class="review-info-label">Itariki</div><div class="review-info-value">${attemptDate}</div></div>
-                            <div class="review-info-card"><div class="review-info-label">Ibibazo</div><div class="review-info-value">${questions.length}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Student</div><div class="review-info-value">${studentName || 'Unknown'}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Phone</div><div class="review-info-value">${phoneNumber}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Date</div><div class="review-info-value">${attemptDate}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Questions</div><div class="review-info-value">${questions.length}</div></div>
                         </div>
                         <div class="review-info-grid">
-                            <div class="review-info-card"><div class="review-info-label">Byakozwe neza</div><div class="review-info-value">${correctCount}</div></div>
-                            <div class="review-info-card"><div class="review-info-label">Byasubijwe nabi</div><div class="review-info-value">${wrongCount}</div></div>
-                            <div class="review-info-card"><div class="review-info-label">Byasize</div><div class="review-info-value">${skippedCount}</div></div>
-                            <div class="review-info-card"><div class="review-info-label">Ijanisha</div><div class="review-info-value">${percentage}%</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Correct</div><div class="review-info-value">${correctCount}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Wrong</div><div class="review-info-value">${wrongCount}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Skipped</div><div class="review-info-value">${skippedCount}</div></div>
+                            <div class="review-info-card"><div class="review-info-label">Percentage</div><div class="review-info-value">${percentage}%</div></div>
                         </div>
                     </div>
                 `;
@@ -1196,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                     const cardClass = isSkipped ? 'skipped' : isCorrect ? 'correct' : 'wrong';
-                    const statusText = isSkipped ? 'Yarasize' : isCorrect ? 'Yakoze neza' : 'Byasubijwe nabi';
+                    const statusText = isSkipped ? 'Skipped' : isCorrect ? 'Correct' : 'Incorrect';
 
                     return `
                         <div class="review-question-card">
@@ -1230,7 +1229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(err => {
                 console.error(err);
-                body.innerHTML = `<p style="text-align:center; padding:30px; color:#ef4444; font-style:italic;">Habayeho ikosa mu gufungura ibisubizo. Ongera ugerageze.</p>`;
+                body.innerHTML = `<p style="text-align:center; padding:30px; color:#ef4444; font-style:italic;">Failed to open answer sheet. Please try again.</p>`;
             });
     };
 
@@ -1291,9 +1290,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
                 <thead>
                     <tr style="border-bottom:2px solid var(--border); color:var(--text-muted); font-weight:700;">
-                        <th style="padding:10px 6px;">Itariki (Date)</th>
-                        <th style="padding:10px 6px; text-align:center;">Amanota (Score)</th>
-                        <th style="padding:10px 6px; text-align:left;">Ibikorwa (Action)</th>
+                        <th style="padding:10px 6px;">Date</th>
+                        <th style="padding:10px 6px; text-align:center;">Score</th>
+                        <th style="padding:10px 6px; text-align:left;">Action</th>
                     </tr>
                 </thead>
                 <tbody id="studentAttemptsTableBody"></tbody>
@@ -1309,8 +1308,8 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="review-modal-wrapper">
         <div class="review-modal-header">
             <div>
-                <div class="review-modal-title">Ibyavuye mu kizamini</div>
-                <div class="review-modal-sub">Reba ibisobanuro byuzuye by'umunyeshuri n'ibyo yasubije.</div>
+                <div class="review-modal-title">Exam Results</div>
+                <div class="review-modal-sub">View a full student review of answers and performance details.</div>
             </div>
             <button onclick="closeAnswerSheetModal()" class="review-modal-close">&#x2715;</button>
         </div>

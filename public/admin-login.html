@@ -430,10 +430,10 @@
         // Send OTP
         function sendOtp() {
             const email = document.getElementById('forgotEmail').value.trim();
-            if (!email) { showAlert('Injiza email yawe.'); return; }
+            if (!email) { showAlert('Please enter your email.'); return; }
             const btn = document.getElementById('sendOtpBtn');
             btn.disabled = true;
-            document.getElementById('sendOtpLabel').textContent = 'Kohereza...';
+            document.getElementById('sendOtpLabel').textContent = 'Sending...';
             document.getElementById('sendOtpIcon').className = 'fa-solid fa-spinner fa-spin';
 
             fetch('/api/admin/forgot-password', {
@@ -447,17 +447,17 @@
                 document.getElementById('sendOtpLabel').textContent = 'Send OTP Code';
                 document.getElementById('sendOtpIcon').className = 'fa-solid fa-paper-plane';
                 if (d.ok) {
-                    showAlert('OTP yoherejwe kuri email yawe. Reba inbox.', 'success');
+                    showAlert('OTP has been sent to your email. Check your inbox.', 'success');
                     setTimeout(() => showPanel('panelReset'), 1500);
                 } else {
-                    showAlert(d.error || 'Kohereza byanze.');
+                    showAlert(d.error || 'Sending failed.');
                 }
             })
             .catch(() => {
                 btn.disabled = false;
                 document.getElementById('sendOtpLabel').textContent = 'Send OTP Code';
                 document.getElementById('sendOtpIcon').className = 'fa-solid fa-paper-plane';
-                showAlert('Ikibazo cya network. Gerageza nanone.');
+                showAlert('Network error. Please try again.');
             });
         }
 
@@ -468,13 +468,13 @@
             const newPass = document.getElementById('newPassInput').value;
             const confirm = document.getElementById('confirmPassInput').value;
 
-            if (!otp || otp.length !== 6) { showAlert('Injiza OTP ya imibare 6.'); return; }
-            if (newPass.length < 8) { showAlert('Password igomba kuba nibura inyuguti 8.'); return; }
-            if (newPass !== confirm) { showAlert('Passwords ntizuye. Gerageza nanone.'); return; }
+            if (!otp || otp.length !== 6) { showAlert('Enter a 6-digit OTP.'); return; }
+            if (newPass.length < 8) { showAlert('Password must be at least 8 characters.'); return; }
+            if (newPass !== confirm) { showAlert('Passwords do not match. Please try again.'); return; }
 
             const btn = document.getElementById('resetBtn');
             btn.disabled = true;
-            document.getElementById('resetLabel').textContent = 'Guhindura...';
+            document.getElementById('resetLabel').textContent = 'Updating...';
             document.getElementById('resetIcon').className = 'fa-solid fa-spinner fa-spin';
 
             fetch('/api/admin/reset-password', {
@@ -488,17 +488,17 @@
                 document.getElementById('resetLabel').textContent = 'Reset Password';
                 document.getElementById('resetIcon').className = 'fa-solid fa-shield-halved';
                 if (d.ok) {
-                    showAlert('Password yahindutse neza! Injira ukoresheje password nshya.', 'success');
+                    showAlert('Password changed successfully! Log in with your new password.', 'success');
                     setTimeout(() => showPanel('panelLogin'), 2000);
                 } else {
-                    showAlert(d.error || 'Guhindura byanze.');
+                    showAlert(d.error || 'Password reset failed.');
                 }
             })
             .catch(() => {
                 btn.disabled = false;
                 document.getElementById('resetLabel').textContent = 'Reset Password';
                 document.getElementById('resetIcon').className = 'fa-solid fa-shield-halved';
-                showAlert('Ikibazo cya network. Gerageza nanone.');
+                showAlert('Network error. Please try again.');
             });
         }
 
