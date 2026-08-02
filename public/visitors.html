@@ -65,15 +65,21 @@ a{text-decoration:none;color:inherit;}
 .ph i{color:#0b698b;}
 
 /* CHART */
-.chart-box{overflow-x:auto;}
-.bars{display:flex;align-items:flex-end;gap:5px;height:150px;min-width:480px;}
-.bc{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
-.bn{font-size:9px;font-weight:700;color:#64748b;}
-.br{width:100%;background:#0b698b;border-radius:4px 4px 0 0;min-height:4px;position:relative;cursor:default;}
-.br:hover{background:#08536e;}
-.bt{display:none;position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;font-size:10px;font-weight:700;padding:3px 7px;border-radius:5px;white-space:nowrap;pointer-events:none;}
-.br:hover .bt{display:block;}
-.bl{font-size:8px;color:#64748b;font-weight:600;writing-mode:vertical-rl;transform:rotate(180deg);height:34px;}
+.chart-box{overflow-x:auto;position:relative;}
+.chart-meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+.chart-meta p{font-size:13px;color:#475569;max-width:760px;}
+.chart-meta strong{color:#0b698b;}
+.bars{display:flex;align-items:flex-end;gap:8px;height:180px;min-width:540px;padding:12px 6px 8px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(240,248,255,.95));box-shadow:inset 0 0 0 1px rgba(15,23,42,.04);}
+.bc{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;min-width:18px;}
+.bn{font-size:10px;font-weight:700;color:#475569;}
+.br{width:100%;background:#dbeafe;border-radius:16px 16px 6px 6px;min-height:4px;position:relative;cursor:default;transition:background .2s, transform .2s;}
+.br:hover{background:#93c5fd;transform:translateY(-2px);}
+.bt{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(15,23,42,.95);color:#fff;font-size:11px;font-weight:700;padding:6px 10px;border-radius:10px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;}
+.br:hover .bt{display:block;opacity:1;}
+.bl{font-size:9px;color:#64748b;font-weight:700;height:30px;display:flex;align-items:flex-end;justify-content:center;}
+.chart-axis{position:absolute;left:0;top:12px;bottom:8px;width:30px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding-left:6px;font-size:11px;color:#94a3b8;}
+.chart-box .bars{margin-left:42px;}
+.chart-axis span{position:relative;left:-4px;}
 
 /* TABLE */
 .tw{overflow-x:auto;}
@@ -181,32 +187,32 @@ footer strong{color:#38bdf8;}
             <!-- BAR CHART -->
             <!-- ANALYSIS CARDS -->
             <div class="analysis-grid" id="analysisGrid">
-                <div class="analysis-card">
-                    <div class="analysis-top"><div style="font-weight:800;color:#64748b;">Today vs Prev 7d</div><div id="deltaToday" class="analysis-delta delta-up">—</div></div>
+                <div class="analysis-card" style="background:linear-gradient(135deg,rgba(59,130,246,.12),rgba(30,64,175,.06));border-color:rgba(59,130,246,.18);">
+                    <div class="analysis-top"><div style="font-weight:800;color:#0f172a;">Today Unique Visitors</div><div id="deltaToday" class="analysis-delta delta-up">—</div></div>
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
                         <div>
                             <div class="analysis-val" id="todayVal">—</div>
-                            <div style="font-size:12px;color:#64748b;font-weight:700;">unique visitors (last day)</div>
+                            <div style="font-size:12px;color:#334155;font-weight:700;">Change from previous average</div>
                         </div>
                         <div style="width:100px"><div class="spark" id="sparkToday"></div></div>
                     </div>
                 </div>
-                <div class="analysis-card">
-                    <div class="analysis-top"><div style="font-weight:800;color:#64748b;">This Week</div><div id="deltaWeek" class="analysis-delta delta-up">—</div></div>
+                <div class="analysis-card" style="background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(5,150,105,.06));border-color:rgba(16,185,129,.18);">
+                    <div class="analysis-top"><div style="font-weight:800;color:#0f172a;">Weekly Performance</div><div id="deltaWeek" class="analysis-delta delta-up">—</div></div>
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
                         <div>
                             <div class="analysis-val" id="weekVal">—</div>
-                            <div style="font-size:12px;color:#64748b;font-weight:700;">sum last 7 days</div>
+                            <div style="font-size:12px;color:#334155;font-weight:700;">Total unique visitors this week</div>
                         </div>
                         <div style="width:100px"><div class="spark" id="sparkWeek"></div></div>
                     </div>
                 </div>
-                <div class="analysis-card">
-                    <div class="analysis-top"><div style="font-weight:800;color:#64748b;">This Month</div><div id="deltaMonth" class="analysis-delta delta-up">—</div></div>
+                <div class="analysis-card" style="background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(109,40,217,.06));border-color:rgba(139,92,246,.18);">
+                    <div class="analysis-top"><div style="font-weight:800;color:#0f172a;">Monthly Trend</div><div id="deltaMonth" class="analysis-delta delta-up">—</div></div>
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
                         <div>
                             <div class="analysis-val" id="monthVal">—</div>
-                            <div style="font-size:12px;color:#64748b;font-weight:700;">sum last 30 days</div>
+                            <div style="font-size:12px;color:#334155;font-weight:700;">Unique visitors in 30 days</div>
                         </div>
                         <div style="width:100px"><div class="spark" id="sparkMonth"></div></div>
                     </div>
@@ -215,7 +221,8 @@ footer strong{color:#38bdf8;}
 
             <div class="panel">
                 <div class="ph"><i class="fa-solid fa-chart-column"></i> Daily Unique Visitors, Last 30 Days</div>
-                <div class="chart-box"><div class="bars" id="bars"><div style="color:#64748b;font-size:13px;align-self:center;width:100%;text-align:center;">Loading...</div></div></div>
+                <div class="chart-meta"><p>Track daily visitor growth with unique visitors per day, plus a quick glance at your strongest traffic days and total engagement trend.</p><strong>More friendly metrics coming soon.</strong></div>
+                <div class="chart-box"><div class="chart-axis"><span>High</span><span>Mid</span><span>Low</span></div><div class="bars" id="bars"><div style="color:#64748b;font-size:13px;align-self:center;width:100%;text-align:center;">Loading...</div></div></div>
             </div>
 
             <!-- DAILY SUMMARY -->
@@ -238,9 +245,9 @@ footer strong{color:#38bdf8;}
             </div>
 
             <div class="panel top-ips">
-                <div class="ph"><i class="fa-solid fa-network-wired"></i> Top IPs (last range)</div>
+                <div class="ph"><i class="fa-solid fa-network-wired"></i> Top Visitor Sources</div>
                 <div style="margin-top:10px;">
-                    <table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:8px;color:#64748b;font-size:12px">#</th><th style="text-align:left;padding:8px;color:#64748b;font-size:12px">IP Address</th><th style="text-align:left;padding:8px;color:#64748b;font-size:12px">Visits</th></tr></thead><tbody id="topIpsBody"><tr><td colspan="3" style="text-align:center;color:#64748b;padding:12px;">Loading...</td></tr></tbody></table>
+                    <table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:8px;color:#64748b;font-size:12px">#</th><th style="text-align:left;padding:8px;color:#64748b;font-size:12px">IP Address</th><th style="text-align:left;padding:8px;color:#64748b;font-size:12px">Visits</th></tr></thead><tbody id="topIpsBody"><tr><td colspan="3" style="text-align:center;color:#64748b;padding:12px;">Loading analytics...</td></tr></tbody></table>
                 </div>
             </div>
 
@@ -276,13 +283,15 @@ function fd(s){return new Date(s+'T00:00:00').toLocaleDateString('en-GB',{day:'2
 function buildChart(rows){
     const el=document.getElementById('bars');
     if(!rows.length){el.innerHTML='<div style="color:#64748b;font-size:13px;align-self:center;width:100%;text-align:center;">No data yet.</div>';return;}
-    const mx=Math.max(...rows.map(r=>r.unique_visitors),1);
+    const mx=Math.max(...rows.map(r=>Number(r.unique_visitors)||0),1);
     el.innerHTML='';
-    rows.forEach(r=>{
-        const h=Math.max(4,Math.round((r.unique_visitors/mx)*130));
+    rows.slice(-30).forEach(r=>{
+        const value = Number(r.unique_visitors)||0;
+        const h=Math.max(12,Math.round((value/mx)*140));
         const d=new Date(r.day+'T00:00:00');
         const c=document.createElement('div');c.className='bc';
-        c.innerHTML='<div class="bn">'+r.unique_visitors+'</div><div class="br" style="height:'+h+'px"><div class="bt">'+fd(r.day)+': '+r.unique_visitors+' visitor'+(r.unique_visitors!==1?'s':'')+'</div></div><div class="bl">'+(d.getMonth()+1)+'/'+d.getDate()+'</div>';
+        const label = value>0?value+' visitor'+(value!==1?'s':''):'No visitors';
+        c.innerHTML='<div class="bn">'+(value||'—')+'</div><div class="br" style="height:'+h+'px"><div class="bt">'+fd(r.day)+': '+label+'</div></div><div class="bl">'+WD[d.getDay()]+'</div>';
         el.appendChild(c);
     });
 }
@@ -340,14 +349,14 @@ function renderAnalysis(analytics){
     document.getElementById('weekVal').textContent = (analytics.week?.value||0).toLocaleString(); const dW=document.getElementById('deltaWeek'); dW.textContent=(analytics.week?.pct>=0?'+':'')+(analytics.week?.pct||0)+'%'; dW.className='analysis-delta '+(analytics.week?.pct>=0?'delta-up':'delta-down');
     document.getElementById('monthVal').textContent = (analytics.month?.value||0).toLocaleString(); const dM=document.getElementById('deltaMonth'); dM.textContent=(analytics.month?.pct>=0?'+':'')+(analytics.month?.pct||0)+'%'; dM.className='analysis-delta '+(analytics.month?.pct>=0?'delta-up':'delta-down');
 
-    function drawSpark(id,arr){ const el=document.getElementById(id); if(!el) return; el.innerHTML=''; const mx=Math.max(...arr,1); arr.forEach(v=>{const h=Math.max(3,Math.round((v/mx)*22)); const d=document.createElement('div'); d.style.height=h+'px'; if(v>0) d.className='active'; el.appendChild(d);}); }
+    function drawSpark(id,arr){ const el=document.getElementById(id); if(!el) return; el.innerHTML=''; const mx=Math.max(...arr,1); arr.forEach(v=>{const h=Math.max(5,Math.round((v/mx)*24)); const d=document.createElement('div'); d.style.height=h+'px'; d.style.width='6px'; d.style.borderRadius='999px'; d.style.backgroundColor=v>0?'#0b698b':'#cbd5e1'; d.style.transition='opacity .2s'; el.appendChild(d);}); }
     drawSpark('sparkToday', analytics.today?.spark||[]);
     drawSpark('sparkWeek', analytics.week?.spark||[]);
     drawSpark('sparkMonth', analytics.month?.spark||[]);
 
     // render top IPs
     const tEl=document.getElementById('sumTb');
-    if(document.getElementById('topIpsBody')) document.getElementById('topIpsBody').innerHTML = analytics.topIPs.length?analytics.topIPs.map((t,i)=>'<tr><td style="padding:6px 8px;font-weight:700;">'+(i+1)+'</td><td style="padding:6px 8px;">'+t.ip+'</td><td style="padding:6px 8px;font-weight:800;color:#0b698b;">'+t.count+'</td></tr>').join(''):'<tr><td colspan="3" style="text-align:center;color:#64748b;padding:12px;">No IP data.</td></tr>';
+    if(document.getElementById('topIpsBody')) document.getElementById('topIpsBody').innerHTML = analytics.topIPs.length?analytics.topIPs.map((t,i)=>'<tr><td style="padding:6px 8px;font-weight:700;">'+(i+1)+'</td><td style="padding:6px 8px;">'+t.ip+'</td><td style="padding:6px 8px;font-weight:800;color:#0b698b;">'+t.count+'</td></tr>').join(''):'<tr><td colspan="3" style="text-align:center;color:#64748b;padding:12px;">No top source traffic available.</td></tr>';
 }
 
 function renderSummary(){
