@@ -65,19 +65,19 @@ a{text-decoration:none;color:inherit;}
 .ph i{color:#0b698b;}
 
 /* CHART */
-.chart-box{overflow-x:auto;position:relative;}
+.chart-box{overflow:hidden;position:relative;}
 .chart-meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
 .chart-meta p{font-size:13px;color:#475569;max-width:760px;}
 .chart-meta strong{color:#0b698b;}
-.bars{display:flex;align-items:flex-end;gap:8px;height:180px;min-width:540px;padding:12px 6px 8px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(240,248,255,.95));box-shadow:inset 0 0 0 1px rgba(15,23,42,.04);}
-.bc{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;min-width:18px;}
-.bn{font-size:10px;font-weight:700;color:#475569;}
-.br{width:100%;background:#dbeafe;border-radius:16px 16px 6px 6px;min-height:4px;position:relative;cursor:default;transition:background .2s, transform .2s;}
+.bars{display:grid;grid-template-columns:repeat(30,minmax(6px,1fr));align-items:end;gap:6px;height:280px;padding:18px 8px 14px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(234,245,255,.98));box-shadow:inset 0 0 0 1px rgba(15,23,42,.05);width:100%;}
+.bc{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0;}
+.bn{font-size:10px;font-weight:700;color:#475569;line-height:1.1;}
+.br{width:100%;background:#e0f2fe;border-radius:16px 16px 6px 6px;min-height:8px;position:relative;cursor:default;transition:background .2s, transform .2s;}
 .br:hover{background:#93c5fd;transform:translateY(-2px);}
 .bt{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(15,23,42,.95);color:#fff;font-size:11px;font-weight:700;padding:6px 10px;border-radius:10px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;}
 .br:hover .bt{display:block;opacity:1;}
-.bl{font-size:9px;color:#64748b;font-weight:700;height:30px;display:flex;align-items:flex-end;justify-content:center;}
-.chart-axis{position:absolute;left:0;top:12px;bottom:8px;width:30px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding-left:6px;font-size:11px;color:#94a3b8;}
+.bl{font-size:9px;color:#64748b;font-weight:700;min-height:18px;display:flex;align-items:flex-end;justify-content:center;text-align:center;}
+.chart-axis{position:absolute;left:0;top:18px;bottom:14px;width:30px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding-left:6px;font-size:11px;color:#94a3b8;}
 .chart-box .bars{margin-left:42px;}
 .chart-axis span{position:relative;left:-4px;}
 
@@ -221,8 +221,8 @@ footer strong{color:#38bdf8;}
 
             <div class="panel">
                 <div class="ph"><i class="fa-solid fa-chart-column"></i> Daily Unique Visitors, Last 30 Days</div>
-                <div class="chart-meta"><p>Track daily visitor growth with unique visitors per day, plus a quick glance at your strongest traffic days and total engagement trend.</p><strong>More friendly metrics coming soon.</strong></div>
-                <div class="chart-box"><div class="chart-axis"><span>High</span><span>Mid</span><span>Low</span></div><div class="bars" id="bars"><div style="color:#64748b;font-size:13px;align-self:center;width:100%;text-align:center;">Loading...</div></div></div>
+                <div class="chart-meta"><p>Track daily visitor growth with a clear 30-day view, showing the highest traffic days and weekly trend in one responsive chart.</p><strong>All days are now visible in a single view without horizontal scrolling.</strong></div>
+                <div class="chart-box"><div class="chart-axis"><span>High</span><span>Mid</span><span>Low</span></div><div class="bars" id="bars"><div style="color:#64748b;font-size:13px;align-self:center;width:100%;text-align:center;">Loading chart...</div></div></div>
             </div>
 
             <!-- DAILY SUMMARY -->
@@ -287,7 +287,7 @@ function buildChart(rows){
     el.innerHTML='';
     rows.slice(-30).forEach(r=>{
         const value = Number(r.unique_visitors)||0;
-        const h=Math.max(12,Math.round((value/mx)*140));
+        const h=Math.max(18,Math.round((value/mx)*210));
         const d=new Date(r.day+'T00:00:00');
         const c=document.createElement('div');c.className='bc';
         const label = value>0?value+' visitor'+(value!==1?'s':''):'No visitors';
