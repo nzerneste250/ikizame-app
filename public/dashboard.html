@@ -95,6 +95,74 @@
             border-radius: 3px;
             padding: 0 2px;
         }
+        .analytics-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(15,23,42,0.05);
+        }
+        .analytics-kpis {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+        .perf-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 20px;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            box-shadow: 0 12px 30px rgba(15,23,42,0.04);
+        }
+        .perf-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-size: 18px;
+        }
+        .perf-card.pass .icon { background: #d1fae5; color: #047857; }
+        .perf-card.exams .icon { background: #dbeafe; color: #1d4ed8; }
+        .perf-card.avg .icon { background: #ede9fe; color: #6d28d9; }
+        .perf-card .label { font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+        .perf-card .value { font-size: 1.85rem; font-weight: 900; color: var(--text-main); line-height: 1; }
+        .perf-card .meta { font-size: 12px; color: var(--text-muted); }
+        .analytics-heading { display: flex; flex-direction: column; gap: 4px; }
+        .analytics-heading h3 { font-size: 1rem; font-weight: 800; color: #0f172a; }
+        .analytics-heading p { font-size: 13px; color: #475569; max-width: 640px; }
+        .performance-main-grid { display: grid; grid-template-columns: 1.65fr 1fr; gap: 24px; align-items: start; }
+        .leaderboard-panel, .tricky-panel { background: #fff; border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 12px 30px rgba(15,23,42,0.04); }
+        .panel-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 22px 24px 14px; border-bottom: 1px solid #f1f5f9; }
+        .panel-header h4 { font-size: 1rem; font-weight: 800; color: #0f172a; margin: 0; }
+        .panel-header .badge { display: inline-flex; align-items: center; gap: 6px; background: #eff6ff; color: #1d4ed8; font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 999px; }
+        .table-surface { padding: 0 24px 24px; overflow-x: auto; }
+        .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .leaderboard-table thead th { background: transparent; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid #e2e8f0; padding: 14px 12px; text-align: left; }
+        .leaderboard-table tbody tr { transition: background 0.15s, transform 0.15s; }
+        .leaderboard-table tbody tr:hover { background: #f8fbff; transform: translateX(1px); }
+        .leaderboard-table td { padding: 14px 12px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
+        .score-pill { display: inline-flex; align-items: center; justify-content: center; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+        .score-pill.high { background: #dcfce7; color: #166534; }
+        .score-pill.mid { background: #e0f2fe; color: #0369a1; }
+        .score-pill.low { background: #fee2e2; color: #b91c1c; }
+        .tricky-questions-grid { display: grid; gap: 14px; padding: 0 24px 24px; }
+        .tricky-question-card { border: 1px solid #fee2e2; background: #fff1f2; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+        .tricky-question-card .meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .tricky-question-card .meta span { font-size: 11px; font-weight: 800; color: #991b1b; }
+        .tricky-question-card p { margin: 0; font-size: 13px; color: #0f172a; line-height: 1.5; }
+        .tricky-question-card .tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: #fee2e2; color: #991b1b; font-size: 11px; font-weight: 700; }
+        @media (max-width: 980px) {
+            .analytics-kpis, .performance-main-grid { grid-template-columns: 1fr; }
+            .performance-main-grid { gap: 18px; }
+        }
 
         /* 🎯 ABSOLUTE OUTER VIEWPORT LOCKDOWN */
         .form-scroll { 
@@ -566,51 +634,72 @@
                  ========================================================================== -->
             <div id="analyticsWorkspaceViewSection" style="display: none; flex-direction: column; gap: 24px;">
 
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #10b981;">
-                        <div style="background: #dcfce7; color: #15803d; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-graduation-cap"></i></div>
-                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Pass Rate</div><div style="font-size: 1.8rem; font-weight: 800;" id="statPassRate">--%</div></div>
-                    </div>
-                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #0284c7;">
-                        <div style="background: #e0f2fe; color: #0369a1; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-user-clock"></i></div>
-                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Total Exams</div><div style="font-size: 1.8rem; font-weight: 800;" id="statTotalAttempts">--</div></div>
-                    </div>
-                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 4px solid #6b21a8;">
-                        <div style="background: #f3e8ff; color: #6b21a8; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-star"></i></div>
-                        <div><div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Average Score</div><div style="font-size: 1.8rem; font-weight: 800;" id="statAvgScore">--/20</div></div>
-                    </div>
-                </div>
-
-                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
-                    <div>
-                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Student Performance</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Search students by name or phone number.</p>
-                    </div>
-                    <div class="analytics-search-box">
-                        <input id="studentPerformanceSearchInput" type="text" placeholder="Search students by name or phone..." autocomplete="off">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start;">
-                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-users" style="color: #0b698b;"></i> Student Performance</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Click a student to view all exams and answers.</p>
-                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
-                            <thead>
-                                <tr style="border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 700;">
-                                    <th style="padding: 10px 8px;">Student</th>
-                                    <th style="padding: 10px 8px; text-align: center;">Exams</th>
-                                    <th style="padding: 10px 8px; text-align: center;">Average Score</th>
-                                    <th style="padding: 10px 8px; text-align: right;">Last Attempt</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leaderboardTableBodyTarget"></tbody>
-                        </table>
+                <div class="analytics-panel">
+                    <div class="analytics-kpis">
+                        <div class="perf-card pass">
+                            <div class="icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <div>
+                                <div class="label">Pass Rate</div>
+                                <div class="value" id="statPassRate">--%</div>
+                                <div class="meta">Percentage of students passing exams</div>
+                            </div>
+                        </div>
+                        <div class="perf-card exams">
+                            <div class="icon"><i class="fa-solid fa-user-clock"></i></div>
+                            <div>
+                                <div class="label">Total Exams</div>
+                                <div class="value" id="statTotalAttempts">--</div>
+                                <div class="meta">Exams attempted by all students</div>
+                            </div>
+                        </div>
+                        <div class="perf-card avg">
+                            <div class="icon"><i class="fa-solid fa-star"></i></div>
+                            <div>
+                                <div class="label">Average Score</div>
+                                <div class="value" id="statAvgScore">--/20</div>
+                                <div class="meta">Average score across all exams</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div style="background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-                        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Top 5 Most Difficult Questions</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Questions most frequently answered incorrectly by students.</p>
-                        <div style="display: flex; flex-direction: column; gap: 12px;" id="trickyQuestionsListTarget"></div>
+                    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;">
+                        <div class="analytics-heading">
+                            <h3><i class="fa-solid fa-users" style="color: #0b698b; margin-right: 8px;"></i>Student Performance</h3>
+                            <p>Search for students by name or phone to explore their exam history, score trends, and problem areas.</p>
+                        </div>
+                        <div class="analytics-search-box">
+                            <input id="studentPerformanceSearchInput" type="text" placeholder="Search students by name or phone..." autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="performance-main-grid">
+                        <div class="leaderboard-panel">
+                            <div class="panel-header">
+                                <h4>Student leaderboard</h4>
+                                <span class="badge"><i class="fa-solid fa-arrow-up-right-dots"></i> Click row for details</span>
+                            </div>
+                            <div class="table-surface">
+                                <table class="leaderboard-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th style="text-align:center;">Exams</th>
+                                            <th style="text-align:center;">Average</th>
+                                            <th style="text-align:right;">Last Attempt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leaderboardTableBodyTarget"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tricky-panel">
+                            <div class="panel-header">
+                                <h4>Most difficult questions</h4>
+                                <span class="badge badge-alert"><i class="fa-solid fa-triangle-exclamation"></i> High failure rate</span>
+                            </div>
+                            <div class="tricky-questions-grid" id="trickyQuestionsListTarget"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1012,7 +1101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(err => {
                     console.error('Failed to load student performance:', err);
                     const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
-                    leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#ef4444;">Gushaka byanze (${err.message}). Reba console kugira ngo umenye impamvu.</td></tr>`;
+                    leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#ef4444;">Failed to load student performance. See console for more details.</td></tr>`;
                 });
 
             if (studentPerformanceSearchInput) {
