@@ -46,9 +46,9 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
                 </div>
                 <div style="background:#ffffff;border-radius:8px;padding:24px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);border:1px solid #e2e8f0;">
                     <p style="font-size:15px;font-weight:700;margin-bottom:12px;color:#1e293b;">Muraho ${schoolName.trim()},</p>
-                    <p style="font-size:14px;line-height:1.6;color:#475569;margin-bottom:20px;">Mwakiriye iyi email kuko muriko mufungura Konti y'Ishuri ryanyu rya Shofere kuri IKIZAME Portal.</p>
+                    <p style="font-size:14px;line-height:1.6;color:#475569;margin-bottom:20px;">Mwakiriye iyi email kuko murimo murafungura Konti y'Ishuri ryanyu kuri IKIZAME Portal.</p>
                     <div style="background:#f1f5f9;padding:16px;border-radius:8px;text-align:center;font-size:28px;font-weight:800;letter-spacing:6px;color:#0b698b;border:1px dashed #cbd5e1;margin-bottom:20px;">${generatedOtpCode}</div>
-                    <p style="font-size:12px;color:#ef4444;font-weight:600;">⚠️ Ntiwigeze uha iyi kode undi muntu.</p>
+                    <p style="font-size:12px;color:#ef4444;font-weight:600;">⚠️ Ntiwigere uha iyi kode undi muntu.</p>
                 </div>
                 <div style="text-align:center;margin-top:24px;font-size:11px;color:#94a3b8;">&copy; 2026 IKIZAME Platform &bull; Dotado Stationery Store Ltd</div>
             </div>`;

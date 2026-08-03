@@ -256,6 +256,44 @@
             line-height: 1.6;
             margin-top: 4px;
         }
+        .password-strength-meter {
+            margin-top: 10px;
+            display: grid;
+            gap: 8px;
+        }
+        .password-strength-track {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .password-strength-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.3s ease, background 0.3s ease;
+            background: linear-gradient(90deg, #f97316 0%, #f97316 100%);
+        }
+        .password-strength-label {
+            font-size: 0.82rem;
+            color: #475569;
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+        }
+        .password-strength-label span {
+            font-weight: 700;
+        }
+        .password-strength-label .strength-weak {
+            color: #dc2626;
+        }
+        .password-strength-label .strength-medium {
+            color: #f59e0b;
+        }
+        .password-strength-label .strength-strong {
+            color: #16a34a;
+        }
         .auth-extra-action {
             text-align: center;
             margin-top: 10px;
@@ -541,7 +579,7 @@
                 <button class="btn-auth-submit" id="otpSubmitBtn" onclick="handleOtpVerificationRequest()">
                     <span>Emeza Kode</span> <i class="fa-solid fa-shield-heart"></i>
                 </button>
-                <div class="auth-extra-action"><span onclick="switchAuthWizardView('REGISTER')">Ntubona OTP? Ongera wandike email yawe</span></div>
+                <div class="auth-extra-action"><span onclick="switchAuthWizardView('REGISTER')">Ntutabona OTP? Ongera wandike email yawe</span></div>
             </div>
 
             <!-- ====== ENGINE PANEL D: SET ACCOUNT PASSWORD (REGISTRATION) ====== -->
@@ -554,9 +592,13 @@
                 <div class="input-form-field">
                     <label>Password Nshya</label>
                     <div class="pw-wrap">
-                        <input type="password" id="newPasswordInput" placeholder="••••••••">
+                        <input type="password" id="newPasswordInput" placeholder="••••••••" oninput="updatePasswordStrength('newPasswordInput','newPasswordStrengthInfo')">
                         <button type="button" class="pw-eye" onclick="togglePw('newPasswordInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
                     </div>
+                </div>
+                <div class="password-strength-meter">
+                    <div class="password-strength-track"><div id="newPasswordStrengthBar" class="password-strength-fill"></div></div>
+                    <div id="newPasswordStrengthInfo" class="auth-help-text">Password igomba kuba nibura inyuguti 8, ikagira inyuguti ntoya, inyuguti nkuru, imibare, n'ikimenyetso.</div>
                 </div>
                 <div class="input-form-field">
                     <label>Subiramo Password</label>
@@ -565,7 +607,6 @@
                         <button type="button" class="pw-eye" onclick="togglePw('newPasswordConfirmInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
                     </div>
                 </div>
-                <div class="auth-help-text">Password igomba kuba nibura inyuguti 6 kandi yigenga.</div>
                 <button class="btn-auth-submit" id="passwordSubmitBtn" onclick="handlePasswordSetupFinalize()">
                     <span>Kurangiza iyandikwa</span> <i class="fa-solid fa-circle-check"></i>
                 </button>
@@ -631,9 +672,13 @@
                 <div class="input-form-field">
                     <label>Password Nshya</label>
                     <div class="pw-wrap">
-                        <input type="password" id="resetPasswordInput" placeholder="••••••••">
+                        <input type="password" id="resetPasswordInput" placeholder="••••••••" oninput="updatePasswordStrength('resetPasswordInput','resetPasswordStrengthInfo')">
                         <button type="button" class="pw-eye" onclick="togglePw('resetPasswordInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
                     </div>
+                </div>
+                <div class="password-strength-meter">
+                    <div class="password-strength-track"><div id="resetPasswordStrengthBar" class="password-strength-fill"></div></div>
+                    <div id="resetPasswordStrengthInfo" class="auth-help-text">Password igomba kuba nibura inyuguti 8, ikagira inyuguti ntoya, inyuguti nkuru, imibare, n'ikimenyetso.</div>
                 </div>
                 <div class="input-form-field">
                     <label>Subiramo Password</label>
@@ -710,6 +755,59 @@
             btn.disabled = false;
             btn.classList.remove('loading');
             btn.innerHTML = `<span>${label}</span> <i class="${iconClass}"></i>`;
+        }
+
+        function validateStrongPassword(password) {
+            const lengthOk = password.length >= 8;
+            const hasLower = /[a-z]/.test(password);
+            const hasUpper = /[A-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSymbol = /[!@#$%^&*(),.?"{}|<>[\]\\/~`'_:;+-]/.test(password);
+            const score = [lengthOk, hasLower, hasUpper, hasNumber, hasSymbol].filter(Boolean).length;
+            const valid = score === 5;
+            let message = 'Password igomba kuba nibura inyuguti 8, ikagira inyuguti ntoya, inyuguti nkuru, imibare, n\'ikimenyetso.';
+            if (valid) {
+                message = 'Password ikomeye!';
+            } else if (!lengthOk) {
+                message = 'Shyiraho password nibura inyuguti 8.';
+            } else if (!hasUpper) {
+                message = 'Ongeraho inyuguti nkuru (A-Z).';
+            } else if (!hasLower) {
+                message = 'Ongeraho inyuguti ntoya (a-z).';
+            } else if (!hasNumber) {
+                message = 'Ongeraho imibare (0-9).';
+            } else if (!hasSymbol) {
+                message = 'Ongeraho ikimenyetso nka !@#$%^&*.';
+            }
+            return { valid, message, score };
+        }
+
+        function updatePasswordStrength(inputId, infoId) {
+            const input = document.getElementById(inputId);
+            const info = document.getElementById(infoId);
+            const barId = inputId === 'newPasswordInput' ? 'newPasswordStrengthBar' : 'resetPasswordStrengthBar';
+            const bar = document.getElementById(barId);
+            if (!input || !info || !bar) return;
+            const result = validateStrongPassword(input.value.trim());
+            info.textContent = result.message;
+            info.style.color = result.valid ? '#16a34a' : '#c2410c';
+            let width = 0;
+            let fillColor = '#f97316';
+            if (result.score >= 4) {
+                width = 100;
+                fillColor = '#16a34a';
+            } else if (result.score === 3) {
+                width = 75;
+                fillColor = '#f59e0b';
+            } else if (result.score === 2) {
+                width = 50;
+                fillColor = '#fb923c';
+            } else if (result.score === 1) {
+                width = 30;
+                fillColor = '#f87171';
+            }
+            bar.style.width = width + '%';
+            bar.style.background = fillColor;
         }
 
         let tracksTargetEmail = '';
@@ -795,9 +893,13 @@
 
         window.handlePasswordSetupFinalize = function() {
             const pass = document.getElementById('newPasswordInput').value.trim();
+            const confirm = document.getElementById('newPasswordConfirmInput').value.trim();
             const btn = document.getElementById('passwordSubmitBtn');
+            const strength = validateStrongPassword(pass);
 
-            if(!pass || pass.length < 6) { showAlert('Password igomba kuba ifite inyandiko 6+', 'error'); return; }
+            if(!pass) { showAlert('Andika password nshya.', 'error'); return; }
+            if(pass !== confirm) { showAlert('Passwords zombi ntizihura. Ongera ugerageze.', 'error'); return; }
+            if(!strength.valid) { showAlert(strength.message, 'error'); return; }
 
             setButtonLoading(btn, 'Iri Kurangiza...', 'fa-solid fa-circle-check');
             fetch('/api/school/set-password', {
@@ -879,9 +981,13 @@
             const pass = document.getElementById('resetPasswordInput').value.trim();
             const confirm = document.getElementById('resetPasswordConfirmInput').value.trim();
             const btn = document.getElementById('resetPasswordBtn');
-            if(!pass || pass.length < 6) { showAlert('Password igomba kuba ifite inyandiko 6+.', 'error'); return; }
+            const strength = validateStrongPassword(pass);
+
+            if(!pass) { showAlert('Andika password nshya.', 'error'); return; }
             if(pass !== confirm) { showAlert('Passwords zombi ntizihura. Ongera ugerageze.', 'error'); return; }
-            btn.disabled = true;
+            if(!strength.valid) { showAlert(strength.message, 'error'); return; }
+
+            setButtonLoading(btn, 'Iri Kurangura...', 'fa-solid fa-lock');
             fetch('/api/school/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -889,11 +995,15 @@
             })
             .then(r => r.json())
             .then(data => {
-                btn.disabled = false;
+                resetButton(btn, 'Hindura Password', 'fa-solid fa-lock');
                 if(data.success) {
                     showAlert('Password yahinduwe neza! Injira ukoresheje password nshya.', 'success');
                     switchAuthWizardView('LOGIN');
                 } else { showAlert(data.error || 'Byanze. Gerageza nanone.', 'error'); }
+            })
+            .catch(() => {
+                resetButton(btn, 'Hindura Password', 'fa-solid fa-lock');
+                showAlert('Habayemo ikibazo cyo gusubiza. Ongera ugerageze.', 'error');
             });
         };
 
