@@ -142,36 +142,36 @@
         .workspace-scroll-container {
             flex: 1;
             margin-top: 60px;
-            overflow: hidden;
-            padding: 0 4%;
+            overflow: visible;
+            padding: 0 4% 48px;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             width: 100%;
-            height: calc(100vh - 60px);
+            min-height: calc(100vh - 60px);
         }
         .auth-layout {
             display: grid;
-            grid-template-columns: 0.75fr 1.25fr;
-            gap: 24px;
+            grid-template-columns: 0.95fr 1.15fr;
+            gap: 28px;
             width: 100%;
-            max-width: 1000px;
-            align-items: center;
+            max-width: 1100px;
+            align-items: stretch;
         }
 
         /* ── GUIDELINE CARD ── */
         .guide-card {
-            background: linear-gradient(135deg, #0b698b 0%, #0e4f6b 100%);
-            border-radius: 18px;
-            padding: 22px 20px;
+            background: linear-gradient(155deg, #0b698b 0%, #0e7aa0 100%);
+            border-radius: 24px;
+            padding: 28px 24px;
             color: #fff;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            opacity: 0.88;
+            gap: 18px;
+            box-shadow: 0 24px 60px rgba(11, 82, 125, 0.16);
         }
-        .guide-card-title { font-size: 0.88rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
-        .guide-card-sub { font-size: 0.72rem; color: rgba(255,255,255,0.65); line-height: 1.5; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.12); }
+        .guide-card-title { font-size: 0.95rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
+        .guide-card-sub { font-size: 0.78rem; color: rgba(255,255,255,0.82); line-height: 1.6; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.16); }
         .guide-steps { display: flex; flex-direction: column; gap: 0; }
         .guide-step { display: flex; gap: 12px; position: relative; }
         .guide-step:not(:last-child)::after {
@@ -200,15 +200,18 @@
 
         /* ── FORM CARD ── */
         .auth-card-frame {
-            background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
-            border: 1px solid var(--border-color);
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,251,255,0.96) 100%);
+            border: 1px solid rgba(11,105,139,0.12);
             border-radius: 24px;
-            max-width: 440px;
+            max-width: 500px;
             width: 100%;
-            padding: 32px 24px;
-            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.10);
+            padding: 34px 28px;
+            box-shadow: 0 26px 70px rgba(15, 23, 42, 0.14);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            min-height: 560px;
+            display: flex;
+            flex-direction: column;
         }
 
         @media (max-width: 768px) {
@@ -223,43 +226,122 @@
             .auth-card-frame { order: -1; }
         }
 
-        .auth-heading-block { text-align: center; margin-bottom: 24px; }
+        .auth-heading-block { text-align: center; margin-bottom: 28px; }
         .auth-heading-block .portal-pill {
-            display: inline-flex; align-items: center; gap: 7px;
-            background: rgba(11, 105, 139, 0.08);
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(11, 105, 139, 0.10);
             color: var(--brand);
-            border: 1px solid rgba(11, 105, 139, 0.15);
-            border-radius: 999px; padding: 6px 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;
+            border: 1px solid rgba(11, 105, 139, 0.18);
+            border-radius: 999px; padding: 8px 14px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 16px;
         }
-        .auth-heading-block h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; color: #0f172a; }
-        .auth-heading-block p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; }
+        .auth-heading-block h2 { font-size: 2rem; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 10px; color: #0f172a; }
+        .auth-heading-block p { font-size: 0.95rem; color: #475569; line-height: 1.6; }
+        .auth-step-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56,189,248,0.12);
+            color: #0b698b;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+        }
+        .auth-help-text {
+            font-size: 0.88rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-top: 4px;
+        }
+        .auth-extra-action {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.92rem;
+            color: #475569;
+        }
+        .auth-extra-action span {
+            color: #0b698b;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .success-celebration-card {
+            background: linear-gradient(180deg, rgba(56,189,248,0.12) 0%, rgba(255,255,255,0.92) 100%);
+            border: 1px solid rgba(56,189,248,0.18);
+            border-radius: 24px;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 18px 40px rgba(15,23,42,0.12);
+        }
+        .success-celebration-card h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #0f172a;
+            text-align: center;
+            margin: 0;
+        }
+        .success-celebration-card p {
+            color: #475569;
+            line-height: 1.75;
+            text-align: center;
+            margin: 0;
+        }
+        .success-animation {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #22c55e 0%, #0ea5e9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 2.2rem;
+            box-shadow: 0 18px 40px rgba(15,23,42,0.16);
+            animation: pulseGlow 1.7s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 18px 40px rgba(15,23,42,0.16); }
+            50% { transform: scale(1.08); box-shadow: 0 24px 52px rgba(15,23,42,0.22); }
+        }
 
         /* Form Wizard Content Toggles */
         .auth-wizard-view-step { display: none; }
         .auth-wizard-view-step.active { display: block; }
 
-        .input-form-field { display: flex; flex-direction: column; text-align: left; gap: 6px; margin-bottom: 18px; }
+        .input-form-field { display: flex; flex-direction: column; text-align: left; gap: 8px; margin-bottom: 18px; }
         .input-form-field label { font-size: 11px; font-weight: 800; color: var(--brand); text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-form-field input { width: 100%; padding: 12px 14px; border: 2px solid #cbd5e1; border-radius: 10px; font-size: 14px; font-weight: 600; outline: none; background: #f8fbff; color: #0f172a; font-family: inherit; }
-        .input-form-field input:focus { border-color: var(--brand); background: #ffffff; box-shadow: 0 0 0 3px rgba(11, 105, 139, 0.12); }
+        .input-form-field input { width: 100%; padding: 14px 16px; border: 1px solid #d1dfe8; border-radius: 14px; font-size: 14px; font-weight: 600; outline: none; background: #f8fbff; color: #0f172a; font-family: inherit; box-shadow: inset 0 1px 3px rgba(15,23,42,0.06); }
+        .input-form-field input:focus { border-color: var(--brand); background: #ffffff; box-shadow: 0 0 0 4px rgba(11, 105, 139, 0.1); }
         .pw-wrap { position: relative; }
-        .pw-wrap input { padding-right: 44px; }
-        .pw-eye { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer; padding: 4px; display: flex; align-items: center; font-size: 15px; transition: color 0.15s; }
-        .pw-eye:hover { color: #94a3b8; }
+        .pw-wrap input { padding-right: 46px; }
+        .pw-eye { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer; padding: 4px; display: flex; align-items: center; font-size: 15px; transition: color 0.15s; }
+        .pw-eye:hover { color: #0b698b; }
         
-        .btn-auth-submit { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #ffffff; border: none; padding: 13px; width: 100%; border-radius: 10px; font-size: 0.92rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 24px rgba(11, 105, 139, 0.16); transition: transform 0.15s, box-shadow 0.15s; }
-        .btn-auth-submit:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(11, 105, 139, 0.22); }
-        .btn-auth-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-auth-submit { background: linear-gradient(135deg, #0b698b 0%, #075985 100%); color: #ffffff; border: none; padding: 14px; width: 100%; border-radius: 14px; font-size: 0.98rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 18px 36px rgba(11, 105, 139, 0.18); transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s; }
+        .btn-auth-submit:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(11, 105, 139, 0.24); }
+        .btn-auth-submit:disabled { opacity: 0.75; cursor: not-allowed; box-shadow: 0 10px 22px rgba(11, 105, 139, 0.12); }
+        .btn-auth-submit.loading { pointer-events: none; opacity: 0.88; }
 
-        .switch-mode-anchor { text-align: center; margin-top: 20px; font-size: 13px; color: #94a3b8; }
-        .switch-mode-anchor span { color: #38bdf8; font-weight: 700; cursor: pointer; text-decoration: underline; }
+        .switch-mode-anchor { text-align: center; margin-top: 20px; font-size: 13px; color: #64748b; }
+        .switch-mode-anchor span { color: #0b698b; font-weight: 800; cursor: pointer; text-decoration: underline; }
 
-        .footer { min-height: 40px; padding: 7px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; flex-wrap: wrap; gap: 6px; width: 100%; box-sizing: border-box; }
+        .auth-trust-bar { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; justify-content: center; }
+        .auth-trust-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; border: 1px solid rgba(11,105,139,0.16); background: #f3f8ff; color: #0f172a; font-size: 0.82rem; font-weight: 700; }
+        .auth-trust-chip i { color: #0b698b; }
+
+        .footer { min-height: 48px; padding: 12px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: #94a3b8; position: relative; flex-wrap: wrap; gap: 8px; width: 100%; box-sizing: border-box; }
         .footer strong { color: #38bdf8; }
+        .footer a { color: #a78bfa; text-decoration: none; }
         .footer a:hover { opacity: 0.9; }
         @media (max-width: 900px) {
             .footer { position: static !important; width: 100% !important; margin-top: auto; }
-            .workspace-scroll-container { padding-bottom: 16px !important; height: auto !important; overflow: visible !important; }
+            .workspace-scroll-container { padding-bottom: 24px !important; min-height: auto !important; overflow: visible !important; }
         }
         .auth-alert { border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 700; margin-bottom: 12px; display: none; }
         .auth-alert.show { display: block; }
@@ -362,6 +444,11 @@
 
         <!-- FORM CARD -->
         <div class="auth-card-frame">
+            <div class="auth-trust-bar">
+                <div class="auth-trust-chip"><i class="fa-solid fa-badge-check"></i> Secure access</div>
+                <div class="auth-trust-chip"><i class="fa-solid fa-shield-halved"></i> Safe school login</div>
+                <div class="auth-trust-chip"><i class="fa-solid fa-headset"></i> Support 24/7</div>
+            </div>
             <div id="authAlertBox" class="auth-alert error" role="alert" aria-live="polite">
                 <span id="authAlertMsg">&nbsp;</span>
             </div>
@@ -392,7 +479,7 @@
                 <div class="auth-heading-block">
                     <div class="portal-pill"><i class="fa-solid fa-school"></i> School portal</div>
                     <h2>Kwinjira Nk'Ishuri</h2>
-                    <p>Injiza amakuru ya Konti y'ishuri ryanyu utangire gukurikirana abanyeshuri.</p>
+                    <p>Injiza amakuru ya Konti y'ishuri ryanyu utangire gukurikirana abanyeshuri byoroshye.</p>
                 </div>
                 <div class="input-form-field">
                     <label>Email y'Ishuri</label>
@@ -408,20 +495,21 @@
                 <button class="btn-auth-submit" id="loginSubmitBtn" onclick="handleSchoolPortalLoginRequest()">
                     <span>Injira</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
-                <div class="switch-mode-anchor" style="margin-top:12px;"><span onclick="switchAuthWizardView('FORGOT')">Wibagiwe Password?</span></div>
+                <div class="switch-mode-anchor" style="margin-top:14px;"><span onclick="switchAuthWizardView('FORGOT')">Wibagiwe Password?</span></div>
                 <div class="switch-mode-anchor">Ntabwo mufite Konti? <span onclick="switchAuthWizardView('REGISTER')">Fungura Konti Hano</span></div>
             </div>
 
             <!-- ====== ENGINE PANEL B: REGISTER INITIAL DATA ====== -->
             <div class="auth-wizard-view-step" id="viewSectionSchoolRegister">
                 <div class="auth-heading-block">
-                    <div class="portal-pill"><i class="fa-solid fa-user-plus"></i> New school account</div>
+                    <div class="portal-pill"><i class="fa-solid fa-user-plus"></i> Konti nshya y'ishuri</div>
+                    <div class="auth-step-pill"><i class="fa-solid fa-clipboard-list"></i> Step 1 of 5</div>
                     <h2>Fungura Konti y'Ishuri</h2>
-                    <p>Iyandikishe nk'ishuri rya shofere pro uhite ubona kode ya OTP muri Email yawe.</p>
+                    <p>Andika amakuru y'ishuri n'email yawe. Tuzakohereza kode ya OTP igufasha kwemeza konti.</p>
                 </div>
                 <div class="input-form-field">
-                    <label>Izina ry'Ishuri (School Name)</label>
-                    <input type="text" id="regSchoolNameInput" placeholder="e.g., Twegerane Driving School">
+                    <label>Izina ry'Ishuri</label>
+                    <input type="text" id="regSchoolNameInput" placeholder="Twegerane Driving School">
                 </div>
                 <div class="input-form-field">
                     <label>Email y'Ishuri</label>
@@ -429,35 +517,39 @@
                 </div>
                 <div class="input-form-field">
                     <label>Nomero ya Telephone</label>
-                    <input type="tel" id="regPhoneInput" placeholder="e.g., 0788000000" maxlength="10" oninput="autoFixRegPhone()">
-                    <span id="regPhoneHint" style="font-size:11px;font-weight:600;color:#64748b;">Tangira na 072, 073, 078 cyangwa 079</span>
+                    <input type="tel" id="regPhoneInput" placeholder="0788000000" maxlength="10" oninput="autoFixRegPhone()">
+                    <span id="regPhoneHint" class="auth-help-text">Tangira na 072, 073, 078 cyangwa 079.</span>
                 </div>
                 <button class="btn-auth-submit" id="regSubmitBtn" onclick="handleSchoolRegistrationInit()">
-                    <span>Bika & Yohereza OTP</span> <i class="fa-solid fa-paper-plane"></i>
+                    <span>Ohereza Kode ya OTP</span> <i class="fa-solid fa-paper-plane"></i>
                 </button>
-                <div class="switch-mode-anchor">Mufite Konti? <span onclick="switchAuthWizardView('LOGIN')">Kwinjira (Login)</span></div>
+                <div class="auth-help-text">Iyo email niyo izakenerwa muri wizard, itegereze kode ya OTP.</div>
+                <div class="switch-mode-anchor">Mufite Konti? <span onclick="switchAuthWizardView('LOGIN')">Kwinjira hano</span></div>
             </div>
 
             <!-- ====== ENGINE PANEL C: VERIFY SIMULATED OTP CODE ====== -->
             <div class="auth-wizard-view-step" id="viewSectionVerifyOtp">
                 <div class="auth-heading-block">
-                    <h2>Emeza Nomero ya OTP</h2>
-                    <p id="otpSentInfoMsg" style="color:#38bdf8; font-weight:600;">✓ Kode ya OTP yoherejwe kuri Email yawe. Reba inyandiko z'email hanyuma uyinjize hano.</p>
+                    <div class="auth-step-pill"><i class="fa-solid fa-shield-check"></i> Step 2 of 5</div>
+                    <h2>Emeza Konti yawe</h2>
+                    <p id="otpSentInfoMsg" style="color:#38bdf8; font-weight:600;">✓ Kode ya OTP yoherejwe kuri email yawe. Reba inbox cyangwa spam hanyuma uyinjize hano.</p>
                 </div>
                 <div class="input-form-field">
-                    <label>Injiza Kode ya OTP (Inyandiko 6)</label>
-                                        <input type="text" id="otpCodeValueInput" maxlength="6" placeholder="123456" style="text-align:center; font-size:22px; letter-spacing:4px;">
+                    <label>Injiza Kode ya OTP</label>
+                    <input type="text" id="otpCodeValueInput" maxlength="6" placeholder="123456" style="text-align:center; font-size:22px; letter-spacing:4px;">
                 </div>
                 <button class="btn-auth-submit" id="otpSubmitBtn" onclick="handleOtpVerificationRequest()">
                     <span>Emeza Kode</span> <i class="fa-solid fa-shield-heart"></i>
                 </button>
+                <div class="auth-extra-action"><span onclick="switchAuthWizardView('REGISTER')">Ntubona OTP? Ongera wandike email yawe</span></div>
             </div>
 
             <!-- ====== ENGINE PANEL D: SET ACCOUNT PASSWORD (REGISTRATION) ====== -->
             <div class="auth-wizard-view-step" id="viewSectionSetPassword">
                 <div class="auth-heading-block">
-                    <h2>Andika Password yawe</h2>
-                    <p>Shyiraho password ikomeye uzajya ukoresha winjira muri dashboard y'ishuri.</p>
+                    <div class="auth-step-pill"><i class="fa-solid fa-lock"></i> Step 3 of 5</div>
+                    <h2>Shyiraho Password</h2>
+                    <p>Hitamo password ikomeye ifite inyuguti, imibare, n'ibimenyetso kugira ngo konti y'ishuri ibe nziza kurushaho.</p>
                 </div>
                 <div class="input-form-field">
                     <label>Password Nshya</label>
@@ -466,16 +558,42 @@
                         <button type="button" class="pw-eye" onclick="togglePw('newPasswordInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
                     </div>
                 </div>
+                <div class="input-form-field">
+                    <label>Subiramo Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="newPasswordConfirmInput" placeholder="••••••••">
+                        <button type="button" class="pw-eye" onclick="togglePw('newPasswordConfirmInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="auth-help-text">Password igomba kuba nibura inyuguti 6 kandi yigenga.</div>
                 <button class="btn-auth-submit" id="passwordSubmitBtn" onclick="handlePasswordSetupFinalize()">
-                    <span>Emeza & Kompanya</span> <i class="fa-solid fa-circle-check"></i>
+                    <span>Kurangiza iyandikwa</span> <i class="fa-solid fa-circle-check"></i>
                 </button>
+            </div>
+
+            <!-- ====== ENGINE PANEL H: ACCOUNT APPROVED CONFIRMATION ====== -->
+            <div class="auth-wizard-view-step" id="viewSectionAccountApproved">
+                <div class="auth-heading-block">
+                    <div class="auth-step-pill"><i class="fa-solid fa-trophy"></i> Byemejwe</div>
+                    <h2>Konti yawe yiteguye!</h2>
+                    <p>Twemeje imyirondoro ya konti yawe kandi turagusaba gutegereza ko ubuyobozi bwa IKIZAME buyemeza byuzuye.</p>
+                </div>
+                <div class="success-celebration-card">
+                    <div class="success-animation"><i class="fa-solid fa-circle-check"></i></div>
+                    <h3>Murakomeye! Konti yawe iri mu nzira yo kwemezwa.</h3>
+                    <p>Tuzakumenyesha vuba mu email yawe nyuma yo gusuzuma. Ushobora gusubira kwinjira nyuma y'iminota mike.</p>
+                    <button class="btn-auth-submit" onclick="switchAuthWizardView('LOGIN')">
+                        <span>Subira Kwinjira</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- ====== ENGINE PANEL E: FORGOT PASSWORD, EMAIL ENTRY ====== -->
             <div class="auth-wizard-view-step" id="viewSectionForgotPassword">
                 <div class="auth-heading-block">
+                    <div class="auth-step-pill"><i class="fa-solid fa-key"></i> Step 4 of 5</div>
                     <h2>Wibagiwe Password?</h2>
-                    <p>Injiza email ya Konti yawe. Tuzakoherereza kode ya OTP yo gusubiramo password.</p>
+                    <p>Injiza email y'ishuri ya konti yawe. Tuzakohereza kode ya OTP yo gusubiramo password.</p>
                 </div>
                 <div class="input-form-field">
                     <label>Email y'Ishuri</label>
@@ -490,23 +608,25 @@
             <!-- ====== ENGINE PANEL F: FORGOT PASSWORD, OTP VERIFY ====== -->
             <div class="auth-wizard-view-step" id="viewSectionForgotOtp">
                 <div class="auth-heading-block">
+                    <div class="auth-step-pill"><i class="fa-solid fa-shield-heart"></i> Step 5 of 5</div>
                     <h2>Emeza OTP</h2>
                     <p id="forgotOtpInfoMsg" style="color:#38bdf8; font-weight:600;">✓ Kode ya OTP yoherejwe kuri email yawe. Reba inbox hanyuma uyinjize hano.</p>
                 </div>
                 <div class="input-form-field">
-                    <label>Injiza Kode ya OTP (Inyandiko 6)</label>
+                    <label>Injiza Kode ya OTP</label>
                     <input type="text" id="forgotOtpInput" maxlength="6" placeholder="123456" style="text-align:center; font-size:22px; letter-spacing:4px;">
                 </div>
                 <button class="btn-auth-submit" id="forgotOtpBtn" onclick="handleForgotOtpVerify()">
                     <span>Emeza Kode</span> <i class="fa-solid fa-shield-heart"></i>
                 </button>
+                <div class="auth-extra-action"><span onclick="switchAuthWizardView('FORGOT')">Ntabwo wabonye OTP? Ongera wohereze.</span></div>
             </div>
 
             <!-- ====== ENGINE PANEL G: FORGOT PASSWORD, RESET PASSWORD ====== -->
             <div class="auth-wizard-view-step" id="viewSectionResetPassword">
                 <div class="auth-heading-block">
                     <h2>Shyiraho Password Nshya</h2>
-                    <p>Andika password nshya ikomeye kuri Konti y'ishuri ryawe.</p>
+                    <p>Hitamo password nshya izatuma winjira mu kigo cy'ishuri cyawe neza.</p>
                 </div>
                 <div class="input-form-field">
                     <label>Password Nshya</label>
@@ -516,12 +636,13 @@
                     </div>
                 </div>
                 <div class="input-form-field">
-                    <label>Powtora Password</label>
+                    <label>Subiramo Password</label>
                     <div class="pw-wrap">
                         <input type="password" id="resetPasswordConfirmInput" placeholder="••••••••">
                         <button type="button" class="pw-eye" onclick="togglePw('resetPasswordConfirmInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
                     </div>
                 </div>
+                <div class="auth-help-text">Koresha password ihuye mu masaha yose kugira ngo wirinde ko konti yawe yibwa.</div>
                 <button class="btn-auth-submit" id="resetPasswordBtn" onclick="handleResetPasswordFinalize()">
                     <span>Hindura Password</span> <i class="fa-solid fa-lock"></i>
                 </button>
@@ -577,6 +698,20 @@
             }
         }
 
+        function setButtonLoading(btn, label, iconClass) {
+            if (!btn) return;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${label}`;
+        }
+
+        function resetButton(btn, label, iconClass) {
+            if (!btn) return;
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.innerHTML = `<span>${label}</span> <i class="${iconClass}"></i>`;
+        }
+
         let tracksTargetEmail = '';
 
         window.switchAuthWizardView = function(targetMode) {
@@ -605,8 +740,7 @@
             }
             tracksTargetEmail = email;
 
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Iri Kohereza...`;
+            setButtonLoading(btn, 'Iri Kohereza...', 'fa-solid fa-paper-plane');
 
             fetch('/api/school/register', {
                 method: 'POST',
@@ -615,12 +749,19 @@
             })
             .then(res => res.json())
             .then(data => {
-                btn.disabled = false;
-                btn.innerHTML = `<span>Bika & Yohereza OTP</span> <i class="fa-solid fa-paper-plane"></i>`;
+                resetButton(btn, 'Ohereza Kode ya OTP', 'fa-solid fa-paper-plane');
                 if(data.success) {
+                    tracksTargetEmail = email;
                     document.getElementById('otpSentInfoMsg').textContent = '✓ Kode ya OTP yoherejwe kuri: ' + email + '. Reba inbox (cyangwa spam) hanyuma uyinjize hano.';
-                    switchAuthWizardView('OTP');
-                } else { alert(data.error); }
+                    showAlert('Turi hafi kurangiza! Reba email yawe kugira ngo ukomeze.', 'success');
+                    setTimeout(() => switchAuthWizardView('OTP'), 900);
+                } else {
+                    showAlert(data.error || 'Habayemo ikibazo. Ongera ugerageze.', 'error');
+                }
+            })
+            .catch(() => {
+                resetButton(btn, 'Ohereza Kode ya OTP', 'fa-solid fa-paper-plane');
+                showAlert('Habayemo ikibazo cyo kugerageza. Reba Internet yawe.', 'error');
             });
         };
 
@@ -630,7 +771,7 @@
 
             if(!code || code.length < 6) { showAlert('Andika kode ya OTP inyandiko 6.', 'error'); return; }
 
-            btn.disabled = true;
+            setButtonLoading(btn, 'Iri Kwemeza...', 'fa-solid fa-shield-heart');
             fetch('/api/school/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -638,10 +779,17 @@
             })
             .then(res => res.json())
             .then(data => {
-                btn.disabled = false;
+                resetButton(btn, 'Emeza Kode', 'fa-solid fa-shield-heart');
                 if(data.success) {
-                    switchAuthWizardView('PASSWORD');
-                } else { alert(data.error); }
+                    showAlert('OTP yemejwe neza! Komeza ushyireho password.', 'success');
+                    setTimeout(() => switchAuthWizardView('PASSWORD'), 900);
+                } else {
+                    showAlert(data.error || 'Kode ya OTP siyo. Ongera ugerageze.', 'error');
+                }
+            })
+            .catch(() => {
+                resetButton(btn, 'Emeza Kode', 'fa-solid fa-shield-heart');
+                showAlert('Habaye ikibazo cyo kohereza. Ongera ugerageze.', 'error');
             });
         };
 
@@ -651,7 +799,7 @@
 
             if(!pass || pass.length < 6) { showAlert('Password igomba kuba ifite inyandiko 6+', 'error'); return; }
 
-            btn.disabled = true;
+            setButtonLoading(btn, 'Iri Kurangiza...', 'fa-solid fa-circle-check');
             fetch('/api/school/set-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -659,19 +807,25 @@
             })
             .then(res => res.json())
             .then(data => {
-                btn.disabled = false;
+                resetButton(btn, 'Kurangiza iyandikwa', 'fa-solid fa-circle-check');
                 if(data.success) {
-                    showAlert('Konti yawe yafunguwe neza! Wakiriye ubutumwa kuri email.', 'success');
-                    switchAuthWizardView('LOGIN');
-                } else { alert(data.error); }
+                    showAlert('Konti yawe yanditswe neza! Turi kwemeza ubusabe bwawe.', 'success');
+                    setTimeout(() => switchAuthWizardView('ACCOUNT_APPROVED'), 900);
+                    setTimeout(() => switchAuthWizardView('LOGIN'), 4200);
+                } else {
+                    showAlert(data.error || 'Byanze. Ongera ugerageze.', 'error');
+                }
+            })
+            .catch(() => {
+                resetButton(btn, 'Kurangiza iyandikwa', 'fa-solid fa-circle-check');
+                showAlert('Habayemo ikibazo cyo gusubiza. Ongera ugerageze.', 'error');
             });
         };
         window.handleForgotPasswordRequest = function() {
             const email = document.getElementById('forgotEmailInput').value.trim();
             const btn = document.getElementById('forgotSubmitBtn');
             if(!email) { showAlert('Injiza email yawe.', 'error'); return; }
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Iri Kohereza...`;
+            setButtonLoading(btn, 'Iri Kohereza...', 'fa-solid fa-paper-plane');
             fetch('/api/school/forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -679,13 +833,19 @@
             })
             .then(r => r.json())
             .then(data => {
-                btn.disabled = false;
-                btn.innerHTML = `<span>Ohereza OTP</span> <i class="fa-solid fa-paper-plane"></i>`;
+                resetButton(btn, 'Ohereza OTP', 'fa-solid fa-paper-plane');
                 if(data.success) {
                     tracksTargetEmail = email;
                     document.getElementById('forgotOtpInfoMsg').textContent = '✓ Kode ya OTP yoherejwe kuri: ' + email + '. Reba inbox (cyangwa spam).';
-                    switchAuthWizardView('FORGOT_OTP');
-                } else { alert(data.error); }
+                    showAlert('OTPass yakoherejwe! Injiza kode ubone gusubiramo password.', 'success');
+                    setTimeout(() => switchAuthWizardView('FORGOT_OTP'), 900);
+                } else {
+                    showAlert(data.error || 'Habayemo ikibazo. Ongera ugerageze.', 'error');
+                }
+            })
+            .catch(() => {
+                resetButton(btn, 'Ohereza OTP', 'fa-solid fa-paper-plane');
+                showAlert('Habaye ikibazo cyo kohereza. Reba Internet yawe.', 'error');
             });
         };
 
@@ -693,7 +853,7 @@
             const code = document.getElementById('forgotOtpInput').value.trim();
             const btn = document.getElementById('forgotOtpBtn');
             if(!code || code.length < 6) { showAlert('Andika kode ya OTP inyandiko 6.', 'error'); return; }
-            btn.disabled = true;
+            setButtonLoading(btn, 'Iri Kwemeza...', 'fa-solid fa-shield-heart');
             fetch('/api/school/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -701,9 +861,17 @@
             })
             .then(r => r.json())
             .then(data => {
-                btn.disabled = false;
-                if(data.success) { switchAuthWizardView('RESET'); }
-                else { showAlert(data.error || 'Kohereza byanze.', 'error'); }
+                resetButton(btn, 'Emeza Kode', 'fa-solid fa-shield-heart');
+                if(data.success) {
+                    showAlert('OTP yemejwe! Genda uhindure password.', 'success');
+                    setTimeout(() => switchAuthWizardView('RESET'), 900);
+                } else {
+                    showAlert(data.error || 'Kohereza byanze.', 'error');
+                }
+            })
+            .catch(() => {
+                resetButton(btn, 'Emeza Kode', 'fa-solid fa-shield-heart');
+                showAlert('Habaye ikibazo cyo kugerageza. Ongera ugerageze.', 'error');
             });
         };
 
