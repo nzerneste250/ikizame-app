@@ -47,7 +47,14 @@ const app = express();
 
 // ── TRUST PROXY (required on Render) ─────────────────────────────────────
 app.set('trust proxy', 1);
-
+// ── FORCE NON-WWW CANONICAL DOMAIN ────────────────────────────────────────
+app.use((req, res, next) => {
+  const host = req.headers.host || '';
+  if (host.toLowerCase().startsWith('www.')) {
+    return res.redirect(301, `https://ikizame.rw${req.originalUrl}`);
+  }
+  next();
+});
 // ── SECURITY & PERFORMANCE ────────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(compression());

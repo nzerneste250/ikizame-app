@@ -31,9 +31,21 @@ function renderPublicPage(fileName, res) {
     return res.status(404).send('Not found');
   }
 
-  const html = fs.readFileSync(publicPath, 'utf8');
+  let html = fs.readFileSync(publicPath, 'utf8');
+  html = injectCanonicalTag(html, `https://ikizame.rw${fileName === 'index.html' ? '/' : '/' + fileName.replace('.html', '')}`);
   const updatedHtml = injectFooterLinks(html, fileName);
   res.send(updatedHtml);
+}
+
+function injectCanonicalTag(html, canonicalUrl) {
+  if (!html || !canonicalUrl) return html;
+  const headClose = '</head>';
+  const canonicalTag = `    <link rel="canonical" href="${canonicalUrl}" />\n`;
+
+  if (html.includes(canonicalTag)) return html;
+  if (!html.toLowerCase().includes(headClose)) return html;
+
+  return html.replace(headClose, `${canonicalTag}${headClose}`);
 }
 
 module.exports = { injectFooterLinks, renderPublicPage };
