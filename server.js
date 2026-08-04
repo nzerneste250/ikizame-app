@@ -242,12 +242,8 @@ app.get('/ubufasha',       (req, res) => res.sendFile(path.join(__dirname, 'publ
 app.get('/amanota',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'amanota.html')));
 app.get('/exam-result',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'exam-result.html')));
 app.get('/school-auth',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'school-auth.html')));
-app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'about.html'));
-});
-app.get('/terms', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'terms.html'));
-});
+app.get('/about', (req, res) => renderPublicPage('about.html', res));
+app.get('/terms', (req, res) => renderPublicPage('terms.html', res));
 
 // School-specific static copies of About/Terms used inside the school portal
 app.get('/about-school', (req, res) => {
