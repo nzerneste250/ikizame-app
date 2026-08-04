@@ -236,15 +236,9 @@ app.get('/amanota',        (req, res) => res.sendFile(path.join(__dirname, 'publ
 app.get('/exam-result',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'exam-result.html')));
 app.get('/school-auth',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'school-auth.html')));
 app.get('/about', (req, res) => {
-    if (req.session && req.session.isSchoolAuthenticated) {
-        return sendSchoolAwarePage(req, res, 'about.html');
-    }
     res.sendFile(path.join(__dirname, 'public', 'about.html'));
 });
 app.get('/terms', (req, res) => {
-    if (req.session && req.session.isSchoolAuthenticated) {
-        return sendSchoolAwarePage(req, res, 'terms.html');
-    }
     res.sendFile(path.join(__dirname, 'public', 'terms.html'));
 });
 
