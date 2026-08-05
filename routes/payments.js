@@ -164,7 +164,7 @@ function processResourcePurchaseSession(db, pending, paypackRef, done) {
 
                     const downloadToken = crypto.randomBytes(32).toString('hex');
                     conn.query(
-                        `UPDATE resource_purchase_sessions SET payment_status = 'PAID', paid_at = NOW(), download_token = ?, token_expires_at = DATE_ADD(NOW(), INTERVAL 60 SECOND) WHERE payment_reference = ?`,
+                        `UPDATE resource_purchase_sessions SET payment_status = 'PAID', paid_at = NOW(), download_token = ?, token_expires_at = DATE_ADD(NOW(), INTERVAL 5 MINUTE) WHERE payment_reference = ?`,
                         [downloadToken, paypackRef],
                         (updateErr) => {
                             if (updateErr) {
@@ -410,9 +410,9 @@ module.exports = (db) => {
             const userAgent = String(req.headers['user-agent'] || '').substring(0, 2048);
 
             db.query(
-                `INSERT INTO resource_purchase_sessions (purchase_session_id, resource_id, amount, payment_reference, payment_status, browser_fingerprint, ip_address, user_agent)
-                 VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?)`,
-                [purchaseSessionId, resourceIdValue, amount, paypackRef, browserFingerprint || null, ipAddress, userAgent],
+                `INSERT INTO resource_purchase_sessions (purchase_session_id, resource_id, amount, payment_reference, payment_status, browser_fingerprint, ip_address, user_agent, phone_number, plan_name, exam_count, price_per_exam, service_type, resource_title)
+                 VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [purchaseSessionId, resourceIdValue, amount, paypackRef, browserFingerprint || null, ipAddress, userAgent, phone, planLabel, examCount || null, priceToStore || null, serviceType, resourceTitleValue || null],
                 (insertErr) => {
                     if (insertErr) {
                         console.error('❌ Failed to persist purchase session:', insertErr.message);
@@ -566,15 +566,63 @@ module.exports = (db) => {
     });
 
     // GET — resource purchase session status and download token
-    router.get('/purchase-session/:sessionId', (req, res) => {
+    router.get('/purchase-session/:sessionId', async (req, res) => {
         const sessionId = req.params.sessionId;
         db.query(
-            `SELECT purchase_session_id, payment_status, download_token, token_expires_at, token_used, created_at, paid_at FROM resource_purchase_sessions WHERE purchase_session_id = ? LIMIT 1`,
+            `SELECT purchase_session_id, payment_reference, resource_id, payment_status, download_token, token_expires_at, token_used, created_at, paid_at, amount, plan_name, exam_count, price_per_exam, service_type, resource_title, phone_number
+             FROM resource_purchase_sessions WHERE purchase_session_id = ? LIMIT 1`,
             [sessionId],
-            (err, rows) => {
+            async (err, rows) => {
                 if (err) return res.status(500).json({ success: false, error: err.message });
                 if (!rows || rows.length === 0) return res.status(404).json({ success: false, error: 'Purchase session not found.' });
                 const session = rows[0];
+
+                if (session.payment_status === 'PENDING' && session.payment_reference) {
+                    try {
+                        const verification = await verifyPaypackTransaction(session.payment_reference);
+                        if (verification && verification.status === 'successful') {
+                            return processResourcePurchaseSession(db, {
+                                phone: session.phone_number,
+                                amount: session.amount,
+                                planLabel: session.plan_name || `Resource Access`,
+                                examCount: session.exam_count || 0,
+                                priceToStore: session.price_per_exam || session.amount,
+                                school_id: null,
+                                serviceType: session.service_type || 'RESOURCES',
+                                resourceId: session.resource_id,
+                                resourceTitle: session.resource_title
+                            }, session.payment_reference, (processErr, result) => {
+                                if (processErr) {
+                                    console.error('❌ purchase-session verification processing failed:', processErr.message);
+                                    return res.status(500).json({ success: false, error: 'Verification failed.' });
+                                }
+                                if (result && (result.alreadyPaid || result.downloadToken)) {
+                                    return res.json({
+                                        success: true,
+                                        paymentStatus: 'PAID',
+                                        downloadToken: result.downloadToken || session.download_token,
+                                        tokenExpiresAt: session.token_expires_at,
+                                        tokenUsed: !!Number(session.token_used || 0),
+                                        createdAt: session.created_at,
+                                        paidAt: session.paid_at
+                                    });
+                                }
+                                return res.json({
+                                    success: true,
+                                    paymentStatus: 'PENDING',
+                                    downloadToken: null,
+                                    tokenExpiresAt: session.token_expires_at,
+                                    tokenUsed: !!Number(session.token_used || 0),
+                                    createdAt: session.created_at,
+                                    paidAt: session.paid_at
+                                });
+                            });
+                        }
+                    } catch (verifyErr) {
+                        console.warn('⚠️ purchase-session verification failed:', verifyErr.message);
+                    }
+                }
+
                 res.json({
                     success: true,
                     paymentStatus: session.payment_status,

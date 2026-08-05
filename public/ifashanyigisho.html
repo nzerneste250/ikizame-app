@@ -412,20 +412,26 @@ function submitResourcePayment(idx) {
             return;
         }
         status.textContent = 'Tegereza gato. Twitegereje ubwishyu bwahise.';
-        var referenceId = data.referenceId;
+        var sessionId = data.purchaseSessionId;
         var attempts = 0;
         var timer = setInterval(function() {
             attempts += 1;
-            fetch('/api/payments/verify/' + referenceId)
+            fetch('/api/payments/purchase-session/' + sessionId)
                 .then(function(r2) { return r2.json(); })
                 .then(function(statusData) {
-                    if (statusData.status === 'SUCCESS') {
+                    if (statusData.success && statusData.paymentStatus === 'PAID' && statusData.downloadToken) {
                         clearInterval(timer);
-                        markResourceUnlocked(doc);
                         closeResourcePayment(idx);
-                        loadDocs();
-                        openViewer(doc);
-                    } else if (attempts >= 20) {
+                        window.location.href = '/download/' + statusData.downloadToken;
+                        return;
+                    }
+                    if (attempts >= 60) {
+                        clearInterval(timer);
+                        status.textContent = 'Igihe cyarangiye. Ongera ugerageze.';
+                    }
+                })
+                .catch(function() {
+                    if (attempts >= 60) {
                         clearInterval(timer);
                         status.textContent = 'Igihe cyarangiye. Ongera ugerageze.';
                     }
