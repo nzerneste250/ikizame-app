@@ -5,6 +5,11 @@ const fs         = require('fs');
 const { execSync } = require('child_process');
 const { requireAdminLogin } = require('../middleware/auth');
 
+const publicUploadDir    = path.resolve(__dirname, '..', 'public', 'assets', 'uploads');
+const protectedUploadDir = path.resolve(__dirname, '..', 'protected', 'uploads');
+if (!fs.existsSync(publicUploadDir)) fs.mkdirSync(publicUploadDir, { recursive: true });
+if (!fs.existsSync(protectedUploadDir)) fs.mkdirSync(protectedUploadDir, { recursive: true });
+
 function compressUploadedFile(filePath) {
     const ext = path.extname(filePath).toLowerCase();
     const sizeMB = fs.statSync(filePath).size / (1024 * 1024);
@@ -35,7 +40,7 @@ function compressUploadedFile(filePath) {
     }
 }
 
-const uploadDir = path.resolve(__dirname, '..', 'public', 'assets', 'uploads');
+const uploadDir = publicUploadDir;
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const resourceStorage = multer.diskStorage({
@@ -99,6 +104,7 @@ module.exports = (db, isPublic = false) => {
                                     id:               row.id,
                                     title:            row.title,
                                     description:      row.description,
+                                    file_name:        row.file_name,
                                     file_path:        `assets/uploads/${row.file_name}`,
                                     file_type:        row.file_type,
                                     allow_download:   parseInt(row.allow_download, 10),
@@ -113,7 +119,8 @@ module.exports = (db, isPublic = false) => {
                             id:               row.id,
                             title:            row.title,
                             description:      row.description,
-                            file_path:        `assets/uploads/${row.file_name}`,
+                            file_name:        row.file_name,
+                            file_path:        parseInt(row.is_paid, 10) === 1 ? null : `assets/uploads/${row.file_name}`,
                             file_type:        row.file_type,
                             allow_download:   parseInt(row.allow_download, 10),
                             is_paid:          parseInt(row.is_paid, 10),
@@ -144,6 +151,13 @@ module.exports = (db, isPublic = false) => {
         const finalPrice    = paidFlag ? (parseFloat(price) || 0) : 0;
 
         compressUploadedFile(req.file.path);
+        if (paidFlag) {
+            try {
+                fs.renameSync(req.file.path, path.join(protectedUploadDir, fileName));
+            } catch (moveErr) {
+                return res.status(500).send('File storage error: ' + moveErr.message);
+            }
+        }
 
         ensureResourceColumns((schemaErr) => {
             if (schemaErr) return res.status(500).send('Database error: ' + schemaErr.message);
@@ -177,7 +191,18 @@ module.exports = (db, isPublic = false) => {
         const finalFileType = req.file ? path.extname(req.file.originalname).toLowerCase().replace('.', '') : existingFileType;
         const finalFileSize = req.file ? req.file.size : null;
 
-        if (req.file) compressUploadedFile(req.file.path);
+        if (req.file) {
+            compressUploadedFile(req.file.path);
+            if (paidFlag) {
+                const source = req.file.path;
+                const target = path.join(protectedUploadDir, req.file.filename);
+                try {
+                    fs.renameSync(source, target);
+                } catch (moveErr) {
+                    return res.status(500).send('File storage error: ' + moveErr.message);
+                }
+            }
+        }
         const allowRead     = canRead     === 'on' ? 1 : 0;
         const allowDownload = canDownload === 'on' ? 1 : 0;
         const paidFlag      = isPaid === 'on' ? 1 : 0;
