@@ -3,3 +3,5 @@ node_modules/
 logs/
 public/assets/uploads/*
 !public/assets/uploads/.gitkeep
+protected/uploads/*
+!protected/uploads/.gitkeep
