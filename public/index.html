@@ -696,6 +696,34 @@
         .wa-link:hover { background: #1ebe5d; }
         .wa-link svg { width: 17px; height: 17px; fill: #fff; }
 
+        /* ===== OWNER OTP MODAL ===== */
+        .otp-overlay {
+            position: fixed; inset: 0; background: rgba(13,27,42,0.88);
+            backdrop-filter: blur(6px); z-index: 9999;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .otp-overlay.open { display: flex; }
+        .otp-modal {
+            background: #fff; border-radius: 20px; width: 100%; max-width: 360px;
+            padding: 28px 24px; box-shadow: 0 30px 70px rgba(0,0,0,0.4); text-align: center;
+        }
+        .otp-modal h3 { font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+        .otp-modal p { font-size: 0.82rem; color: #64748b; margin-bottom: 18px; line-height: 1.5; }
+        .otp-input-wrap input {
+            width: 100%; padding: 14px; border: 2px solid #cbd5e1; border-radius: 12px;
+            font-size: 1.6rem; font-weight: 800; text-align: center; letter-spacing: 8px;
+            outline: none; font-family: 'Inter', sans-serif; color: #0f172a;
+        }
+        .otp-input-wrap input:focus { border-color: #0b698b; box-shadow: 0 0 0 4px rgba(11,105,139,0.12); }
+        .otp-hint { font-size: 0.74rem; margin-top: 6px; display: block; min-height: 18px; }
+        .btn-otp-verify {
+            width: 100%; margin-top: 14px; border: none;
+            background: linear-gradient(135deg, #0b698b 0%, #38bdf8 100%);
+            color: #fff; padding: 12px; font-size: 0.9rem; font-weight: 700;
+            border-radius: 12px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .btn-otp-cancel { background: none; border: none; color: #94a3b8; font-size: 0.8rem; margin-top: 10px; cursor: pointer; }
+
         /* ===== FOOTER ===== */
         .footer {
             min-height: 40px;
@@ -1151,6 +1179,24 @@
     </svg>
 </div>
 
+<!-- ===== OWNER OTP MODAL ===== -->
+<div class="otp-overlay" id="ownerOtpOverlay">
+    <div class="otp-modal">
+        <div style="width:48px;height:48px;background:linear-gradient(135deg,#0b698b,#38bdf8);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+            <i class="fa-solid fa-shield-halved" style="color:#fff;font-size:1.2rem;"></i>
+        </div>
+        <h3>Emeza Ubunyangamugayo</h3>
+        <p>OTP yoherejwe kuri <strong>dotadostationarystore@gmail.com</strong>.<br>Injiza kode yo kugira ngo utangire ikizamini.</p>
+        <div class="otp-input-wrap">
+            <input type="text" id="ownerOtpInput" maxlength="6" placeholder="000000" inputmode="numeric" autocomplete="one-time-code">
+        </div>
+        <span class="otp-hint" id="ownerOtpHint"></span>
+        <button class="btn-otp-verify" id="ownerOtpVerifyBtn" onclick="verifyOwnerOtp()">Emeza OTP</button>
+        <br>
+        <button class="btn-otp-cancel" onclick="document.getElementById('ownerOtpOverlay').classList.remove('open')">Hagarika</button>
+    </div>
+</div>
+
 <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
@@ -1289,6 +1335,36 @@
                     const submitBtn = registrationForm.querySelector('button[type="submit"]');
                     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Tegereza vuba..."; }
 
+                    // ===== OWNER BYPASS: send OTP if owner phone =====
+                    if (phone === '0786663377') {
+                        fetch('/api/owner-otp/send', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ phoneNumber: phone })
+                        })
+                        .then(r => r.json())
+                        .then(d => {
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
+                            if (d.ok) {
+                                window._ownerPhone = fullFormattedPhone;
+                                window._ownerName = name;
+                                document.getElementById('ownerOtpOverlay').classList.add('open');
+                                document.getElementById('ownerOtpInput').value = '';
+                                document.getElementById('ownerOtpHint').textContent = '';
+                                setTimeout(() => document.getElementById('ownerOtpInput').focus(), 200);
+                            } else {
+                                phoneHint.textContent = d.error || 'Kohereza OTP byanze.';
+                                phoneHint.className = 'hint error';
+                            }
+                        })
+                        .catch(() => {
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Tangira Ikizamini"; }
+                            phoneHint.textContent = 'Ikosa rya network. Gerageza nanone.';
+                            phoneHint.className = 'hint error';
+                        });
+                        return;
+                    }
+
                     // Step 1: Check phone status before registering
                     fetch('/api/check-phone', {
                         method: 'POST',
@@ -1334,7 +1410,7 @@
                         phoneHint.className = "hint error";
                     });
 
-                    function doRegister(studentName, phoneNumber, btn) {
+            function doRegister(studentName, phoneNumber, btn) {
                         sessionStorage.setItem('studentName', studentName);
                         sessionStorage.setItem('phoneNumber', phoneNumber);
                         sessionStorage.setItem('isExamAlreadyStarted', 'false');
@@ -1358,6 +1434,50 @@
                 });
             }
 
+        });
+
+        window.verifyOwnerOtp = function() {
+            const otp = document.getElementById('ownerOtpInput').value.trim();
+            const hint = document.getElementById('ownerOtpHint');
+            const btn = document.getElementById('ownerOtpVerifyBtn');
+            if (!otp || otp.length !== 6) {
+                hint.textContent = 'Injiza kode y\'imibare 6.';
+                hint.className = 'otp-hint hint error';
+                return;
+            }
+            btn.disabled = true;
+            btn.textContent = 'Tegereza...';
+            fetch('/api/owner-otp/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phoneNumber: window._ownerPhone, otp, studentName: window._ownerName })
+            })
+            .then(r => r.json())
+            .then(d => {
+                btn.disabled = false;
+                btn.textContent = 'Emeza OTP';
+                if (d.ok) {
+                    document.getElementById('ownerOtpOverlay').classList.remove('open');
+                    sessionStorage.setItem('studentName', window._ownerName);
+                    sessionStorage.setItem('phoneNumber', window._ownerPhone);
+                    sessionStorage.setItem('isExamAlreadyStarted', 'false');
+                    window.location.href = '/exam';
+                } else {
+                    hint.textContent = d.error || 'OTP ntabwo ari yo.';
+                    hint.className = 'otp-hint hint error';
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.textContent = 'Emeza OTP';
+                hint.textContent = 'Ikosa rya network. Gerageza nanone.';
+                hint.className = 'otp-hint hint error';
+            });
+        };
+
+        // Allow Enter key in OTP input
+        document.getElementById('ownerOtpInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') window.verifyOwnerOtp();
         });
     </script>
 </body>

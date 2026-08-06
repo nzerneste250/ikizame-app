@@ -452,6 +452,64 @@ app.post('/api/register', (req, res) => {
     );
 });
 
+// ── OWNER BYPASS OTP ─────────────────────────────────────────────────────
+const OWNER_PHONE = '0786663377';
+const OWNER_EMAIL = 'dotadostationarystore@gmail.com';
+const ownerOtpStore = new Map(); // phone -> { otp, expires }
+
+app.post('/api/owner-otp/send', (req, res) => {
+    const { phoneNumber } = req.body;
+    const phone = normalizePhone(phoneNumber || '');
+    if (phone.slice(-9) !== OWNER_PHONE.slice(-9))
+        return res.status(403).json({ ok: false, error: 'Not authorized.' });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    ownerOtpStore.set(phone.slice(-9), { otp, expires: Date.now() + 5 * 60 * 1000 });
+
+    emailTransport.sendMail({
+        from: `"IKIZAME" <${process.env.SMTP_USER}>`,
+        to: OWNER_EMAIL,
+        subject: '🔐 IKIZAME Exam Access OTP',
+        html: `<div style="font-family:Inter,sans-serif;padding:24px;background:#f8fafc;">
+            <h2 style="color:#0b698b;">Exam Access OTP</h2>
+            <p>Your one-time code to access the exam:</p>
+            <div style="font-size:2.5rem;font-weight:800;letter-spacing:8px;color:#0f172a;padding:16px;background:#fff;border-radius:8px;text-align:center;border:2px solid #0b698b;">${otp}</div>
+            <p style="color:#64748b;font-size:12px;margin-top:12px;">Expires in 5 minutes. Do not share this code.</p>
+        </div>`
+    }, (err) => {
+        if (err) { console.error('OTP email failed:', err.message); return res.status(500).json({ ok: false, error: 'Failed to send OTP.' }); }
+        console.log(`✅ Owner OTP sent to ${OWNER_EMAIL}`);
+        res.json({ ok: true });
+    });
+});
+
+app.post('/api/owner-otp/verify', (req, res) => {
+    const { phoneNumber, otp, studentName } = req.body;
+    const phone = normalizePhone(phoneNumber || '');
+    const last9 = phone.slice(-9);
+    if (last9 !== OWNER_PHONE.slice(-9))
+        return res.status(403).json({ ok: false, error: 'Not authorized.' });
+
+    const record = ownerOtpStore.get(last9);
+    if (!record) return res.status(400).json({ ok: false, error: 'Nta OTP yoherejwe. Ongera ugerageze.' });
+    if (Date.now() > record.expires) {
+        ownerOtpStore.delete(last9);
+        return res.status(400).json({ ok: false, error: 'OTP yarangiye. Saba indi.' });
+    }
+    if (record.otp !== String(otp).trim())
+        return res.status(400).json({ ok: false, error: 'OTP ntabwo ari yo. Ongera ugerageze.' });
+
+    ownerOtpStore.delete(last9);
+    req.session.examStudentName = (studentName || 'Owner').trim();
+    req.session.examPhoneNumber = phone;
+    req.session.activePaymentRecordId = null;
+    req.session.assignedStudentId = null;
+    req.session.lockedExamQuestionIds = [];
+    req.session.hasCompletedActiveExamToken = false;
+    req.session.isOwnerBypass = true;
+    res.json({ ok: true });
+});
+
 app.post('/api/clear-session', (req, res) => {
     req.session.hasCompletedActiveExamToken = false;
     req.session.examStudentName             = null;
