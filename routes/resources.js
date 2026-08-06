@@ -316,10 +316,13 @@ module.exports = (db, isPublic = false) => {
                             return res.status(500).send('Server error.');
                         }
 
-                        const filePath = path.join(protectedUploadDir, session.file_name);
+                        // Look in protected first, fall back to public uploads (migration safety)
+                        const protectedPath = path.join(protectedUploadDir, session.file_name);
+                        const publicPath    = path.join(publicUploadDir,    session.file_name);
+                        const filePath      = fs.existsSync(protectedPath) ? protectedPath : publicPath;
 
                         if (!fs.existsSync(filePath)) {
-                            console.error(`❌ Protected file missing: ${session.file_name}`);
+                            console.error(`❌ File missing in both locations: ${session.file_name}`);
                             return res.status(404).send('File not found on server.');
                         }
 
@@ -329,12 +332,14 @@ module.exports = (db, isPublic = false) => {
                                            '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                                            '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg' };
                         const mimeType = mimeMap[ext] || 'application/octet-stream';
-                        const safeName = session.file_name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                        // Use resource title as download filename, clean for Content-Disposition
+                        const cleanTitle = (session.title || 'document').replace(/[^a-zA-Z0-9\s._-]/g, '').trim().replace(/\s+/g, '_') || 'document';
+                        const dlFilename = cleanTitle + ext;
 
                         console.log(`✅ Download served: ${session.file_name} resource=${session.resource_id} ip=${ip}`);
 
                         res.setHeader('Content-Type', mimeType);
-                        res.setHeader('Content-Disposition', `attachment; filename="${safeName}"`);
+                        res.setHeader('Content-Disposition', `attachment; filename="${dlFilename}"`);
                         res.setHeader('Content-Length', stat.size);
                         res.setHeader('Cache-Control', 'no-store');
                         res.setHeader('X-Content-Type-Options', 'nosniff');
