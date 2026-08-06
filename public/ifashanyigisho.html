@@ -284,7 +284,10 @@ document.addEventListener('DOMContentLoaded', loadDocs);
 
 function loadDocs() {
     fetch('/api/public/documents')
-        .then(function(r) { return r.json(); })
+        .then(function(r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
         .then(function(docs) {
             var grid = document.getElementById('cardsGrid');
             var badge = document.getElementById('docCountBadge');
@@ -297,9 +300,12 @@ function loadDocs() {
             badge.textContent = docs.length + ' imfashanyigisho';
             renderDocs();
         })
-        .catch(function() {
-            document.getElementById('cardsGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habayeho ikosa</h3><p>Gushaka imfashanyigisho byanze. Gerageza wongere.</p><button onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera Ugerageze</button></div>';
-            document.getElementById('docCountBadge').textContent = 'Ikosa';
+        .catch(function(err) {
+            console.error('loadDocs error:', err);
+            var grid = document.getElementById('cardsGrid');
+            var badge = document.getElementById('docCountBadge');
+            grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habayeho ikosa</h3><p>Gushaka imfashanyigisho byanze. Gerageza wongere.</p><button onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera Ugerageze</button></div>';
+            badge.textContent = 'Ikosa';
         });
 }
 

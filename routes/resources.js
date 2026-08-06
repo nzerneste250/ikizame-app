@@ -60,13 +60,31 @@ module.exports = (db, isPublic = false) => {
                 `SELECT id, title, description, file_name, file_type, allow_read, allow_download, is_paid, price
                  FROM learning_resources WHERE allow_read = 1 ORDER BY id DESC`,
                 (err, results) => {
-                    if (err) return res.status(500).json({ error: 'Gushaka imfashanyigisho byanze.' });
-                    res.json(results.map(row => ({
+                    if (err) {
+                        // Fallback: is_paid/price columns may not exist yet
+                        console.error('Resources list error:', err.message);
+                        db.query(
+                            `SELECT id, title, description, file_name, file_type, allow_read, allow_download
+                             FROM learning_resources WHERE allow_read = 1 ORDER BY id DESC`,
+                            (fallbackErr, fallbackResults) => {
+                                if (fallbackErr) return res.status(500).json({ error: 'Gushaka imfashanyigisho byanze.' });
+                                res.json((fallbackResults || []).map(row => ({
+                                    id: row.id, title: row.title, description: row.description,
+                                    file_name: row.file_name,
+                                    file_path: `assets/uploads/${row.file_name}`,
+                                    file_type: row.file_type,
+                                    allow_download: parseInt(row.allow_download, 10),
+                                    is_paid: 0, price: 0
+                                })));
+                            }
+                        );
+                        return;
+                    }
+                    res.json((results || []).map(row => ({
                         id:             row.id,
                         title:          row.title,
                         description:    row.description,
                         file_name:      row.file_name,
-                        // never expose real path for paid resources
                         file_path:      parseInt(row.is_paid, 10) === 1 ? null : `assets/uploads/${row.file_name}`,
                         file_type:      row.file_type,
                         allow_download: parseInt(row.allow_download, 10),
