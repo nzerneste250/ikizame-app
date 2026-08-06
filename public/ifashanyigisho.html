@@ -379,6 +379,19 @@ function closeResourcePayment(idx) {
     if (panel) panel.classList.remove('open');
 }
 
+function getFingerprint() {
+    try {
+        var c = document.createElement('canvas');
+        var ctx = c.getContext('2d');
+        ctx.textBaseline = 'top'; ctx.font = '14px Arial';
+        ctx.fillText('ikizame-fp', 2, 2);
+        var raw = c.toDataURL() + navigator.userAgent + screen.width + screen.height + navigator.language;
+        var h = 5381;
+        for (var i = 0; i < raw.length; i++) { h = ((h << 5) + h) ^ raw.charCodeAt(i); h = h >>> 0; }
+        return h.toString(16);
+    } catch(e) { return 'nofp'; }
+}
+
 function submitResourcePayment(idx) {
     var doc = allDocs[idx];
     if (!doc) return;
@@ -410,7 +423,7 @@ function submitResourcePayment(idx) {
             status.textContent = data.error || 'Kwishyura byanze.';
             return;
         }
-        status.textContent = 'Tegereza gato. Twitegereje ubwishyu bwahise.';
+        status.textContent = 'Emeza kuri telephone yawe...';
         var referenceId = data.referenceId;
         var attempts = 0;
         var timer = setInterval(function() {
@@ -420,10 +433,30 @@ function submitResourcePayment(idx) {
                 .then(function(statusData) {
                     if (statusData.status === 'SUCCESS') {
                         clearInterval(timer);
-                        markResourceUnlocked(doc);
-                        closeResourcePayment(idx);
-                        loadDocs();
-                        openViewer(doc);
+                        status.textContent = 'Byakunze! Gutegura gukura...';
+                        // Request a secure one-time download token from the server
+                        fetch('/api/public/documents/request-download', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                paymentReference: referenceId,
+                                resourceId: doc.id,
+                                fingerprint: getFingerprint()
+                            })
+                        })
+                        .then(function(r3) { return r3.json(); })
+                        .then(function(td) {
+                            if (td.ok && td.token) {
+                                var url = '/resource-download?token=' + encodeURIComponent(td.token)
+                                        + '&title=' + encodeURIComponent(doc.title);
+                                window.location.href = url;
+                            } else {
+                                status.textContent = td.error || 'Gukura byanze. Ongera ugerageze.';
+                            }
+                        })
+                        .catch(function() {
+                            status.textContent = 'Ikibazo cya internet mu gutegura gukura.';
+                        });
                     } else if (attempts >= 20) {
                         clearInterval(timer);
                         status.textContent = 'Igihe cyarangiye. Ongera ugerageze.';

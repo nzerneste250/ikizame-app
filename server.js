@@ -241,6 +241,7 @@ app.get('/ibiciro',        (req, res) => res.sendFile(path.join(__dirname, 'publ
 app.get('/ubufasha',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'ubufasha.html')));
 app.get('/amanota',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'amanota.html')));
 app.get('/exam-result',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'exam-result.html')));
+app.get('/resource-download', (req, res) => res.sendFile(path.join(__dirname, 'public', 'resource-download.html')));
 app.get('/school-auth',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'school-auth.html')));
 app.get('/about', (req, res) => renderPublicPage('about.html', res));
 app.get('/terms', (req, res) => renderPublicPage('terms.html', res));
