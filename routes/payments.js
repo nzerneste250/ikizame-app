@@ -40,223 +40,23 @@ function ensurePaymentColumns(db) {
     db.query(`ALTER TABLE payment_transactions ADD COLUMN service_type VARCHAR(50) NOT NULL DEFAULT 'EXAMS'`, () => {});
     db.query(`ALTER TABLE payment_transactions ADD COLUMN resource_id INT NULL`, () => {});
     db.query(`ALTER TABLE payment_transactions ADD COLUMN resource_title VARCHAR(255) NULL`, () => {});
-}
-
-function ensureResourcePurchaseSessionsTable(db) {
     db.query(`
-        CREATE TABLE IF NOT EXISTS resource_purchase_sessions (
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            purchase_session_id CHAR(36) NOT NULL UNIQUE,
-            resource_id INT NOT NULL,
-            amount DECIMAL(10,2) NOT NULL,
-            payment_reference VARCHAR(128) NOT NULL,
-            payment_status ENUM('PENDING','PAID','FAILED') NOT NULL DEFAULT 'PENDING',
-            browser_fingerprint VARCHAR(255) NULL,
-            ip_address VARCHAR(45) NULL,
-            user_agent TEXT NULL,
+        CREATE TABLE IF NOT EXISTS pending_payment_requests (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            payment_reference VARCHAR(128) NOT NULL UNIQUE,
             phone_number VARCHAR(32) NULL,
+            amount DECIMAL(10,2) NOT NULL,
             plan_name VARCHAR(255) NULL,
             exam_count INT NULL,
             price_per_exam DECIMAL(10,2) NULL,
-            service_type VARCHAR(50) NOT NULL DEFAULT 'RESOURCES',
+            school_id INT NULL,
+            service_type VARCHAR(50) NOT NULL DEFAULT 'EXAMS',
+            resource_id INT NULL,
             resource_title VARCHAR(255) NULL,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            paid_at DATETIME NULL,
-            download_token VARCHAR(128) UNIQUE NULL,
-            token_expires_at DATETIME NULL,
-            token_used TINYINT(1) NOT NULL DEFAULT 0,
-            token_used_at DATETIME NULL,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            INDEX idx_payment_reference (payment_reference),
-            INDEX idx_resource_id (resource_id),
-            INDEX idx_download_token (download_token)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `, (err) => {
-        if (err) console.error('⚠️  Failed to ensure resource_purchase_sessions table:', err.message);
-    });
-}
-
-function getPendingResourceSession(db, paypackRef, done) {
-    db.query(
-        `SELECT purchase_session_id, resource_id, amount, payment_reference, payment_status, browser_fingerprint, ip_address, user_agent,
-                phone_number AS phone, plan_name AS planLabel, exam_count AS examCount, price_per_exam AS priceToStore,
-                service_type AS serviceType, resource_title AS resourceTitle
-         FROM resource_purchase_sessions WHERE payment_reference = ? LIMIT 1`,
-        [paypackRef],
-        (err, rows) => {
-            if (err) return done(err);
-            if (!rows || rows.length === 0) return done(null, null);
-            done(null, rows[0]);
-        }
-    );
-}
-
-function insertPaymentTransaction(db, pending, paypackRef, done, conn = null) {
-    const query = conn ? conn.query.bind(conn) : db.query.bind(db);
-    const serviceType = pending.serviceType || 'EXAMS';
-    const resourceIdValue = pending.resourceId || null;
-    const resourceTitleValue = pending.resourceTitle || null;
-    const baseValues = [pending.phone, pending.amount, pending.planLabel, paypackRef, paypackRef,
-        pending.examCount, pending.examCount, pending.priceToStore, pending.school_id || null];
-
-    query(`SELECT COUNT(*) AS count FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'payment_transactions' AND column_name = 'service_type'`, (colErr, colRows) => {
-        if (colErr) return done(colErr);
-        const hasServiceColumns = Number(colRows?.[0]?.count || 0) > 0;
-        if (!hasServiceColumns) {
-            query(
-                `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id)
-                 VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?)`,
-                baseValues,
-                (err) => done(err)
-            );
-            return;
-        }
-
-        query(`SELECT COUNT(*) AS count FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'payment_transactions' AND column_name = 'resource_id'`, (resourceErr, resourceRows) => {
-            if (resourceErr) return done(resourceErr);
-            const hasResourceColumns = Number(resourceRows?.[0]?.count || 0) > 0;
-            if (!hasResourceColumns) {
-                query(
-                    `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id, service_type)
-                     VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?, ?)`,
-                    [...baseValues, serviceType],
-                    (err) => done(err)
-                );
-                return;
-            }
-
-            query(
-                `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id, service_type, resource_id, resource_title)
-                 VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?, ?, ?, ?)`,
-                [...baseValues, serviceType, resourceIdValue, resourceTitleValue],
-                (err) => done(err)
-            );
-        });
-    });
-}
-
-function processResourcePurchaseSession(db, pending, paypackRef, done) {
-    db.getConnection((connErr, conn) => {
-        if (connErr) return done(connErr);
-        conn.beginTransaction((txErr) => {
-            if (txErr) {
-                conn.release();
-                return done(txErr);
-            }
-
-            conn.query(
-                `SELECT * FROM resource_purchase_sessions WHERE payment_reference = ? FOR UPDATE`,
-                [paypackRef],
-                (selectErr, rows) => {
-                    if (selectErr) {
-                        return conn.rollback(() => { conn.release(); done(selectErr); });
-                    }
-                    if (!rows || rows.length === 0) {
-                        return conn.rollback(() => { conn.release(); done(new Error('Purchase session not found')); });
-                    }
-                    const sessionRow = rows[0];
-                    if (sessionRow.payment_status === 'PAID') {
-                        return conn.commit((commitErr) => { conn.release(); done(null, { alreadyPaid: true, downloadToken: sessionRow.download_token }); });
-                    }
-                    if (sessionRow.payment_status !== 'PENDING') {
-                        return conn.commit((commitErr) => { conn.release(); done(null, { alreadyFailed: true }); });
-                    }
-
-                    const downloadToken = crypto.randomBytes(32).toString('hex');
-                    conn.query(
-                        `UPDATE resource_purchase_sessions SET payment_status = 'PAID', paid_at = NOW(), download_token = ?, token_expires_at = DATE_ADD(NOW(), INTERVAL 5 MINUTE) WHERE payment_reference = ?`,
-                        [downloadToken, paypackRef],
-                        (updateErr) => {
-                            if (updateErr) {
-                                return conn.rollback(() => { conn.release(); done(updateErr); });
-                            }
-
-                            const pendingForInsert = {
-                                phone: pending.phone,
-                                amount: pending.amount,
-                                planLabel: pending.planLabel,
-                                examCount: pending.examCount,
-                                priceToStore: pending.priceToStore,
-                                school_id: pending.school_id,
-                                serviceType: pending.serviceType,
-                                resourceId: pending.resourceId,
-                                resourceTitle: pending.resourceTitle
-                            };
-
-                            insertPaymentTransaction(db, pendingForInsert, paypackRef, (insertErr) => {
-                                if (insertErr) {
-                                    return conn.rollback(() => { conn.release(); done(insertErr); });
-                                }
-                                conn.commit((commitErr) => {
-                                    if (commitErr) {
-                                        return conn.rollback(() => { conn.release(); done(commitErr); });
-                                    }
-                                    conn.release();
-                                    done(null, { alreadyPaid: false, downloadToken });
-                                });
-                            }, conn);
-                        }
-                    );
-                }
-            );
-        });
-    });
-}
-
-function findPaypackTransactionPayload(data, ref) {
-    if (!data) return null;
-    if (Array.isArray(data)) {
-        for (const item of data) {
-            const tx = findPaypackTransactionPayload(item, ref);
-            if (tx) return tx;
-        }
-        return null;
-    }
-
-    if (typeof data === 'object') {
-        const txRef = String(data.ref || data.reference_id || data.rwandapay_tx_id || data.reference || '').trim();
-        if (txRef && txRef === String(ref).trim()) {
-            const status = String(data.status || data.state || data.tx_status || data.transaction_status || '').toLowerCase();
-            return { status, ref: txRef, raw: data };
-        }
-        if (Array.isArray(data.transactions)) {
-            return findPaypackTransactionPayload(data.transactions, ref);
-        }
-        if (Array.isArray(data.data)) {
-            return findPaypackTransactionPayload(data.data, ref);
-        }
-        if (typeof data.transaction === 'object') {
-            return findPaypackTransactionPayload(data.transaction, ref);
-        }
-    }
-    return null;
-}
-
-async function verifyPaypackTransaction(ref) {
-    const token = await getAccessToken();
-    const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-    };
-
-    const attempts = [
-        `${PAYPACK_BASE}/transactions/${encodeURIComponent(ref)}`,
-        `${PAYPACK_BASE}/transactions/status?ref=${encodeURIComponent(ref)}`,
-        `${PAYPACK_BASE}/transactions/list?offset=0&limit=50&ref=${encodeURIComponent(ref)}`,
-        `${PAYPACK_BASE}/transactions/list?offset=0&limit=1000`
-    ];
-
-    for (const url of attempts) {
-        try {
-            const { data } = await axios.get(url, { headers, timeout: 15000 });
-            const tx = findPaypackTransactionPayload(data, ref);
-            if (tx) return tx;
-        } catch (err) {
-            continue;
-        }
-    }
-
-    throw new Error('Unable to verify Paypack transaction: ' + ref);
+            INDEX idx_ref (payment_reference)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `, (err) => { if (err && !err.message.includes('already exists')) console.error('pending_payment_requests table error:', err.message); });
 }
 
 async function getAccessToken() {
@@ -346,11 +146,10 @@ function insertPaymentTransaction(db, pending, paypackRef, done) {
 module.exports = (db) => {
     const router = express.Router();
     ensurePaymentColumns(db);
-    ensureResourcePurchaseSessionsTable(db);
 
     // POST — initiate USSD push, do NOT write to DB yet
     router.post('/momo-push', async (req, res) => {
-        const { phoneNumber, checkoutIntentType, examQuantityVolume, pricePerExam, resourceId, resourceTitle, resourcePrice, browserFingerprint } = req.body;
+        const { phoneNumber, checkoutIntentType, examQuantityVolume, pricePerExam, resourceId, resourceTitle, resourcePrice } = req.body;
 
         if (!phoneNumber || !checkoutIntentType)
             return res.status(400).json({ success: false, error: 'Missing mandatory payment fields.' });
@@ -405,34 +204,26 @@ module.exports = (db) => {
             const paypackRef = data?.ref;
             if (!paypackRef) throw new Error('No ref returned from Paypack');
 
-            const purchaseSessionId = crypto.randomUUID();
-            const ipAddress = (req.ip || req.connection.remoteAddress || '').replace(/^::ffff:/i, '').replace(/^::1$/, '127.0.0.1');
-            const userAgent = String(req.headers['user-agent'] || '').substring(0, 2048);
+            // Store pending data in memory — DB insert happens only on successful webhook
+            pendingMap.set(paypackRef, {
+                phone, amount, planLabel, examCount, priceToStore,
+                school_id: null,
+                serviceType,
+                resourceId: resourceIdValue,
+                resourceTitle: resourceTitleValue,
+                expires: Date.now() + 5 * 60 * 1000
+            });
 
+            // Also persist to DB so webhook can recover after server restart
             db.query(
-                `INSERT INTO resource_purchase_sessions (purchase_session_id, resource_id, amount, payment_reference, payment_status, browser_fingerprint, ip_address, user_agent, phone_number, plan_name, exam_count, price_per_exam, service_type, resource_title)
-                 VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [purchaseSessionId, resourceIdValue, amount, paypackRef, browserFingerprint || null, ipAddress, userAgent, phone, planLabel, examCount || null, priceToStore || null, serviceType, resourceTitleValue || null],
-                (insertErr) => {
-                    if (insertErr) {
-                        console.error('❌ Failed to persist purchase session:', insertErr.message);
-                        return res.status(500).json({ success: false, error: 'Server error creating purchase session.' });
-                    }
-
-                    pendingMap.set(paypackRef, {
-                        phone, amount, planLabel, examCount, priceToStore,
-                        school_id: null,
-                        serviceType,
-                        resourceId: resourceIdValue,
-                        resourceTitle: resourceTitleValue,
-                        purchaseSessionId,
-                        expires: Date.now() + 5 * 60 * 1000 // 5 min TTL
-                    });
-
-                    console.log(`✅ Paypack cashin initiated: ${paypackRef} for resource ${resourceIdValue}`);
-                    res.json({ success: true, referenceId: paypackRef, paypackRef, allocatedPlan: planLabel, purchaseSessionId });
-                }
+                `INSERT IGNORE INTO pending_payment_requests (payment_reference, phone_number, amount, plan_name, exam_count, price_per_exam, school_id, service_type, resource_id, resource_title)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [paypackRef, phone, amount, planLabel, examCount || null, priceToStore || null, null, serviceType, resourceIdValue || null, resourceTitleValue || null],
+                (dbErr) => { if (dbErr) console.error('⚠️  Failed to persist pending request:', dbErr.message); }
             );
+
+            console.log(`✅ Paypack cashin initiated: ${paypackRef} for ${serviceType}`);
+            res.json({ success: true, referenceId: paypackRef, paypackRef, allocatedPlan: planLabel });
 
         } catch (apiErr) {
             const errMsg = apiErr.response?.data?.message || apiErr.response?.data?.error || apiErr.message || 'Paypack API error';
@@ -443,7 +234,7 @@ module.exports = (db) => {
     });
 
     // POST — Paypack webhook: insert to DB only on successful
-    router.post('/callback', async (req, res) => {
+    router.post('/callback', (req, res) => {
         if (WEBHOOK_SECRET) {
             const signature = req.headers['x-paypack-signature'] || '';
             const expected  = crypto.createHmac('sha256', WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('base64');
@@ -469,169 +260,64 @@ module.exports = (db) => {
             return res.json({ ok: true });
         }
 
-        const pending = pendingMap.get(paypackRef);
-        const handleVerifiedResource = async (pendingPayload) => {
-            try {
-                const verification = await verifyPaypackTransaction(paypackRef);
-                if (!verification || verification.status !== 'successful') {
-                    console.warn(`⚠️  Paypack webhook payload not verified for ref ${paypackRef}`);
-                    return res.status(400).json({ ok: false });
-                }
-            } catch (verifyErr) {
-                console.error('❌ Paypack verification failed:', verifyErr.message);
-                return res.status(500).json({ ok: false });
-            }
-
-            if (pendingPayload.serviceType === 'RESOURCES') {
-                processResourcePurchaseSession(db, pendingPayload, paypackRef, (processErr, result) => {
-                    if (processErr) {
-                        console.error('❌ Resource payment processing failed:', processErr.message);
-                        return res.status(500).json({ ok: false });
-                    }
-                    if (result && result.alreadyPaid) {
-                        return res.json({ ok: true });
-                    }
-                    console.log(`✅ Paypack webhook: ${paypackRef} → SUCCESS (resource purchase processed)`);
-                    sendPaymentNotification(req.app.get('emailTransport'), {
-                        phone: pendingPayload.phone, amount: pendingPayload.amount,
-                        planLabel: pendingPayload.planLabel, examCount: pendingPayload.examCount,
-                        paypackRef, type: 'Resource Payment'
-                    });
-                    res.json({ ok: true });
-                });
-                return;
-            }
-
-            insertPaymentTransaction(db, pendingPayload, paypackRef, (err) => {
-                if (err) { console.error('❌ Webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
-                console.log(`✅ Paypack webhook: ${paypackRef} → SUCCESS (inserted)`);
-                sendPaymentNotification(req.app.get('emailTransport'), {
-                    phone: pendingPayload.phone, amount: pendingPayload.amount,
-                    planLabel: pendingPayload.planLabel, examCount: pendingPayload.examCount,
-                    paypackRef, type: pendingPayload.serviceType === 'RESOURCES' ? 'Resource Payment' : 'Self Payment'
-                });
-                res.json({ ok: true });
-            });
-        };
-
-        if (!pending) {
-            getPendingResourceSession(db, paypackRef, (sessionErr, session) => {
-                if (sessionErr) {
-                    console.error('❌ Failed to load pending resource session:', sessionErr.message);
-                    return res.status(500).json({ ok: false });
-                }
-                if (!session) {
-                    return handleSchoolWebhook(db, paypackRef, txData, res);
-                }
-                if (session.payment_status === 'PAID') {
-                    return res.json({ ok: true });
-                }
-                if (session.payment_status !== 'PENDING') {
-                    return res.json({ ok: true });
-                }
-
-                const pendingPayload = {
-                    phone: session.phone,
-                    amount: session.amount,
-                    planLabel: session.plan_name || `Resource Access`,
-                    examCount: session.exam_count || 0,
-                    priceToStore: session.price_per_exam || session.amount,
-                    school_id: null,
-                    serviceType: session.service_type || 'RESOURCES',
-                    resourceId: session.resource_id,
-                    resourceTitle: session.resource_title
-                };
-                return handleVerifiedResource(pendingPayload);
-            });
-            return;
-        }
-
-        pendingMap.delete(paypackRef);
-        handleVerifiedResource(pending);
-    });
-
-    // GET — poll payment status (check if webhook has inserted the record)
-    router.get('/verify/:refId', (req, res) => {
-        const ref = req.params.refId;
+        // Check already inserted (duplicate webhook)
         db.query(
-            `SELECT status, plan_name FROM payment_transactions WHERE reference_id = ? OR rwandapay_tx_id = ?`,
-            [ref, ref],
-            (err, results) => {
-                if (err || !results || results.length === 0) {
-                    return res.json({ status: pendingMap.has(ref) ? 'PENDING' : 'PENDING' });
+            `SELECT id FROM payment_transactions WHERE reference_id = ? LIMIT 1`,
+            [paypackRef],
+            (checkErr, checkRows) => {
+                if (!checkErr && checkRows && checkRows.length > 0) {
+                    console.log(`ℹ️  Paypack webhook: ${paypackRef} already processed — skipping`);
+                    return res.json({ ok: true });
                 }
-                res.json({ status: results[0].status, plan: results[0].plan_name });
+
+                const doInsert = (pending) => {
+                    pendingMap.delete(paypackRef);
+                    insertPaymentTransaction(db, pending, paypackRef, (err) => {
+                        if (err) { console.error('❌ Webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
+                        console.log(`✅ Paypack webhook: ${paypackRef} → SUCCESS (inserted)`);
+                        sendPaymentNotification(req.app.get('emailTransport'), {
+                            phone: pending.phone, amount: pending.amount,
+                            planLabel: pending.planLabel, examCount: pending.examCount,
+                            paypackRef, type: pending.serviceType === 'SCHOOL' ? 'School Payment' : pending.serviceType === 'RESOURCES' ? 'Resource Payment' : 'Self Payment'
+                        });
+                        res.json({ ok: true });
+                    });
+                };
+
+                // Try in-memory map first
+                const memPending = pendingMap.get(paypackRef);
+                if (memPending) return doInsert(memPending);
+
+                // Fallback: load from pending_payment_requests table (survives restarts)
+                db.query(
+                    `SELECT phone_number AS phone, amount, plan_name AS planLabel, exam_count AS examCount,
+                            price_per_exam AS priceToStore, school_id, service_type AS serviceType,
+                            resource_id AS resourceId, resource_title AS resourceTitle
+                     FROM pending_payment_requests WHERE payment_reference = ? LIMIT 1`,
+                    [paypackRef],
+                    (dbErr, dbRows) => {
+                        if (!dbErr && dbRows && dbRows.length > 0) {
+                            console.log(`ℹ️  Paypack webhook: ${paypackRef} loaded from DB pending table`);
+                            return doInsert(dbRows[0]);
+                        }
+                        // Unknown ref — try school
+                        return handleSchoolWebhook(db, paypackRef, txData, res);
+                    }
+                );
             }
         );
     });
 
-    // GET — resource purchase session status and download token
-    router.get('/purchase-session/:sessionId', async (req, res) => {
-        const sessionId = req.params.sessionId;
+    // GET — poll payment status
+    router.get('/verify/:refId', (req, res) => {
+        const ref = req.params.refId;
         db.query(
-            `SELECT purchase_session_id, payment_reference, resource_id, payment_status, download_token, token_expires_at, token_used, created_at, paid_at, amount, plan_name, exam_count, price_per_exam, service_type, resource_title, phone_number
-             FROM resource_purchase_sessions WHERE purchase_session_id = ? LIMIT 1`,
-            [sessionId],
-            async (err, rows) => {
-                if (err) return res.status(500).json({ success: false, error: err.message });
-                if (!rows || rows.length === 0) return res.status(404).json({ success: false, error: 'Purchase session not found.' });
-                const session = rows[0];
-
-                if (session.payment_status === 'PENDING' && session.payment_reference) {
-                    try {
-                        const verification = await verifyPaypackTransaction(session.payment_reference);
-                        if (verification && verification.status === 'successful') {
-                            return processResourcePurchaseSession(db, {
-                                phone: session.phone_number,
-                                amount: session.amount,
-                                planLabel: session.plan_name || `Resource Access`,
-                                examCount: session.exam_count || 0,
-                                priceToStore: session.price_per_exam || session.amount,
-                                school_id: null,
-                                serviceType: session.service_type || 'RESOURCES',
-                                resourceId: session.resource_id,
-                                resourceTitle: session.resource_title
-                            }, session.payment_reference, (processErr, result) => {
-                                if (processErr) {
-                                    console.error('❌ purchase-session verification processing failed:', processErr.message);
-                                    return res.status(500).json({ success: false, error: 'Verification failed.' });
-                                }
-                                if (result && (result.alreadyPaid || result.downloadToken)) {
-                                    return res.json({
-                                        success: true,
-                                        paymentStatus: 'PAID',
-                                        downloadToken: result.downloadToken || session.download_token,
-                                        tokenExpiresAt: session.token_expires_at,
-                                        tokenUsed: !!Number(session.token_used || 0),
-                                        createdAt: session.created_at,
-                                        paidAt: session.paid_at
-                                    });
-                                }
-                                return res.json({
-                                    success: true,
-                                    paymentStatus: 'PENDING',
-                                    downloadToken: null,
-                                    tokenExpiresAt: session.token_expires_at,
-                                    tokenUsed: !!Number(session.token_used || 0),
-                                    createdAt: session.created_at,
-                                    paidAt: session.paid_at
-                                });
-                            });
-                        }
-                    } catch (verifyErr) {
-                        console.warn('⚠️ purchase-session verification failed:', verifyErr.message);
-                    }
-                }
-
-                res.json({
-                    success: true,
-                    paymentStatus: session.payment_status,
-                    downloadToken: session.payment_status === 'PAID' ? session.download_token : null,
-                    tokenExpiresAt: session.token_expires_at,
-                    tokenUsed: !!Number(session.token_used || 0),
-                    createdAt: session.created_at,
-                    paidAt: session.paid_at
-                });
+            `SELECT status, plan_name FROM payment_transactions WHERE reference_id = ? OR rwandapay_tx_id = ? LIMIT 1`,
+            [ref, ref],
+            (err, results) => {
+                if (!err && results && results.length > 0)
+                    return res.json({ status: results[0].status, plan: results[0].plan_name });
+                return res.json({ status: 'PENDING' });
             }
         );
     });

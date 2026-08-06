@@ -323,7 +323,7 @@ function buildCard(doc, idx) {
         : '<button class="btn-read" onclick="event.stopPropagation(); openViewer(' + idx + ')"><i class="fa-solid fa-book-open"></i> Soma Hano</button>';
     var dlBtn = isLocked
         ? ''
-        : (doc.allow_download === 1 && doc.file_path
+        : (doc.allow_download === 1
             ? '<a href="/' + doc.file_path + '" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> Gukura</a>'
             : '<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>');
     var paymentPanel = isLocked ? '<div class="resource-payment-panel" id="resource-payment-panel-' + idx + '"><div class="pay-form-label"><i class="fa-solid fa-mobile-screen-button"></i> Kwishyura kuri telephone</div><div class="pay-note">Andika nomero ya telephone yawe, uhitamo ubwishyu, maze ukomeze.</div><input type="tel" id="resource-phone-' + idx + '" placeholder="0788000000" autocomplete="tel"><div class="pay-inline-actions"><button class="btn-read btn-pay" type="button" onclick="event.stopPropagation(); submitResourcePayment(' + idx + ')"><i class="fa-solid fa-credit-card"></i> Ishyura ' + formatAmount(doc.price) + '</button><button class="btn-secondary btn-read" type="button" onclick="event.stopPropagation(); closeResourcePayment(' + idx + ')"><i class="fa-solid fa-xmark"></i> Funga</button></div><div class="payment-status" id="resource-payment-status-' + idx + '"></div></div>' : '';
@@ -401,8 +401,7 @@ function submitResourcePayment(idx) {
             checkoutIntentType: 'RESOURCE',
             resourceId: doc.id,
             resourceTitle: doc.title,
-            resourcePrice: doc.price,
-            browserFingerprint: [navigator.userAgent, navigator.language, screen.width + 'x' + screen.height].join('|')
+            resourcePrice: doc.price
         })
     })
     .then(function(r) { return r.json(); })
@@ -412,26 +411,20 @@ function submitResourcePayment(idx) {
             return;
         }
         status.textContent = 'Tegereza gato. Twitegereje ubwishyu bwahise.';
-        var sessionId = data.purchaseSessionId;
+        var referenceId = data.referenceId;
         var attempts = 0;
         var timer = setInterval(function() {
             attempts += 1;
-            fetch('/api/payments/purchase-session/' + sessionId)
+            fetch('/api/payments/verify/' + referenceId)
                 .then(function(r2) { return r2.json(); })
                 .then(function(statusData) {
-                    if (statusData.success && statusData.paymentStatus === 'PAID' && statusData.downloadToken) {
+                    if (statusData.status === 'SUCCESS') {
                         clearInterval(timer);
+                        markResourceUnlocked(doc);
                         closeResourcePayment(idx);
-                        window.location.href = '/download/' + statusData.downloadToken;
-                        return;
-                    }
-                    if (attempts >= 60) {
-                        clearInterval(timer);
-                        status.textContent = 'Igihe cyarangiye. Ongera ugerageze.';
-                    }
-                })
-                .catch(function() {
-                    if (attempts >= 60) {
+                        loadDocs();
+                        openViewer(doc);
+                    } else if (attempts >= 20) {
                         clearInterval(timer);
                         status.textContent = 'Igihe cyarangiye. Ongera ugerageze.';
                     }
@@ -445,7 +438,7 @@ function submitResourcePayment(idx) {
 
 function openViewer(docOrIdx) {
     var doc = typeof docOrIdx === 'number' ? allDocs[docOrIdx] : docOrIdx;
-    if (!doc || !doc.file_path) return;
+    if (!doc) return;
     if (doc.is_paid === 1 && !isResourceUnlocked(doc)) {
         openResourcePayment(allDocs.indexOf(doc));
         return;
