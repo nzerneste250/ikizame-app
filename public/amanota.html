@@ -388,7 +388,7 @@
                 <div class="stats-grid">
                     <div class="stat-tile">
                         <div class="st-val" id="statTotal">0</div>
-                        <div class="st-lbl">Ibizamini Byose</div>
+                        <div class="st-lbl">Ibizamini Byose Wakoze</div>
                     </div>
                     <div class="stat-tile pass-tile">
                         <div class="st-val" id="statPassed">0</div>
@@ -597,8 +597,8 @@
                                 const buyLink = document.querySelector('.rem-buy-btn');
                                 if (rem > 0) {
                                     chip.className = 'rem-status-chip active';
-                                    chip.innerHTML = '<i class="fa-solid fa-circle-check"></i> Ufite inshuro zisigaye';
-                                    desc.textContent = `Ufite inshuro ${rem} zisigaye mu bizamini byishyuwe. Gerageza kandi!`;
+                                    chip.innerHTML = '<i class="fa-solid fa-circle-check"></i> Ufite Ibizamini bisigaye';
+                                    desc.textContent = `Ufite Ibizamini ${rem} bisigaye mu bizamini byishyuwe. Gerageza kandi!`;
                                     buyLink.textContent = 'Reba Ibiciro';
                                 } else {
                                     chip.className = 'rem-status-chip empty';
@@ -637,7 +637,7 @@
                             });
                             const isPassed = Number(att.score) >= 12;
                             const statusClass = isPassed ? 'pass' : 'fail';
-                            const statusLabel = isPassed ? 'Yatsinze' : 'Watsinzwe';
+                            const statusLabel = isPassed ? 'Watsinze' : 'Watsinzwe';
                             return `<tr>
                                 <td>${i + 1}</td>
                                 <td>${att.student_name || '—'}</td>
