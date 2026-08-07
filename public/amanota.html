@@ -168,7 +168,9 @@
         /* ===== RESULTS DASHBOARD ===== */
         .results-header-row { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; }
         .results-header-row h4 { font-size: 1.05rem; font-weight: 800; color: #0d1b2a; }
-        .btn-back-link { background: none; border: none; color: var(--brand); font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .btn-back-link { display:inline-flex; align-items:center; gap:7px; background:linear-gradient(135deg,#0b698b 0%,#0ea5e9 100%); color:#fff; border:none; padding:9px 18px; border-radius:999px; font-size:0.84rem; font-weight:800; cursor:pointer; box-shadow:0 8px 20px rgba(11,105,139,0.22); transition:transform 0.15s,box-shadow 0.15s; letter-spacing:0.2px; }
+        .btn-back-link:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(11,105,139,0.32); }
+        .btn-back-link:active { transform:translateY(0); }
 
         /* Student identity strip */
         .student-identity-strip { display: flex; align-items: center; gap: 14px; background: linear-gradient(135deg, #0b698b 0%, #08536e 100%); border-radius: 12px; padding: 16px 20px; color: #fff; }
