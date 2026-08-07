@@ -44,7 +44,7 @@
         .section-head h2 { font-size:1rem; font-weight:800; color:var(--text); display:flex; align-items:center; gap:10px; }
         .section-head h2 i { color:var(--brand); }
         .doc-count-badge { background:var(--brand-light); color:var(--brand); font-size:.78rem; font-weight:700; padding:4px 12px; border-radius:20px; }
-        .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; flex:1; min-height:0; overflow-y:auto; padding-right:4px; padding-bottom:8px; }
+        .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; flex:1; min-height:0; overflow-y:auto; padding-right:4px; padding-bottom:8px; padding-top:14px; }
         .cards-grid::-webkit-scrollbar { width:4px; }
         .cards-grid::-webkit-scrollbar-track { background:transparent; }
         .cards-grid::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
@@ -54,8 +54,21 @@
         .doc-card.paid:hover { border-color:#f59e0b; box-shadow:0 20px 42px rgba(245,158,11,.18); transform:translateY(-3px); }
         .doc-card.paid .doc-type-icon { background:#fef3c7; color:#d97706; }
         .doc-card.paid .doc-info h3 { color:#92400e; }
-        .doc-card.paid .resource-payment-panel.open { margin-top:4px; }
-        .paid-badge { position:absolute; top:-11px; right:16px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-size:.68rem; font-weight:800; padding:3px 10px; border-radius:999px; letter-spacing:.04em; text-transform:uppercase; box-shadow:0 4px 10px rgba(245,158,11,.3); pointer-events:none; }
+        .paid-badge { position:absolute; top:-12px; left:16px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-size:.68rem; font-weight:800; padding:3px 10px; border-radius:999px; letter-spacing:.04em; text-transform:uppercase; box-shadow:0 4px 10px rgba(245,158,11,.35); pointer-events:none; white-space:nowrap; z-index:2; }
+        /* Payment modal overlay — no card expansion */
+        .pay-modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.7); backdrop-filter:blur(4px); z-index:6000; align-items:center; justify-content:center; padding:20px; }
+        .pay-modal-overlay.open { display:flex; }
+        .pay-modal-box { background:#fff; border-radius:20px; padding:24px; width:100%; max-width:380px; box-shadow:0 24px 60px rgba(0,0,0,.25); display:flex; flex-direction:column; gap:14px; }
+        .pay-modal-title { font-size:1rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:10px; }
+        .pay-modal-title i { color:#f59e0b; }
+        .pay-modal-price { font-size:.82rem; color:#92400e; font-weight:700; background:#fef3c7; padding:6px 12px; border-radius:8px; }
+        .pay-modal-box .pay-form-label { font-size:.74rem; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:.04em; }
+        .pay-modal-box input { width:100%; border:1.5px solid #e2e8f0; padding:11px 14px; border-radius:10px; font:inherit; font-size:.95rem; color:#0f172a; outline:none; }
+        .pay-modal-box input:focus { border-color:#f59e0b; box-shadow:0 0 0 3px rgba(245,158,11,.12); }
+        .pay-modal-actions { display:flex; gap:10px; }
+        .pay-modal-actions .btn-pay { flex:1; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border:none; padding:11px; border-radius:10px; font-size:.88rem; font-weight:700; cursor:pointer; font-family:inherit; }
+        .pay-modal-actions .btn-cancel { background:#f1f5f9; color:#64748b; border:none; padding:11px 16px; border-radius:10px; font-size:.88rem; font-weight:600; cursor:pointer; font-family:inherit; }
+        .pay-modal-status { font-size:.78rem; font-weight:700; color:#b45309; min-height:18px; }
         .doc-card-top { display:flex; align-items:flex-start; gap:14px; }
         .doc-type-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
         .icon-pdf { background:#fee2e2; color:#dc2626; }
@@ -215,6 +228,21 @@
     </div>
 </main>
 
+<!-- Payment modal -->
+<div class="pay-modal-overlay" id="payModalOverlay">
+    <div class="pay-modal-box">
+        <div class="pay-modal-title"><i class="fa-solid fa-lock"></i> <span id="payModalTitle">Ishyura kugira ngo ugure</span></div>
+        <div class="pay-modal-price" id="payModalPrice"></div>
+        <div class="pay-form-label">Nomero ya telephone (MTN / Airtel)</div>
+        <input type="tel" id="payModalPhone" placeholder="0788000000" autocomplete="tel" maxlength="10">
+        <div class="pay-modal-actions">
+            <button class="btn-pay" onclick="submitModalPayment()"><i class="fa-solid fa-credit-card"></i> Ishyura</button>
+            <button class="btn-cancel" onclick="closePayModal()">Hagarika</button>
+        </div>
+        <div class="pay-modal-status" id="payModalStatus"></div>
+    </div>
+</div>
+
 <footer>
     <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
         <span style="font-size:0.7rem;">© 2026 IKIZAME Empowering Learners Across Rwanda</span>
@@ -341,20 +369,9 @@ function buildCard(doc, idx) {
         : (doc.allow_download === 1
             ? '<a href="/' + doc.file_path + '" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> Gukura</a>'
             : '<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>');
-    var paymentPanel = isLocked
-        ? '<div class="resource-payment-panel" id="resource-payment-panel-' + idx + '">'
-          + '<div class="pay-form-label"><i class="fa-solid fa-mobile-screen-button"></i> Kwishyura kuri telephone</div>'
-          + '<div class="pay-note">Andika nomero ya telephone yawe, uhitamo ubwishyu, maze ukomeze.</div>'
-          + '<input type="tel" id="resource-phone-' + idx + '" placeholder="0788000000" autocomplete="tel">'
-          + '<div class="pay-inline-actions">'
-          + '<button class="btn-read btn-pay" type="button" onclick="event.stopPropagation(); submitResourcePayment(' + idx + ')"><i class="fa-solid fa-credit-card"></i> Ishyura ' + formatAmount(doc.price) + '</button>'
-          + '<button class="btn-secondary btn-read" type="button" onclick="event.stopPropagation(); closeResourcePayment(' + idx + ')"><i class="fa-solid fa-xmark"></i> Funga</button>'
-          + '</div>'
-          + '<div class="payment-status" id="resource-payment-status-' + idx + '"></div>'
-          + '</div>'
-        : '';
+    var paymentPanel = '';
     return '<div class="doc-card' + (isLocked ? ' paid' : '') + '" onclick="handleResourceAction(' + idx + ')">'
-        + (isLocked ? '<span class="paid-badge"><i class="fa-solid fa-lock" style="font-size:.6rem;margin-right:3px;"></i> Premium</span>' : '')
+        + (isLocked ? '<span class="paid-badge"><i class="fa-solid fa-lock" style="font-size:.6rem;margin-right:4px;"></i> Premium</span>' : '')
         + '<div class="doc-card-top">'
         + '<div class="doc-type-icon ' + iconClass + '"><i class="fa-solid ' + iconFA + '"></i></div>'
         + '<div class="doc-info"><h3>' + doc.title + '</h3>' + desc + '</div>'
@@ -367,7 +384,6 @@ function buildCard(doc, idx) {
         + actionBtn
         + dlBtn
         + '</div>'
-        + paymentPanel
         + '</div>';
 }
 
@@ -381,29 +397,82 @@ function handleResourceAction(idx) {
     openViewer(doc);
 }
 
+var _payModalDocIdx = -1;
+
 function openResourcePayment(idx) {
     var doc = allDocs[idx];
-    if (!doc || doc.is_paid !== 1) {
-        openViewer(doc);
-        return;
-    }
-    var panel = document.getElementById('resource-payment-panel-' + idx);
-    if (!panel) return;
-    var allPanels = document.querySelectorAll('.resource-payment-panel.open');
-    Array.prototype.forEach.call(allPanels, function(openPanel) { openPanel.classList.remove('open'); });
-    panel.classList.add('open');
-    var input = document.getElementById('resource-phone-' + idx);
-    if (input) {
-        input.focus();
-        input.value = input.value || '';
-    }
-    var status = document.getElementById('resource-payment-status-' + idx);
-    if (status) status.textContent = '';
+    if (!doc || doc.is_paid !== 1) { openViewer(doc); return; }
+    _payModalDocIdx = idx;
+    document.getElementById('payModalTitle').textContent = doc.title;
+    document.getElementById('payModalPrice').textContent = 'Igiciro: ' + formatAmount(doc.price);
+    document.getElementById('payModalPhone').value = '';
+    document.getElementById('payModalStatus').textContent = '';
+    document.getElementById('payModalOverlay').classList.add('open');
+    setTimeout(function() { document.getElementById('payModalPhone').focus(); }, 100);
 }
 
-function closeResourcePayment(idx) {
-    var panel = document.getElementById('resource-payment-panel-' + idx);
-    if (panel) panel.classList.remove('open');
+function closePayModal() {
+    document.getElementById('payModalOverlay').classList.remove('open');
+    _payModalDocIdx = -1;
+}
+
+// Close modal on overlay click
+document.getElementById('payModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closePayModal();
+});
+
+function submitModalPayment() {
+    var idx = _payModalDocIdx;
+    var doc = allDocs[idx];
+    if (!doc) return;
+    var phoneInput = document.getElementById('payModalPhone');
+    var status = document.getElementById('payModalStatus');
+    var cleanPhone = (phoneInput.value || '').replace(/[\s\-+]/g, '');
+    if (cleanPhone.length < 10) { status.textContent = 'Injiza nomero ya telephone yuzuye.'; return; }
+    status.textContent = 'Tegereza gato...';
+    fetch('/api/payments/momo-push', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneNumber: cleanPhone, checkoutIntentType: 'RESOURCE',
+            resourceId: doc.id, resourceTitle: doc.title, resourcePrice: doc.price })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (!data.success) { status.textContent = data.error || 'Kwishyura byanze.'; return; }
+        status.textContent = 'Emeza kuri telephone yawe...';
+        var referenceId = data.referenceId;
+        var attempts = 0;
+        var timer = setInterval(function() {
+            attempts++;
+            fetch('/api/payments/verify/' + referenceId)
+                .then(function(r2) { return r2.json(); })
+                .then(function(sd) {
+                    if (sd.status === 'SUCCESS') {
+                        clearInterval(timer);
+                        status.textContent = 'Byakunze! Gutegura gukura...';
+                        fetch('/api/public/documents/request-download', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ paymentReference: referenceId,
+                                resourceId: doc.id, fingerprint: getFingerprint() })
+                        })
+                        .then(function(r3) { return r3.json(); })
+                        .then(function(td) {
+                            if (td.ok && td.token) {
+                                closePayModal();
+                                window.location.href = '/resource-download?token=' + encodeURIComponent(td.token)
+                                    + '&title=' + encodeURIComponent(doc.title);
+                            } else { status.textContent = td.error || 'Gukura byanze. Ongera ugerageze.'; }
+                        })
+                        .catch(function() { status.textContent = 'Ikibazo cya internet mu gutegura gukura.'; });
+                    } else if (attempts >= 20) {
+                        clearInterval(timer);
+                        status.textContent = 'Igihe cyarangiye. Ongera ugerageze.';
+                    }
+                });
+        }, 2000);
+    })
+    .catch(function() { status.textContent = 'Ikibazo cya internet. Ongera ugerageze.'; });
 }
 
 function getFingerprint() {
@@ -417,83 +486,6 @@ function getFingerprint() {
         for (var i = 0; i < raw.length; i++) { h = ((h << 5) + h) ^ raw.charCodeAt(i); h = h >>> 0; }
         return h.toString(16);
     } catch(e) { return 'nofp'; }
-}
-
-function submitResourcePayment(idx) {
-    var doc = allDocs[idx];
-    if (!doc) return;
-    var phoneInput = document.getElementById('resource-phone-' + idx);
-    var status = document.getElementById('resource-payment-status-' + idx);
-    var panel = document.getElementById('resource-payment-panel-' + idx);
-    if (!phoneInput || !status) return;
-    var cleanPhone = (phoneInput.value || '').replace(/[\s\-+]/g, '');
-    if (cleanPhone.length < 10) {
-        status.textContent = 'Injiza nomero ya telephone yuzuye.';
-        return;
-    }
-    status.textContent = 'Tegereza gato...';
-    if (panel) panel.classList.add('open');
-    fetch('/api/payments/momo-push', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            phoneNumber: cleanPhone,
-            checkoutIntentType: 'RESOURCE',
-            resourceId: doc.id,
-            resourceTitle: doc.title,
-            resourcePrice: doc.price
-        })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-        if (!data.success) {
-            status.textContent = data.error || 'Kwishyura byanze.';
-            return;
-        }
-        status.textContent = 'Emeza kuri telephone yawe...';
-        var referenceId = data.referenceId;
-        var attempts = 0;
-        var timer = setInterval(function() {
-            attempts += 1;
-            fetch('/api/payments/verify/' + referenceId)
-                .then(function(r2) { return r2.json(); })
-                .then(function(statusData) {
-                    if (statusData.status === 'SUCCESS') {
-                        clearInterval(timer);
-                        status.textContent = 'Byakunze! Gutegura gukura...';
-                        // Request a secure one-time download token from the server
-                        fetch('/api/public/documents/request-download', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                paymentReference: referenceId,
-                                resourceId: doc.id,
-                                fingerprint: getFingerprint()
-                            })
-                        })
-                        .then(function(r3) { return r3.json(); })
-                        .then(function(td) {
-                            if (td.ok && td.token) {
-                                var url = '/resource-download?token=' + encodeURIComponent(td.token)
-                                        + '&title=' + encodeURIComponent(doc.title);
-                                window.location.href = url;
-                            } else {
-                                status.textContent = td.error || 'Gukura byanze. Ongera ugerageze.';
-                            }
-                        })
-                        .catch(function() {
-                            status.textContent = 'Ikibazo cya internet mu gutegura gukura.';
-                        });
-                    } else if (attempts >= 20) {
-                        clearInterval(timer);
-                        status.textContent = 'Igihe cyarangiye. Ongera ugerageze.';
-                    }
-                });
-        }, 2000);
-    })
-    .catch(function() {
-        status.textContent = 'Ikibazo cya internet. Ongera ugerageze.';
-    });
 }
 
 function openViewer(docOrIdx) {
