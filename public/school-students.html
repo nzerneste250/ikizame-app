@@ -169,7 +169,7 @@
     </section>
 </div>
 <script>
-let walletState = { remainingExams: 0, canRegister: false };
+let walletState = { remainingExams: 0, canRegister: false, licenseExpired: false };
 let editStudentId = null;
 
 async function handleSchoolLogout(event){ event.preventDefault(); try{ const res=await fetch('/api/school/logout',{method:'POST',headers:{'Content-Type':'application/json'}}); if(res.ok){ window.location.replace('/school-auth'); return; } }catch(err){} window.location.replace('/school-auth'); }
@@ -184,7 +184,8 @@ async function loadWalletMetrics(){
     if(res.status===401){ window.location.replace('/school-auth'); return; }
     const data=await res.json();
     const remaining = Number(data.remainingExams || 0);
-    walletState = { remainingExams: remaining, canRegister: remaining > 0 };
+    const expired = data.licenseStatus === 'EXPIRED_NO_CREDITS';
+    walletState = { remainingExams: remaining, canRegister: remaining > 0, licenseExpired: expired };
     badge.innerHTML = `<i class="fa-solid fa-coins"></i> Remaining exams: <strong>${remaining}</strong>`;
     if (remaining > 0) {
       notice.className = 'notice-card success';
@@ -193,7 +194,7 @@ async function loadWalletMetrics(){
       submitButton.disabled = false;
     } else {
       notice.className = 'notice-card warning';
-      notice.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> No exam credits are available. Renew your license first to register students.`;
+      notice.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <strong>License Expired.</strong> No exam credits available. Renew your license to register students or edit existing ones.`;
       fields.forEach((field) => field.disabled = true);
       submitButton.disabled = true;
     }
@@ -224,6 +225,11 @@ async function loadStudents(){
   tbody.innerHTML=data.students.map(s=>{
     const statusClass = s.status === 'BLOCKED' ? 'pill blocked' : 'pill';
     const actionLabel = s.status === 'BLOCKED' ? 'Unblock' : 'Block';
+    const expired = walletState.licenseExpired;
+    const editDisabled = expired ? 'disabled title="License yarangiye. Vugurura mbere yo guhindura."' : '';
+    const blockDisabled = expired ? 'disabled title="License yarangiye. Vugurura mbere yo guhagarika."' : '';
+    const editStyle = expired ? 'opacity:0.45;cursor:not-allowed;' : '';
+    const blockStyle = expired ? 'opacity:0.45;cursor:not-allowed;' : '';
     return `<tr>
       <td>${s.student_name}</td>
       <td>${s.phone_number}</td>
@@ -232,8 +238,8 @@ async function loadStudents(){
       <td>${new Date(s.created_at).toLocaleDateString('fr-FR')}</td>
       <td>
         <div class="table-actions">
-          <button type="button" onclick='startEditStudent(${JSON.stringify(s)})'><i class="fa-solid fa-pen-to-square"></i> Edit</button>
-          <button type="button" onclick="toggleStudentStatus(${s.id}, '${s.status || 'ACTIVE'}')"><i class="fa-solid fa-ban"></i> ${actionLabel}</button>
+          <button type="button" ${editDisabled} style="${editStyle}" onclick='${expired ? '' : `startEditStudent(${JSON.stringify(s)})`}'><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+          <button type="button" ${blockDisabled} style="${blockStyle}" onclick="${expired ? '' : `toggleStudentStatus(${s.id}, '${s.status || 'ACTIVE'}')`}"><i class="fa-solid fa-ban"></i> ${actionLabel}</button>
         </div>
       </td>
     </tr>`;
@@ -241,12 +247,17 @@ async function loadStudents(){
 }
 
 function startEditStudent(student){
+  if (walletState.licenseExpired) {
+    alert('License yarangiye. Vugurura lisansi yawe mbere yo guhindura amakuru y\'umunyeshuri.');
+    return;
+  }
   editStudentId = student.id;
   document.getElementById('editStudentName').value = student.student_name || '';
   document.getElementById('editStudentPhone').value = student.phone_number || '';
   document.getElementById('editStudentExamCount').value = student.assigned_exams || 1;
   document.getElementById('editFormMessage').className = 'form-message muted';
   document.getElementById('editFormMessage').textContent = '';
+  document.getElementById('studentEditSubmit').disabled = false;
   document.getElementById('editStudentPanel').classList.add('active');
   window.scrollTo({ top: document.getElementById('editStudentPanel').offsetTop - 80, behavior: 'smooth' });
 }
