@@ -50,33 +50,12 @@
         .cards-grid::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
         .doc-card { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:24px; display:flex; flex-direction:column; gap:16px; box-shadow:0 16px 34px rgba(15,23,42,.05); transition:transform .2s,box-shadow .2s,border-color .2s; cursor:pointer; }
         .doc-card:hover { transform:translateY(-3px); box-shadow:0 20px 42px rgba(11,105,139,.12); border-color:#bae6fd; }
-        .doc-card.paid { border-color:#fcd34d; background:linear-gradient(160deg,#fffdf5 0%,#fffbeb 100%); box-shadow:0 16px 34px rgba(245,158,11,.10); position:relative; }
+        .doc-card.paid { border-color:#fcd34d; background:linear-gradient(160deg,#fffdf5 0%,#fffbeb 100%); box-shadow:0 16px 34px rgba(245,158,11,.10); position:relative; overflow:visible; }
         .doc-card.paid:hover { border-color:#f59e0b; box-shadow:0 20px 42px rgba(245,158,11,.18); transform:translateY(-3px); }
         .doc-card.paid .doc-type-icon { background:#fef3c7; color:#d97706; }
         .doc-card.paid .doc-info h3 { color:#92400e; }
-        .paid-badge { position:absolute; top:-11px; right:16px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-size:.68rem; font-weight:800; padding:3px 10px; border-radius:999px; letter-spacing:.04em; text-transform:uppercase; box-shadow:0 4px 10px rgba(245,158,11,.3); pointer-events:none; }
-        /* ── Paid resource card ── */
-        .doc-card.paid {
-            border-color: #fcd34d;
-            background: linear-gradient(160deg, #fffdf5 0%, #fffbeb 100%);
-            box-shadow: 0 16px 34px rgba(245,158,11,.10);
-            position: relative;
-            overflow: visible;
-        }
-        .doc-card.paid:hover { border-color:#f59e0b; box-shadow:0 20px 42px rgba(245,158,11,.18); transform:translateY(-3px); }
-        .paid-badge {
-            position: absolute; top: -11px; right: 16px;
-            background: linear-gradient(135deg,#f59e0b,#d97706);
-            color: #fff; font-size: .68rem; font-weight: 800;
-            padding: 3px 10px; border-radius: 999px;
-            letter-spacing: .04em; text-transform: uppercase;
-            box-shadow: 0 4px 10px rgba(245,158,11,.3);
-            pointer-events: none;
-        }
-        .doc-card.paid .doc-type-icon { background:#fef3c7; color:#d97706; }
-        .doc-card.paid .doc-info h3 { color:#92400e; }
-        /* keep card height stable when payment panel opens */
         .doc-card.paid .resource-payment-panel.open { margin-top:4px; }
+        .paid-badge { position:absolute; top:-11px; right:16px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-size:.68rem; font-weight:800; padding:3px 10px; border-radius:999px; letter-spacing:.04em; text-transform:uppercase; box-shadow:0 4px 10px rgba(245,158,11,.3); pointer-events:none; }
         .doc-card-top { display:flex; align-items:flex-start; gap:14px; }
         .doc-type-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
         .icon-pdf { background:#fee2e2; color:#dc2626; }
@@ -376,21 +355,6 @@ function buildCard(doc, idx) {
         : '';
     return '<div class="doc-card' + (isLocked ? ' paid' : '') + '" onclick="handleResourceAction(' + idx + ')">'
         + (isLocked ? '<span class="paid-badge"><i class="fa-solid fa-lock" style="font-size:.6rem;margin-right:3px;"></i> Premium</span>' : '')
-        + '<div class="doc-card-top">'
-        + '<div class="doc-type-icon ' + iconClass + '"><i class="fa-solid ' + iconFA + '"></i></div>'
-        + '<div class="doc-info"><h3>' + doc.title + '</h3>' + desc + '</div>'
-        + '</div>'
-        + '<div class="doc-meta-row">'
-        + '<span class="doc-tag ' + tagClass + '">' + ext.toUpperCase() + '</span>'
-        + (isLocked ? '<span class="pay-pill"><i class="fa-solid fa-lock"></i> Ishyura</span>' : '<span class="doc-tag tag-read"><i class="fa-solid fa-eye" style="font-size:9px"></i> Soma</span>')
-        + '</div>'
-        + '<div class="doc-actions" onclick="event.stopPropagation()">'
-        + actionBtn
-        + dlBtn
-        + '</div>'
-        + paymentPanel
-        + '</div>';
-}
         + '<div class="doc-card-top">'
         + '<div class="doc-type-icon ' + iconClass + '"><i class="fa-solid ' + iconFA + '"></i></div>'
         + '<div class="doc-info"><h3>' + doc.title + '</h3>' + desc + '</div>'
