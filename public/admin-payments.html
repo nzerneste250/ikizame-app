@@ -94,9 +94,9 @@
         .cal-icon-btn { background:none; border:1px solid var(--border); cursor:pointer; color:var(--brand); font-size:15px; padding:8px 10px; border-radius:8px; transition:all .15s; display:inline-flex; align-items:center; gap:6px; font-family:inherit; font-weight:700; font-size:13px; }
         .cal-icon-btn:hover, .cal-icon-btn.active { background:#e0f2fe; border-color:#7dd3fc; color:#0369a1; }
         /* Custom Calendar Popup */
-        .cal-popup { position:fixed; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 16px 48px rgba(15,23,42,.18); z-index:8000; width:300px; padding:0; overflow:hidden; display:none; max-height:calc(100vh - 24px); }
+        .cal-popup { position:fixed; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 16px 48px rgba(15,23,42,.18); z-index:8000; width:300px; padding:0; overflow:visible; display:none; max-height:calc(100vh - 24px); }
         .cal-popup.open { display:block; }
-        .cal-head { background:var(--brand); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; }
+        .cal-head { background:var(--brand); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-radius:14px 14px 0 0; }
         .cal-head-title { color:#fff; font-weight:800; font-size:14px; }
         .cal-nav { background:none; border:none; color:rgba(255,255,255,.8); cursor:pointer; font-size:16px; padding:4px 8px; border-radius:6px; transition:background .15s; }
         .cal-nav:hover { background:rgba(255,255,255,.15); color:#fff; }
@@ -114,9 +114,11 @@
         .cal-day.has-data { font-weight:800; }
         .cal-day.has-data::before { content:''; position:absolute; top:3px; right:4px; width:5px; height:5px; border-radius:50%; background:#10b981; }
         /* Hover tooltip */
-        .cal-tooltip { position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#0f172a; color:#fff; font-size:11px; font-weight:700; white-space:nowrap; padding:5px 9px; border-radius:7px; pointer-events:none; z-index:9; opacity:0; transition:opacity .15s; }
+        .cal-tooltip { position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#0f172a; color:#fff; font-size:11px; font-weight:700; white-space:nowrap; padding:5px 9px; border-radius:7px; pointer-events:none; z-index:8100; opacity:0; transition:opacity .15s; }
         .cal-tooltip::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:#0f172a; }
         .cal-day:hover .cal-tooltip { opacity:1; }
+        .cal-day.tip-left .cal-tooltip { left:auto; right:0; transform:none; }
+        .cal-day.tip-left .cal-tooltip::after { left:auto; right:10px; transform:none; }
         /* Day report bar */
         .day-report-bar { background:#fff; border:1px solid var(--border); border-radius:10px; padding:14px 18px; display:flex; align-items:center; gap:0; flex-wrap:wrap; }
         .dr-section { display:flex; flex-direction:column; gap:2px; padding:0 18px; border-right:1px solid var(--border); }
@@ -455,6 +457,9 @@
             if (isToday) cls += ' cal-day-today';
             if (isSelected) cls += ' cal-day-selected';
             if (info) cls += ' has-data';
+            // col = 0-based position in the week row (0=Sun … 6=Sat)
+            const col = (firstDay + d - 1) % 7;
+            if (col >= 5) cls += ' tip-left'; // Fri & Sat: flip tooltip left
             const tooltip = info ? `<span class="cal-tooltip">${info.count} tx &nbsp;|&nbsp; RWF ${info.total.toLocaleString()}</span>` : '';
             const click = isFuture ? '' : `onclick="applyDateFilter('${dateStr}')"`;
             html += `<div class="${cls}" ${click}>${d}${tooltip}</div>`;
