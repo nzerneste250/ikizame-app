@@ -90,7 +90,26 @@
         .search-bar-wrap i { color:var(--muted); font-size:14px; }
         .search-bar-wrap input { border:none; outline:none; font-size:13.5px; font-family:inherit; flex:1; color:#0f172a; background:transparent; }
         .search-bar-wrap input::placeholder { color:#94a3b8; }
+        .negative-row td { background:#fff1f2 !important; }
+        .negative-badge { display:inline-flex; align-items:center; gap:4px; background:#fee2e2; color:#991b1b; font-size:11px; font-weight:800; padding:3px 8px; border-radius:6px; margin-left:6px; }
+        .date-filter-bar { display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--border); border-radius:10px; padding:10px 14px; flex-wrap:wrap; }
+        .date-filter-bar label { font-size:12px; font-weight:700; color:var(--muted); white-space:nowrap; display:flex; align-items:center; gap:6px; }
+        .date-filter-bar label i { color:var(--brand); font-size:16px; cursor:pointer; }
+        .date-filter-bar input[type=date] { border:1px solid var(--border); border-radius:8px; padding:7px 10px; font-size:13px; font-family:inherit; color:#0f172a; cursor:pointer; outline:none; }
+        .date-filter-bar input[type=date]:focus { border-color:var(--brand); }
+        .btn-date-clear { background:#f1f5f9; border:1px solid var(--border); color:#475569; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer; }
+        .btn-date-clear:hover { background:#e2e8f0; }
+        .date-result-label { font-size:12px; color:var(--muted); font-weight:600; margin-left:auto; }
         .search-count { font-size:12px; color:var(--muted); white-space:nowrap; }
+        .cal-icon-btn { background:none; border:none; cursor:pointer; color:var(--brand); font-size:18px; padding:4px 6px; border-radius:6px; transition:background .15s; }
+        .cal-icon-btn:hover { background:#e0f2fe; }
+        .day-report-bar { display:flex; align-items:center; gap:10px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:10px 14px; flex-wrap:wrap; }
+        .day-report-bar span { font-size:13px; font-weight:700; color:#1d4ed8; }
+        .day-report-bar .dr-count { font-size:12px; color:#3b82f6; font-weight:600; }
+        .btn-day-clear { background:#fff; border:1px solid #bfdbfe; color:#1d4ed8; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; }
+        .btn-day-clear:hover { background:#dbeafe; }
+        .negative-warn-row td { background:#fff1f2 !important; }
+        .new-payment-badge { display:inline-flex; align-items:center; gap:4px; background:#fef2f2; color:#dc2626; border:1px solid #fecaca; font-size:11px; font-weight:800; padding:3px 8px; border-radius:6px; white-space:nowrap; }
         .section-title { font-size:15px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px; }
         .section-title span { font-size:11px; font-weight:700; background:rgba(16,185,129,.12); color:#065f46; padding:3px 10px; border-radius:20px; }
         .paypack-ref { font-family:monospace; font-size:12px; color:#0369a1; }
@@ -124,7 +143,15 @@
             .table-container { overflow-x:auto; }
             .table-container table { min-width:860px; }
         }
-        @media (max-width: 720px) {
+        .negative-row td { background:#fff1f2 !important; }
+        .negative-badge { display:inline-flex; align-items:center; gap:4px; background:#fee2e2; color:#991b1b; font-size:11px; font-weight:800; padding:3px 8px; border-radius:6px; margin-left:6px; }
+        .date-filter-bar { display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--border); border-radius:10px; padding:10px 14px; flex-wrap:wrap; }
+        .date-filter-bar label { font-size:12px; font-weight:700; color:var(--muted); white-space:nowrap; }
+        .date-filter-bar input[type=date] { border:1px solid var(--border); border-radius:8px; padding:7px 10px; font-size:13px; font-family:inherit; color:#0f172a; cursor:pointer; outline:none; }
+        .date-filter-bar input[type=date]:focus { border-color:var(--brand); }
+        .btn-date-clear { background:#f1f5f9; border:1px solid var(--border); color:#475569; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; }
+        .btn-date-clear:hover { background:#e2e8f0; }
+        .date-result-label { font-size:12px; color:var(--muted); font-weight:600; }
             body { overflow-x:hidden; }
             .shell { flex-direction:column; }
             .workspace { width:100%; }
@@ -216,10 +243,20 @@
                     </div>
                 </div>
             </div>
-            <div class="search-bar-wrap">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="phoneSearch" placeholder="Search by phone number..." oninput="filterByPhone(this.value)">
-                <span class="search-count" id="searchCount"></span>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <div class="search-bar-wrap" style="flex:1;min-width:200px;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="phoneSearch" placeholder="Search by phone number..." oninput="filterByPhone(this.value)">
+                    <span class="search-count" id="searchCount"></span>
+                </div>
+                <button class="cal-icon-btn" id="calIconBtn" title="Filter by date" onclick="openDatePicker()"><i class="fa-solid fa-calendar-days"></i></button>
+                <input type="date" id="hiddenDatePicker" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;" onchange="applyDateFilter(this.value)">
+            </div>
+            <div class="day-report-bar" id="dayReportBar" style="display:none;">
+                <i class="fa-solid fa-calendar-check" style="color:#1d4ed8;"></i>
+                <span id="dayReportLabel">—</span>
+                <span class="dr-count" id="dayReportCount"></span>
+                <button class="btn-day-clear" onclick="clearDateFilter()"><i class="fa-solid fa-xmark"></i> Clear</button>
             </div>
             <div class="table-container">
                 <table>
@@ -273,7 +310,7 @@
             </div>
             <div>
                 <label>Remaining Exams</label>
-                <input type="number" id="editPaymentRemainingExams" min="0">
+                <input type="number" id="editPaymentRemainingExams" min="0" oninput="if(this.value<0)this.value=0;">
             </div>
             <div>
                 <label>Amount (RWF)</label>
@@ -298,9 +335,11 @@
         const rows = document.querySelectorAll('#transactionsTableBody tr[data-phone]');
         let visible = 0;
         rows.forEach(row => {
-            const match = !term || row.dataset.phone.includes(term);
-            row.style.display = match ? '' : 'none';
-            if (match) visible++;
+            const phoneMatch = !term || row.dataset.phone.includes(term);
+            const dateMatch = !activeDateFilter || row.dataset.date === activeDateFilter;
+            const show = phoneMatch && dateMatch;
+            row.style.display = show ? '' : 'none';
+            if (show) visible++;
         });
         const countEl = document.getElementById('searchCount');
         countEl.textContent = term ? `${visible} result${visible !== 1 ? 's' : ''}` : '';
@@ -333,30 +372,11 @@
                 .catch(() => { document.getElementById('paypackBalance').textContent = 'N/A'; });
 
             paymentTransactions = Array.isArray(data) ? data : [];
-            const body = document.getElementById('transactionsTableBody');
             if (!paymentTransactions.length) {
-                body.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
+                document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
                 return;
             }
-            body.innerHTML = paymentTransactions.map((tx, i) => {
-                const statusClass = tx.status === 'SUCCESS' ? 'success' : tx.status === 'PENDING' ? 'pending' : 'error';
-                const created = new Date(tx.created_at).toLocaleString('rw-RW', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-                const realRef = tx.rwandapay_tx_id || tx.reference_id || '---';
-                const network = detectNetwork(tx.phone_number);
-                return `<tr data-phone="${tx.phone_number || ''}">
-                    <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
-                    <td>${tx.phone_number} ${network}</td>
-                    <td class="paypack-ref">${realRef}</td>
-                    <td>${tx.plan_name || '---'}</td>
-                    <td><span class="status-pill ${statusClass}">${tx.status || 'UNKNOWN'}</span></td>
-                    <td>${formatCurrency(tx.amount || 0)}</td>
-                    <td>${tx.total_exams || 0}</td>
-                    <td>${tx.remaining_exams || 0}</td>
-                    <td>${tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '—'}</td>
-                    <td>${created}</td>
-                    <td><button class="btn-text-action btn-edit" onclick="openEditPaymentModal(${tx.id})">Edit</button></td>
-                </tr>`;
-            }).join('');
+            renderTransactions(paymentTransactions);
         })
         .catch(() => {
             document.getElementById('totalPayments').textContent = '0';
@@ -364,6 +384,77 @@
             document.getElementById('totalExamCredits').textContent = '0';
             document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#ef4444;">Unable to load transactions.</td></tr>';
         });
+    }
+
+    let activeDateFilter = null;
+
+    function renderTransactions(list) {
+        const body = document.getElementById('transactionsTableBody');
+        if (!list.length) {
+            body.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
+            return;
+        }
+        body.innerHTML = list.map((tx, i) => {
+            const statusClass = tx.status === 'SUCCESS' ? 'success' : tx.status === 'PENDING' ? 'pending' : 'error';
+            const created = new Date(tx.created_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+            const realRef = tx.rwandapay_tx_id || tx.reference_id || '---';
+            const network = detectNetwork(tx.phone_number);
+            const rem = Number(tx.remaining_exams);
+            const isNeg = rem < 0;
+            const remCell = isNeg
+                ? `<span style="color:#dc2626;font-weight:800;">${rem}</span> <span class="new-payment-badge"><i class="fa-solid fa-triangle-exclamation"></i> New payment needed</span>`
+                : rem;
+            const rowClass = isNeg ? 'negative-warn-row' : '';
+            return `<tr class="${rowClass}" data-phone="${tx.phone_number || ''}" data-date="${(tx.created_at||'').slice(0,10)}">
+                <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
+                <td>${tx.phone_number} ${network}</td>
+                <td class="paypack-ref">${realRef}</td>
+                <td>${tx.plan_name || '---'}</td>
+                <td><span class="status-pill ${statusClass}">${tx.status || 'UNKNOWN'}</span></td>
+                <td>${formatCurrency(tx.amount || 0)}</td>
+                <td>${tx.total_exams || 0}</td>
+                <td>${remCell}</td>
+                <td>${tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '—'}</td>
+                <td>${created}</td>
+                <td><button class="btn-text-action btn-edit" onclick="openEditPaymentModal(${tx.id})">Edit</button></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function openDatePicker() {
+        const dp = document.getElementById('hiddenDatePicker');
+        const btn = document.getElementById('calIconBtn');
+        dp.style.position = 'fixed';
+        dp.style.opacity = '0';
+        dp.style.pointerEvents = 'auto';
+        dp.style.top = (btn.getBoundingClientRect().bottom + 4) + 'px';
+        dp.style.left = btn.getBoundingClientRect().left + 'px';
+        dp.style.width = '1px';
+        dp.style.height = '1px';
+        dp.showPicker ? dp.showPicker() : dp.click();
+    }
+
+    function applyDateFilter(dateStr) {
+        if (!dateStr) return;
+        activeDateFilter = dateStr;
+        const filtered = paymentTransactions.filter(tx => (tx.created_at || '').slice(0, 10) === dateStr);
+        renderTransactions(filtered);
+        const bar = document.getElementById('dayReportBar');
+        const label = document.getElementById('dayReportLabel');
+        const count = document.getElementById('dayReportCount');
+        const d = new Date(dateStr + 'T00:00:00');
+        label.textContent = d.toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+        count.textContent = `${filtered.length} transaction${filtered.length !== 1 ? 's' : ''}`;
+        bar.style.display = 'flex';
+        document.getElementById('hiddenDatePicker').style.pointerEvents = 'none';
+    }
+
+    function clearDateFilter() {
+        activeDateFilter = null;
+        document.getElementById('dayReportBar').style.display = 'none';
+        document.getElementById('hiddenDatePicker').value = '';
+        renderTransactions(paymentTransactions);
+        filterByPhone(document.getElementById('phoneSearch').value);
     }
 
     function detectNetwork(phone) {
@@ -425,8 +516,12 @@
         const id = Number(document.getElementById('editPaymentId').value);
         const total_exams = Number(document.getElementById('editPaymentTotalExams').value);
         const remaining_exams = Number(document.getElementById('editPaymentRemainingExams').value);
-        if (isNaN(id) || isNaN(total_exams) || isNaN(remaining_exams) || total_exams < 0 || remaining_exams < 0) {
+        if (isNaN(id) || isNaN(total_exams) || isNaN(remaining_exams) || total_exams < 0) {
             alert('Please enter valid numeric values for total and remaining exams.');
+            return;
+        }
+        if (remaining_exams < 0) {
+            alert('⚠️ Remaining exams cannot go negative.\n\nThis student has used all their exams. Please create a new payment for them instead.');
             return;
         }
         if (remaining_exams > total_exams) {
