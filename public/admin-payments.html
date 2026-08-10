@@ -94,7 +94,7 @@
         .cal-icon-btn { background:none; border:1px solid var(--border); cursor:pointer; color:var(--brand); font-size:15px; padding:8px 10px; border-radius:8px; transition:all .15s; display:inline-flex; align-items:center; gap:6px; font-family:inherit; font-weight:700; font-size:13px; }
         .cal-icon-btn:hover, .cal-icon-btn.active { background:#e0f2fe; border-color:#7dd3fc; color:#0369a1; }
         /* Custom Calendar Popup */
-        .cal-popup { position:fixed; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 16px 48px rgba(15,23,42,.18); z-index:8000; width:300px; padding:0; overflow:hidden; display:none; }
+        .cal-popup { position:fixed; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 16px 48px rgba(15,23,42,.18); z-index:8000; width:300px; padding:0; overflow:hidden; display:none; max-height:calc(100vh - 24px); }
         .cal-popup.open { display:block; }
         .cal-head { background:var(--brand); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; }
         .cal-head-title { color:#fff; font-weight:800; font-size:14px; }
@@ -481,11 +481,20 @@
         calYear = today.getFullYear();
         calMonth = today.getMonth();
         renderCalendar();
-        // Position popup below the button
+        // Position popup near the button with safe margins from all edges
         const rect = btn.getBoundingClientRect();
-        const scrollY = window.scrollY || document.documentElement.scrollTop;
-        popup.style.top = (rect.bottom + scrollY + 6) + 'px';
-        popup.style.left = Math.min(rect.left, window.innerWidth - 310) + 'px';
+        const CAL_W = 300, CAL_H = 320, MARGIN = 12;
+        const vw = window.innerWidth, vh = window.innerHeight;
+        // Prefer below the button, flip above if not enough space
+        let top = rect.bottom + MARGIN;
+        if (top + CAL_H > vh - MARGIN) top = rect.top - CAL_H - MARGIN;
+        if (top < MARGIN) top = MARGIN;
+        // Align right edge of popup to right edge of button, clamp to viewport
+        let left = rect.right - CAL_W;
+        if (left < MARGIN) left = MARGIN;
+        if (left + CAL_W > vw - MARGIN) left = vw - CAL_W - MARGIN;
+        popup.style.top = top + 'px';
+        popup.style.left = left + 'px';
         popup.classList.add('open');
         btn.classList.add('active');
     }
