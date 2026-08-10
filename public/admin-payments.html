@@ -91,14 +91,42 @@
         .search-bar-wrap input { border:none; outline:none; font-size:13.5px; font-family:inherit; flex:1; color:#0f172a; background:transparent; }
         .search-bar-wrap input::placeholder { color:#94a3b8; }
         .search-count { font-size:12px; color:var(--muted); white-space:nowrap; }
-        .cal-icon-btn { background:none; border:none; cursor:pointer; color:var(--brand); font-size:18px; padding:4px 6px; border-radius:6px; transition:background .15s; }
-        .cal-icon-btn:hover { background:#e0f2fe; }
-        .day-report-bar { display:flex; align-items:center; gap:10px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:10px 14px; flex-wrap:wrap; }
-        .day-report-bar span { font-size:13px; font-weight:700; color:#1d4ed8; }
-        .day-report-bar .dr-count { font-size:12px; color:#3b82f6; font-weight:600; }
-        .day-report-bar .dr-amount { font-size:13px; font-weight:800; color:#15803d; background:#dcfce7; border:1px solid #bbf7d0; padding:3px 10px; border-radius:6px; }
-        .btn-day-clear { background:#fff; border:1px solid #bfdbfe; color:#1d4ed8; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; }
-        .btn-day-clear:hover { background:#dbeafe; }
+        .cal-icon-btn { background:none; border:1px solid var(--border); cursor:pointer; color:var(--brand); font-size:15px; padding:8px 10px; border-radius:8px; transition:all .15s; display:inline-flex; align-items:center; gap:6px; font-family:inherit; font-weight:700; font-size:13px; }
+        .cal-icon-btn:hover, .cal-icon-btn.active { background:#e0f2fe; border-color:#7dd3fc; color:#0369a1; }
+        /* Custom Calendar Popup */
+        .cal-popup { position:fixed; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 16px 48px rgba(15,23,42,.18); z-index:8000; width:300px; padding:0; overflow:hidden; display:none; }
+        .cal-popup.open { display:block; }
+        .cal-head { background:var(--brand); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; }
+        .cal-head-title { color:#fff; font-weight:800; font-size:14px; }
+        .cal-nav { background:none; border:none; color:rgba(255,255,255,.8); cursor:pointer; font-size:16px; padding:4px 8px; border-radius:6px; transition:background .15s; }
+        .cal-nav:hover { background:rgba(255,255,255,.15); color:#fff; }
+        .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); background:#f0f9ff; border-bottom:1px solid #e0f2fe; }
+        .cal-weekdays span { text-align:center; font-size:10px; font-weight:800; color:#0369a1; padding:8px 0; text-transform:uppercase; letter-spacing:.4px; }
+        .cal-days { display:grid; grid-template-columns:repeat(7,1fr); padding:8px; gap:2px; }
+        .cal-day { position:relative; text-align:center; padding:7px 2px; border-radius:7px; font-size:12.5px; font-weight:600; cursor:pointer; color:#0f172a; transition:background .12s; }
+        .cal-day:hover:not(.cal-day-empty):not(.cal-day-future) { background:#e0f2fe; color:#0369a1; }
+        .cal-day.cal-day-empty { cursor:default; }
+        .cal-day.cal-day-future { color:#cbd5e1; cursor:not-allowed; }
+        .cal-day.cal-day-today { font-weight:800; color:var(--brand); }
+        .cal-day.cal-day-today::after { content:''; position:absolute; bottom:3px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--brand); }
+        .cal-day.cal-day-selected { background:var(--brand) !important; color:#fff !important; }
+        .cal-day.cal-day-selected::after { background:#fff !important; }
+        .cal-day.has-data { font-weight:800; }
+        .cal-day.has-data::before { content:''; position:absolute; top:3px; right:4px; width:5px; height:5px; border-radius:50%; background:#10b981; }
+        /* Hover tooltip */
+        .cal-tooltip { position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#0f172a; color:#fff; font-size:11px; font-weight:700; white-space:nowrap; padding:5px 9px; border-radius:7px; pointer-events:none; z-index:9; opacity:0; transition:opacity .15s; }
+        .cal-tooltip::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:#0f172a; }
+        .cal-day:hover .cal-tooltip { opacity:1; }
+        /* Day report bar */
+        .day-report-bar { background:#fff; border:1px solid var(--border); border-radius:10px; padding:14px 18px; display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+        .dr-section { display:flex; flex-direction:column; gap:2px; padding:0 18px; border-right:1px solid var(--border); }
+        .dr-section:first-child { padding-left:0; }
+        .dr-section:last-of-type { border-right:none; }
+        .dr-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; }
+        .dr-value { font-size:15px; font-weight:800; color:#0f172a; }
+        .dr-value.green { color:#15803d; }
+        .btn-day-clear { margin-left:auto; background:#f1f5f9; border:1px solid var(--border); color:#475569; border-radius:8px; padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+        .btn-day-clear:hover { background:#e2e8f0; }
         .negative-warn-row td { background:#fff1f2 !important; }
         .new-payment-badge { display:inline-flex; align-items:center; gap:4px; background:#fef2f2; color:#dc2626; border:1px solid #fecaca; font-size:11px; font-weight:800; padding:3px 8px; border-radius:6px; white-space:nowrap; }
         .section-title { font-size:15px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px; }
@@ -226,21 +254,40 @@
                     </div>
                 </div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:relative;">
                 <div class="search-bar-wrap" style="flex:1;min-width:200px;">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="phoneSearch" placeholder="Search by phone number..." oninput="filterByPhone(this.value)">
                     <span class="search-count" id="searchCount"></span>
                 </div>
-                <button class="cal-icon-btn" id="calIconBtn" title="Filter by date" onclick="openDatePicker()"><i class="fa-solid fa-calendar-days"></i></button>
-                <input type="date" id="hiddenDatePicker" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;" onchange="applyDateFilter(this.value)">
+                <button class="cal-icon-btn" id="calIconBtn" onclick="toggleCalendar()"><i class="fa-solid fa-calendar-days"></i> Filter by Date</button>
+            </div>
+            <!-- Custom Calendar Popup -->
+            <div class="cal-popup" id="calPopup">
+                <div class="cal-head">
+                    <button class="cal-nav" onclick="calShiftMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span class="cal-head-title" id="calHeadTitle"></span>
+                    <button class="cal-nav" onclick="calShiftMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="cal-weekdays">
+                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                </div>
+                <div class="cal-days" id="calDays"></div>
             </div>
             <div class="day-report-bar" id="dayReportBar" style="display:none;">
-                <i class="fa-solid fa-calendar-check" style="color:#1d4ed8;"></i>
-                <span id="dayReportLabel">—</span>
-                <span class="dr-count" id="dayReportCount"></span>
-                <span class="dr-amount" id="dayReportAmount"></span>
-                <button class="btn-day-clear" onclick="clearDateFilter()"><i class="fa-solid fa-xmark"></i> Clear</button>
+                <div class="dr-section">
+                    <span class="dr-label">Date</span>
+                    <span class="dr-value" id="dayReportLabel">—</span>
+                </div>
+                <div class="dr-section">
+                    <span class="dr-label">Transactions</span>
+                    <span class="dr-value" id="dayReportCount">—</span>
+                </div>
+                <div class="dr-section">
+                    <span class="dr-label">Total Revenue</span>
+                    <span class="dr-value green" id="dayReportAmount">—</span>
+                </div>
+                <button class="btn-day-clear" onclick="clearDateFilter()">Clear Filter</button>
             </div>
             <div class="table-container">
                 <table>
@@ -372,6 +419,86 @@
 
     let activeDateFilter = null;
 
+    /* ── Custom Calendar ── */
+    let calYear, calMonth;
+
+    function buildDayMap() {
+        const map = {};
+        paymentTransactions.forEach(tx => {
+            const d = (tx.created_at || '').slice(0, 10);
+            if (!d) return;
+            if (!map[d]) map[d] = { count: 0, total: 0 };
+            map[d].count++;
+            if (tx.status === 'SUCCESS') map[d].total += Number(tx.amount) || 0;
+        });
+        return map;
+    }
+
+    function renderCalendar() {
+        const today = new Date();
+        const todayStr = today.toISOString().slice(0, 10);
+        const dayMap = buildDayMap();
+        const firstDay = new Date(calYear, calMonth, 1).getDay();
+        const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+        const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        document.getElementById('calHeadTitle').textContent = `${monthNames[calMonth]} ${calYear}`;
+        let html = '';
+        for (let i = 0; i < firstDay; i++) html += '<div class="cal-day cal-day-empty"></div>';
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const isFuture = dateStr > todayStr;
+            const isToday = dateStr === todayStr;
+            const isSelected = dateStr === activeDateFilter;
+            const info = dayMap[dateStr];
+            let cls = 'cal-day';
+            if (isFuture) cls += ' cal-day-future';
+            if (isToday) cls += ' cal-day-today';
+            if (isSelected) cls += ' cal-day-selected';
+            if (info) cls += ' has-data';
+            const tooltip = info ? `<span class="cal-tooltip">${info.count} tx &nbsp;|&nbsp; RWF ${info.total.toLocaleString()}</span>` : '';
+            const click = isFuture ? '' : `onclick="applyDateFilter('${dateStr}')"`;
+            html += `<div class="${cls}" ${click}>${d}${tooltip}</div>`;
+        }
+        document.getElementById('calDays').innerHTML = html;
+    }
+
+    function calShiftMonth(dir) {
+        calMonth += dir;
+        if (calMonth > 11) { calMonth = 0; calYear++; }
+        if (calMonth < 0)  { calMonth = 11; calYear--; }
+        renderCalendar();
+    }
+
+    function toggleCalendar() {
+        const popup = document.getElementById('calPopup');
+        const btn = document.getElementById('calIconBtn');
+        if (popup.classList.contains('open')) {
+            popup.classList.remove('open');
+            btn.classList.remove('active');
+            return;
+        }
+        const today = new Date();
+        calYear = today.getFullYear();
+        calMonth = today.getMonth();
+        renderCalendar();
+        // Position popup below the button
+        const rect = btn.getBoundingClientRect();
+        const scrollY = window.scrollY || document.documentElement.scrollTop;
+        popup.style.top = (rect.bottom + scrollY + 6) + 'px';
+        popup.style.left = Math.min(rect.left, window.innerWidth - 310) + 'px';
+        popup.classList.add('open');
+        btn.classList.add('active');
+    }
+
+    document.addEventListener('click', function(e) {
+        const popup = document.getElementById('calPopup');
+        const btn = document.getElementById('calIconBtn');
+        if (popup.classList.contains('open') && !popup.contains(e.target) && !btn.contains(e.target)) {
+            popup.classList.remove('open');
+            btn.classList.remove('active');
+        }
+    });
+
     function renderTransactions(list) {
         const body = document.getElementById('transactionsTableBody');
         if (!list.length) {
@@ -405,40 +532,27 @@
         }).join('');
     }
 
-    function openDatePicker() {
-        const dp = document.getElementById('hiddenDatePicker');
-        const btn = document.getElementById('calIconBtn');
-        dp.style.position = 'fixed';
-        dp.style.opacity = '0';
-        dp.style.pointerEvents = 'auto';
-        dp.style.top = (btn.getBoundingClientRect().bottom + 4) + 'px';
-        dp.style.left = btn.getBoundingClientRect().left + 'px';
-        dp.style.width = '1px';
-        dp.style.height = '1px';
-        dp.showPicker ? dp.showPicker() : dp.click();
-    }
-
-    function applyDateFilter(dateStr) {
+function applyDateFilter(dateStr) {
         if (!dateStr) return;
         activeDateFilter = dateStr;
+        // Close calendar and re-render to show selection
+        const popup = document.getElementById('calPopup');
+        popup.classList.remove('open');
+        document.getElementById('calIconBtn').classList.remove('active');
+        renderCalendar();
         const filtered = paymentTransactions.filter(tx => (tx.created_at || '').slice(0, 10) === dateStr);
         renderTransactions(filtered);
-        const bar = document.getElementById('dayReportBar');
-        const label = document.getElementById('dayReportLabel');
-        const count = document.getElementById('dayReportCount');
         const d = new Date(dateStr + 'T00:00:00');
         const dayTotal = filtered.filter(tx => tx.status === 'SUCCESS').reduce((sum, tx) => sum + (Number(tx.amount) || 0), 0);
-        label.textContent = d.toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
-        count.textContent = `${filtered.length} transaction${filtered.length !== 1 ? 's' : ''}`;
-        document.getElementById('dayReportAmount').textContent = '💰 ' + formatCurrency(dayTotal);
-        bar.style.display = 'flex';
-        document.getElementById('hiddenDatePicker').style.pointerEvents = 'none';
+        document.getElementById('dayReportLabel').textContent = d.toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+        document.getElementById('dayReportCount').textContent = filtered.length;
+        document.getElementById('dayReportAmount').textContent = 'RWF ' + dayTotal.toLocaleString('en-US');
+        document.getElementById('dayReportBar').style.display = 'flex';
     }
 
     function clearDateFilter() {
         activeDateFilter = null;
         document.getElementById('dayReportBar').style.display = 'none';
-        document.getElementById('hiddenDatePicker').value = '';
         renderTransactions(paymentTransactions);
         filterByPhone(document.getElementById('phoneSearch').value);
     }
