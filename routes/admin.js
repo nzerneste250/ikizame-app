@@ -317,6 +317,22 @@ module.exports = (db, loginLimiter) => {
         );
     });
 
+    // GET payment transactions filtered by date
+    router.get('/payments-by-date', requireAdminLogin, (req, res) => {
+        const date = req.query.date || new Date().toISOString().slice(0, 10);
+        db.query(
+            `SELECT id, phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, created_at
+             FROM payment_transactions
+             WHERE DATE(created_at) = ?
+             ORDER BY id DESC`,
+            [date],
+            (err, rows) => {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json(rows);
+            }
+        );
+    });
+
     // GET payments summary
     router.get('/payments-summary', requireAdminLogin, (req, res) => {
         db.query(
@@ -343,6 +359,8 @@ module.exports = (db, loginLimiter) => {
             return res.status(400).json({ success: false, error: 'Invalid numeric values.' });
         if (remaining_exams > total_exams)
             return res.status(400).json({ success: false, error: 'Remaining cannot exceed total.' });
+        if (remaining_exams < 0)
+            return res.status(400).json({ success: false, error: 'Remaining exams cannot be negative. Create a new payment instead.' });
 
         const amount        = calcTieredAmount(total_exams);
         const plan_name     = planName(total_exams);
