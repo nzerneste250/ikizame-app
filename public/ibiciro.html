@@ -237,26 +237,47 @@
         }
         
         .section-header-meta {
-            text-align: center; padding: 10px 18px;
+            text-align: center;
+            padding: 28px 24px 22px;
             background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%);
-            border-radius: 12px; color: #fff;
+            border-radius: 16px;
+            color: #fff;
             margin-bottom: 6px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(11,105,139,0.22);
         }
-        .section-header-meta h2 { font-size: clamp(0.95rem, 1.3vw, 1.3rem); font-weight: 800; margin-bottom: 3px; color: #fff; }
-        .section-header-meta p { font-size: 0.75rem; color: rgba(255,255,255,0.88); margin-bottom: 6px; line-height: 1.4; max-width: 720px; margin-left: auto; margin-right: auto; }
-
-        /* ── 🎯 CHANNEL RECONCILIATION CHANNELS BANNER ── */
-        .channel-support-banner {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.22);
-            padding: 5px 12px; border-radius: 10px;
-            margin: 0 auto;
-            flex-wrap: wrap; justify-content: center; width: min(760px, 100%);
+        .section-header-meta::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 180px; height: 180px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            pointer-events: none;
         }
-        .channel-support-banner span { font-size: 0.72rem; font-weight: 800; color: #cffafe; text-transform: uppercase; letter-spacing: 0.6px; }
-        .channel-support-banner .banner-label { color: #7dd3fc; }
-        .channel-inline-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .section-header-meta::after {
+            content: '';
+            position: absolute;
+            bottom: -50px; left: -30px;
+            width: 140px; height: 140px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero-eyebrow { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); border-radius: 999px; padding: 4px 14px; font-size: 11px; font-weight: 800; color: #bae6fd; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px; }
+        .section-header-meta h2 { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 800; margin-bottom: 8px; color: #fff; letter-spacing: -.3px; line-height: 1.2; }
+        .section-header-meta p { font-size: 0.82rem; color: rgba(255,255,255,0.82); margin-bottom: 16px; line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .hero-stats-row { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+        .hero-stat { display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); border-radius: 10px; padding: 8px 16px; min-width: 80px; }
+        .hero-stat-val { font-size: 1.1rem; font-weight: 800; color: #fff; line-height: 1; }
+        .hero-stat-lbl { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: .4px; margin-top: 3px; }
+        .channel-support-banner { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); padding: 7px 14px; border-radius: 10px; margin: 0 auto; flex-wrap: wrap; justify-content: center; width: min(520px, 100%); }
+        .channel-support-banner span { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.8); }
+        .channel-support-banner .banner-label { color: #7dd3fc; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; font-size: 10px; }
+        .channel-inline-row { display: flex; align-items: center; gap: 8px; }
+        .carrier-logo-square-box.header-payment-badge { width: 28px; height: 28px; border-radius: 6px; border: 1.5px solid rgba(255,255,255,0.3); background: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .carrier-logo-square-box.header-payment-badge img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
 
         /* ===== TWO-COLUMN SYMMETRICAL SPLIT CONTENT GRADIENT ===== */
         .pricing-split-layout {
@@ -489,14 +510,34 @@
     <div class="workspace-scroll-container">
         <main class="workspace-inner">
             <section class="section-header-meta">
-                <h2>Gura Ibizamini Byoroshye kandi Bihendutse</h2>
-                <p>Uhabwa uburyo bwihuse bwo kugura ibizamini, kureba ibisigaye kuri nomero yawe, no kwishyura ukoresheje MTN MoMo cyangwa Airtel Money.</p>
-                
-                <div class="channel-support-banner" style="margin-top: 6px;">
-                    <span class="banner-label">Uburyo bwizewe bwo kwishyura:</span>
+                <div class="hero-eyebrow"><i class="fa-solid fa-bolt"></i> Kwishyura Byoroshye</div>
+                <h2>Gura Ibizamini, Utangire Kwiga Ubu</h2>
+                <p>Ishyura ukoresheje MTN MoMo cyangwa Airtel Money mu masegonda make. Ibiciro biragabanuka uko ugura byinshi — ntabwo hari ubwishyu bw'inyongera.</p>
+                <div class="hero-stats-row">
+                    <div class="hero-stat">
+                        <span class="hero-stat-val">50 RWF</span>
+                        <span class="hero-stat-lbl">Igiciro Gito</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-val">4</span>
+                        <span class="hero-stat-lbl">Amaciro</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-val">MTN &amp; Airtel</span>
+                        <span class="hero-stat-lbl">Uburyo bwizewe</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-val">&lt; 30s</span>
+                        <span class="hero-stat-lbl">Gutura</span>
+                    </div>
+                </div>
+                <div class="channel-support-banner">
+                    <span class="banner-label">Kwishyura ukoresheje:</span>
                     <div class="channel-inline-row">
                         <div class="carrier-logo-square-box header-payment-badge"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN"></div>
+                        <span>MTN MoMo</span>
                         <div class="carrier-logo-square-box header-payment-badge"><img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel"></div>
+                        <span>Airtel Money</span>
                     </div>
                 </div>
             </section>
