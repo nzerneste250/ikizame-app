@@ -369,17 +369,49 @@
         .ussd-text-info span { font-size: 8px; font-weight: 800; color: #64748b; text-transform: uppercase; }
         .ussd-code { font-size: 0.95rem; font-weight: 800; color: #0f172a; font-family: monospace; }
 
-        /* ===== MODALS INTERFACES ===== */
-        .payment-modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 16px; width: 100vw; height: 100vh; }
-        .modal-container-box { background: #ffffff; color: #0f172a; border-radius: 16px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
-        .modal-container-box h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
-        .modal-container-box p { font-size: 0.82rem; color: #64748b; margin-bottom: 14px; }
-        .input-form-field { display: flex; flex-direction: column; text-align: left; gap: 4px; margin-bottom: 12px; }
-        .input-form-field label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; }
-        .input-form-field input { width: 100%; padding: 10px 12px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-weight: 600; outline: none; background: #f8fafc; }
-                .input-form-field input:focus { border-color: var(--brand); background: #ffffff; }
-        .live-amount-strip { background: #f1f5f9; padding: 10px; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 800; color: #1e293b; margin-bottom: 16px; border: 1px dashed #cbd5e1; }
-        .btn-submit-payment { background: #0b698b; color: #ffffff; border: none; padding: 12px; width: 100%; border-radius: 6px; font-size: 0.88rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        /* ===== PAYMENT MODAL — REDESIGNED ===== */
+        .payment-modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 16px; width: 100vw; height: 100vh; }
+        .pay-modal-card { background: #ffffff; border-radius: 20px; width: 100%; max-width: 420px; overflow: hidden; box-shadow: 0 32px 64px rgba(15,23,42,0.4); }
+        .pay-modal-header { background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%); padding: 20px 24px 18px; position: relative; }
+        .pay-modal-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .pay-modal-title { color: #fff; font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .pay-modal-title i { font-size: 1rem; opacity: .85; }
+        .pay-modal-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+        .pay-modal-close:hover { background: rgba(255,255,255,0.28); }
+        .pay-carrier-row { display: flex; align-items: center; gap: 10px; }
+        .pay-carrier-badge { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); border-radius: 8px; padding: 5px 10px; }
+        .pay-carrier-badge img { width: 28px; height: 28px; object-fit: contain; border-radius: 5px; background: #fff; padding: 2px; }
+        .pay-carrier-badge span { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); }
+        .pay-modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+        .pay-field { display: flex; flex-direction: column; gap: 5px; }
+        .pay-field-label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: .4px; }
+        .pay-field input[type=number], .pay-field input[type=tel] { width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; background: #f8fafc; font-family: 'Inter', sans-serif; transition: border-color .18s, box-shadow .18s; }
+        .pay-field input:focus { border-color: var(--brand); background: #fff; box-shadow: 0 0 0 3px rgba(11,105,139,0.1); }
+        .pay-tier-hint { font-size: 11px; font-weight: 700; margin-top: 2px; }
+        .pay-per-exam { font-size: 12px; font-weight: 700; color: #0b698b; margin-top: 2px; }
+        /* Phone field with prefix */
+        .phone-input-wrap { position: relative; display: flex; align-items: center; }
+        .phone-input-wrap input { padding-left: 90px !important; }
+        .phone-modal-prefix { position: absolute; left: 12px; display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #0f172a; border-right: 1.5px solid #e2e8f0; padding-right: 9px; user-select: none; pointer-events: none; }
+        .phone-modal-prefix .rw-flag-sm { width: 18px; height: 12px; border-radius: 2px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+        .phone-hint { font-size: 11px; margin-top: 3px; min-height: 16px; font-weight: 600; color: #94a3b8; }
+        .phone-hint.err { color: #ef4444; }
+        .phone-hint.ok { color: #10b981; }
+        /* Amount summary box */
+        .pay-amount-box { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1.5px solid #bae6fd; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+        .pay-amount-label { font-size: 11px; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: .4px; }
+        .pay-amount-value { font-size: 1.3rem; font-weight: 800; color: #0c4a6e; }
+        /* Submit button */
+        .pay-submit-btn { width: 100%; border: none; background: linear-gradient(135deg, var(--brand) 0%, #0e4f6b 100%); color: #fff; padding: 13px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(11,105,139,0.28); transition: transform .18s, box-shadow .18s; font-family: 'Inter', sans-serif; letter-spacing: .2px; }
+        .pay-submit-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(11,105,139,0.36); }
+        .pay-submit-btn:disabled { opacity: .7; cursor: not-allowed; }
+        .pay-cancel-link { background: none; border: none; color: #94a3b8; font-size: 0.8rem; font-weight: 600; cursor: pointer; width: 100%; text-align: center; padding: 6px 0 2px; font-family: 'Inter', sans-serif; transition: color .15s; }
+        .pay-cancel-link:hover { color: #64748b; }
+        /* USSD hint box */
+        .ussd-hint-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 14px; display: none; }
+        .ussd-hint-box .ussd-hint-title { font-size: 11px; font-weight: 800; color: #166534; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+        .ussd-hint-box .ussd-hint-code { font-size: 1.05rem; font-weight: 800; color: #0f172a; font-family: monospace; letter-spacing: 1px; }
+        .ussd-hint-box .ussd-hint-sub { font-size: 10px; color: #64748b; margin-top: 3px; }
 
         .footer { min-height: 40px; padding: 7px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; flex-wrap: wrap; gap: 6px; }
         .footer strong { color: #38bdf8; }
@@ -551,35 +583,56 @@
     </div>
 
     <div class="payment-modal-overlay" id="sandboxPaymentModal">
-        <div class="modal-container-box">
-            <h3>Kwishura Kuri Telephone</h3>
-            <p>Andika amakuru yawe hano n'umubare w'ibizamini:</p>
-            
-            <div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 20px;">
-                <div class="carrier-logo-square-box modal-badge"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN Inside Form"></div>
-                <div class="carrier-logo-square-box modal-badge"><img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel Inside Form"></div>
+        <div class="pay-modal-card">
+            <div class="pay-modal-header">
+                <div class="pay-modal-header-top">
+                    <div class="pay-modal-title"><i class="fa-solid fa-mobile-screen-button"></i> Kwishyura kuri Telephone</div>
+                    <button class="pay-modal-close" onclick="closeTestPaymentModal()">&times;</button>
+                </div>
+                <div class="pay-carrier-row">
+                    <div class="pay-carrier-badge">
+                        <img src="assets/images/providers/mtn-logo.jpg" alt="MTN">
+                        <span>MTN MoMo</span>
+                    </div>
+                    <div class="pay-carrier-badge">
+                        <img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel">
+                        <span>Airtel Money</span>
+                    </div>
+                </div>
             </div>
-
-            <div class="input-form-field">
-                <label>Umubare w'Ibizamini</label>
-                <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
-                <div id="dynamicPricingHelperLabel" style="font-size: 10px; margin-top: 2px; font-weight: 600;"></div>
-                <div id="pricePerExamLabel" style="font-size: 0.95rem; margin-top: 8px; font-weight: 700; color: #f8fafc;">Igiciro cya buri kizamini: 100 RWF</div>
+            <div class="pay-modal-body">
+                <div class="pay-field">
+                    <span class="pay-field-label">Umubare w'Ibizamini</span>
+                    <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
+                    <div class="pay-tier-hint" id="dynamicPricingHelperLabel"></div>
+                    <div class="pay-per-exam" id="pricePerExamLabel">Igiciro cya buri kizamini: 100 RWF</div>
+                </div>
+                <div class="pay-field">
+                    <span class="pay-field-label">Nomero ya Telephone</span>
+                    <div class="phone-input-wrap">
+                        <div class="phone-modal-prefix">
+                            <svg class="rw-flag-sm" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
+                            +25
+                        </div>
+                        <input type="tel" id="momoPhoneNumberInput" placeholder="0788000000" maxlength="10" autocomplete="tel-national" oninput="sanitizeMomoPhone()">
+                    </div>
+                    <span class="phone-hint" id="momoPhoneHint">Injiza imibare 10 gutangira na 078 cyangwa 079</span>
+                </div>
+                <div class="pay-amount-box">
+                    <span class="pay-amount-label">Amafaranga Yishyurwa</span>
+                    <span class="pay-amount-value" id="liveAmountBreakdownDisplayStrip">100 RWF</span>
+                </div>
+                <button class="pay-submit-btn" id="momoSubmitPaymentBtn" onclick="dispatchAdaptivePaymentQueryPacket()">
+                    <span id="momoBtnTextLabel">Ishyura Ubu</span>
+                    <i class="fa-solid fa-arrow-right" id="momoBtnIcon"></i>
+                </button>
+                <div class="ussd-hint-box" id="ussdHintBox">
+                    <div class="ussd-hint-title"><i class="fa-solid fa-mobile-screen-button"></i> Niba USSD itaje, koresha:</div>
+                    <div class="ussd-hint-code" id="ussdCodeDisplay"></div>
+                    <div class="ussd-hint-sub">Kanda iyo code kuri telephone yawe hanyuma emeza kwishyura.</div>
+                </div>
+                <button class="pay-cancel-link" onclick="closeTestPaymentModal()">Hagarika</button>
             </div>
-            <div class="input-form-field">
-                <label>Nomero ya Telephone</label>
-                <input type="tel" id="momoPhoneNumberInput" placeholder="e.g., 0788000000">
-            </div>
-            <div class="live-amount-strip" id="liveAmountBreakdownDisplayStrip">Ayishyurwa: 100 RWF</div>
-            <button class="btn-submit-payment" id="momoSubmitPaymentBtn" onclick="dispatchAdaptivePaymentQueryPacket()">
-                <span id="momoBtnTextLabel">Ishyura</span> <i class="fa-solid fa-credit-card" id="momoBtnIcon"></i>
-            </button>
-            <div id="ussdHintBox" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 12px; text-align:left;">
-                <div style="font-size:11px; font-weight:800; color:#166534; margin-bottom:6px;"><i class="fa-solid fa-mobile-screen-button"></i> Niba USSD itaje, koresha:</div>
-                <div id="ussdCodeDisplay" style="font-size:1.1rem; font-weight:800; color:#0f172a; font-family:monospace; letter-spacing:1px;"></div>
-                <div style="font-size:10px; color:#64748b; margin-top:4px;">Kanda iyo code kuri telephone yawe hanyuma emeza kwishyura.</div>
-            </div>
-                        <button class="btn-pay-trigger" style="color:#64748b; margin-top:8px; border:none; background:none;" onclick="closeTestPaymentModal()">Hagarika</button>
         </div>
     </div>
 
@@ -605,6 +658,27 @@
     </footer>
 
     <script>
+        window.sanitizeMomoPhone = function() {
+            const inp = document.getElementById('momoPhoneNumberInput');
+            const hint = document.getElementById('momoPhoneHint');
+            let v = inp.value.replace(/\D/g, '');
+            if (v.length >= 1 && v[0] !== '0') v = '0' + v.replace(/^0+/, '');
+            if (v.length >= 2 && v[1] !== '7') v = v[0] + '7' + v.slice(2);
+            if (v.length >= 3 && !['8','9','3'].includes(v[2])) v = v.slice(0,2) + '8' + v.slice(3);
+            inp.value = v.substring(0, 10);
+            // Live hint
+            if (v.length === 0) {
+                hint.textContent = 'Injiza imibare 10 gutangira na 078 cyangwa 079';
+                hint.className = 'phone-hint';
+            } else if (v.length < 10) {
+                hint.textContent = `Haracyabura imibare (${v.length} / 10)`;
+                hint.className = 'phone-hint err';
+            } else {
+                hint.textContent = '✓ Numero yuzuye neza';
+                hint.className = 'phone-hint ok';
+            }
+        };
+
         let activeReferenceId = null;
         let activePollTimer = null;
 
@@ -615,7 +689,7 @@
             document.getElementById('ussdHintBox').style.display = 'none';
             const payBtn = document.getElementById('momoSubmitPaymentBtn');
             document.getElementById('momoBtnTextLabel').textContent = 'Ishyura';
-            document.getElementById('momoBtnIcon').className = 'fa-solid fa-credit-card';
+            document.getElementById('momoBtnIcon').className = 'fa-solid fa-arrow-right';
             if (payBtn) payBtn.disabled = false;
             recalculateLiveDynamicBillingAmount();
             document.getElementById('sandboxPaymentModal').style.display = 'flex';
@@ -624,16 +698,14 @@
         window.closeTestPaymentModal = function() {
             document.getElementById('sandboxPaymentModal').style.display = 'none';
             document.getElementById('ussdHintBox').style.display = 'none';
-            // Cancel ongoing transaction
             if (activePollTimer) { clearInterval(activePollTimer); activePollTimer = null; }
             if (activeReferenceId) {
                 fetch(`/api/payments/cancel/${activeReferenceId}`, { method: 'POST' });
                 activeReferenceId = null;
             }
-            // Reset button
             const payBtn = document.getElementById('momoSubmitPaymentBtn');
-            document.getElementById('momoBtnTextLabel').textContent = 'Ishyura';
-            document.getElementById('momoBtnIcon').className = 'fa-solid fa-credit-card';
+            document.getElementById('momoBtnTextLabel').textContent = 'Ishyura Ubu';
+            document.getElementById('momoBtnIcon').className = 'fa-solid fa-arrow-right';
             if (payBtn) payBtn.disabled = false;
         };
 
@@ -668,7 +740,7 @@
             helperLabel.style.color = unitPrice === 100 ? '#64748b' : unitPrice === 80 ? '#0284c7' : unitPrice === 70 ? '#8b5cf6' : '#10b981';
             perExamLabel.textContent = `Igiciro cya buri kizamini: ${unitPrice} RWF`;
             
-            displayStrip.textContent = `Ayishyurwa: ${totalCost.toLocaleString()} RWF`;
+            displayStrip.textContent = `${totalCost.toLocaleString()} RWF`;
         };
 
         window.dispatchAdaptivePaymentQueryPacket = function() {
@@ -681,7 +753,11 @@
             const qty = Number(qtyInput.value) || 1;
             const unitPrice = pricePerExamForPurchaseQuantity(qty);
 
-            if(!phoneVal || phoneVal.length < 10) { alert('Injiza nomero ya telephone yuzuye.'); return; }
+            if(!phoneVal || phoneVal.length < 10) {
+                document.getElementById('momoPhoneHint').textContent = 'Injiza nomero ya telephone yuzuye ya 10 digits (urugero: 0788000000).';
+                document.getElementById('momoPhoneHint').className = 'phone-hint err';
+                return;
+            }
 
             // Detect carrier and set USSD code
             const clean = phoneVal.replace(/[\s\-\+]/g, '');
@@ -748,19 +824,19 @@
                                     clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     alert('Kwishyura byanze. Ongera ugerageze.');
-                                    payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
+                                    payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
                                 } else if (elapsed >= maxWait) {
                                     clearInterval(activePollTimer); activePollTimer = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
                                     activeReferenceId = null;
                                     alert('Igihe cyarangiye (iminuta 2). Ongera ugerageze.');
-                                    payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
+                                    payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
                                 }
                             });
                     }, 2000);
                 } else {
-                    alert(data.error || 'Uburyo bwanze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
+                    alert(data.error || 'Uburyo bwanze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
                 }
             })
             .catch(err => {
@@ -768,7 +844,7 @@
                 const msg = err.name === 'AbortError'
                     ? 'Igihe cyarangiye. Reba internet yawe hanyuma ongera ugerageze.'
                     : 'Ikibazo cya internet. Reba connexion yawe hanyuma ongera ugerageze.';
-                alert(msg); payBtn.disabled = false; btnText.textContent = 'Ishyura'; btnIcon.className = 'fa-solid fa-credit-card';
+                alert(msg); payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
             });
         };
         window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };
