@@ -264,27 +264,34 @@
             width: 100%; align-items: start; min-height: 0;
         }
 
-        .cards-column { display: grid; gap: 8px; align-content: start; width: 100%; max-width: 520px; }
+        .cards-column { display: grid; gap: 16px; align-content: start; width: 100%; max-width: 520px; }
 
-        .resource-glass-card {
-            background: var(--surface); border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 10px 14px; display: flex; flex-direction: column;
-            justify-content: space-between; position: relative; transition: all 0.2s ease;
-            min-height: 0; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-        }
-        .resource-glass-card.featured { border-color: var(--brand); background: linear-gradient(135deg, #ffffff 0%, #f4fbff 100%); box-shadow: 0 20px 40px rgba(11, 105, 139, 0.12); }
-        .featured-tag { position: absolute; top: -10px; left: 24px; background: var(--brand); color: #fff; font-size: 8px; font-weight: 800; padding: 4px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; }
+        .price-card { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px; position: relative; transition: box-shadow .2s, transform .2s; box-shadow: 0 4px 16px rgba(15,23,42,0.06); }
+        .price-card:hover { box-shadow: 0 12px 32px rgba(11,105,139,0.12); transform: translateY(-2px); }
+        .price-card.featured { border-color: var(--brand); background: linear-gradient(160deg, #f0f9ff 0%, #ffffff 60%); box-shadow: 0 8px 28px rgba(11,105,139,0.14); }
+        .price-card.featured:hover { box-shadow: 0 16px 40px rgba(11,105,139,0.22); }
 
-        .resource-card-body h3 { font-size: 0.92rem; font-weight: 800; color: #0f172a; margin-bottom: 3px; }
-        .price-badge-row { font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-bottom: 5px; line-height: 1.2; }
-        .price-badge-row span { font-size: 0.75rem; color: #64748b; font-weight: 500; }
-        
-        .perk-list { list-style: none; display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
-        .perk-list li { font-size: 0.78rem; color: #334155; display: flex; align-items: center; gap: 6px; }
-        .perk-list li i { color: var(--success); font-size: 11px; }
+        .pc-badge { position: absolute; top: -11px; left: 20px; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #fff; font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 999px; text-transform: uppercase; letter-spacing: .5px; box-shadow: 0 4px 10px rgba(11,105,139,0.3); }
 
-        .btn-pay-trigger { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); border: none; color: #ffffff; padding: 7px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; width: 100%; cursor: pointer; transition: all 0.18s ease; text-align: center; box-shadow: 0 4px 12px rgba(11, 105, 139, 0.16); }
-        .resource-glass-card:hover .btn-pay-trigger, .featured .btn-pay-trigger { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(11, 105, 139, 0.22); }
+        .pc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+        .pc-name { font-size: 1rem; font-weight: 800; color: #0f172a; }
+        .pc-price-wrap { text-align: right; }
+        .pc-price { font-size: 1.6rem; font-weight: 800; color: var(--brand); line-height: 1; }
+        .pc-price sub { font-size: 0.75rem; font-weight: 600; color: #64748b; vertical-align: baseline; }
+        .pc-price-note { font-size: 10px; color: #94a3b8; font-weight: 600; margin-top: 2px; }
+
+        .pc-divider { height: 1px; background: #f1f5f9; }
+
+        .pc-tiers { display: flex; flex-direction: column; gap: 6px; }
+        .pc-tier-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9; }
+        .price-card.featured .pc-tier-row { background: #f0f9ff; border-color: #e0f2fe; }
+        .pc-tier-range { font-size: 12px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 6px; }
+        .pc-tier-range i { color: var(--success); font-size: 11px; }
+        .pc-tier-price { font-size: 12px; font-weight: 800; color: var(--brand); background: rgba(11,105,139,0.08); padding: 2px 8px; border-radius: 20px; }
+        .pc-tier-save { font-size: 10px; font-weight: 700; color: #10b981; background: #dcfce7; padding: 2px 7px; border-radius: 20px; }
+
+        .btn-pay-trigger { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); border: none; color: #fff; padding: 11px 16px; border-radius: 10px; font-size: 0.88rem; font-weight: 800; width: 100%; cursor: pointer; transition: all .18s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 6px 16px rgba(11,105,139,0.2); font-family: 'Inter', sans-serif; }
+        .btn-pay-trigger:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(11,105,139,0.3); }
 
         /* ===== RIGHT PANEL PROCESS CONTAINER ===== */
         .payment-guide-container {
@@ -496,31 +503,74 @@
 
             <div class="pricing-split-layout">
                 <div class="cards-column">
-                    <div class="resource-glass-card">
-                        <div class="resource-card-body">
-                            <h3>Starter Pack</h3>
-                            <div class="price-badge-row">100 <span>RWF / Ikizamini</span></div>
-                            <ul class="perk-list">
-                                <li><i class="fa-solid fa-circle-check"></i> 1 - 9 Ibizamini</li>
-                                <li><i class="fa-solid fa-circle-check"></i> Bidashobora gutera umunaniro</li>
-                                <li><i class="fa-solid fa-circle-check"></i> Ntagure byinshi niba uri gutoza</li>
-                            </ul>
+                    <!-- Starter Pack -->
+                    <div class="price-card">
+                        <div class="pc-top">
+                            <div>
+                                <div class="pc-name">Starter Pack</div>
+                                <div style="font-size:12px;color:#64748b;margin-top:3px;">Gutangira no kwiga</div>
+                            </div>
+                            <div class="pc-price-wrap">
+                                <div class="pc-price">100 <sub>RWF</sub></div>
+                                <div class="pc-price-note">kuri buri kizamini</div>
+                            </div>
                         </div>
-                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)">Ishyura Ubu</button>
+                        <div class="pc-divider"></div>
+                        <div class="pc-tiers">
+                            <div class="pc-tier-row">
+                                <span class="pc-tier-range"><i class="fa-solid fa-circle-check"></i> 1 – 9 Ibizamini</span>
+                                <span class="pc-tier-price">100 RWF / imwe</span>
+                            </div>
+                            <div class="pc-tier-row" style="background:#fafafa;border-color:#f1f5f9;">
+                                <span class="pc-tier-range" style="color:#94a3b8;"><i class="fa-solid fa-circle" style="color:#e2e8f0;font-size:9px;"></i> Ntagabanyirizo</span>
+                                <span style="font-size:11px;color:#94a3b8;font-weight:600;">Igiciro gisanzwe</span>
+                            </div>
+                        </div>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)">
+                            <i class="fa-solid fa-bolt"></i> Ishyura Ubu
+                        </button>
                     </div>
 
-                    <div class="resource-glass-card featured">
-                        <div class="featured-tag">Inzira nziza</div>
-                        <div class="resource-card-body">
-                            <h3>Best Value Pack</h3>
-                            <div class="price-badge-row">Amahitamo yoroheje</div>
-                            <ul class="perk-list">
-                                <li><i class="fa-solid fa-circle-check"></i> 10 - 14 Ibizamini: 80 RWF / imwe</li>
-                                <li><i class="fa-solid fa-circle-check"></i> 15 - 20 Ibizamini: 70 RWF / imwe</li>
-                                <li><i class="fa-solid fa-circle-check"></i> 21+ ibizamini: 50 RWF / imwe</li>
-                            </ul>
+                    <!-- Best Value Pack -->
+                    <div class="price-card featured">
+                        <div class="pc-badge">Inzira Nziza</div>
+                        <div class="pc-top">
+                            <div>
+                                <div class="pc-name">Best Value Pack</div>
+                                <div style="font-size:12px;color:#0369a1;margin-top:3px;">Ugabanyirijwe uko ugura byinshi</div>
+                            </div>
+                            <div class="pc-price-wrap">
+                                <div class="pc-price">50 <sub>RWF</sub></div>
+                                <div class="pc-price-note">guhera kuri 21+</div>
+                            </div>
                         </div>
-                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)">Ishyura Ubu</button>
+                        <div class="pc-divider"></div>
+                        <div class="pc-tiers">
+                            <div class="pc-tier-row">
+                                <span class="pc-tier-range"><i class="fa-solid fa-circle-check"></i> 10 – 14 Ibizamini</span>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <span class="pc-tier-price">80 RWF / imwe</span>
+                                    <span class="pc-tier-save">-20%</span>
+                                </div>
+                            </div>
+                            <div class="pc-tier-row">
+                                <span class="pc-tier-range"><i class="fa-solid fa-circle-check"></i> 15 – 20 Ibizamini</span>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <span class="pc-tier-price">70 RWF / imwe</span>
+                                    <span class="pc-tier-save">-30%</span>
+                                </div>
+                            </div>
+                            <div class="pc-tier-row">
+                                <span class="pc-tier-range"><i class="fa-solid fa-circle-check"></i> 21+ Ibizamini</span>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <span class="pc-tier-price">50 RWF / imwe</span>
+                                    <span class="pc-tier-save">-50%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)">
+                            <i class="fa-solid fa-tags"></i> Ishyura Ubu
+                        </button>
                     </div>
                 </div>
 
