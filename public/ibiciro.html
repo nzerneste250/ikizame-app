@@ -153,87 +153,35 @@
         }
 
         html, body {
+            min-height: 100vh;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f8fbff 0%, #eef7ff 48%, #fdfefe 100%);
             color: var(--text-dark);
-            overflow: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scroll-behavior: smooth;
         }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .workspace-scroll-container {
-            padding: 18px clamp(14px, 2vw, 24px) 56px;
-            overflow: auto;
-        }
-
-        .section-header-meta {
-            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
-            border-radius: 18px;
-            padding: 16px 20px;
-            box-shadow: 0 16px 32px rgba(11, 105, 139, 0.16);
-        }
-
-        .resource-glass-card {
-            border-radius: 16px;
-            padding: 14px 16px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
-        }
-
-        .resource-glass-card.featured {
-            transform: translateY(-2px);
-            box-shadow: 0 18px 34px rgba(11, 105, 139, 0.12);
-        }
-
-        .btn-pay-trigger {
-            border-radius: 10px;
-            padding: 9px 12px;
-            box-shadow: 0 10px 20px rgba(11, 105, 139, 0.14);
-        }
-
-        .payment-guide-container {
-            border-radius: 18px;
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
-            padding: 14px;
-        }
-
-        .diagram-step {
-            border-radius: 12px;
-            background: #ffffff;
-            border-color: #e6edf5;
-        }
-
-        .balance-check-block {
-            border-radius: 12px;
-            padding: 8px;
-        }
-
-        @media (max-width: 900px) {
-            .pricing-split-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .cards-column {
-                max-width: 100%;
-            }
-        }
-        /* ===== CONTAINER LAYOUT CANVAS ===== */
         .workspace-scroll-container {
             flex: 1;
             margin-top: 60px;
-            padding: 6px clamp(10px, 1.8vw, 20px) 44px;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
+            padding: 20px clamp(12px, 2vw, 32px) 60px;
             width: 100%;
-            overflow: hidden;
+            display: flex;
+            justify-content: center;
         }
         .workspace-inner {
             width: 100%;
             max-width: 1320px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            justify-content: flex-start;
-            overflow: hidden;
+            gap: 20px;
         }
         
         .section-header-meta {
@@ -413,38 +361,16 @@
         .footer a:hover { opacity: 0.9; }
         @media (max-width: 900px) { .footer { position: static !important; } .workspace-scroll-container { padding-bottom: 16px !important; } }
 
-        /* ===== 📱 MOBILE OVERRIDES ===== */
         @media (max-width: 850px) {
-            html, body { height: auto; overflow-y: auto; }
-            .workspace-scroll-container { margin-top: 0; padding: 12px 4% 50px; overflow-y: auto; padding-top: calc(var(--navbar-h, 110px) + 12px); }
-            .pricing-split-layout { grid-template-columns: 1fr; gap: 14px; }
-            .cards-column { max-width: none; gap: 12px; }
-            .workspace-inner { height: auto; gap: 12px; overflow: visible; }
-            .section-header-meta { padding: 14px 16px; border-radius: 12px; margin-bottom: 0; }
-            .section-header-meta h2 { font-size: 1.05rem; margin-bottom: 5px; }
-            .section-header-meta p { font-size: 0.82rem; margin-bottom: 8px; }
-            .channel-support-banner { padding: 7px 14px; }
-            .channel-support-banner span { font-size: 0.78rem; }
-            .resource-glass-card { padding: 14px 16px; border-radius: 12px; }
-            .resource-card-body h3 { font-size: 1rem; margin-bottom: 5px; }
-            .price-badge-row { font-size: 1.2rem; margin-bottom: 8px; }
-            .perk-list { gap: 6px; margin-bottom: 12px; }
-            .perk-list li { font-size: 0.85rem; }
-            .btn-pay-trigger { padding: 10px 12px; font-size: 0.88rem; }
-            .payment-guide-container { padding: 14px 14px; border-radius: 12px; gap: 10px; }
-            .guide-card-header h3 { font-size: 0.9rem; }
-            .guide-card-header p { font-size: 0.78rem; }
-            .diagram-flow-row { flex-direction: column; gap: 10px; }
-            .diagram-step { padding: 10px 10px 8px; border-radius: 10px; }
-            .diagram-step h4 { font-size: 0.8rem; }
-            .diagram-step p { font-size: 0.74rem; }
-            .diagram-arrow { transform: rotate(90deg); margin: -4px 0; }
-            .ussd-commands-grid { flex-direction: column; gap: 8px; }
-            .ussd-fallback-box { padding: 10px 12px; border-radius: 10px; }
-            .ussd-fallback-box h4 { font-size: 0.78rem; }
-            .ussd-code { font-size: 1.05rem; }
-            .carrier-logo-square-box { width: 44px; height: 44px; }
-            .balance-check-block #balanceStatusPanel { font-size: 0.82rem; min-height: 36px; }
+            .workspace-scroll-container { padding-top: calc(var(--navbar-h, 110px) + 12px); padding-bottom: 60px; }
+            .pricing-split-layout { grid-template-columns: 1fr; gap: 16px; }
+            .cards-column { max-width: none; gap: 14px; }
+            .workspace-inner { gap: 16px; }
+            .section-header-meta { padding: 18px 16px; }
+            .hero-stats-row { gap: 8px; }
+            .hero-stat { padding: 7px 12px; min-width: 70px; }
+            .payment-guide-container { padding: 16px; gap: 14px; }
+            .ussd-commands-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
