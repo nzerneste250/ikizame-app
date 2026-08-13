@@ -314,88 +314,50 @@
         .btn-pay-trigger { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); border: none; color: #fff; padding: 11px 16px; border-radius: 10px; font-size: 0.88rem; font-weight: 800; width: 100%; cursor: pointer; transition: all .18s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 6px 16px rgba(11,105,139,0.2); font-family: 'Inter', sans-serif; }
         .btn-pay-trigger:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(11,105,139,0.3); }
 
-        /* ===== RIGHT PANEL PROCESS CONTAINER ===== */
-        .payment-guide-container {
-            background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%); border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column;
-            gap: 6px; min-height: 100%; justify-content: flex-start; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
-        }
-        .guide-card-header h3 { font-size: 0.82rem; font-weight: 800; color: #0f172a; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
-        .guide-card-header p { font-size: 0.7rem; color: #475569; line-height: 1.35; }
+        /* ===== RIGHT PANEL ===== */
+        .payment-guide-container { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 4px 16px rgba(15,23,42,0.06); }
 
-        .diagram-flow-row { display: flex; gap: 6px; align-items: stretch; }
-        .diagram-step { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 8px 6px; display: flex; flex-direction: column; gap: 2px; position: relative; flex: 1; min-height: 0; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04); }
-        .step-icon { width: 18px; height: 18px; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; position: absolute; top: -9px; left: 10px; box-shadow: 0 2px 8px rgba(11, 105, 139, 0.18); }
-        .diagram-step h4 { font-size: 0.7rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
-        .diagram-step p { font-size: 0.65rem; color: #475569; line-height: 1.3; }
-        .diagram-arrow { display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 10px; }
+        /* Balance check */
+        .balance-section-title { font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: .5px; display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
+        .balance-section-title i { color: var(--brand); }
+        .balance-input-row { display: flex; gap: 8px; align-items: stretch; }
+        .balance-input-row input { flex: 1; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 13px; font-weight: 600; color: #0f172a; outline: none; font-family: 'Inter', sans-serif; background: #f8fafc; transition: border-color .18s; }
+        .balance-input-row input:focus { border-color: var(--brand); background: #fff; }
+        .balance-input-row input::placeholder { color: #94a3b8; font-weight: 500; }
+        .btn-balance-check { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); border: none; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif; transition: all .18s; box-shadow: 0 4px 12px rgba(11,105,139,0.2); }
+        .btn-balance-check:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(11,105,139,0.28); }
+        .balance-check-block { display: flex; flex-direction: column; gap: 10px; border-radius: 12px; transition: background .2s, border-color .2s; }
+        .balance-check-block.balance-check-good { background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 10px; border-radius: 12px; }
+        .balance-check-block.balance-check-empty { background: #fff1f2; border: 1.5px solid #fecaca; padding: 10px; border-radius: 12px; }
+        .balance-check-block.balance-check-low { background: #fffbeb; border: 1.5px solid #fde68a; padding: 10px; border-radius: 12px; }
+        #balanceStatusPanel { min-height: 28px; padding: 7px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #475569; line-height: 1.5; display: flex; align-items: center; justify-content: center; text-align: center; width: 100%; background: #f8fafc; border: 1px solid #f1f5f9; transition: all .2s; }
+        #balanceStatusPanel.balance-status-good { color: #166534; background: #dcfce7; border-color: #bbf7d0; }
+        #balanceStatusPanel.balance-status-empty { color: #991b1b; background: #fee2e2; border-color: #fecaca; }
+        #balanceStatusPanel.balance-status-low { color: #92400e; background: #fef3c7; border-color: #fde68a; }
 
-        .balance-check-block { display: flex; flex-direction: column; gap: 5px; margin-bottom: 2px; transition: background 0.2s ease, border-color 0.2s ease; border-radius: 10px; }
-        .balance-check-block.balance-check-good { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); padding: 8px; }
-        .balance-check-block.balance-check-empty { background: rgba(255,0,0,0.08); border: 1px solid rgba(255,0,0,0.25); padding: 8px; }
-        .balance-check-block.balance-check-low { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); padding: 8px; }
-        .balance-check-block .btn-pay-trigger { width: 100%; }
-        .balance-check-block #balanceStatusPanel {
-            min-height: 30px;
-            padding: 6px 10px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.12);
-            border: 1px solid transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 0.75rem;
-            line-height: 1.4;
-            color: #334155;
-            font-weight: 700;
-            transition: all 0.2s ease;
-        }
-        .balance-check-block #balanceStatusPanel.balance-status-good {
-            color: #002D04;
-            background: rgba(59,130,246,0.12);
-            border-color: rgba(59,130,246,0.28);
-        }
-        .balance-check-block #balanceStatusPanel.balance-status-empty {
-            color: #FF0000;
-            background: rgba(255,0,0,0.12);
-            border-color: rgba(255,0,0,0.28);
-        }
-        .balance-check-block #balanceStatusPanel.balance-status-low {
-            color: #92400e;
-            background: rgba(251,191,36,0.14);
-            border-color: rgba(251,191,36,0.3);
-        }
+        /* Divider */
+        .panel-divider { height: 1px; background: #f1f5f9; }
 
-        .btn-pay-trigger:hover { transform: translateY(-1px); box-shadow: 0 12px 25px rgba(11,105,139,0.18); }
+        /* Steps */
+        .steps-title { font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: .5px; display: flex; align-items: center; gap: 7px; margin-bottom: 12px; }
+        .steps-title i { color: var(--brand); }
+        .steps-list { display: flex; flex-direction: column; gap: 0; }
+        .step-item { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 14px; position: relative; }
+        .step-item:not(:last-child)::before { content: ''; position: absolute; left: 15px; top: 32px; width: 2px; height: calc(100% - 18px); background: linear-gradient(to bottom, #bae6fd, #e0f2fe); border-radius: 2px; }
+        .step-num { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(11,105,139,0.22); }
+        .step-content h4 { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 2px; margin-top: 5px; }
+        .step-content p { font-size: 11.5px; color: #64748b; line-height: 1.5; }
 
-        /* ===== HIGH-VISIBILITY LOGO SQUARE BADGE EMBEDS ===== */
-        .carrier-logo-square-box { 
-            width: 48px;
-            height: 48px; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            border: 1px solid #e2e8f0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-shrink: 0; 
-            background: #ffffff;  
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
-        .carrier-logo-square-box img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
-        .carrier-logo-square-box.modal-badge { width: 70px; height: 70px; border: 2px solid #cbd5e1; }
-        .carrier-logo-square-box.header-payment-badge { width: 30px; height: 30px; border-radius: 6px; }
-        .ussd-fallback-box { background: linear-gradient(135deg, #f4fbff 0%, #eef7ff 100%); border: 1px dashed rgba(11, 105, 139, 0.2); border-radius: 8px; padding: 7px 10px; }
-        .ussd-fallback-box h4 { font-size: 0.7rem; font-weight: 700; color: #0b698b; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
-        
-        .ussd-commands-grid { display: flex; gap: 8px; }
-        .ussd-card { background: #ffffff; color: #0f172a; border-radius: 8px; padding: 6px 8px; display: flex; align-items: center; justify-content: space-between; flex: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
-        .ussd-meta-wrap { display: flex; align-items: center; gap: 8px; }
-        
-        .ussd-text-info { display: flex; flex-direction: column; }
-        .ussd-text-info span { font-size: 8px; font-weight: 800; color: #64748b; text-transform: uppercase; }
-        .ussd-code { font-size: 0.95rem; font-weight: 800; color: #0f172a; font-family: monospace; }
+        /* USSD */
+        .ussd-fallback-box { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1.5px solid #bae6fd; border-radius: 12px; padding: 12px 14px; }
+        .ussd-fallback-box h4 { font-size: 11px; font-weight: 800; color: #0369a1; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: .4px; }
+        .ussd-commands-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .ussd-card { background: #fff; border: 1px solid #e0f2fe; border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 8px rgba(11,105,139,0.06); }
+        .carrier-logo-square-box { width: 36px; height: 36px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #fff; }
+        .carrier-logo-square-box img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+        .ussd-text-info { display: flex; flex-direction: column; gap: 1px; }
+        .ussd-text-info span { font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: .3px; }
+        .ussd-code { font-size: 1rem; font-weight: 800; color: #0f172a; font-family: monospace; letter-spacing: .5px; }
 
         /* ===== PAYMENT MODAL — REDESIGNED ===== */
         .payment-modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 16px; width: 100vw; height: 100vh; }
@@ -616,63 +578,79 @@
                 </div>
 
                 <section class="payment-guide-container">
-                    <div class="guide-card-header">
-                        <h3><i class="fa-solid fa-circle-info"></i> Ibikurikira mbere yo kwishyura</h3>
-                        <p>Reba ibisigaye kuri nomero yawe mbere yo kugura. Ukoreshe neza credits zawe, kandi uhite ubona uko amahitamo yawe ahagaze.</p>
-                    </div>
 
-                    <div class="balance-check-block" style="margin-bottom: 6px;">
-                        <div class="input-form-field">
-                            <label>Reba ibisigaye kuri terefone</label>
-                            <input type="tel" id="balancePhoneInput" placeholder="0788000000" oninput="sanitizeBalancePhoneInput()">
-                        </div>
-                        <button class="btn-pay-trigger" id="balanceCheckBtn" style="margin-bottom: 4px;" onclick="fetchRemainingExamBalance()">Reba ibisigaye</button>
-                        <div id="balanceStatusPanel" style="min-height: 30px; font-size: 0.75rem; line-height: 1.4; padding: 6px 10px; border-radius: 8px; display: flex; align-items: center; justify-content: center; text-align: center; width: 100%;"></div>
-                    </div>
-
-                    <div class="diagram-flow-row">
-                        <div class="diagram-step">
-                            <div class="step-icon">1</div>
-                            <h4>Injiza terefone yawe</h4>
-                            <p>Andika nomero ya MTN cyangwa Airtel mu murongo ugendanwa.</p>
-                        </div>
-                        <div class="diagram-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                        <div class="diagram-step">
-                            <div class="step-icon">2</div>
-                            <h4>Hitamo umubare</h4>
-                            <p>Hitamo igihe cy'ibizamini ukeneye. Igiciro kiragabanuka uko ugura byinshi.</p>
-                        </div>
-                        <div class="diagram-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                        <div class="diagram-step">
-                            <div class="step-icon">3</div>
-                            <h4>Kora kwishyura</h4>
-                            <p>Injiza PIN ya MoMo, hanyuma umenye ko konti yawe yahise ifunguka.</p>
+                    <!-- Balance Check -->
+                    <div>
+                        <div class="balance-section-title"><i class="fa-solid fa-magnifying-glass"></i> Reba Ibisigaye kuri Nomero Yawe</div>
+                        <div class="balance-check-block" id="balanceCheckBlock">
+                            <div class="balance-input-row">
+                                <input type="tel" id="balancePhoneInput" placeholder="0788000000" maxlength="10" oninput="sanitizeBalancePhoneInput()">
+                                <button class="btn-balance-check" onclick="fetchRemainingExamBalance()"><i class="fa-solid fa-search"></i> Reba</button>
+                            </div>
+                            <div id="balanceStatusPanel"></div>
                         </div>
                     </div>
 
+                    <div class="panel-divider"></div>
+
+                    <!-- Steps -->
+                    <div>
+                        <div class="steps-title"><i class="fa-solid fa-list-ol"></i> Uko Kwishyura Bigenda</div>
+                        <div class="steps-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>
+                                <div class="step-content">
+                                    <h4>Hitamo Igiciro</h4>
+                                    <p>Hitamo Starter Pack cyangwa Best Value Pack ukurikije umubare w'ibizamini ukeneye.</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>
+                                <div class="step-content">
+                                    <h4>Injiza Nomero ya Telephone</h4>
+                                    <p>Andika nomero ya MTN (078/079) cyangwa Airtel (072/073) mu murongo ugendanwa.</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">3</div>
+                                <div class="step-content">
+                                    <h4>Emeza kuri Telephone</h4>
+                                    <p>Uzabona ikibazo cyo kwemeza kuri telephone yawe. Injiza PIN ya MoMo cyangwa Airtel Money.</p>
+                                </div>
+                            </div>
+                            <div class="step-item" style="padding-bottom:0;">
+                                <div class="step-num" style="background:linear-gradient(135deg,#10b981,#059669);">4</div>
+                                <div class="step-content">
+                                    <h4>Konti Ifunguka Ako Kanya</h4>
+                                    <p>Nyuma yo kwemeza, ibizamini byawe bifunguka vuba kandi ushobora gutangira ikizamini.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-divider"></div>
+
+                    <!-- USSD Fallback -->
                     <div class="ussd-fallback-box">
-                        <h4><i class="fa-solid fa-mobile-screen-button"></i> Mu gihe PIN Push itaje (USSD Code):</h4>
+                        <h4><i class="fa-solid fa-mobile-screen-button"></i> Niba ikibazo cyo kwemeza kitaje — Koresha USSD</h4>
                         <div class="ussd-commands-grid">
                             <div class="ussd-card">
-                                <div class="ussd-meta-wrap">
-                                    <div class="carrier-logo-square-box"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN MoMo Logo"></div>
-                                    <div class="ussd-text-info">
-                                        <span>MTN MoMo</span>
-                                        <div class="ussd-code">*182*7*1#</div>
-                                    </div>
+                                <div class="carrier-logo-square-box"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN"></div>
+                                <div class="ussd-text-info">
+                                    <span>MTN MoMo</span>
+                                    <div class="ussd-code">*182*7*1#</div>
                                 </div>
                             </div>
                             <div class="ussd-card">
-                                <div class="ussd-meta-wrap">
-                                    <div class="carrier-logo-square-box"><img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel Money Logo"></div>
-                                    <div class="ussd-text-info">
-                                        <span>Airtel Money</span>
-                                        <div class="ussd-code">*182*4*2#</div>
-                                    </div>
+                                <div class="carrier-logo-square-box"><img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel"></div>
+                                <div class="ussd-text-info">
+                                    <span>Airtel Money</span>
+                                    <div class="ussd-code">*182*4*2#</div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </section>
             </div>
         </main>
