@@ -122,17 +122,24 @@
         footer { min-height: 40px; padding: 7px 16px; background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; flex-wrap: wrap; gap: 6px; }
         footer strong { color: #38bdf8; }
         footer a:hover { opacity: 0.9; }
-        @media (max-width: 900px) { footer { position: static !important; } .main { padding-bottom: 16px; } }
+        @media (max-width: 900px) {
+            footer { position: static !important; width: 100% !important; margin-top: auto; }
+            .main { padding-bottom: 24px; }
+            body { padding-top: 110px; }
+        }
         @media(max-width:900px) { .navbar { flex-wrap:wrap!important; height:auto!important; padding:8px 4% 6px!important; gap:0!important; } .navbar-brand-wrap { flex:1; } .lang-badge { display:none!important; } nav { width:100%; } .navbar-links { display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:6px!important; width:100%!important; padding:6px 0 2px!important; margin:0!important; } .navbar-links li { list-style:none; } .navbar-links a { display:flex!important; align-items:center!important; gap:5px!important; font-size:0.72rem!important; padding:8px 10px!important; border-radius:12px!important; white-space:nowrap!important; overflow:hidden!important; text-overflow:ellipsis!important; justify-content:center!important; background:rgba(11,105,139,0.04)!important; border:1px solid rgba(11,105,139,0.08)!important; } .navbar-links a i { font-size:0.78rem!important; flex-shrink:0; } .navbar-links a.active { background:linear-gradient(135deg, #0b698b 0%, #0ea5e9 100%)!important; color:#fff!important; border-color:rgba(11,105,139,0.25)!important; font-weight:700!important; } }
         @media (max-width: 420px) { .navbar-links { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } .navbar-links a { font-size: 0.68rem !important; padding: 7px 6px !important; } }
-        @media(max-width:900px) { body { padding-top: 110px; } }
         @media(max-width:768px) {
             html, body { height:auto; overflow-y:auto; }
-            .main { flex:none; overflow:visible; padding:14px 4% 50px; }
+            body { padding-top: 112px; }
+            .main { flex:none; overflow:visible; padding:18px 4% 30px; }
             .cards-grid { overflow:visible; grid-template-columns:1fr; flex:none; }
-            .hero { padding:14px 4% 12px; }
+            .hero { padding:18px 4% 16px; }
+            footer { position: static !important; }
         }
         @media(max-width:480px) {
+            body { padding-top: 116px; }
+            .main { padding: 16px 3.5% 28px; }
             .doc-actions { flex-direction:column; }
             .btn-download { justify-content:center; }
         }
