@@ -148,11 +148,16 @@
             body { padding-top: 112px; }
             .main { flex:none; overflow:visible; padding:18px 4% 30px; }
             .cards-grid { overflow:visible; grid-template-columns:1fr; flex:none; }
-            .hero { padding:18px 4% 16px; }
+            .hero { padding:24px 4% 18px; }
+            .hero h1 { margin-top: 6px; }
+            .hero p { margin-top: 10px; line-height: 1.6; }
             footer { position: static !important; }
         }
         @media(max-width:480px) {
-            body { padding-top: 116px; }
+            body { padding-top: 124px; }
+            .hero { padding: 28px 5% 20px; }
+            .hero h1 { font-size: clamp(1.15rem, 7vw, 1.5rem); }
+            .hero p { font-size: 0.78rem; line-height: 1.7; padding: 0 4px; }
             .main { padding: 16px 3.5% 28px; }
             .doc-actions { flex-direction:column; }
             .btn-download { justify-content:center; }
