@@ -520,6 +520,8 @@
             font-weight: 600;
             color: var(--text-dark);
             outline: none;
+            position: relative;
+            z-index: 1;
             transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: rgba(255,255,255,0.98);
@@ -546,6 +548,8 @@
             border-right: 1px solid #cbd5e1;
             padding-right: 10px;
             user-select: none;
+            pointer-events: none;
+            z-index: 2;
         }
         .phone-prefix .rw-flag-svg {
             width: 22px;
