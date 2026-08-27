@@ -541,7 +541,7 @@
                 <td>${remCell}</td>
                 <td>${tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '—'}</td>
                 <td>${created}</td>
-                <td><button class="btn-text-action btn-edit" onclick="openEditPaymentModal(${tx.id})">Edit</button></td>
+                <td><button class="btn-text-action btn-edit payment-edit-action" onclick="openEditPaymentModal(${tx.id})">Edit</button></td>
             </tr>`;
         }).join('');
     }
@@ -711,6 +711,7 @@ fetch('/api/admin/check-session').then(function(r){return r.json();}).then(funct
     var r=document.getElementById('sidebarAdminRole');
     if(a&&d.email) a.textContent=d.email[0].toUpperCase();
     if(r) r.textContent=d.role==='viewer'?'Manager':'Administrator';
+    if(d.role==='viewer') document.querySelectorAll('.payment-edit-action').forEach(function(button){ button.remove(); });
 }).catch(function(){});
 </script>
 <script src="assets/js/admin-responsive.js"></script>

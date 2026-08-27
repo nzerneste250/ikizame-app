@@ -350,7 +350,7 @@ module.exports = (db, loginLimiter) => {
     });
 
     // POST update a payment transaction
-    router.post('/payment-transaction/:id', requireAdminLogin, (req, res) => {
+    router.post('/payment-transaction/:id', requireSuperAdmin, (req, res) => {
         const transactionId   = Number(req.params.id);
         const total_exams     = Number(req.body.total_exams     || 0);
         const remaining_exams = Number(req.body.remaining_exams || 0);

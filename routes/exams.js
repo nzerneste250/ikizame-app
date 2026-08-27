@@ -83,6 +83,30 @@ const examUploadFieldsConfig = upload.fields([
 
 module.exports = (db) => {
 
+    function consumePaymentCredit(phone, preferredRecordId, done) {
+        const consume = (where, values, fallback) => {
+            db.query(
+                `UPDATE payment_transactions
+                 SET remaining_exams = remaining_exams - 1
+                 WHERE ${where} AND status = 'SUCCESS' AND remaining_exams > 0`,
+                values,
+                (err, result) => {
+                    if (err) return done(err, false);
+                    if (result.affectedRows > 0) return done(null, true);
+                    if (fallback) return fallback();
+                    done(null, false);
+                }
+            );
+        };
+
+        if (preferredRecordId) {
+            return consume('id = ?', [preferredRecordId], () => {
+                consume('RIGHT(phone_number, 9) = ? ORDER BY id DESC LIMIT 1', [phone.slice(-9)], null);
+            });
+        }
+        consume('RIGHT(phone_number, 9) = ? ORDER BY id DESC LIMIT 1', [phone.slice(-9)], null);
+    }
+
     // GET all exams (shuffled for students, full list for admin)
     router.get('/', (req, res) => {
         db.query('SELECT * FROM exams ORDER BY id DESC', (err, results) => {
@@ -246,25 +270,37 @@ module.exports = (db) => {
                 (insertErr) => {
                     if (insertErr) console.error('Submit insert error:', insertErr.message);
 
+                    const finishSubmission = () => {
+                        req.session.hasCompletedActiveExamToken = true;
+                        req.session.lockedExamQuestionIds = [];
+                        res.json({ score, total: finalTotal });
+                    };
+
                     if (req.session.activePaymentRecordId) {
-                        db.query(
-                            `UPDATE payment_transactions SET remaining_exams = remaining_exams - 1 WHERE id = ? AND remaining_exams < 9000`,
-                            [req.session.activePaymentRecordId],
-                            (deductErr) => { if (deductErr) console.error('Token deduct error:', deductErr.message); }
+                        return consumePaymentCredit(
+                            sessionPhone,
+                            req.session.activePaymentRecordId,
+                            (deductErr, consumed) => {
+                                if (deductErr) return res.status(500).json({ error: deductErr.message });
+                                if (!consumed) return res.status(403).json({ error: 'Nta kizamini gisigaye kuri iyi nomero.' });
+                                finishSubmission();
+                            }
                         );
                     }
 
                     if (req.session.assignedStudentId) {
-                        db.query(
-                            `UPDATE school_students SET assigned_exams = GREATEST(0, assigned_exams - 1) WHERE id = ? AND assigned_exams > 0`,
+                        return db.query(
+                            `UPDATE school_students SET assigned_exams = assigned_exams - 1 WHERE id = ? AND assigned_exams > 0`,
                             [req.session.assignedStudentId],
-                            (sDeductErr) => { if (sDeductErr) console.error('Assigned deduct error:', sDeductErr.message); }
+                            (sDeductErr, result) => {
+                                if (sDeductErr) return res.status(500).json({ error: sDeductErr.message });
+                                if (!result.affectedRows) return res.status(403).json({ error: 'Nta kizamini gisigaye kuri iyi nomero.' });
+                                finishSubmission();
+                            }
                         );
                     }
 
-                    req.session.hasCompletedActiveExamToken = true;
-                    req.session.lockedExamQuestionIds = [];
-                    res.json({ score, total: finalTotal });
+                    finishSubmission();
                 }
             );
         });
