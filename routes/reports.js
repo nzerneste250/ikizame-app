@@ -5,7 +5,7 @@ const PASSWORD_REMINDER_EMAIL = 'nzerneste250@gmail.com';
 const PASSWORD_WARN_DAYS  = 3;
 
 function getReportRecipient() {
-    return process.env.DAILY_REPORT_EMAIL || process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationarystore@gmail.com';
+    return process.env.DAILY_REPORT_EMAIL || process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationerystore@gmail.com';
 }
 const PASSWORD_EXPIRY_DAYS = 14;
 

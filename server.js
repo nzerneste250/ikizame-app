@@ -455,7 +455,7 @@ app.post('/api/register', (req, res) => {
 
 // ── OWNER BYPASS OTP ─────────────────────────────────────────────────────
 const OWNER_PHONE = '0786663377';
-const OWNER_EMAIL = 'dotadostationarystore@gmail.com';
+const OWNER_EMAIL = 'ikizamerwanda078@gmail.com';
 const ownerOtpStore = new Map(); // phone -> { otp, expires }
 
 app.post('/api/owner-otp/send', (req, res) => {
@@ -607,7 +607,7 @@ app.post('/api/reports/submit', (req, res) => {
     const reportType = payload.reportType || 'general';
     const senderName = payload.senderName || payload.name || 'Unknown';
     const senderEmail = payload.senderEmail || payload.email || '';
-    const recipient = process.env.DAILY_REPORT_EMAIL || process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationarystore@gmail.com';
+    const recipient = process.env.DAILY_REPORT_EMAIL || process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationerystore@gmail.com';
 
     const html = `
         <div style="font-family:Inter,sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#f8fafc;border-radius:12px;">

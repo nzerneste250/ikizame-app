@@ -248,6 +248,7 @@
 </div>
 
 <footer class="admin-footer">&copy; 2026 IKIZAME &nbsp;&mdash;&nbsp; <strong>izo service quicky</strong></footer>
+<script src="assets/js/ikizame-ui.js"></script>
 <script>
 // ── Form UI helpers ──
 function toggleChip(label, checkId) {
@@ -385,11 +386,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.deleteResource = function(id) {
-        if (!confirm('Delete this resource permanently?')) return;
-        fetch(`/api/resources/delete/${id}`, { method: 'DELETE' })
-            .then(r => r.json())
-            .then(res => { if (res.success) loadResources(); else alert('Delete failed.'); })
-            .catch(() => alert('Network error.'));
+        ikConfirm('Urareba neza ko ushaka gusiba ubu butumwa burundu? Igikorwa ntishobora gusubizwaho.', 'danger', 'Emeza Gusiba', 'Yego, Siba', 'Oya').then(confirmed => {
+            if (!confirmed) return;
+            fetch(`/api/resources/delete/${id}`, { method: 'DELETE' })
+                .then(r => r.json())
+                .then(res => { if (res.success) { loadResources(); ikToast('Butumwa basibwe neza.', 'success'); } else ikToast('Delete failed.', 'error'); })
+                .catch(() => ikToast('Network error.', 'error'));
+        });
     };
 
     loadResources();

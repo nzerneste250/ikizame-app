@@ -360,6 +360,7 @@
         </div>
     </div>
 </div>
+<script src="assets/js/ikizame-ui.js"></script>
 <script>
     let paymentTransactions = [];
 
@@ -631,15 +632,15 @@ function applyDateFilter(dateStr) {
         const total_exams = Number(document.getElementById('editPaymentTotalExams').value);
         const remaining_exams = Number(document.getElementById('editPaymentRemainingExams').value);
         if (isNaN(id) || isNaN(total_exams) || isNaN(remaining_exams) || total_exams < 0) {
-            alert('Please enter valid numeric values for total and remaining exams.');
+            ikToast('Injiza imibare yuzuye kuri total na remaining exams.', 'warning');
             return;
         }
         if (remaining_exams < 0) {
-            alert('⚠️ Remaining exams cannot go negative.\n\nThis student has used all their exams. Please create a new payment for them instead.');
+            ikAlert('Remaining exams ntishobora kuba munsi ya zero.\n\nUyu munyeshuri yarangije ibizamini byose. Shyiraho payment nshya.', 'warning', 'Ibizamini Byarangiye');
             return;
         }
         if (remaining_exams > total_exams) {
-            alert('Remaining exams cannot be greater than total exams purchased.');
+            ikToast('Remaining exams ntishobora kuruta total exams zaguzwe.', 'warning');
             return;
         }
         fetch(`/api/admin/payment-transaction/${id}`, {
@@ -656,7 +657,7 @@ function applyDateFilter(dateStr) {
             loadPaymentDashboard();
         })
         .catch(err => {
-            alert(err.message || 'Update failed.');
+            ikToast(err.message || 'Update failed.', 'error');
         });
     }
 

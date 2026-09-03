@@ -741,6 +741,7 @@ document.addEventListener('keydown', function(e) {
 });
 </script>
 
+<script src="assets/js/ikizame-ui.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('questionsMasterTableBody');
@@ -1019,19 +1020,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.triggerQuestionDeletionCycle = function(targetId, buttonEl) {
-        if (!confirm("Urareba neza ko ushaka gusiba iki kibazo burundu muri sisitemu?")) return;
-        
-        fetch(`/api/exams/delete/${targetId}`, { method: 'DELETE' })
-            .then(res => res.json())
-            .then(res => {
-                if (res.success) {
-                    allQuestionsCachedArray = allQuestionsCachedArray.filter(q => q.id !== targetId);
-                    loadRepositoryQuestionsPool();
-                } else {
-                    alert('Gusiba byanze, biba sisitemu ihagaze.');
-                }
-            })
-            .catch(() => alert('Gusiba byanze, biba internet ihagaze.'));
+        ikConfirm('Urareba neza ko ushaka gusiba iki kibazo burundu muri sisitemu? Igikorwa ntishobora gusubizwaho.', 'danger', 'Emeza Gusiba Ikibazo', 'Yego, Siba', 'Oya, Hagarika').then(function(confirmed) {
+            if (!confirmed) return;
+            fetch(`/api/exams/delete/${targetId}`, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        allQuestionsCachedArray = allQuestionsCachedArray.filter(q => q.id !== targetId);
+                        loadRepositoryQuestionsPool();
+                        ikToast('Ikibazo casibwe neza.', 'success');
+                    } else {
+                        ikToast('Gusiba byanze, biba sisitemu ihagaze.', 'error');
+                    }
+                })
+                .catch(() => ikToast('Gusiba byanze, biba internet ihagaze.', 'error'));
+        });
     };
 
     window.switchAdminControlView = function(targetSectionName) {

@@ -462,6 +462,7 @@
         </div>
     </footer>
 
+    <script src="assets/js/ikizame-ui.js"></script>
     <script src="assets/js/enter-to-action.js"></script>
     <script>
         let globalLoadedAttemptsArray = [];
@@ -706,7 +707,7 @@
 
                 } catch (err) {
                     console.error("[UI Engine Error] Failed to prepare exam review session data payload:", err);
-                    alert('Gufungura ibyavuye mu kizamini byanze. Subira ugerageze.');
+                    ikToast('Gufungura ibyavuye mu kizamini byanze. Subira ugerageze.', 'error');
                     if (activeBtn) {
                         activeBtn.disabled = false;
                         activeBtn.textContent = 'Fungura';

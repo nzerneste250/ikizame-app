@@ -168,6 +168,7 @@
         </div>
     </section>
 </div>
+<script src="assets/js/ikizame-ui.js"></script>
 <script>
 let walletState = { remainingExams: 0, canRegister: false, licenseExpired: false };
 let editStudentId = null;
@@ -248,7 +249,7 @@ async function loadStudents(){
 
 function startEditStudent(student){
   if (walletState.licenseExpired) {
-    alert('License yarangiye. Vugurura lisansi yawe mbere yo guhindura amakuru y\'umunyeshuri.');
+    ikAlert('License yarangiye. Vugurura lisansi yawe mbere yo guhindura amakuru y\'umunyeshuri.', 'warning');
     return;
   }
   editStudentId = student.id;
@@ -302,7 +303,7 @@ async function submitStudentEdit(event){
 async function toggleStudentStatus(studentId, currentStatus){
   const targetStatus = currentStatus === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED';
   if (targetStatus === 'BLOCKED') {
-    const confirmed = window.confirm('Uri buze guhagarika uyu munyeshuri. Urabyemera?');
+    const confirmed = await ikConfirm('Uri buze guhagarika uyu munyeshuri. Ntazashobora gukora ibizamini kugeza igihe uzamukuraho ikibuzo.', 'warning', 'Hagarika Umunyeshuri', 'Yego, Hagarika', 'Oya');
     if (!confirmed) return;
   }
   const res = await fetch(`/api/school/students/${studentId}/status`, {
@@ -312,9 +313,10 @@ async function toggleStudentStatus(studentId, currentStatus){
   });
   const data = await res.json();
   if (!data.success) {
-    alert(data.error || 'Action failed.');
+    ikToast(data.error || 'Action failed.', 'error');
     return;
   }
+  ikToast(targetStatus === 'BLOCKED' ? 'Umunyeshuri yahagaritswe.' : 'Umunyeshuri yafunguriwe konti.', 'success');
   await loadStudents();
 }
 
