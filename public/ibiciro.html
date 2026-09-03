@@ -724,12 +724,32 @@
     </div>
 
     <!-- ===== BRANDED SUCCESS POPUP BOX MODAL ===== -->
-    <div class="payment-modal-overlay" id="customBrandedSuccessAlertBoxModal" style="background: rgba(15, 23, 42, 0.6); z-index: 6000;">
-        <div style="background: #ffffff; width: 100%; max-width: 360px; border-radius: 12px; padding: 24px; text-align: center;">
-            <div style="width: 44px; height: 44px; background: #dcfce7; color: #166534; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 12px;"><i class="fa-solid fa-circle-check"></i></div>
-            <h3 style="color: #0f172a; font-size: 1.1rem; font-weight: 800; margin-bottom: 4px;">Byakunze Neza!</h3>
-            <p id="customAlertBoxTextContentMessage" style="color: #475569; font-size: 13px; line-height: 1.4; margin-bottom: 16px;">Message...</p>
-            <button onclick="handleCustomAlertBoxConfirmationRedirect()" style="background: var(--brand); color: #ffffff; border: none; padding: 10px; width: 100%; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">OK</button>
+    <div class="payment-modal-overlay" id="customBrandedSuccessAlertBoxModal" style="background: rgba(10,20,38,0.88); backdrop-filter:blur(10px); z-index: 6000;">
+        <div style="background:#ffffff; width:100%; max-width:420px; border-radius:28px; overflow:hidden; box-shadow:0 40px 80px rgba(0,0,0,0.4); animation:ikConfirmIn .35s cubic-bezier(.16,1,.3,1) forwards;">
+            <!-- Green gradient header -->
+            <div style="background:linear-gradient(135deg,#059669 0%,#10b981 60%,#34d399 100%); padding:32px 28px 26px; text-align:center; position:relative; overflow:hidden;">
+                <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,0.07);border-radius:50%;pointer-events:none;"></div>
+                <div style="position:absolute;bottom:-40px;left:-20px;width:100px;height:100px;background:rgba(255,255,255,0.05);border-radius:50%;pointer-events:none;"></div>
+                <div style="width:72px;height:72px;background:rgba(255,255,255,0.22);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:#fff;margin:0 auto 16px;box-shadow:0 8px 28px rgba(0,0,0,0.18);">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 style="color:#fff;font-size:1.35rem;font-weight:800;margin:0 0 6px;letter-spacing:-0.4px;">Kwishyura Byakunze! ✓</h3>
+                <p style="color:rgba(255,255,255,0.88);font-size:0.84rem;margin:0;font-weight:600;">Payment Successful &mdash; Konti Yafunguwe</p>
+            </div>
+            <!-- Body -->
+            <div style="padding:24px 26px 26px;">
+                <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:flex-start;gap:12px;">
+                    <i class="fa-solid fa-ticket" style="color:#16a34a;font-size:1.2rem;margin-top:2px;flex-shrink:0;"></i>
+                    <p id="customAlertBoxTextContentMessage" style="color:#166534;font-size:0.9rem;font-weight:600;line-height:1.55;margin:0;">Konti yafunguwe neza.</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:20px;">
+                    <i class="fa-solid fa-circle-info" style="color:#0369a1;font-size:1rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.82rem;color:#475569;font-weight:600;line-height:1.5;">Ubu ushobora gutangira ikizamini ukoresheje nimero yawe ya telefone. Murakoze gukoresha IKIZAME!</span>
+                </div>
+                <button onclick="handleCustomAlertBoxConfirmationRedirect()" style="background:linear-gradient(135deg,#0b698b 0%,#0ea5e9 100%);color:#fff;border:none;padding:15px;width:100%;border-radius:14px;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 10px 28px rgba(11,105,139,0.32);font-family:inherit;transition:transform .15s,filter .15s;letter-spacing:.1px;" onmouseover="this.style.transform='translateY(-2px)';this.style.filter='brightness(1.08)'" onmouseout="this.style.transform='none';this.style.filter='none'">
+                    <i class="fa-solid fa-rocket"></i> Tangira Ikizamini Ubu!
+                </button>
+            </div>
         </div>
     </div>
 
@@ -744,6 +764,7 @@
         </div>
     </footer>
 
+    <script src="assets/js/ikizame-ui.js"></script>
     <script>
         window.sanitizeMomoPhone = function() {
             const inp = document.getElementById('momoPhoneNumberInput');
@@ -931,25 +952,25 @@
                                     clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     closeTestPaymentModal();
-                                    document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishyura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.';
+                                    document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishyura byagenze neza! Ibizamini byawe bifunguwe. Ubu ushobora gutangira ikizamini ukoresheje nimero yawe ya telefone.';
                                     document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
                                 } else if (d.status === 'FAILED') {
                                     clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
-                                    alert('Kwishyura byanze. Ongera ugerageze.');
+                                    ikToast('Kwishyura byanze. Ongera ugerageze.', 'error');
                                     payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
                                 } else if (elapsed >= maxWait) {
                                     clearInterval(activePollTimer); activePollTimer = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
                                     activeReferenceId = null;
-                                    alert('Igihe cyarangiye (iminuta 2). Ongera ugerageze.');
+                                    ikToast('Igihe cyarangiye (iminuta 2). Ongera ugerageze.', 'warning');
                                     payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
                                 }
                             });
                     }, 2000);
                 } else {
-                    alert(data.error || 'Uburyo bwanze.'); payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
+                    ikToast(data.error || 'Uburyo bwanze. Ongera ugerageze.', 'error'); payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
                 }
             })
             .catch(err => {
@@ -957,7 +978,7 @@
                 const msg = err.name === 'AbortError'
                     ? 'Igihe cyarangiye. Reba internet yawe hanyuma ongera ugerageze.'
                     : 'Ikibazo cya internet. Reba connexion yawe hanyuma ongera ugerageze.';
-                alert(msg); payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
+                ikToast(msg, 'warning'); payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
             });
         };
         window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };
@@ -1046,8 +1067,8 @@
                     .then(d => {
                         document.getElementById('customAlertBoxTextContentMessage').textContent =
                             d.status === 'SUCCESS'
-                                ? 'Kwishura byagenze neza! Konti yafunguwe. Ubu ushobora gutangira ikizamini.'
-                                : 'Kwishura birategerezwa. Niba warishuye, konti izafunguka vuba.';
+                                ? 'Kwishyura byagenze neza! Ibizamini byawe bifunguwe. Ubu ushobora gutangira ikizamini ukoresheje nimero yawe ya telefone.'
+                                : 'Kwishyura birategerezwa. Niba warishuye, ibizamini bizafunguka vuba. Gerageza gukora ikizamini nyuma y\'iminota mike.';
                         document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
                     });
             }

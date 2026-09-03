@@ -484,28 +484,9 @@
     </footer>
 </div>
 
-<!-- Custom submit confirm modal -->
-<div id="submitModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;padding:20px;">
-    <div style="background:#fff;border-radius:12px;padding:24px 24px 20px;max-width:380px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
-        <!-- Title row with warning icon -->
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;">
-                <circle cx="12" cy="12" r="11" stroke="#f59e0b" stroke-width="2"/>
-                <line x1="12" y1="7" x2="12" y2="13" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round"/>
-                <circle cx="12" cy="16.5" r="1.1" fill="#f59e0b"/>
-            </svg>
-            <span style="font-size:1rem;font-weight:800;color:#111827;font-family:inherit;">Ese koko urashaka gusoza ikizami?</span>
-        </div>
-        <!-- Subtitle -->
-        <p style="font-size:0.88rem;color:#6b7280;line-height:1.5;margin-bottom:22px;padding-left:34px;">Ese koko urashaka gusoza ikizami?</p>
-        <!-- Buttons -->
-        <div style="display:flex;justify-content:flex-end;gap:10px;">
-            <button id="modalCancel" style="padding:10px 22px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;color:#374151;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;">Oya</button>
-            <button id="modalConfirm" style="padding:10px 22px;border:none;border-radius:8px;background:#1a56db;color:#fff;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Yego, Soza</button>
-        </div>
-    </div>
-</div>
 
+
+<script src="/assets/js/ikizame-ui.js"></script>
 <script src="/assets/js/exam-image-utils.js?v=20260718"></script>
 <script>
 // Detect reload using PerformanceNavigationTiming (modern) with fallback
@@ -513,8 +494,7 @@ const navEntry = performance.getEntriesByType('navigation')[0];
 const isReloaded = navEntry ? navEntry.type === 'reload' : (performance.navigation && performance.navigation.type === 1);
 if (isReloaded) {
     sessionStorage.removeItem('isExamAlreadyStarted');
-    alert("IKIZAME CYAHAGARIKWA! Ntabwo wemerewe gukora Refresh/Reload.");
-    window.location.replace('/');
+    ikAlert('Ntabwo wemerewe gukora Refresh/Reload mu gihe cy\'ikizamini kigikomeza!', 'warning', 'Ikizamini Cyahagaritswe').then(() => window.location.replace('/'));
 }
 if (!sessionStorage.getItem('studentName') || !sessionStorage.getItem('phoneNumber')) {
     sessionStorage.clear(); window.location.replace('/');
@@ -547,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = () => {
         window.history.pushState(null, "", window.location.href);
-        alert("Ntabwo wemerewe gusubira inyuma ikizamini kigikomeza!");
+        ikToast('Ntabwo wemerewe gusubira inyuma ikizamini kigikomeza!', 'warning');
     };
 
     let questions = [], idx = 0;
@@ -693,21 +673,19 @@ document.addEventListener('DOMContentLoaded', () => {
         buildProgress();
     };
 
-    const submitModal   = document.getElementById('submitModal');
-    const modalCancel   = document.getElementById('modalCancel');
-    const modalConfirm  = document.getElementById('modalConfirm');
-
     function showSubmitModal() {
-        submitModal.style.display = 'flex';
+        const answered = Object.keys(answers).length;
+        const total = questions.length;
+        const unanswered = total - answered;
+        const msg = unanswered > 0
+            ? `Wasubije ibibazo ${answered} kuri ${total}. Ibibazo ${unanswered} ntibisuzumwe. Ese koko urashaka gusoza ikizamini?`
+            : `Wasubije ibibazo byose ${total}. Ese koko urashaka gusoza ikizamini?`;
+        ikConfirm(msg, 'warning', 'Soza Ikizamini?', 'Yego, Soza Ubu', 'Oya, Subira').then(confirmed => {
+            if (!confirmed) return;
+            sessionStorage.removeItem('isExamAlreadyStarted');
+            submit();
+        });
     }
-    modalCancel.addEventListener('click', () => {
-        submitModal.style.display = 'none';
-    });
-    modalConfirm.addEventListener('click', () => {
-        submitModal.style.display = 'none';
-        sessionStorage.removeItem('isExamAlreadyStarted');
-        submit();
-    });
 
     prevBtn.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
     nextBtn.addEventListener('click', () => {

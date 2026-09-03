@@ -234,11 +234,12 @@
      &copy; 2026 IKIZAME &nbsp;<strong> Developed by Dotado Stationery Store Ltd</strong>
 </footer>
 
+<script src="assets/js/ikizame-ui.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const qId = params.get('id');
-    if (!qId) { alert('Missing question ID parameter.'); window.location.replace('dashboard'); return; }
+    if (!qId) { ikAlert('Missing question ID parameter.', 'error', 'Ikibazo Ntabwo Kibonetse').then(() => window.location.replace('dashboard')); return; }
 
     const formScroll = document.getElementById('formScroll');
     const layoutBadge = document.getElementById('layoutBadge');
@@ -290,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!data) return;
             
             let exam = Array.isArray(data) ? data[0] : data;
-            if (!exam) { alert('Question not found.'); window.location.replace('dashboard'); return; }
+            if (!exam) { ikAlert('Question not found. It may have been deleted.', 'error', 'Ikibazo Ntabwo Kibonetse').then(() => window.location.replace('dashboard')); return; }
 
             const questionStatement = exam.question || '';
             const correctOptionKey = exam.correct_option || exam.correctOption || '';

@@ -392,6 +392,7 @@
         </div>
     </footer>
 
+    <script src="assets/js/ikizame-ui.js"></script>
     <script>
         async function handleSchoolLogout(event) {
             event.preventDefault();
@@ -465,7 +466,7 @@
 
             // Validate
             if (phone.length !== 10 || !phone.startsWith('07') || !['8','9','3'].includes(phone[2])) {
-                alert('Injiza nomero yuzuye ya Rwanda (078/079/073, inimero 10).');
+                ikAlert('Injiza nomero yuzuye ya Rwanda (078/079/073, inimero 10).', 'warning', 'Nomero Ntabwo Yuzuye');
                 phoneField.focus();
                 return;
             }
@@ -481,7 +482,7 @@
             .then(r => r.json())
             .then(data => {
                 if (!data.success) {
-                    alert(data.error || 'Kwishyura byanze.');
+                    ikAlert(data.error || 'Kwishyura byanze. Ongera ugerageze.', 'error', 'Kwishyura Byanze');
                     btn.disabled = false;
                     btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
                     return;
@@ -517,20 +518,20 @@
                                 phoneField.value = '';
                                 btn.disabled = false;
                                 btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
-                                alert('✓ Lisansi yaguzwe neza! Inshuro nshya zongewe.');
+                                ikAlert('Lisansi yaguzwe neza! Ibizamini 200 byongewe kuri konti yanyu. Murakoze!', 'success', 'Kwishyura Byakunze! ✓');
                                 loadSchoolWalletMetricsData();
                             } else if (s.status === 'FAILED' || s.status === 'CANCELLED') {
                                 clearInterval(poll); clearTimeout(ussdTimer);
                                 ussdHint.style.display = 'none';
                                 btn.disabled = false;
                                 btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
-                                alert('Kwishyura byanze cyangwa byahagaritswe. Gerageza nanone.');
+                                ikAlert('Kwishyura byanze cyangwa byahagaritswe. Gerageza nanone.', 'error', 'Kwishyura Byanze');
                             } else if (attempts >= maxAttempts) {
                                 clearInterval(poll); clearTimeout(ussdTimer);
                                 ussdHint.style.display = 'none';
                                 btn.disabled = false;
                                 btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
-                                alert('Igihe cyarenze. Reba niba amafaranga yakuwe, gerageza nanone niba bitabaye.');
+                                ikAlert('Igihe cyarenze (iminuta 2). Reba niba amafaranga yakuwe, gerageza nanone niba bitabaye.', 'warning', 'Igihe Cyarenze');
                             }
                         })
                         .catch(() => {
@@ -546,7 +547,7 @@
             .catch(() => {
                 btn.disabled = false;
                 btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
-                alert('Ikosa rya network. Gerageza nanone.');
+                ikAlert('Ikosa rya network. Reba internet yawe hanyuma ugerageze nanone.', 'error', 'Ikibazo cya Network');
             });
         };
         function loadStudentsPerformance() {
