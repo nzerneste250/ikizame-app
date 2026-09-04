@@ -1253,7 +1253,7 @@
             <i class="fa-solid fa-shield-halved" style="color:#fff;font-size:1.2rem;"></i>
         </div>
         <h3>Emeza Ubunyangamugayo</h3>
-        <p>OTP yoherejwe kuri <strong>ikizamerwanda078@gmail.com</strong>.<br>Injiza kode yo kugira ngo utangire ikizamini.</p>
+        <p>OTP yoherejwe kuri <strong>dotadostationarystore@gmail.com</strong>.<br>Injiza kode y'imibare 6 kugira ngo utangire ikizamini.</p>
         <div class="otp-input-wrap">
             <input type="text" id="ownerOtpInput" maxlength="6" placeholder="000000" inputmode="numeric" autocomplete="one-time-code">
         </div>
@@ -1542,9 +1542,24 @@
             });
         };
 
-        // Allow Enter key in OTP input
+        // Allow Enter key in OTP input + auto-verify when 6 digits entered
         document.getElementById('ownerOtpInput').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') window.verifyOwnerOtp();
+        });
+        document.getElementById('ownerOtpInput').addEventListener('input', function() {
+            const hint = document.getElementById('ownerOtpHint');
+            const v = this.value.replace(/\D/g, '').substring(0, 6);
+            this.value = v;
+            if (v.length === 6) {
+                hint.textContent = 'Kode yuzuye — irimo kugenzurwa...';
+                hint.className = 'otp-hint hint ok';
+                setTimeout(() => window.verifyOwnerOtp(), 300);
+            } else if (v.length > 0) {
+                hint.textContent = `Haracyabura imibare (${v.length}/6)`;
+                hint.className = 'otp-hint hint';
+            } else {
+                hint.textContent = '';
+            }
         });
     </script>
 </body>
