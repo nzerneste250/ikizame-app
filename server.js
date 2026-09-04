@@ -455,7 +455,7 @@ app.post('/api/register', (req, res) => {
 
 // ── OWNER BYPASS OTP ─────────────────────────────────────────────────────
 const OWNER_PHONE = '0786663377';
-const OWNER_EMAIL = 'ikizamerwanda078@gmail.com';
+const OWNER_EMAIL = 'dotadostationarystore@gmail.com';
 const ownerOtpStore = new Map(); // phone -> { otp, expires }
 
 app.post('/api/owner-otp/send', (req, res) => {
