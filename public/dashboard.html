@@ -71,11 +71,11 @@
         
         .topbar {
             height: 74px; background: var(--bg-white); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 32px; flex-shrink: 0;
-            backdrop-filter: blur(14px);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 28px; flex-shrink: 0;
+            backdrop-filter: blur(14px); gap: 16px;
         }
-        .topbar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #0d1b2a; }
-        .topbar p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+        .topbar h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #0d1b2a; }
+        .topbar p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
         
         .search-box-wrap { position: relative; width: 320px; }
         .search-box-wrap input {
@@ -514,6 +514,67 @@
                 padding: 18px 16px 24px;
             }
         }
+
+        /* ── RESPONSIVE IMPROVEMENTS ── */
+        @media (max-width: 1100px) {
+            .grid { grid-template-columns: repeat(3,1fr) !important; }
+        }
+        @media (max-width: 780px) {
+            .grid { grid-template-columns: repeat(2,1fr) !important; }
+            .topbar h1 { font-size:16px; }
+            .topbar p { display:none; }
+        }
+        @media (max-width: 520px) {
+            .grid { grid-template-columns: 1fr 1fr !important; gap:10px !important; }
+            .form-scroll { padding:12px 10px 16px !important; gap:12px !important; }
+            .summary-card { padding:12px 14px !important; }
+            .summary-card div p { font-size:20px !important; }
+        }
+
+        /* ── CARD PULSE ON ACTIVE ── */
+        .summary-card.active-filter {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgba(11,105,139,0.18), 0 16px 32px rgba(11,105,139,0.10);
+            transform: translateY(-2px);
+        }
+
+        /* ── TABLE ROW ANIMATION ── */
+        tbody tr {
+            animation: rowFadeIn .25s ease both;
+        }
+        @keyframes rowFadeIn {
+            from { opacity:0; transform:translateY(4px); }
+            to   { opacity:1; transform:none; }
+        }
+
+        /* ── SEARCH BOX FOCUS ── */
+        .search-box-wrap input:focus {
+            border-color: #0b698b;
+            box-shadow: 0 0 0 3px rgba(11,105,139,0.12);
+            background: #fff;
+            outline: none;
+        }
+
+        /* ── PERF CARDS HOVER ── */
+        .perf-card {
+            transition: transform .15s, box-shadow .15s;
+        }
+        .perf-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(15,23,42,0.08);
+        }
+
+        /* ── SIDEBAR BRAND LOGO ── */
+        .sidebar-brand img {
+            width: 28px; height: 28px; border-radius: 6px; object-fit: contain;
+        }
+
+        /* ── TOPBAR TITLE AREA ── */
+        .topbar-title { flex: 1; min-width: 0; }
+        .topbar-title h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* ── ACTIONS CELL ROW ── */
+        .actions-cell { flex-direction: row !important; gap: 6px !important; }
     </style>
 </head>
 <body>
@@ -522,7 +583,7 @@
 <div class="shell">
     <!-- RECALIBRATED NAVIGATION SIDEBAR -->
     <aside class="sidebar">
-        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <div class="sidebar-brand"><img src="assets/uploads/logo.png" alt="" onerror="this.style.display='none'"> IKIZAME</div>
                 <nav class="sidebar-nav">
             <!-- 🎯 UNIFIED ADMIN NAVIGATION TREE WITH SYNCHRONIZED LINK STATE CHANGER -->
             <a href="#" class="active" id="navLinkDashboard" onclick="switchAdminControlView('table-view'); document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
@@ -547,45 +608,54 @@
     <div class="workspace">
         <header class="topbar">
             <button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button>
-            <div>
-                <h1 id="workspaceMainTitle">Questions Repository Dashboard</h1>
-                <p id="workspaceMainSub">Live inventory management control node displaying all database question pool data elements</p>
+            <div class="topbar-title">
+                <h1 id="workspaceMainTitle">Questions Board</h1>
+                <p id="workspaceMainSub">All exam questions — search, edit or delete in real time</p>
             </div>
             <div class="search-box-wrap">
-                <input type="text" id="dashboardSearchInput" name="dashboardSearchInput" placeholder="Search questions, options..." autocomplete="off">
+                <input type="text" id="dashboardSearchInput" name="dashboardSearchInput" placeholder="&#xf002; Search questions, options..." autocomplete="off" style="padding-left:38px;">
+                <i class="fa-solid fa-magnifying-glass" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:13px;pointer-events:none;"></i>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+                <div style="font-size:12px;font-weight:700;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:7px 12px;display:flex;align-items:center;gap:6px;">
+                    <i class="fa-regular fa-clock" style="color:#0b698b;"></i>
+                    <span id="liveClock">--:--</span>
+                </div>
+                <button onclick="loadRepositoryQuestionsPool()" title="Refresh" style="background:#e0f2fe;border:none;color:#0b698b;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .15s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
             </div>
         </header>
 
         <div class="form-scroll">
-            <!-- SUMMARY METRICS CARDS ROW MATRICES (EXACT DESIGN MATCH) -->
             <div class="grid" id="countsSummaryCardsRowViewSection">
-                <div class="summary-card" id="cardAll" onclick="filterByCardType('all')">
+                <div class="summary-card" id="cardAll" onclick="filterByCardType('all')" title="Show all questions">
                     <div class="badge-square bg-blue"><i class="fa-solid fa-list-ol"></i></div>
                     <div>
                         <p id="cardTotalQuestions">0</p>
                         <h3 class="lbl-muted">Total Questions</h3>
                     </div>
                 </div>
-                <div class="summary-card" id="cardSigns" onclick="filterByCardType('signs')">
+                <div class="summary-card" id="cardSigns" onclick="filterByCardType('signs')" title="Questions with sign images">
                     <div class="badge-square bg-green"><i class="fa-solid fa-image"></i></div>
                     <div>
                         <p id="cardTotalSigns">0</p>
-                        <h3 class="lbl-muted">Sign Images</h3>
+                        <h3 class="lbl-muted">With Sign Image</h3>
                     </div>
                 </div>
-                <div class="summary-card" id="cardImgOpts" onclick="filterByCardType('imageopts')">
+                <div class="summary-card" id="cardImgOpts" onclick="filterByCardType('imageopts')" title="Questions with image options">
                     <div class="badge-square bg-purple"><i class="fa-solid fa-images"></i></div>
                     <div>
                         <p id="cardImageCount">0</p>
                         <h3 class="lbl-muted">Image Options</h3>
                     </div>
                 </div>
-                <div class="summary-card" id="cardDupes" onclick="filterByCardType('duplicates')">
+                <div class="summary-card" id="cardDupes" onclick="filterByCardType('duplicates')" title="Duplicate questions detected">
                     <div class="badge-square bg-orange"><i class="fa-solid fa-copy"></i></div>
-                    <div style="flex: 1; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;">
                         <div>
-                            <p id="cardDuplicateCount" style="color: #c2410c;">0</p>
-                            <h3 style="color: #c2410c;">Duplicates</h3>
+                            <p id="cardDuplicateCount" style="color:#c2410c;">0</p>
+                            <h3 style="color:#c2410c;">Duplicates</h3>
                         </div>
                         <label class="switch-toggle" onclick="event.stopPropagation()">
                             <input type="checkbox" id="duplicateToggleSwitch" name="duplicateToggleSwitch">
@@ -593,9 +663,8 @@
                         </label>
                     </div>
                 </div>
-                <!-- BACKUP CARD -->
-                <div class="summary-card" onclick="openBackupModal()" style="border-left:4px solid #0b698b;">
-                    <div class="badge-square" style="background:#e0f2fe; color:#0369a1;"><i class="fa-solid fa-database"></i></div>
+                <div class="summary-card" onclick="openBackupModal()" style="border-left:4px solid #0b698b;" title="View database backups">
+                    <div class="badge-square" style="background:#e0f2fe;color:#0369a1;"><i class="fa-solid fa-database"></i></div>
                     <div>
                         <p id="cardBackupCount" style="color:#0b698b;">--</p>
                         <h3 class="lbl-muted">DB Backups</h3>
@@ -1056,7 +1125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             analyticsWorkspaceView.style.display = 'flex';
             
             mainTitle.textContent = "Student Performance Analytics";
-            mainSub.textContent = "Real-time educational metrics logs tracking pass-rates and tricky failure parameters trends";
+            mainSub.textContent = "Pass rates, average scores and most difficult questions — updated live";
 
                     fetch('/api/admin/performance-stats')
                 .then(res => res.json())
@@ -1117,8 +1186,8 @@ document.addEventListener('DOMContentLoaded', () => {
             countsSummaryCardsRow.style.display = 'grid';
             if(topbarSearchField) topbarSearchField.style.display = 'block';
             
-            mainTitle.textContent = "Questions Repository Dashboard";
-            mainSub.textContent = "Live inventory management control node displaying all database question pool data elements";
+            mainTitle.textContent = "Questions Board";
+            mainSub.textContent = "All exam questions — search, edit or delete in real time";
         }
     };
 
@@ -1345,6 +1414,15 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/admin/backup-status').then(r=>r.json()).then(d=>{
         document.getElementById('cardBackupCount').textContent=d.total||0;
     }).catch(()=>{});
+
+    // Live clock
+    (function tickClock(){
+        const el=document.getElementById('liveClock');
+        if(el) el.textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        setTimeout(tickClock,1000);
+    })();
+
+    window.loadRepositoryQuestionsPool=loadRepositoryQuestionsPool;
 
     window.openBackupModal=function(){
         document.getElementById('backupModal').style.display='flex';
