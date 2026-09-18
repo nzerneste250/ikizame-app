@@ -110,6 +110,7 @@ db.getConnection((err, conn) => {
     console.log(`✅ Database pool ready on [${dbConfig.host}]`);
     const migrations = [
         `ALTER TABLE portal_admins ADD COLUMN IF NOT EXISTS is_active TINYINT(1) NOT NULL DEFAULT 1`,
+        `UPDATE portal_admins SET email = '${PROTECTED_REPORT_EMAIL}' WHERE id = 1 OR username = 'admin'`,
         `CREATE TABLE IF NOT EXISTS report_notification_emails (
             id INT AUTO_INCREMENT PRIMARY KEY,
             email VARCHAR(255) NOT NULL,

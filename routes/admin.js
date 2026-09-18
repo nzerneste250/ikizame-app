@@ -68,7 +68,7 @@ module.exports = (db, loginLimiter) => {
         const { email } = req.body;
         if (!email) return res.json({ ok: false, error: 'Email irakenewe.' });
 
-        const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
+        const adminEmail = PROTECTED_REPORT_EMAIL;
         if (email.toLowerCase() !== adminEmail.toLowerCase())
             return res.json({ ok: false, error: 'Iyi email ntabwo izwi nk\'iy\'umunyamabanga.' });
 
@@ -119,7 +119,7 @@ module.exports = (db, loginLimiter) => {
 
         bcrypt.hash(newPassword, BCRYPT_ROUNDS, (hashErr, hash) => {
             if (hashErr) return res.json({ ok: false, error: 'Hashage yabuze.' });
-            const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
+            const adminEmail = PROTECTED_REPORT_EMAIL;
             db.query('UPDATE portal_admins SET password = ? WHERE email = ? OR username = ?',
                 [hash, adminEmail, adminEmail],
                 (err) => {
