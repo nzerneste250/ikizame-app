@@ -680,7 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const msg = unanswered > 0
             ? `Wasubije ibibazo ${answered} kuri ${total}. Ibibazo ${unanswered} ntibisuzumwe. Ese koko urashaka gusoza ikizamini?`
             : `Wasubije ibibazo byose ${total}. Ese koko urashaka gusoza ikizamini?`;
-        ikConfirm(msg, 'warning', 'Soza Ikizamini?', 'Yego, Soza Ubu', 'Oya, Subira').then(confirmed => {
+        ikConfirm(msg, 'success', 'Soza Ikizamini?', 'Yego, Soza Ubu', 'Oya, Subira').then(confirmed => {
             if (!confirmed) return;
             sessionStorage.removeItem('isExamAlreadyStarted');
             submit();
