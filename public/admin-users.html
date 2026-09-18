@@ -114,6 +114,26 @@
         .modal-footer { padding:14px 22px 20px; display:flex; justify-content:flex-end; gap:10px; }
         .btn-cancel { background:#f1f5f9; color:#475569; border:none; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
         .btn-save { background:var(--brand); color:#fff; border:none; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
+        .contact-modal-card { max-width:520px; }
+        .contact-modal-intro { padding:16px 22px 0; color:var(--muted); font-size:12px; line-height:1.5; }
+        .contact-modal-body { gap:16px; }
+        .contact-modal-body .field-wrap .ico { color:var(--brand); }
+        .contact-modal-body input { padding-left:36px; }
+        .contact-modal-footer { justify-content:space-between; align-items:center; }
+        .contact-modal-footer .btn-save { min-width:150px; }
+        .settings-header-actions { display:flex; align-items:center; gap:10px; }
+        .settings-add-toggle { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:7px 10px; border-radius:7px; font-size:11px; font-weight:800; cursor:pointer; white-space:nowrap; }
+        .settings-add-toggle:hover { background:#bae6fd; }
+        .settings-add-form { display:none; }
+        .settings-add-form.open { display:flex; }
+
+        @media (max-width: 560px) {
+            .contact-modal-card { max-width:100%; }
+            .contact-modal-intro { padding:14px 18px 0; }
+            .contact-modal-body { padding:18px; }
+            .contact-modal-footer { padding:12px 18px 18px; flex-direction:column-reverse; align-items:stretch; }
+            .contact-modal-footer button { width:100%; }
+        }
 
         /* ── Alerts and access settings ── */
         #panelSettings { min-width:0; }
@@ -136,7 +156,9 @@
             #panelSettings { padding:12px !important; }
             .settings-card .table-card-header { padding:14px; gap:10px; align-items:flex-start; }
             .settings-card .table-card-header h3 { line-height:1.35; }
+            .settings-header-actions { width:100%; justify-content:space-between; flex-wrap:wrap; }
             .settings-card .table-card-header span { flex-shrink:0; }
+            .settings-add-toggle { flex:1; min-width:180px; }
             .settings-card .form-card { margin:12px; padding:16px; }
             .settings-card table { font-size:12px; }
             .settings-card thead th, .settings-card tbody td { padding:10px 8px; }
@@ -189,6 +211,70 @@
         <div class="modal-footer">
             <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
             <button class="btn-save" onclick="saveEdit()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit exam access contact modal -->
+<div class="modal-overlay" id="accessContactEditModal">
+    <div class="modal-card contact-modal-card">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-user-shield" style="color:var(--brand);margin-right:8px;"></i>Edit Exam Access Contact</h3>
+            <button class="btn-cancel" type="button" onclick="closeAccessContactEdit()" aria-label="Close edit contact">&times;</button>
+        </div>
+        <div class="contact-modal-intro">Review and update the phone number and both email addresses linked to this exam access contact.</div>
+        <div class="modal-body contact-modal-body">
+            <input type="hidden" id="editAccessContactId">
+            <div class="field">
+                <label for="editAccessPhone">Phone Number</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-phone ico"></i>
+                    <input type="tel" id="editAccessPhone" maxlength="10" placeholder="0788000000">
+                </div>
+            </div>
+            <div class="field">
+                <label for="editAccessEmail">Contact Email</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-envelope ico"></i>
+                    <input type="email" id="editAccessEmail" placeholder="owner@company.com">
+                </div>
+            </div>
+            <div class="field">
+                <label for="editAccessOtpEmail">OTP Email</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-key ico"></i>
+                    <input type="email" id="editAccessOtpEmail" placeholder="otp@company.com">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer contact-modal-footer">
+            <button class="btn-cancel" type="button" onclick="closeAccessContactEdit()">Cancel</button>
+            <button class="btn-save" type="button" onclick="saveAccessContactEdit()"><i class="fa-solid fa-floppy-disk"></i> Save Contact Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit report email modal -->
+<div class="modal-overlay" id="reportEmailEditModal">
+    <div class="modal-card contact-modal-card">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-envelope-circle-check" style="color:var(--brand);margin-right:8px;"></i>Edit Report Email</h3>
+            <button class="btn-cancel" type="button" onclick="closeReportEmailEdit()" aria-label="Close edit email">&times;</button>
+        </div>
+        <div class="contact-modal-intro">Update the address that receives scheduled report notifications.</div>
+        <div class="modal-body contact-modal-body">
+            <input type="hidden" id="editReportEmailId">
+            <div class="field">
+                <label for="editReportEmail">Email Address</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-envelope ico"></i>
+                    <input type="email" id="editReportEmail" placeholder="alerts@ikizame.rw">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer contact-modal-footer">
+            <button class="btn-cancel" type="button" onclick="closeReportEmailEdit()">Cancel</button>
+            <button class="btn-save" type="button" onclick="saveReportEmailEdit()"><i class="fa-solid fa-floppy-disk"></i> Save Email Changes</button>
         </div>
     </div>
 </div>
@@ -314,7 +400,10 @@
                 <div class="table-card settings-card" style="min-height:320px;">
                     <div class="table-card-header">
                         <h3><i class="fa-solid fa-bell" style="color:var(--brand);margin-right:8px;"></i> Report Notification Emails</h3>
-                        <span id="reportEmailCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                        <div class="settings-header-actions">
+                            <span id="reportEmailCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                            <button class="settings-add-toggle" type="button" onclick="toggleSettingsForm('reportEmailForm', this)"><i class="fa-solid fa-plus"></i> Add Report Email</button>
+                        </div>
                     </div>
                     <div class="table-wrap">
                         <table>
@@ -326,7 +415,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="form-card" style="margin:16px;border-radius:12px;">
+                    <div class="form-card settings-add-form" id="reportEmailForm" style="margin:16px;border-radius:12px;">
                         <h3><i class="fa-solid fa-plus" style="color:var(--brand);margin-right:8px;"></i> Add Report Email</h3>
                         <div class="field">
                             <label>Email Address</label>
@@ -342,7 +431,10 @@
                 <div class="table-card settings-card" style="min-height:320px;">
                     <div class="table-card-header">
                         <h3><i class="fa-solid fa-user-shield" style="color:var(--brand);margin-right:8px;"></i> Exam Access Contacts</h3>
-                        <span id="accessContactCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                        <div class="settings-header-actions">
+                            <span id="accessContactCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                            <button class="settings-add-toggle" type="button" onclick="toggleSettingsForm('accessContactForm', this)"><i class="fa-solid fa-plus"></i> Add Exam Access Contact</button>
+                        </div>
                     </div>
                     <div class="table-wrap">
                         <table>
@@ -354,7 +446,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="form-card" style="margin:16px;border-radius:12px;">
+                    <div class="form-card settings-add-form" id="accessContactForm" style="margin:16px;border-radius:12px;">
                         <h3><i class="fa-solid fa-user-plus" style="color:var(--brand);margin-right:8px;"></i> Add Exam Access Contact</h3>
                         <div class="field">
                             <label>Phone Number</label>
@@ -443,6 +535,19 @@ function showAlert(msg, type) {
     document.getElementById('formSuccess').classList.remove('show');
     if (type === 'success') { document.getElementById('formSuccessMsg').textContent = msg; document.getElementById('formSuccess').classList.add('show'); }
     else { document.getElementById('formAlertMsg').textContent = msg; document.getElementById('formAlert').classList.add('show'); }
+}
+
+function toggleSettingsForm(formId, button) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    const isOpen = form.classList.toggle('open');
+    button.innerHTML = isOpen
+        ? '<i class="fa-solid fa-minus"></i> Hide Form'
+        : '<i class="fa-solid fa-plus"></i> ' + (formId === 'reportEmailForm' ? 'Add Report Email' : 'Add Exam Access Contact');
+    if (isOpen) {
+        const firstInput = form.querySelector('input');
+        if (firstInput) setTimeout(() => firstInput.focus(), 50);
+    }
 }
 
 function loadUsers() {
@@ -574,6 +679,8 @@ function addReportEmail() {
         if (d.ok) {
             document.getElementById('reportEmailInput').value = '';
             loadReportEmails();
+            const form = document.getElementById('reportEmailForm');
+            if (form.classList.contains('open')) document.querySelector('[onclick*="reportEmailForm"]').click();
             ikToast('Report email saved.', 'success');
         } else {
             ikToast(d.error || 'Failed to save.', 'error');
@@ -582,16 +689,30 @@ function addReportEmail() {
 }
 
 function openReportEmailEdit(id, email) {
-    const value = window.prompt('Update report email:', email || '');
-    if (value === null) return;
-    const clean = value.trim();
-    if (!clean || !clean.includes('@')) return ikToast('Enter a valid email.', 'warning');
+    document.getElementById('editReportEmailId').value = id;
+    document.getElementById('editReportEmail').value = email || '';
+    document.getElementById('reportEmailEditModal').classList.add('show');
+    setTimeout(() => document.getElementById('editReportEmail').focus(), 50);
+}
+
+function closeReportEmailEdit() {
+    document.getElementById('reportEmailEditModal').classList.remove('show');
+}
+
+function saveReportEmailEdit() {
+    const id = document.getElementById('editReportEmailId').value;
+    const clean = document.getElementById('editReportEmail').value.trim();
+    if (!clean || !clean.includes('@')) {
+        ikToast('Enter a valid email address.', 'warning');
+        return;
+    }
     fetch(`/api/admin/settings/report-emails/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: clean })
     }).then(r => r.json()).then(d => {
         if (d.ok) {
+            closeReportEmailEdit();
             loadReportEmails();
             ikToast('Report email updated.', 'success');
         } else {
@@ -656,6 +777,8 @@ function addExamAccessContact() {
         document.getElementById('accessEmailInput').value = '';
         document.getElementById('accessOtpEmailInput').value = '';
         loadAccessContacts();
+                const form = document.getElementById('accessContactForm');
+                if (form.classList.contains('open')) document.querySelector('[onclick*="accessContactForm"]').click();
         ikToast('Exam access contact saved.', 'success');
       } else {
         ikToast(d.error || 'Failed to save contact.', 'error');
@@ -664,19 +787,34 @@ function addExamAccessContact() {
 }
 
 function openAccessContactEdit(id, phone, email, otpEmail) {
-    const updatedPhone = window.prompt('Update phone number:', phone || '');
-    if (updatedPhone === null) return;
-    const updatedEmail = window.prompt('Update contact email:', email || '');
-    if (updatedEmail === null) return;
-    const updatedOtp = window.prompt('Update OTP email:', otpEmail || '');
-    if (updatedOtp === null) return;
+    document.getElementById('editAccessContactId').value = id;
+    document.getElementById('editAccessPhone').value = phone || '';
+    document.getElementById('editAccessEmail').value = email || '';
+    document.getElementById('editAccessOtpEmail').value = otpEmail || '';
+    document.getElementById('accessContactEditModal').classList.add('show');
+    setTimeout(() => document.getElementById('editAccessPhone').focus(), 50);
+}
 
+function closeAccessContactEdit() {
+    document.getElementById('accessContactEditModal').classList.remove('show');
+}
+
+function saveAccessContactEdit() {
+    const id = document.getElementById('editAccessContactId').value;
+    const updatedPhone = document.getElementById('editAccessPhone').value.trim();
+    const updatedEmail = document.getElementById('editAccessEmail').value.trim();
+    const updatedOtp = document.getElementById('editAccessOtpEmail').value.trim();
+    if (!updatedPhone || !updatedEmail || !updatedOtp) {
+        ikToast('Phone, contact email and OTP email are all required.', 'warning');
+        return;
+    }
     fetch(`/api/admin/settings/exam-access/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone_number: updatedPhone.trim(), email: updatedEmail.trim(), otp_email: updatedOtp.trim() })
     }).then(r => r.json()).then(d => {
       if (d.ok) {
+        closeAccessContactEdit();
         loadAccessContacts();
         ikToast('Contact updated.', 'success');
       } else {
