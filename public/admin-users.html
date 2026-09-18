@@ -601,12 +601,14 @@ function openReportEmailEdit(id, email) {
 }
 
 function deleteReportEmail(id) {
-    if (!confirm('Delete this report email?')) return;
-    fetch(`/api/admin/settings/report-emails/${id}`, { method: 'DELETE' })
-      .then(r => r.json()).then(d => {
-        if (d.ok) { loadReportEmails(); ikToast('Report email deleted.', 'success'); }
-        else ikToast(d.error || 'Delete failed.', 'error');
-      }).catch(() => ikToast('Network error.', 'error'));
+        ikConfirm('Delete this report email? This address will stop receiving scheduled reports.', 'danger', 'Delete Report Email', 'Delete Email', 'Keep Email').then(confirmed => {
+            if (!confirmed) return;
+            fetch(`/api/admin/settings/report-emails/${id}`, { method: 'DELETE' })
+                .then(r => r.json()).then(d => {
+                    if (d.ok) { loadReportEmails(); ikToast('Report email deleted.', 'success'); }
+                    else ikToast(d.error || 'Delete failed.', 'error');
+                }).catch(() => ikToast('Network error.', 'error'));
+        });
 }
 
 function loadAccessContacts() {
@@ -684,12 +686,14 @@ function openAccessContactEdit(id, phone, email, otpEmail) {
 }
 
 function deleteAccessContact(id) {
-    if (!confirm('Delete this exam access contact?')) return;
-    fetch(`/api/admin/settings/exam-access/${id}`, { method: 'DELETE' })
-      .then(r => r.json()).then(d => {
-        if (d.ok) { loadAccessContacts(); ikToast('Contact deleted.', 'success'); }
-        else ikToast(d.error || 'Delete failed.', 'error');
-      }).catch(() => ikToast('Network error.', 'error'));
+        ikConfirm('Delete this exam access contact? Its phone will no longer receive exam access.', 'danger', 'Delete Exam Access Contact', 'Delete Contact', 'Keep Contact').then(confirmed => {
+            if (!confirmed) return;
+            fetch(`/api/admin/settings/exam-access/${id}`, { method: 'DELETE' })
+                .then(r => r.json()).then(d => {
+                    if (d.ok) { loadAccessContacts(); ikToast('Contact deleted.', 'success'); }
+                    else ikToast(d.error || 'Delete failed.', 'error');
+                }).catch(() => ikToast('Network error.', 'error'));
+        });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
