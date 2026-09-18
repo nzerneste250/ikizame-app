@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt  = require('bcrypt');
 const axios   = require('axios');
 const BCRYPT_ROUNDS = 10;
+const { normalizePhoneNumber, normalizeEmailList, getConfiguredReportEmails } = require('../helpers/adminSettings');
 const { requireAdminLogin, getAdminSessionState } = require('../middleware/auth');
 
 const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
@@ -276,6 +277,112 @@ module.exports = (db, loginLimiter) => {
                 if (err2) return res.json({ ok: false, error: err2.message });
                 res.json({ ok: true });
             });
+        });
+    });
+
+    // ── REPORT EMAIL MANAGEMENT ─────────────────────────────────────────────
+    router.get('/settings/report-emails', requireAdminLogin, (req, res) => {
+        db.query('SELECT id, email, is_active, created_at FROM report_notification_emails ORDER BY id DESC', (err, rows) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            res.json({ ok: true, items: rows || [] });
+        });
+    });
+
+    router.post('/settings/report-emails', requireSuperAdmin, (req, res) => {
+        const email = String(req.body.email || '').trim().toLowerCase();
+        if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email irakenewe.' });
+
+        db.query('SELECT id FROM report_notification_emails WHERE email = ?', [email], (err, rows) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            if (rows.length) return res.status(409).json({ ok: false, error: 'Iyi email isanzwe yanditse.' });
+
+            db.query('INSERT INTO report_notification_emails (email, is_active) VALUES (?, 1)', [email], (insErr) => {
+                if (insErr) return res.status(500).json({ ok: false, error: insErr.message });
+                res.json({ ok: true });
+            });
+        });
+    });
+
+    router.patch('/settings/report-emails/:id', requireSuperAdmin, (req, res) => {
+        const id = Number(req.params.id);
+        const email = String(req.body.email || '').trim().toLowerCase();
+        if (!id || !email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email irakenewe.' });
+
+        db.query('UPDATE report_notification_emails SET email = ? WHERE id = ?', [email, id], (err) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            res.json({ ok: true });
+        });
+    });
+
+    router.delete('/settings/report-emails/:id', requireSuperAdmin, (req, res) => {
+        const id = Number(req.params.id);
+        db.query('DELETE FROM report_notification_emails WHERE id = ?', [id], (err) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            res.json({ ok: true });
+        });
+    });
+
+    // ── EXAM ACCESS CONTACT MANAGEMENT ──────────────────────────────────────
+    router.get('/settings/exam-access', requireAdminLogin, (req, res) => {
+        db.query('SELECT id, phone_number, email, otp_email, is_active, created_at FROM exam_access_contacts ORDER BY id DESC', (err, rows) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            res.json({ ok: true, items: rows || [] });
+        });
+    });
+
+    router.get('/settings/exam-access/public', (req, res) => {
+        db.query('SELECT id, phone_number, email, otp_email FROM exam_access_contacts WHERE is_active = 1 ORDER BY id DESC', (err, rows) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            res.json({ ok: true, items: rows || [] });
+        });
+    });
+
+    router.post('/settings/exam-access', requireSuperAdmin, (req, res) => {
+        const phoneNumber = normalizePhoneNumber(req.body.phone_number || req.body.phone || '');
+        const email = String(req.body.email || '').trim().toLowerCase();
+        const otpEmail = String(req.body.otp_email || req.body.otpEmail || '').trim().toLowerCase();
+
+        if (!phoneNumber) return res.status(400).json({ ok: false, error: 'Telephone irakenewe.' });
+        if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email ya contact irakenewe.' });
+        if (!otpEmail || !otpEmail.includes('@')) return res.status(400).json({ ok: false, error: 'Email ya OTP irakenewe.' });
+
+        db.query('SELECT id FROM exam_access_contacts WHERE phone_number = ?', [phoneNumber], (existErr, rows) => {
+            if (existErr) return res.status(500).json({ ok: false, error: existErr.message });
+            if (rows.length) return res.status(409).json({ ok: false, error: 'Iyi nomero isanzwe yanditswe.' });
+
+            db.query(
+                'INSERT INTO exam_access_contacts (phone_number, email, otp_email, is_active) VALUES (?, ?, ?, 1)',
+                [phoneNumber, email, otpEmail],
+                (insErr) => {
+                    if (insErr) return res.status(500).json({ ok: false, error: insErr.message });
+                    res.json({ ok: true });
+                }
+            );
+        });
+    });
+
+    router.patch('/settings/exam-access/:id', requireSuperAdmin, (req, res) => {
+        const id = Number(req.params.id);
+        const phoneNumber = normalizePhoneNumber(req.body.phone_number || req.body.phone || '');
+        const email = String(req.body.email || '').trim().toLowerCase();
+        const otpEmail = String(req.body.otp_email || req.body.otpEmail || '').trim().toLowerCase();
+
+        if (!id) return res.status(400).json({ ok: false, error: 'Invalid ID.' });
+        if (!phoneNumber) return res.status(400).json({ ok: false, error: 'Telephone irakenewe.' });
+        if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email ya contact irakenewe.' });
+        if (!otpEmail || !otpEmail.includes('@')) return res.status(400).json({ ok: false, error: 'Email ya OTP irakenewe.' });
+
+        db.query('UPDATE exam_access_contacts SET phone_number = ?, email = ?, otp_email = ? WHERE id = ?', [phoneNumber, email, otpEmail, id], (err) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            res.json({ ok: true });
+        });
+    });
+
+    router.delete('/settings/exam-access/:id', requireSuperAdmin, (req, res) => {
+        const id = Number(req.params.id);
+        db.query('DELETE FROM exam_access_contacts WHERE id = ?', [id], (err) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            res.json({ ok: true });
         });
     });
 

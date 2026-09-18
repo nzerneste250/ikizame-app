@@ -190,9 +190,10 @@
                 <h1>Manage Admin Users</h1>
                 <p>Create viewer accounts and manage admin access levels</p>
             </div>
-            <div style="display:flex;gap:8px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 <button class="tab-btn active" id="tabAdmins" onclick="switchTab('admins')"><i class="fa-solid fa-users-gear"></i> Admin Users</button>
                 <button class="tab-btn" id="tabSchools" onclick="switchTab('schools')"><i class="fa-solid fa-school"></i> Schools</button>
+                <button class="tab-btn" id="tabSettings" onclick="switchTab('settings')"><i class="fa-solid fa-envelope-circle-check"></i> Alerts & Access</button>
             </div>
         </header>
 
@@ -276,6 +277,81 @@
             </div>
         </div>
 
+        <!-- SETTINGS PANEL -->
+        <div id="panelSettings" style="display:none;flex:1;padding:24px 32px;overflow:auto;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;">
+                <div class="table-card" style="min-height:320px;">
+                    <div class="table-card-header">
+                        <h3><i class="fa-solid fa-bell" style="color:var(--brand);margin-right:8px;"></i> Report Notification Emails</h3>
+                        <span id="reportEmailCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>#</th><th>Email</th><th>Created</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="reportEmailsTableBody">
+                                <tr><td colspan="4" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-card" style="margin:16px;border-radius:12px;">
+                        <h3><i class="fa-solid fa-plus" style="color:var(--brand);margin-right:8px;"></i> Add Report Email</h3>
+                        <div class="field">
+                            <label>Email Address</label>
+                            <div class="field-wrap">
+                                <i class="fa-solid fa-envelope ico"></i>
+                                <input type="email" id="reportEmailInput" placeholder="alerts@ikizame.rw">
+                            </div>
+                        </div>
+                        <button class="btn-add" onclick="addReportEmail()"><i class="fa-solid fa-paper-plane"></i> Save Email</button>
+                    </div>
+                </div>
+
+                <div class="table-card" style="min-height:320px;">
+                    <div class="table-card-header">
+                        <h3><i class="fa-solid fa-user-shield" style="color:var(--brand);margin-right:8px;"></i> Exam Access Contacts</h3>
+                        <span id="accessContactCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>#</th><th>Phone</th><th>Contact Email</th><th>OTP Email</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="accessContactsTableBody">
+                                <tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-card" style="margin:16px;border-radius:12px;">
+                        <h3><i class="fa-solid fa-user-plus" style="color:var(--brand);margin-right:8px;"></i> Add Exam Access Contact</h3>
+                        <div class="field">
+                            <label>Phone Number</label>
+                            <div class="field-wrap">
+                                <i class="fa-solid fa-phone ico"></i>
+                                <input type="tel" id="accessPhoneInput" placeholder="0788000000" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Contact Email</label>
+                            <div class="field-wrap">
+                                <i class="fa-solid fa-envelope ico"></i>
+                                <input type="email" id="accessEmailInput" placeholder="owner@company.com">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>OTP Email</label>
+                            <div class="field-wrap">
+                                <i class="fa-solid fa-key ico"></i>
+                                <input type="email" id="accessOtpEmailInput" placeholder="otp@company.com">
+                            </div>
+                        </div>
+                        <button class="btn-add" onclick="addExamAccessContact()"><i class="fa-solid fa-shield-check"></i> Save Contact</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -284,9 +360,12 @@
 function switchTab(tab) {
     document.getElementById('panelAdmins').style.display = tab==='admins' ? 'grid' : 'none';
     document.getElementById('panelSchools').style.display = tab==='schools' ? 'flex' : 'none';
+    document.getElementById('panelSettings').style.display = tab==='settings' ? 'flex' : 'none';
     document.getElementById('tabAdmins').classList.toggle('active', tab==='admins');
     document.getElementById('tabSchools').classList.toggle('active', tab==='schools');
+    document.getElementById('tabSettings').classList.toggle('active', tab==='settings');
     if (tab==='schools') loadSchools();
+    if (tab==='settings') { loadReportEmails(); loadAccessContacts(); }
 }
 
 function loadSchools() {
@@ -424,7 +503,169 @@ function deleteUser(id, email) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', loadUsers);
+function loadReportEmails() {
+    fetch('/api/admin/settings/report-emails')
+      .then(r => r.json())
+      .then(d => {
+        const rows = (d && d.items) || [];
+        document.getElementById('reportEmailCount').textContent = rows.length + ' email(s)';
+        const tb = document.getElementById('reportEmailsTableBody');
+        if (!rows.length) {
+            tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:#64748b;">No report emails configured yet.</td></tr>';
+            return;
+        }
+        tb.innerHTML = rows.map((item, index) => `
+            <tr>
+                <td style="font-weight:700;color:var(--brand);">${index + 1}</td>
+                <td>${item.email}</td>
+                <td style="color:#64748b;font-size:12px;">${item.created_at ? new Date(item.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
+                <td>
+                    <div class="actions">
+                        <button class="btn-sm btn-edit" onclick="openReportEmailEdit(${item.id}, '${String(item.email).replace(/'/g, "\\'")}' )"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-sm btn-del" onclick="deleteReportEmail(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+      }).catch(() => {
+          document.getElementById('reportEmailsTableBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:#ef4444;">Failed to load report emails.</td></tr>';
+      });
+}
+
+function addReportEmail() {
+    const email = document.getElementById('reportEmailInput').value.trim();
+    if (!email) return ikToast('Enter an email address to receive reports.', 'warning');
+    fetch('/api/admin/settings/report-emails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+    }).then(r => r.json()).then(d => {
+        if (d.ok) {
+            document.getElementById('reportEmailInput').value = '';
+            loadReportEmails();
+            ikToast('Report email saved.', 'success');
+        } else {
+            ikToast(d.error || 'Failed to save.', 'error');
+        }
+    }).catch(() => ikToast('Network error.', 'error'));
+}
+
+function openReportEmailEdit(id, email) {
+    const value = window.prompt('Update report email:', email || '');
+    if (value === null) return;
+    const clean = value.trim();
+    if (!clean || !clean.includes('@')) return ikToast('Enter a valid email.', 'warning');
+    fetch(`/api/admin/settings/report-emails/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: clean })
+    }).then(r => r.json()).then(d => {
+        if (d.ok) {
+            loadReportEmails();
+            ikToast('Report email updated.', 'success');
+        } else {
+            ikToast(d.error || 'Update failed.', 'error');
+        }
+    }).catch(() => ikToast('Network error.', 'error'));
+}
+
+function deleteReportEmail(id) {
+    if (!confirm('Delete this report email?')) return;
+    fetch(`/api/admin/settings/report-emails/${id}`, { method: 'DELETE' })
+      .then(r => r.json()).then(d => {
+        if (d.ok) { loadReportEmails(); ikToast('Report email deleted.', 'success'); }
+        else ikToast(d.error || 'Delete failed.', 'error');
+      }).catch(() => ikToast('Network error.', 'error'));
+}
+
+function loadAccessContacts() {
+    fetch('/api/admin/settings/exam-access')
+      .then(r => r.json())
+      .then(d => {
+        const rows = (d && d.items) || [];
+        document.getElementById('accessContactCount').textContent = rows.length + ' contact(s)';
+        const tb = document.getElementById('accessContactsTableBody');
+        if (!rows.length) {
+          tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#64748b;">No exam access contact configured yet.</td></tr>';
+          return;
+        }
+        tb.innerHTML = rows.map((item, index) => `
+            <tr>
+                <td style="font-weight:700;color:var(--brand);">${index + 1}</td>
+                <td>${item.phone_number}</td>
+                <td>${item.email}</td>
+                <td>${item.otp_email}</td>
+                <td>
+                    <div class="actions">
+                        <button class="btn-sm btn-edit" onclick="openAccessContactEdit(${item.id}, '${String(item.phone_number).replace(/'/g, "\\'")}', '${String(item.email).replace(/'/g, "\\'")}', '${String(item.otp_email).replace(/'/g, "\\'")}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-sm btn-del" onclick="deleteAccessContact(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+      }).catch(() => {
+          document.getElementById('accessContactsTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#ef4444;">Failed to load exam contacts.</td></tr>';
+      });
+}
+
+function addExamAccessContact() {
+    const phoneNumber = document.getElementById('accessPhoneInput').value.trim();
+    const email = document.getElementById('accessEmailInput').value.trim();
+    const otpEmail = document.getElementById('accessOtpEmailInput').value.trim();
+    if (!phoneNumber || !email || !otpEmail) return ikToast('Phone, contact email and OTP email are all required.', 'warning');
+    fetch('/api/admin/settings/exam-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone_number: phoneNumber, email, otp_email: otpEmail })
+    }).then(r => r.json()).then(d => {
+      if (d.ok) {
+        document.getElementById('accessPhoneInput').value = '';
+        document.getElementById('accessEmailInput').value = '';
+        document.getElementById('accessOtpEmailInput').value = '';
+        loadAccessContacts();
+        ikToast('Exam access contact saved.', 'success');
+      } else {
+        ikToast(d.error || 'Failed to save contact.', 'error');
+      }
+    }).catch(() => ikToast('Network error.', 'error'));
+}
+
+function openAccessContactEdit(id, phone, email, otpEmail) {
+    const updatedPhone = window.prompt('Update phone number:', phone || '');
+    if (updatedPhone === null) return;
+    const updatedEmail = window.prompt('Update contact email:', email || '');
+    if (updatedEmail === null) return;
+    const updatedOtp = window.prompt('Update OTP email:', otpEmail || '');
+    if (updatedOtp === null) return;
+
+    fetch(`/api/admin/settings/exam-access/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone_number: updatedPhone.trim(), email: updatedEmail.trim(), otp_email: updatedOtp.trim() })
+    }).then(r => r.json()).then(d => {
+      if (d.ok) {
+        loadAccessContacts();
+        ikToast('Contact updated.', 'success');
+      } else {
+        ikToast(d.error || 'Update failed.', 'error');
+      }
+    }).catch(() => ikToast('Network error.', 'error'));
+}
+
+function deleteAccessContact(id) {
+    if (!confirm('Delete this exam access contact?')) return;
+    fetch(`/api/admin/settings/exam-access/${id}`, { method: 'DELETE' })
+      .then(r => r.json()).then(d => {
+        if (d.ok) { loadAccessContacts(); ikToast('Contact deleted.', 'success'); }
+        else ikToast(d.error || 'Delete failed.', 'error');
+      }).catch(() => ikToast('Network error.', 'error'));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadUsers();
+    loadReportEmails();
+    loadAccessContacts();
+});
 
 /* ── 5-min session timeout ── */
 (function(){

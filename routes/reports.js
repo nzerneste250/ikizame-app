@@ -1,11 +1,25 @@
 const cron   = require('node-cron');
 const PDFDoc = require('pdfkit');
+const { getConfiguredReportEmails } = require('../helpers/adminSettings');
 
 const PASSWORD_REMINDER_EMAIL = 'nzerneste250@gmail.com';
 const PASSWORD_WARN_DAYS  = 3;
 
 function getReportRecipient() {
     return process.env.DAILY_REPORT_EMAIL || process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationerystore@gmail.com';
+}
+
+async function getReportRecipients(db) {
+    const fallback = [getReportRecipient()].filter(Boolean);
+    if (!db || typeof db.query !== 'function') return fallback;
+
+    return new Promise((resolve) => {
+        db.query('SELECT email FROM report_notification_emails WHERE is_active = 1 ORDER BY id ASC', (err, rows) => {
+            if (err) return resolve(fallback);
+            const configured = getConfiguredReportEmails(rows, fallback);
+            resolve(configured.length ? configured : fallback);
+        });
+    });
 }
 const PASSWORD_EXPIRY_DAYS = 14;
 
@@ -220,9 +234,10 @@ async function sendReport(db, transport, type) {
     const periodLabel = type === 'weekly' ? 'Weekly' : type === 'monthly' ? 'Monthly' : 'Yearly';
     const subject = `📊 IKIZAME ${periodLabel} Payment Report — ${fmt(from)} to ${fmt(to)}`;
 
+    const recipients = await getReportRecipients(db);
     await transport.sendMail({
         from: `"IKIZAME Reports" <${process.env.SMTP_USER}>`,
-        to:   getReportRecipient(),
+        to:   recipients,
         subject,
         html: `<div style="font-family:Inter,sans-serif;background:#f8fafc;padding:24px;border-radius:8px;max-width:500px;">
             <div style="background:#0b698b;padding:16px 20px;border-radius:6px;margin-bottom:16px;">
@@ -300,9 +315,10 @@ async function sendDailyReport(db, transport) {
         uniqueVisitors, totalVisits
     });
 
+    const recipients = await getReportRecipients(db);
     await transport.sendMail({
         from: `"IKIZAME Reports" <${process.env.SMTP_USER}>`,
-        to:   getReportRecipient(),
+        to:   recipients,
         subject: `📋 IKIZAME Daily Report — ${dateStr}`,
         html: `<div style="font-family:Inter,sans-serif;background:#f8fafc;padding:24px;max-width:560px;">
             <div style="background:#0b698b;padding:18px 22px;border-radius:8px;margin-bottom:18px;">
@@ -331,7 +347,7 @@ async function sendDailyReport(db, transport) {
             contentType: 'application/pdf'
         }]
     });
-    console.log(`✅ Daily report sent for ${dateStr} → ${getReportRecipient()}`);
+    console.log(`✅ Daily report sent for ${dateStr} → ${((await getReportRecipients(db)).join(', '))}`);
 }
 
 function buildDailyPDF(d) {
@@ -402,5 +418,5 @@ module.exports = function startReportScheduler(db, transport) {
 
 module.exports.sendReport = sendReport;
 module.exports.sendDailyReport = sendDailyReport;
-module.exports.sendDailyReport = sendDailyReport;
 module.exports.sendPasswordExpiryReminder = sendPasswordExpiryReminder;
+module.exports.getReportRecipients = getReportRecipients;
