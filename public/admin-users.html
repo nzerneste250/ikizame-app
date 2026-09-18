@@ -114,6 +114,37 @@
         .modal-footer { padding:14px 22px 20px; display:flex; justify-content:flex-end; gap:10px; }
         .btn-cancel { background:#f1f5f9; color:#475569; border:none; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
         .btn-save { background:var(--brand); color:#fff; border:none; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
+
+        /* ── Alerts and access settings ── */
+        #panelSettings { min-width:0; }
+        .settings-grid { width:100%; min-width:0; grid-template-columns:repeat(2, minmax(0, 1fr)) !important; }
+        .settings-card { min-width:0; width:100%; }
+        .settings-card .table-wrap { min-width:0; overflow-x:auto; }
+        .settings-card table { table-layout:fixed; }
+        .settings-card th, .settings-card td { white-space:normal; overflow-wrap:anywhere; }
+        .settings-card th:first-child, .settings-card td:first-child { width:42px; }
+        .settings-card th:last-child, .settings-card td:last-child { width:86px; }
+        .settings-card .form-card { margin:16px; min-width:0; }
+
+        @media (max-width: 900px) {
+            .content { padding:20px; }
+            #panelSettings { padding:20px !important; }
+            .settings-grid { grid-template-columns:1fr !important; }
+        }
+
+        @media (max-width: 700px) {
+            #panelSettings { padding:12px !important; }
+            .settings-card .table-card-header { padding:14px; gap:10px; align-items:flex-start; }
+            .settings-card .table-card-header h3 { line-height:1.35; }
+            .settings-card .table-card-header span { flex-shrink:0; }
+            .settings-card .form-card { margin:12px; padding:16px; }
+            .settings-card table { font-size:12px; }
+            .settings-card thead th, .settings-card tbody td { padding:10px 8px; }
+            .settings-card th:first-child, .settings-card td:first-child { width:30px; }
+            .settings-card th:last-child, .settings-card td:last-child { width:72px; }
+            .settings-card .actions { gap:4px; }
+            .settings-card .btn-sm { padding:6px 8px; }
+        }
     </style>
 </head>
 <body>
@@ -279,8 +310,8 @@
 
         <!-- SETTINGS PANEL -->
         <div id="panelSettings" style="display:none;flex:1;padding:24px 32px;overflow:auto;">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;">
-                <div class="table-card" style="min-height:320px;">
+            <div class="settings-grid" style="display:grid;gap:24px;">
+                <div class="table-card settings-card" style="min-height:320px;">
                     <div class="table-card-header">
                         <h3><i class="fa-solid fa-bell" style="color:var(--brand);margin-right:8px;"></i> Report Notification Emails</h3>
                         <span id="reportEmailCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
@@ -308,7 +339,7 @@
                     </div>
                 </div>
 
-                <div class="table-card" style="min-height:320px;">
+                <div class="table-card settings-card" style="min-height:320px;">
                     <div class="table-card-header">
                         <h3><i class="fa-solid fa-user-shield" style="color:var(--brand);margin-right:8px;"></i> Exam Access Contacts</h3>
                         <span id="accessContactCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
