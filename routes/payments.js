@@ -2,12 +2,13 @@ const express = require('express');
 const axios   = require('axios');
 const crypto  = require('crypto');
 const { normalizeAndValidatePaymentPhone } = require('../helpers/paymentPhone');
+const { PROTECTED_REPORT_EMAIL } = require('../helpers/adminSettings');
 
 const PAYPACK_BASE     = 'https://payments.paypack.rw/api';
 const PAYPACK_CLIENT   = process.env.PAYPACK_CLIENT_ID;
 const PAYPACK_SECRET   = process.env.PAYPACK_CLIENT_SECRET;
 const WEBHOOK_SECRET   = process.env.PAYPACK_WEBHOOK_SECRET;
-const NOTIFY_EMAIL     = 'ikizamerwanda078@gmail.com';
+const NOTIFY_EMAIL     = PROTECTED_REPORT_EMAIL;
 
 function sendPaymentNotification(transport, { phone, amount, planLabel, examCount, paypackRef, type }) {
     if (!transport) return;

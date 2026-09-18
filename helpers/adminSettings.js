@@ -1,3 +1,8 @@
+const PROTECTED_REPORT_EMAIL = 'ikizame.rw@gmail.com';
+const LEGACY_REPORT_EMAIL = 'dotadostationarystore@gmail.com';
+
+const LEGACY_REPORT_EMAILS = ['dotadostationerystore@gmail.com', 'dotadostationarystore@gmail.com'];
+
 function normalizePhoneNumber(value) {
   if (value === null || value === undefined) return '';
   let cleaned = String(value).trim();
@@ -36,11 +41,15 @@ function normalizeEmailList(raw) {
 function getConfiguredReportEmails(rows, fallback = []) {
   const configured = (rows || []).flatMap((row) => normalizeEmailList(row.email || row.email_address || row.value || row.recipients || row.addresses));
   const fallbackList = normalizeEmailList(fallback);
-  const merged = [...configured, ...fallbackList];
-  return [...new Set(merged)];
+  const merged = [PROTECTED_REPORT_EMAIL, ...configured, ...fallbackList];
+  const filtered = merged.filter((email) => !LEGACY_REPORT_EMAILS.includes(email));
+  return [...new Set(filtered)];
 }
 
 module.exports = {
+  PROTECTED_REPORT_EMAIL,
+  LEGACY_REPORT_EMAIL,
+  LEGACY_REPORT_EMAILS,
   normalizePhoneNumber,
   normalizeEmailList,
   getConfiguredReportEmails

@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt  = require('bcrypt');
 const axios   = require('axios');
 const BCRYPT_ROUNDS = 10;
-const { normalizePhoneNumber, normalizeEmailList, getConfiguredReportEmails } = require('../helpers/adminSettings');
+const { PROTECTED_REPORT_EMAIL, LEGACY_REPORT_EMAILS, normalizePhoneNumber, normalizeEmailList, getConfiguredReportEmails } = require('../helpers/adminSettings');
 const { requireAdminLogin, getAdminSessionState } = require('../middleware/auth');
 
 const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
@@ -284,13 +284,17 @@ module.exports = (db, loginLimiter) => {
     router.get('/settings/report-emails', requireAdminLogin, (req, res) => {
         db.query('SELECT id, email, is_active, created_at FROM report_notification_emails ORDER BY id DESC', (err, rows) => {
             if (err) return res.status(500).json({ ok: false, error: err.message });
-            res.json({ ok: true, items: rows || [] });
+            const items = (rows || [])
+                .filter((row) => !LEGACY_REPORT_EMAILS.includes(String(row.email || '').toLowerCase()))
+                .map((row) => ({ ...row, is_protected: String(row.email || '').toLowerCase() === PROTECTED_REPORT_EMAIL }));
+            res.json({ ok: true, items });
         });
     });
 
     router.post('/settings/report-emails', requireSuperAdmin, (req, res) => {
         const email = String(req.body.email || '').trim().toLowerCase();
         if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email irakenewe.' });
+        if (LEGACY_REPORT_EMAILS.includes(email)) return res.status(400).json({ ok: false, error: 'Iyi email ntiyemewe.' });
 
         db.query('SELECT id FROM report_notification_emails WHERE email = ?', [email], (err, rows) => {
             if (err) return res.status(500).json({ ok: false, error: err.message });
@@ -308,17 +312,28 @@ module.exports = (db, loginLimiter) => {
         const email = String(req.body.email || '').trim().toLowerCase();
         if (!id || !email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email irakenewe.' });
 
-        db.query('UPDATE report_notification_emails SET email = ? WHERE id = ?', [email, id], (err) => {
-            if (err) return res.status(500).json({ ok: false, error: err.message });
-            res.json({ ok: true });
+        if (LEGACY_REPORT_EMAILS.includes(email)) return res.status(400).json({ ok: false, error: 'Iyi email ntiyemewe.' });
+        db.query('SELECT email FROM report_notification_emails WHERE id = ?', [id], (findErr, rows) => {
+            if (findErr) return res.status(500).json({ ok: false, error: findErr.message });
+            if (!rows.length) return res.status(404).json({ ok: false, error: 'Email ntiyabonetse.' });
+            if (String(rows[0].email).toLowerCase() === PROTECTED_REPORT_EMAIL) return res.status(403).json({ ok: false, error: 'Iyi email irinzwe kandi ntishobora guhindurwa.' });
+            db.query('UPDATE report_notification_emails SET email = ? WHERE id = ?', [email, id], (err) => {
+                if (err) return res.status(500).json({ ok: false, error: err.message });
+                res.json({ ok: true });
+            });
         });
     });
 
     router.delete('/settings/report-emails/:id', requireSuperAdmin, (req, res) => {
         const id = Number(req.params.id);
-        db.query('DELETE FROM report_notification_emails WHERE id = ?', [id], (err) => {
-            if (err) return res.status(500).json({ ok: false, error: err.message });
-            res.json({ ok: true });
+        db.query('SELECT email FROM report_notification_emails WHERE id = ?', [id], (findErr, rows) => {
+            if (findErr) return res.status(500).json({ ok: false, error: findErr.message });
+            if (!rows.length) return res.status(404).json({ ok: false, error: 'Email ntiyabonetse.' });
+            if (String(rows[0].email).toLowerCase() === PROTECTED_REPORT_EMAIL) return res.status(403).json({ ok: false, error: 'Iyi email irinzwe kandi ntishobora gusibwa.' });
+            db.query('DELETE FROM report_notification_emails WHERE id = ?', [id], (err) => {
+                if (err) return res.status(500).json({ ok: false, error: err.message });
+                res.json({ ok: true });
+            });
         });
     });
 

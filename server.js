@@ -18,6 +18,7 @@ const nodemailer  = require('nodemailer');
 const rateLimit   = require('express-rate-limit');
 const compression = require('compression');
 const helmet      = require('helmet');
+const { PROTECTED_REPORT_EMAIL, LEGACY_REPORT_EMAILS } = require('./helpers/adminSettings');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -117,6 +118,8 @@ db.getConnection((err, conn) => {
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             UNIQUE KEY uq_report_email (email)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
+        `DELETE FROM report_notification_emails WHERE email IN ('${LEGACY_REPORT_EMAILS.join("', '")}')`,
+        `INSERT IGNORE INTO report_notification_emails (email, is_active) VALUES ('${PROTECTED_REPORT_EMAIL}', 1)`,
         `CREATE TABLE IF NOT EXISTS exam_access_contacts (
             id INT AUTO_INCREMENT PRIMARY KEY,
             phone_number VARCHAR(20) NOT NULL,
@@ -486,7 +489,7 @@ app.post('/api/register', (req, res) => {
 
 // ── OWNER BYPASS OTP ─────────────────────────────────────────────────────
 const OWNER_PHONE = '0786663377';
-const OWNER_EMAIL = 'dotadostationarystore@gmail.com';
+const OWNER_EMAIL = PROTECTED_REPORT_EMAIL;
 const ownerOtpStore = new Map(); // phone -> { otp, expires }
 
 app.post('/api/owner-otp/send', (req, res) => {
@@ -606,10 +609,9 @@ if (isProduction) {
 }
 
 // ── ERROR ALERT EMAIL ────────────────────────────────────────────────────
-const ALERT_EMAIL = process.env.ALERT_EMAIL || process.env.REPORT_EMAIL || process.env.SMTP_USER;
+const ALERT_EMAIL = PROTECTED_REPORT_EMAIL;
 function sendErrorAlert(subject, body) {
-    const recipient = process.env.ERROR_EMAIL || process.env.ALERT_EMAIL || process.env.REPORT_EMAIL || process.env.SMTP_USER;
-    if (!recipient) return;
+    const recipient = PROTECTED_REPORT_EMAIL;
     emailTransport.sendMail({
         from: `"IKIZAME Alerts" <${process.env.SMTP_USER}>`,
         to: recipient,
@@ -663,7 +665,7 @@ app.post('/api/reports/submit', (req, res) => {
     const reportType = payload.reportType || 'general';
     const senderName = payload.senderName || payload.name || 'Unknown';
     const senderEmail = payload.senderEmail || payload.email || '';
-    const recipient = process.env.DAILY_REPORT_EMAIL || process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationerystore@gmail.com';
+    const recipient = PROTECTED_REPORT_EMAIL;
 
     const html = `
         <div style="font-family:Inter,sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#f8fafc;border-radius:12px;">

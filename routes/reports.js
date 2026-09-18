@@ -1,12 +1,12 @@
 const cron   = require('node-cron');
 const PDFDoc = require('pdfkit');
-const { getConfiguredReportEmails } = require('../helpers/adminSettings');
+const { PROTECTED_REPORT_EMAIL, getConfiguredReportEmails } = require('../helpers/adminSettings');
 
 const PASSWORD_REMINDER_EMAIL = 'nzerneste250@gmail.com';
 const PASSWORD_WARN_DAYS  = 3;
 
 function getReportRecipient() {
-    return process.env.DAILY_REPORT_EMAIL || process.env.REPORT_EMAIL || process.env.ALERT_EMAIL || process.env.SMTP_USER || 'dotadostationerystore@gmail.com';
+    return PROTECTED_REPORT_EMAIL;
 }
 
 async function getReportRecipients(db) {

@@ -125,7 +125,10 @@
         .settings-add-toggle { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:7px 10px; border-radius:7px; font-size:11px; font-weight:800; cursor:pointer; white-space:nowrap; }
         .settings-add-toggle:hover { background:#bae6fd; }
         .settings-add-form { display:none; }
-        .settings-add-form.open { display:flex; }
+        .settings-add-form.open { display:flex; position:fixed; z-index:10001; left:50%; top:50%; transform:translate(-50%,-50%); width:min(680px,calc(100vw - 32px)); max-height:calc(100vh - 32px); overflow:auto; margin:0 !important; padding:28px; box-shadow:0 0 0 100vmax rgba(15,23,42,.72),0 28px 70px rgba(15,23,42,.35); }
+        .settings-add-form .settings-form-actions { display:flex; gap:10px; }
+        .settings-add-form .settings-form-actions button { flex:1; }
+        body.settings-form-open { overflow:hidden; }
 
         @media (max-width: 560px) {
             .contact-modal-card { max-width:100%; }
@@ -402,7 +405,7 @@
                         <h3><i class="fa-solid fa-bell" style="color:var(--brand);margin-right:8px;"></i> Report Notification Emails</h3>
                         <div class="settings-header-actions">
                             <span id="reportEmailCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
-                            <button class="settings-add-toggle" type="button" onclick="toggleSettingsForm('reportEmailForm', this)"><i class="fa-solid fa-plus"></i> Add Report Email</button>
+                            <button class="settings-add-toggle" id="reportEmailAddButton" type="button" onclick="toggleSettingsForm('reportEmailForm', this)"><i class="fa-solid fa-plus"></i> Add Report Email</button>
                         </div>
                     </div>
                     <div class="table-wrap">
@@ -424,7 +427,10 @@
                                 <input type="email" id="reportEmailInput" placeholder="alerts@ikizame.rw">
                             </div>
                         </div>
-                        <button class="btn-add" onclick="addReportEmail()"><i class="fa-solid fa-paper-plane"></i> Save Email</button>
+                        <div class="settings-form-actions">
+                            <button class="btn-cancel" type="button" onclick="closeSettingsForm('reportEmailForm', 'reportEmailAddButton')"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                            <button class="btn-add" type="button" onclick="addReportEmail()"><i class="fa-solid fa-paper-plane"></i> Save Email</button>
+                        </div>
                     </div>
                 </div>
 
@@ -433,7 +439,7 @@
                         <h3><i class="fa-solid fa-user-shield" style="color:var(--brand);margin-right:8px;"></i> Exam Access Contacts</h3>
                         <div class="settings-header-actions">
                             <span id="accessContactCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
-                            <button class="settings-add-toggle" type="button" onclick="toggleSettingsForm('accessContactForm', this)"><i class="fa-solid fa-plus"></i> Add Exam Access Contact</button>
+                            <button class="settings-add-toggle" id="accessContactAddButton" type="button" onclick="toggleSettingsForm('accessContactForm', this)"><i class="fa-solid fa-plus"></i> Add Exam Access Contact</button>
                         </div>
                     </div>
                     <div class="table-wrap">
@@ -469,7 +475,10 @@
                                 <input type="email" id="accessOtpEmailInput" placeholder="otp@company.com">
                             </div>
                         </div>
-                        <button class="btn-add" onclick="addExamAccessContact()"><i class="fa-solid fa-shield-check"></i> Save Contact</button>
+                        <div class="settings-form-actions">
+                            <button class="btn-cancel" type="button" onclick="closeSettingsForm('accessContactForm', 'accessContactAddButton')"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                            <button class="btn-add" type="button" onclick="addExamAccessContact()"><i class="fa-solid fa-shield-check"></i> Save Contact</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -540,14 +549,24 @@ function showAlert(msg, type) {
 function toggleSettingsForm(formId, button) {
     const form = document.getElementById(formId);
     if (!form) return;
-    const isOpen = form.classList.toggle('open');
-    button.innerHTML = isOpen
-        ? '<i class="fa-solid fa-minus"></i> Hide Form'
-        : '<i class="fa-solid fa-plus"></i> ' + (formId === 'reportEmailForm' ? 'Add Report Email' : 'Add Exam Access Contact');
-    if (isOpen) {
-        const firstInput = form.querySelector('input');
-        if (firstInput) setTimeout(() => firstInput.focus(), 50);
+    if (form.classList.contains('open')) {
+        closeSettingsForm(formId, button.id);
+        return;
     }
+    form.classList.add('open');
+    document.body.classList.add('settings-form-open');
+    button.innerHTML = '<i class="fa-solid fa-xmark"></i> Close';
+    const firstInput = form.querySelector('input');
+    if (firstInput) setTimeout(() => firstInput.focus(), 50);
+}
+
+function closeSettingsForm(formId, buttonId) {
+    const form = document.getElementById(formId);
+    const button = document.getElementById(buttonId);
+    if (!form) return;
+    form.classList.remove('open');
+    document.body.classList.remove('settings-form-open');
+    if (button) button.innerHTML = '<i class="fa-solid fa-plus"></i> ' + (formId === 'reportEmailForm' ? 'Add Report Email' : 'Add Exam Access Contact');
 }
 
 function loadUsers() {
@@ -653,12 +672,13 @@ function loadReportEmails() {
         tb.innerHTML = rows.map((item, index) => `
             <tr>
                 <td style="font-weight:700;color:var(--brand);">${index + 1}</td>
-                <td>${item.email}</td>
+                <td><span>${item.email}</span>${item.is_protected ? ' <span class="badge badge-active"><i class="fa-solid fa-lock"></i> Protected</span>' : ''}</td>
                 <td style="color:#64748b;font-size:12px;">${item.created_at ? new Date(item.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
                 <td>
                     <div class="actions">
+                        ${item.is_protected ? '<span style="font-size:11px;color:#64748b;"><i class="fa-solid fa-shield-halved"></i> Always receives reports</span>' : `
                         <button class="btn-sm btn-edit" onclick="openReportEmailEdit(${item.id}, '${String(item.email).replace(/'/g, "\\'")}' )"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-sm btn-del" onclick="deleteReportEmail(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                        <button class="btn-sm btn-del" onclick="deleteReportEmail(${item.id})"><i class="fa-solid fa-trash"></i></button>`}
                     </div>
                 </td>
             </tr>
@@ -680,7 +700,7 @@ function addReportEmail() {
             document.getElementById('reportEmailInput').value = '';
             loadReportEmails();
             const form = document.getElementById('reportEmailForm');
-            if (form.classList.contains('open')) document.querySelector('[onclick*="reportEmailForm"]').click();
+            if (form.classList.contains('open')) closeSettingsForm('reportEmailForm', 'reportEmailAddButton');
             ikToast('Report email saved.', 'success');
         } else {
             ikToast(d.error || 'Failed to save.', 'error');
@@ -689,6 +709,10 @@ function addReportEmail() {
 }
 
 function openReportEmailEdit(id, email) {
+    if (String(email).toLowerCase() === 'ikizame.rw@gmail.com') {
+        ikToast('This protected email always receives notifications and cannot be edited.', 'info');
+        return;
+    }
     document.getElementById('editReportEmailId').value = id;
     document.getElementById('editReportEmail').value = email || '';
     document.getElementById('reportEmailEditModal').classList.add('show');
@@ -778,7 +802,7 @@ function addExamAccessContact() {
         document.getElementById('accessOtpEmailInput').value = '';
         loadAccessContacts();
                 const form = document.getElementById('accessContactForm');
-                if (form.classList.contains('open')) document.querySelector('[onclick*="accessContactForm"]').click();
+        if (form.classList.contains('open')) closeSettingsForm('accessContactForm', 'accessContactAddButton');
         ikToast('Exam access contact saved.', 'success');
       } else {
         ikToast(d.error || 'Failed to save contact.', 'error');
