@@ -28,6 +28,10 @@ body.sidebar-open .mobile-sidebar-overlay {
   display: block;
 }
 
+body.sidebar-open {
+  overflow: hidden;
+}
+
 @media (max-width: 1100px) {
   html body {
     height: auto !important;
@@ -40,7 +44,8 @@ body.sidebar-open .mobile-sidebar-overlay {
     position: relative;
   }
 
-  .shell {
+  .shell,
+  .wrap {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -49,7 +54,9 @@ body.sidebar-open .mobile-sidebar-overlay {
   }
 
   .shell > .sidebar,
-  .shell > .side {
+  .shell > .side,
+  .wrap > .sidebar,
+  .wrap > .side {
     position: fixed !important;
     top: 0;
     left: 0;
@@ -66,23 +73,30 @@ body.sidebar-open .mobile-sidebar-overlay {
   }
 
   .shell > .sidebar.open,
-  .shell > .side.open {
+  .shell > .side.open,
+  .wrap > .sidebar.open,
+  .wrap > .side.open {
     transform: translateX(0);
   }
 
   .shell.sidebar-open > .workspace,
-  .shell.sidebar-open > .page {
+  .shell.sidebar-open > .page,
+  .wrap.sidebar-open > .workspace,
+  .wrap.sidebar-open > .page {
     pointer-events: none;
   }
 
   .shell > .workspace,
-  .shell > .page {
+  .shell > .page,
+  .wrap > .workspace,
+  .wrap > .page {
     width: 100%;
     min-height: 100vh;
     overflow: visible;
   }
 
-  .workspace .topbar {
+  .workspace .topbar,
+  .page .topbar {
     padding: 16px 20px;
     min-height: auto;
     flex-wrap: wrap;
@@ -94,21 +108,25 @@ body.sidebar-open .mobile-sidebar-overlay {
     background: #ffffff;
   }
 
-  .workspace .mobile-nav-toggle {
+  .workspace .mobile-nav-toggle,
+  .page .mobile-nav-toggle {
     display: inline-flex;
     flex-shrink: 0;
   }
 
-  .workspace .topbar h1 {
+  .workspace .topbar h1,
+  .page .topbar h1 {
     font-size: 20px;
   }
 
-  .workspace .topbar p {
+  .workspace .topbar p,
+  .page .topbar p {
     font-size: 12px;
     margin-top: 4px;
   }
 
-  .workspace .search-box-wrap {
+  .workspace .search-box-wrap,
+  .page .search-box-wrap {
     width: 100%;
     margin-top: 2px;
   }
@@ -116,7 +134,8 @@ body.sidebar-open .mobile-sidebar-overlay {
   .workspace .form-scroll,
   .workspace .form-container,
   .workspace .perf-scroll,
-  .workspace .body {
+  .workspace .body,
+  .page .body {
     padding: 16px 14px 24px;
     overflow: visible;
     height: auto;
@@ -129,7 +148,8 @@ body.sidebar-open .mobile-sidebar-overlay {
   .workspace .resource-row,
   .workspace .options-grid,
   .workspace .text-options-grid,
-  .workspace .review-info-grid {
+  .workspace .review-info-grid,
+  .page .stats {
     grid-template-columns: 1fr;
     gap: 10px;
   }
@@ -141,42 +161,51 @@ body.sidebar-open .mobile-sidebar-overlay {
   .workspace .form-card,
   .workspace .system-details-panel,
   .workspace .table-card,
-  .workspace .table-container {
+  .workspace .table-container,
+  .page .panel,
+  .page .table-container {
     border-radius: 14px;
   }
 
   .workspace .table-container,
   .workspace .table-card,
-  .workspace .table-wrap {
+  .workspace .table-wrap,
+  .page .table-wrap {
     overflow: visible;
     padding-bottom: 6px;
   }
 
-  .workspace .table-container {
+  .workspace .table-container,
+  .page .table-container {
     overflow-x: auto;
   }
 
-  .workspace .table-container table {
+  .workspace .table-container table,
+  .page .table-container table {
     min-width: 760px;
     display: table;
     width: 100%;
   }
 
-  .workspace .sidebar-brand {
+  .sidebar-brand,
+  .side-logo {
     padding: 18px 16px;
     font-size: 1rem;
   }
 
-  .workspace .sidebar-nav {
+  .sidebar-nav,
+  .side-nav {
     padding: 12px 10px;
   }
 
-  .workspace .sidebar-nav a {
+  .sidebar-nav a,
+  .side-nav a {
     padding: 11px 12px;
     font-size: 13px;
   }
 
-  .workspace .sidebar-footer {
+  .sidebar-footer,
+  .side-foot {
     padding: 12px 14px;
   }
 
@@ -215,13 +244,15 @@ body.sidebar-open .mobile-sidebar-overlay {
 }
 
 @media (max-width: 700px) {
-  .workspace .topbar {
+  .workspace .topbar,
+  .page .topbar {
     padding: 14px 14px 12px;
     align-items: flex-start;
     gap: 10px;
   }
 
-  .workspace .topbar > div:first-child {
+  .workspace .topbar > div:first-child,
+  .page .topbar > div:first-child {
     width: 100%;
   }
 
@@ -232,7 +263,8 @@ body.sidebar-open .mobile-sidebar-overlay {
     justify-content: space-between;
   }
 
-  .workspace .form-scroll {
+  .workspace .form-scroll,
+  .page .body {
     padding: 12px 12px 20px;
     gap: 12px;
   }
@@ -243,7 +275,9 @@ body.sidebar-open .mobile-sidebar-overlay {
   .workspace .panel,
   .workspace .system-details-panel,
   .workspace .table-card,
-  .workspace .table-container {
+  .workspace .table-container,
+  .page .panel,
+  .page .table-container {
     padding: 14px;
   }
 
