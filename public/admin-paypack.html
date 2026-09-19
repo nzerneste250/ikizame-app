@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IKIZAME | PayPack Ledger</title>
+    <link rel="icon" type="image/png" href="assets/uploads/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/design-system.css">
+    <link rel="stylesheet" href="assets/css/admin-responsive.css">
+    <style>
+        :root { --brand:#0b698b; --border:#e2e8f0; --muted:#64748b; --text:#0f172a; }
+        * { box-sizing:border-box; }
+        html, body { min-height:100%; margin:0; font-family:'Inter',sans-serif; background:#f8fafc; color:var(--text); }
+        .shell { display:flex; min-height:100vh; }
+        .sidebar { width:240px; background:#0f172a; display:flex; flex-direction:column; flex-shrink:0; }
+        .sidebar-brand { padding:24px 20px 20px; color:#38bdf8; font-family:'Black Han Sans',sans-serif; letter-spacing:2px; border-bottom:1px solid #1e293b; }
+        .sidebar-nav { padding:16px 12px; display:flex; flex-direction:column; gap:4px; flex:1; }
+        .sidebar-nav a { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:8px; color:#94a3b8; text-decoration:none; font-size:13.5px; font-weight:600; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { color:#f8fafc; background:rgba(56,189,248,.12); }
+        .sidebar-nav a.active { border-left:3px solid #38bdf8; padding-left:11px; }
+        .sidebar-nav a i { width:16px; text-align:center; }
+        .nav-logout { color:#ef4444 !important; }
+        .sidebar-footer { padding:14px 16px; border-top:1px solid #1e293b; display:flex; align-items:center; gap:10px; }
+        .admin-avatar { width:34px; height:34px; border-radius:50%; background:var(--brand); display:grid; place-items:center; color:#fff; font-size:13px; font-weight:700; }
+        .admin-meta { flex:1; min-width:0; }
+        .admin-role { font-size:11px; color:#94a3b8; }
+        .session-pill { font-size:10px; font-weight:700; color:#38bdf8; background:rgba(56,189,248,.15); padding:2px 8px; border-radius:20px; }
+        .workspace { flex:1; display:flex; flex-direction:column; min-width:0; }
+        .topbar { min-height:74px; background:#fff; border-bottom:1px solid var(--border); padding:16px 32px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+        .topbar h1 { margin:0; font-size:22px; }
+        .topbar p { margin:4px 0 0; color:var(--muted); font-size:13px; }
+        .content { padding:28px 32px; display:flex; flex-direction:column; gap:22px; overflow:auto; }
+        .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+        .summary-card { background:#fff; border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow:0 8px 22px rgba(15,23,42,.05); }
+        .summary-card i { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; margin-bottom:14px; font-size:17px; }
+        .paid i { background:#dcfce7; color:#15803d; }
+        .withdrawn i { background:#fee2e2; color:#b91c1c; }
+        .fees i { background:#fef3c7; color:#b45309; }
+        .net i { background:#e0f2fe; color:#0369a1; }
+        .summary-card strong { display:block; font-size:1.45rem; line-height:1.2; }
+        .summary-card span { display:block; margin-top:5px; color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+        .panel { background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 8px 22px rgba(15,23,42,.04); }
+        .panel-head { padding:18px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px; border-bottom:1px solid var(--border); }
+        .panel-head h2 { margin:0; font-size:15px; }
+        .panel-head p { margin:0; color:var(--muted); font-size:12px; }
+        .table-wrap { overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; min-width:760px; font-size:12px; }
+        th, td { padding:12px 14px; text-align:left; border-bottom:1px solid #f1f5f9; white-space:nowrap; }
+        th { background:#f8fafc; color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.05em; }
+        .status { display:inline-flex; align-items:center; gap:5px; border-radius:999px; padding:5px 9px; font-weight:800; font-size:10px; }
+        .status.success { background:#dcfce7; color:#166534; }
+        .status.other { background:#f1f5f9; color:#475569; }
+        .amount-in { color:#15803d; font-weight:800; }
+        .amount-out { color:#b91c1c; font-weight:800; }
+        .empty, .error { padding:34px 20px; text-align:center; color:var(--muted); }
+        .error { color:#b91c1c; }
+        @media (max-width:900px) { .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .content { padding:22px 20px; } }
+        @media (max-width:560px) { .topbar { align-items:flex-start; padding:14px; } .topbar h1 { font-size:19px; } .topbar p { line-height:1.4; } .topbar .btn-outline { width:100%; justify-content:center; } .content { padding:16px 12px 24px; } .summary-grid { grid-template-columns:1fr; gap:12px; } .summary-card { padding:16px; } .panel-head { align-items:flex-start; flex-direction:column; } }
+    </style>
+</head>
+<body>
+<div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
+<div class="shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <nav class="sidebar-nav">
+            <a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+            <a href="/add-exam"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
+            <a href="/admin-payments"><i class="fa-solid fa-credit-card"></i> Payments</a>
+            <a href="/admin-paypack" class="active"><i class="fa-solid fa-building-columns"></i> PayPack Ledger</a>
+            <a href="/upload-resource"><i class="fa-solid fa-book-bookmark"></i> Upload Resources</a>
+            <a href="/dashboard?view=analytics"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
+            <a href="/visitors"><i class="fa-solid fa-users-viewfinder"></i> Visitors</a>
+            <a href="/system-performance"><i class="fa-solid fa-gauge-high"></i> System Performance</a>
+            <a href="/admin-users"><i class="fa-solid fa-users-gear"></i> Manage Users</a>
+            <a href="/api/admin/logout" class="nav-logout"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+        </nav>
+        <div class="sidebar-footer"><div class="admin-avatar">A</div><div class="admin-meta"><div class="admin-role">Administrator</div></div><div class="session-pill">Live</div></div>
+    </aside>
+    <main class="workspace">
+        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><div><h1>PayPack Ledger</h1><p>Live money-in, money-out, fees, and net balance from PayPack.</p></div></header>
+        <section class="content">
+            <div class="summary-grid">
+                <div class="summary-card paid"><i class="fa-solid fa-arrow-down"></i><strong id="totalPaid">RWF 0</strong><span>Total paid in</span></div>
+                <div class="summary-card withdrawn"><i class="fa-solid fa-arrow-up"></i><strong id="totalWithdrawn">RWF 0</strong><span>Total withdrawn</span></div>
+                <div class="summary-card fees"><i class="fa-solid fa-receipt"></i><strong id="totalFees">RWF 0</strong><span>Total fees</span></div>
+                <div class="summary-card net"><i class="fa-solid fa-wallet"></i><strong id="netBalance">RWF 0</strong><span>Net balance</span></div>
+            </div>
+            <div class="panel"><div class="panel-head"><div><h2>PayPack transactions</h2><p id="transactionMeta">Loading live transactions...</p></div><button class="btn-outline" type="button" onclick="loadLedger()"><i class="fa-solid fa-rotate"></i> Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Amount</th><th>Fee</th><th>Status</th><th>Phone</th><th>Date</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="7" class="empty">Loading PayPack data...</td></tr></tbody></table></div></div>
+        </section>
+    </main>
+</div>
+<script src="assets/js/admin-responsive.js"></script>
+<script>
+const money = value => 'RWF ' + Number(value || 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
+const esc = value => String(value ?? '—').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+function loadLedger() {
+    fetch('/api/admin/paypack-transactions?offset=0&limit=1000').then(response => response.json()).then(data => {
+        if (data.error) throw new Error(data.error);
+        const rows = Array.isArray(data.transactions) ? data.transactions : [];
+        let paid = 0, withdrawn = 0, fees = 0;
+        rows.forEach(row => { const amount = Number(row.amount) || 0; const fee = Number(row.fee) || 0; const kind = String(row.kind || '').toUpperCase(); if (kind === 'CASHOUT') withdrawn += amount; else if (kind === 'CASHIN') { paid += amount; fees += fee; } });
+        document.getElementById('totalPaid').textContent = money(paid);
+        document.getElementById('totalWithdrawn').textContent = money(withdrawn);
+        document.getElementById('totalFees').textContent = money(fees);
+        document.getElementById('netBalance').textContent = money(paid - withdrawn - fees);
+        document.getElementById('transactionMeta').textContent = `${rows.length} transaction(s) loaded from PayPack`;
+        const body = document.getElementById('ledgerBody');
+        if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="empty">No PayPack transactions found.</td></tr>'; return; }
+        body.innerHTML = rows.map(row => { const kind = String(row.kind || 'OTHER').toUpperCase(); const amount = Number(row.amount) || 0; return `<tr><td>${esc(row.ref || row.reference || '—')}</td><td>${esc(kind)}</td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td><span class="status ${String(row.status || '').toLowerCase() === 'successful' ? 'success' : 'other'}">${esc(row.status || '—')}</span></td><td>${esc(row.number || row.phone || '—')}</td><td>${esc(row.created_at || row.createdAt || '—')}</td></tr>`; }).join('');
+    }).catch(error => { document.getElementById('transactionMeta').textContent = 'PayPack data unavailable'; document.getElementById('ledgerBody').innerHTML = `<tr><td colspan="7" class="error">${esc(error.message || 'Unable to load PayPack data.')}</td></tr>`; });
+}
+loadLedger();
+</script>
+</body>
+</html>

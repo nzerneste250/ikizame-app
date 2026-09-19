@@ -372,6 +372,11 @@ app.get(['/admin-payments', '/admin-payments/'], (req, res) => {
     redirectToAdminLogin(req, res);
 });
 
+app.get(['/admin-paypack', '/admin-paypack/'], (req, res) => {
+    if (getAdminSessionState(req)) return res.sendFile(path.join(__dirname, 'public', 'admin-paypack.html'));
+    redirectToAdminLogin(req, res);
+});
+
 app.get('/upload-resource', (req, res) => {
     if (getAdminSessionState(req)) return res.sendFile(path.join(__dirname, 'public', 'upload-resource.html'));
     redirectToAdminLogin(req, res);
