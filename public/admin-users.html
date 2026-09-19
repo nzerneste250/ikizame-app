@@ -151,11 +151,23 @@
 
         @media (max-width: 900px) {
             .content { padding:20px; }
+            #panelAdmins { grid-template-columns:1fr; gap:16px; overflow:visible; }
             #panelSettings { padding:20px !important; }
             .settings-grid { grid-template-columns:1fr !important; }
         }
 
         @media (max-width: 700px) {
+            .topbar { height:auto; padding:14px; align-items:flex-start; gap:12px; }
+            .topbar > div:first-of-type { width:100%; }
+            .topbar > div:last-child { width:100%; justify-content:stretch; gap:6px !important; }
+            .topbar > div:last-child .tab-btn { flex:1; min-width:0; padding:9px 6px; font-size:11px; }
+            .content { padding:14px 12px; gap:14px; }
+            #panelAdmins .table-card, #panelAdmins > .form-card { width:100%; min-width:0; }
+            #panelAdmins .table-card-header { padding:14px; gap:8px; }
+            #panelAdmins .table-card-header h3 { font-size:14px; }
+            #panelAdmins .table-wrap { overflow-x:auto; }
+            #panelAdmins table { min-width:620px; }
+            #panelAdmins > .form-card { padding:18px; }
             #panelSettings { padding:12px !important; }
             .settings-card .table-card-header { padding:14px; gap:10px; align-items:flex-start; }
             .settings-card .table-card-header h3 { line-height:1.35; }
