@@ -408,29 +408,17 @@ p  { font-size: var(--fs-body); color: var(--text-secondary); line-height: 1.7; 
   transition: all 0.15s ease;
 }
 
-/* ── SEARCH FIELDS: animated blue, green and yellow border ── */
-@keyframes searchColorGlow {
-  0%, 100% {
-    box-shadow: 0 0 0 2px rgba(37,99,235,.72), 0 0 0 5px rgba(22,163,74,.18), 0 8px 22px rgba(37,99,235,.14);
-  }
-  33% {
-    box-shadow: 0 0 0 2px rgba(22,163,74,.72), 0 0 0 5px rgba(250,204,21,.2), 0 8px 22px rgba(22,163,74,.14);
-  }
-  66% {
-    box-shadow: 0 0 0 2px rgba(250,204,21,.9), 0 0 0 5px rgba(37,99,235,.18), 0 8px 22px rgba(250,204,21,.16);
-  }
-}
-
+/* ── SEARCH FIELDS: restrained, professional shared treatment ── */
 .search-box-wrap,
 .search-bar-wrap,
 .search-wrap,
 .analytics-search-box {
   position: relative;
   z-index: 0;
-  border: 2px solid transparent !important;
-  background: linear-gradient(#ffffff, #ffffff) padding-box,
-              linear-gradient(110deg, #2563eb, #06b6d4 35%, #16a34a 67%, #facc15) border-box !important;
-  animation: searchColorGlow 3.6s ease-in-out infinite;
+  border: 1px solid #d7e1e8 !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(15,23,42,.05);
+  transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
 }
 
 .search-box-wrap input,
@@ -441,25 +429,25 @@ p  { font-size: var(--fs-body); color: var(--text-secondary); line-height: 1.7; 
 #sumSearch {
   position: relative;
   z-index: 1;
-  border: 2px solid transparent !important;
-  background: linear-gradient(#ffffff, #ffffff) padding-box,
-              linear-gradient(110deg, #2563eb, #06b6d4 35%, #16a34a 67%, #facc15) border-box !important;
-  animation: searchColorGlow 3.6s ease-in-out infinite;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .search-box-wrap,
-  .search-bar-wrap,
-  .search-wrap,
-  .analytics-search-box,
-  .search-box-wrap input,
-  .search-bar-wrap input,
-  .search-input,
-  .analytics-search-box input,
-  .search-row input,
-  #sumSearch {
-    animation: none;
-  }
+.search-box-wrap:focus-within,
+.search-bar-wrap:focus-within,
+.search-wrap:focus-within,
+.analytics-search-box:focus-within {
+  border-color: #0b698b !important;
+  box-shadow: 0 0 0 3px rgba(14,165,233,.14), 0 5px 16px rgba(15,23,42,.08);
+  background: #ffffff !important;
+}
+
+.search-input:focus,
+.search-row input:focus,
+#sumSearch:focus {
+  border-color: #0b698b !important;
+  box-shadow: 0 0 0 3px rgba(14,165,233,.14) !important;
 }
 
 /* ibiciro — balance check button */
