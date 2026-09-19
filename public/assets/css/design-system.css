@@ -408,6 +408,65 @@ p  { font-size: var(--fs-body); color: var(--text-secondary); line-height: 1.7; 
   transition: all 0.15s ease;
 }
 
+/* ── SEARCH FIELDS: animated blue, green and yellow border ── */
+@keyframes searchBorderOrbit {
+  to { transform: rotate(360deg); }
+}
+
+.search-box-wrap,
+.search-bar-wrap,
+.search-wrap,
+.analytics-search-box {
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+  border-color: transparent !important;
+}
+
+.search-box-wrap::before,
+.search-bar-wrap::before,
+.search-wrap::before,
+.analytics-search-box::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, #2563eb, #06b6d4, #16a34a, #facc15, #2563eb);
+  animation: searchBorderOrbit 4s linear infinite;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.search-box-wrap::after,
+.search-bar-wrap::after,
+.search-wrap::after,
+.analytics-search-box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #ffffff;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.search-box-wrap input,
+.search-bar-wrap input,
+.search-input,
+.analytics-search-box input {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-box-wrap::before,
+  .search-bar-wrap::before,
+  .search-wrap::before,
+  .analytics-search-box::before {
+    animation: none;
+  }
+}
+
 /* ibiciro — balance check button */
 #balanceCheckBtn:hover {
   filter: brightness(1.1);
