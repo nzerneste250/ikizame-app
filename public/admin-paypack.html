@@ -41,6 +41,17 @@
         .net i { background:#e0f2fe; color:#0369a1; }
         .summary-card strong { display:block; font-size:1.45rem; line-height:1.2; }
         .summary-card span { display:block; margin-top:5px; color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+        .contact-search { background:#fff; border:1px solid var(--border); border-radius:14px; padding:16px 20px; box-shadow:0 8px 22px rgba(15,23,42,.04); }
+        .contact-search-row { display:flex; align-items:center; gap:10px; }
+        .contact-search-input { flex:1; min-width:200px; border:1px solid var(--border); border-radius:9px; padding:11px 13px 11px 38px; font:inherit; font-size:13px; color:var(--text); }
+        .contact-search-input:focus { outline:none; border-color:#0b698b; box-shadow:0 0 0 3px rgba(11,105,139,.12); }
+        .contact-search-field { position:relative; flex:1; }
+        .contact-search-field i { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--muted); }
+        .contact-search-result { display:none; margin-top:12px; border-radius:9px; padding:10px 12px; font-size:12px; font-weight:700; }
+        .contact-search-result.show { display:block; }
+        .contact-search-result.found { background:#ecfdf5; border:1px solid #a7f3d0; color:#166534; }
+        .contact-search-result.not-found { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; }
+        .contact-search-result strong { font-size:15px; margin-right:5px; }
         .panel { background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 8px 22px rgba(15,23,42,.04); }
         .panel-head { padding:18px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px; border-bottom:1px solid var(--border); }
         .panel-head h2 { margin:0; font-size:15px; }
@@ -82,6 +93,16 @@
     <main class="workspace">
         <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><div><h1>PayPack Ledger</h1><p>Live money-in, money-out, fees, and net balance from PayPack.</p></div></header>
         <section class="content">
+            <div class="contact-search">
+                <div class="contact-search-row">
+                    <div class="contact-search-field">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input class="contact-search-input" id="contactSearch" type="text" inputmode="tel" placeholder="Search contact to check payment..." oninput="searchContactPayment(this.value)">
+                    </div>
+                    <span id="contactSearchCount" style="font-size:11px;color:var(--muted);white-space:nowrap;"></span>
+                </div>
+                <div class="contact-search-result" id="contactSearchResult" aria-live="polite"></div>
+            </div>
             <div class="summary-grid">
                 <div class="summary-card paid"><i class="fa-solid fa-arrow-down"></i><strong id="totalPaid">RWF 0</strong><span>Total paid in</span></div>
                 <div class="summary-card withdrawn"><i class="fa-solid fa-arrow-up"></i><strong id="totalWithdrawn">RWF 0</strong><span>Total withdrawn</span></div>
@@ -96,6 +117,41 @@
 <script>
 const money = value => 'RWF ' + Number(value || 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
 const esc = value => String(value ?? '—').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+let ledgerRows = [];
+function normalizedPhone(value) { return String(value || '').replace(/\D/g, ''); }
+function isSuccessfulPayment(row) {
+    const status = String(row.status || '').toUpperCase();
+    return (status === 'SUCCESS' || status === 'SUCCESSFUL' || status === 'COMPLETED') && String(row.kind || '').toUpperCase() === 'CASHIN';
+}
+function searchContactPayment(value) {
+    const term = normalizedPhone(value);
+    const result = document.getElementById('contactSearchResult');
+    const count = document.getElementById('contactSearchCount');
+    if (!term) {
+        result.className = 'contact-search-result';
+        result.textContent = '';
+        count.textContent = '';
+        renderLedgerRows(ledgerRows);
+        return;
+    }
+    const matches = ledgerRows.filter(row => normalizedPhone(row.number || row.phone).includes(term));
+    const payments = matches.filter(isSuccessfulPayment);
+    const totalPaid = payments.reduce((total, row) => total + (Number(row.amount) || 0), 0);
+    count.textContent = `${matches.length} match${matches.length === 1 ? '' : 'es'}`;
+    if (payments.length) {
+        result.className = 'contact-search-result show found';
+        result.innerHTML = `<strong>Payment done</strong> ${payments.length} successful payment${payments.length === 1 ? '' : 's'} · Total paid: ${money(totalPaid)}`;
+    } else {
+        result.className = 'contact-search-result show not-found';
+        result.innerHTML = '<strong>No payment found</strong> No successful PayPack payment is recorded for this contact.';
+    }
+    renderLedgerRows(matches);
+}
+function renderLedgerRows(rows) {
+    const body = document.getElementById('ledgerBody');
+    if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="empty">No matching PayPack transactions found.</td></tr>'; return; }
+    body.innerHTML = rows.map(row => { const kind = String(row.kind || 'OTHER').toUpperCase(); const amount = Number(row.amount) || 0; return `<tr><td>${esc(row.ref || row.reference || '—')}</td><td>${esc(kind)}</td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td><span class="status ${String(row.status || '').toLowerCase() === 'successful' ? 'success' : 'other'}">${esc(row.status || '—')}</span></td><td>${esc(row.number || row.phone || '—')}</td><td>${esc(row.created_at || row.createdAt || '—')}</td></tr>`; }).join('');
+}
 function loadLedger() {
     fetch('/api/admin/paypack-transactions?offset=0&limit=1000').then(response => response.json()).then(data => {
         if (data.error) throw new Error(data.error);
@@ -109,7 +165,10 @@ function loadLedger() {
         document.getElementById('transactionMeta').textContent = `${rows.length} transaction(s) loaded from PayPack`;
         const body = document.getElementById('ledgerBody');
         if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="empty">No PayPack transactions found.</td></tr>'; return; }
-        body.innerHTML = rows.map(row => { const kind = String(row.kind || 'OTHER').toUpperCase(); const amount = Number(row.amount) || 0; return `<tr><td>${esc(row.ref || row.reference || '—')}</td><td>${esc(kind)}</td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td><span class="status ${String(row.status || '').toLowerCase() === 'successful' ? 'success' : 'other'}">${esc(row.status || '—')}</span></td><td>${esc(row.number || row.phone || '—')}</td><td>${esc(row.created_at || row.createdAt || '—')}</td></tr>`; }).join('');
+        ledgerRows = rows;
+        renderLedgerRows(rows);
+        const search = document.getElementById('contactSearch');
+        if (search.value) searchContactPayment(search.value);
     }).catch(error => { document.getElementById('transactionMeta').textContent = 'PayPack data unavailable'; document.getElementById('ledgerBody').innerHTML = `<tr><td colspan="7" class="error">${esc(error.message || 'Unable to load PayPack data.')}</td></tr>`; });
 }
 loadLedger();
