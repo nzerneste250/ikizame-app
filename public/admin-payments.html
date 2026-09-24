@@ -65,7 +65,6 @@
         .bg-yellow { background:#f59e0b; }
         .bg-teal { background:#0d9488; }
         .search-summary { display:none; align-items:center; gap:18px; background:#ecfeff; border:1px solid #a5f3fc; border-radius:10px; padding:9px 14px; color:#155e75; }
-        .search-summary.show { display:flex; }
         .search-summary-title { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.35px; color:#0e7490; }
         .search-summary-item { display:flex; align-items:baseline; gap:5px; white-space:nowrap; }
         .search-summary-value { font-size:16px; font-weight:800; color:#0f172a; }
@@ -386,7 +385,7 @@
         const summary = document.getElementById('searchSummary');
         const normalizedTerm = term.replace(/\D/g, '');
         if (!normalizedTerm) {
-            summary.classList.remove('show');
+            summary.style.display = 'none';
             return;
         }
 
@@ -394,13 +393,13 @@
             const phone = (tx.phone_number || '').replace(/\D/g, '');
             return phone.includes(normalizedTerm);
         });
-        const successfulTransactions = matchingTransactions.filter(tx => tx.status === 'SUCCESS');
+        const successfulTransactions = matchingTransactions.filter(tx => String(tx.status || '').toUpperCase() === 'SUCCESS');
         const purchasedExams = successfulTransactions.reduce((total, tx) => total + (Number(tx.total_exams) || 0), 0);
         const totalPaid = successfulTransactions.reduce((total, tx) => total + (Number(tx.amount) || 0), 0);
 
         document.getElementById('searchPurchasedExams').textContent = purchasedExams.toLocaleString('en-US');
         document.getElementById('searchTotalPaid').textContent = formatCurrency(totalPaid);
-        summary.classList.add('show');
+        summary.style.display = 'flex';
     }
 
     function filterByPhone(q) {
