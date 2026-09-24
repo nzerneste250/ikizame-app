@@ -64,6 +64,12 @@
         .bg-green { background:#16a34a; }
         .bg-yellow { background:#f59e0b; }
         .bg-teal { background:#0d9488; }
+        .search-summary { display:none; align-items:center; gap:18px; background:#ecfeff; border:1px solid #a5f3fc; border-radius:10px; padding:9px 14px; color:#155e75; }
+        .search-summary.show { display:flex; }
+        .search-summary-title { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.35px; color:#0e7490; }
+        .search-summary-item { display:flex; align-items:baseline; gap:5px; white-space:nowrap; }
+        .search-summary-value { font-size:16px; font-weight:800; color:#0f172a; }
+        .search-summary-label { font-size:11px; color:#64748b; font-weight:600; }
         .table-container { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow-x:auto; box-shadow:0 10px 30px rgba(15,23,42,.08); }
         table { width:100%; border-collapse:collapse; font-size:13px; }
         th, td { padding:14px 16px; text-align:left; border-bottom:1px solid #f1f5f9; }
@@ -263,6 +269,17 @@
                     <input type="text" id="phoneSearch" placeholder="Search by phone number..." oninput="filterByPhone(this.value)">
                     <span class="search-count" id="searchCount"></span>
                 </div>
+                <div class="search-summary" id="searchSummary" aria-live="polite">
+                    <span class="search-summary-title">Contact totals</span>
+                    <span class="search-summary-item">
+                        <span class="search-summary-value" id="searchPurchasedExams">0</span>
+                        <span class="search-summary-label">purchased exams</span>
+                    </span>
+                    <span class="search-summary-item">
+                        <span class="search-summary-value" id="searchTotalPaid">RWF 0</span>
+                        <span class="search-summary-label">total amount paid</span>
+                    </span>
+                </div>
                 <button class="cal-icon-btn" id="calIconBtn" onclick="toggleCalendar()"><i class="fa-solid fa-calendar-days"></i> Filter by Date</button>
             </div>
             <!-- Custom Calendar Popup -->
@@ -365,6 +382,27 @@
 <script>
     let paymentTransactions = [];
 
+    function updateSearchSummary(term) {
+        const summary = document.getElementById('searchSummary');
+        const normalizedTerm = term.replace(/\D/g, '');
+        if (!normalizedTerm) {
+            summary.classList.remove('show');
+            return;
+        }
+
+        const matchingTransactions = paymentTransactions.filter(tx => {
+            const phone = (tx.phone_number || '').replace(/\D/g, '');
+            return phone.includes(normalizedTerm);
+        });
+        const successfulTransactions = matchingTransactions.filter(tx => tx.status === 'SUCCESS');
+        const purchasedExams = successfulTransactions.reduce((total, tx) => total + (Number(tx.total_exams) || 0), 0);
+        const totalPaid = successfulTransactions.reduce((total, tx) => total + (Number(tx.amount) || 0), 0);
+
+        document.getElementById('searchPurchasedExams').textContent = purchasedExams.toLocaleString('en-US');
+        document.getElementById('searchTotalPaid').textContent = formatCurrency(totalPaid);
+        summary.classList.add('show');
+    }
+
     function filterByPhone(q) {
         const term = q.trim();
         const rows = document.querySelectorAll('#transactionsTableBody tr[data-phone]');
@@ -378,6 +416,7 @@
         });
         const countEl = document.getElementById('searchCount');
         countEl.textContent = term ? `${visible} result${visible !== 1 ? 's' : ''}` : '';
+        updateSearchSummary(term);
     }
 
     function formatCurrency(value) {
@@ -719,5 +758,3 @@ fetch('/api/admin/check-session').then(function(r){return r.json();}).then(funct
 <script src="assets/js/admin-responsive.js"></script>
 </body>
 </html>
-
-
