@@ -244,7 +244,7 @@
                 <label for="editAccessPhone">Phone Number</label>
                 <div class="field-wrap">
                     <i class="fa-solid fa-phone ico"></i>
-                    <input type="tel" id="editAccessPhone" maxlength="10" placeholder="0788000000">
+                    <input type="tel" id="editAccessPhone" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" placeholder="0788000000">
                 </div>
             </div>
             <div class="field">
@@ -470,7 +470,7 @@
                             <label>Phone Number</label>
                             <div class="field-wrap">
                                 <i class="fa-solid fa-phone ico"></i>
-                                <input type="tel" id="accessPhoneInput" placeholder="0788000000" maxlength="10">
+                                <input type="tel" id="accessPhoneInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric">
                             </div>
                         </div>
                         <div class="field">
@@ -803,6 +803,7 @@ function addExamAccessContact() {
     const email = document.getElementById('accessEmailInput').value.trim();
     const otpEmail = document.getElementById('accessOtpEmailInput').value.trim();
     if (!phoneNumber || !email || !otpEmail) return ikToast('Phone, contact email and OTP email are all required.', 'warning');
+    if (!/^07[8923]\d{7}$/.test(phoneNumber)) return ikToast('Use 078, 079, 072, or 073 followed by seven digits.', 'warning');
     fetch('/api/admin/settings/exam-access', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -842,6 +843,10 @@ function saveAccessContactEdit() {
     const updatedOtp = document.getElementById('editAccessOtpEmail').value.trim();
     if (!updatedPhone || !updatedEmail || !updatedOtp) {
         ikToast('Phone, contact email and OTP email are all required.', 'warning');
+        return;
+    }
+    if (!/^07[8923]\d{7}$/.test(updatedPhone)) {
+        ikToast('Use 078, 079, 072, or 073 followed by seven digits.', 'warning');
         return;
     }
     fetch(`/api/admin/settings/exam-access/${id}`, {
@@ -908,5 +913,3 @@ fetch('/api/admin/check-session').then(r=>r.json()).then(d=>{
 <script src="assets/js/admin-responsive.js"></script>
 </body>
 </html>
-
-

@@ -620,7 +620,7 @@
                 </div>
                 <div class="input-form-field">
                     <label>Nomero ya Telephone</label>
-                    <input type="tel" id="regPhoneInput" placeholder="0788000000" maxlength="10" oninput="autoFixRegPhone()">
+                    <input type="tel" id="regPhoneInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" oninput="autoFixRegPhone()">
                     <span id="regPhoneHint" class="auth-help-text">Tangira na 072, 073, 078 cyangwa 079.</span>
                 </div>
                 <button class="btn-auth-submit" id="regSubmitBtn" onclick="handleSchoolRegistrationInit()">
@@ -780,13 +780,13 @@
             const inp = document.getElementById('regPhoneInput');
             const hint = document.getElementById('regPhoneHint');
             let v = inp.value.replace(/\D/g, '');
-            if (v.length >= 1 && v[0] !== '0') v = '0' + v.replace(/^0+/, '');
-            if (v.length >= 2 && v[1] !== '7') v = v[0] + '7' + v.slice(2);
-            if (v.length >= 3 && !['8','9','3','2'].includes(v[2])) v = v.slice(0,2) + '8' + v.slice(3);
             inp.value = v.substring(0, 10);
-            if (v.length === 10) {
+            if (/^07[8923]\d{7}$/.test(v)) {
                 hint.textContent = '✓ Numero yuzuye neza!';
                 hint.style.color = '#10b981';
+            } else if (v.length >= 3 && !/^07[8923]/.test(v)) {
+                hint.textContent = 'Koresha 078, 079, 072 cyangwa 073.';
+                hint.style.color = '#ef4444';
             } else if (v.length > 0) {
                 hint.textContent = `Haracyabura imibare (${v.length}/10)`;
                 hint.style.color = '#f59e0b';
@@ -896,8 +896,8 @@
             const btn = document.getElementById('regSubmitBtn');
 
             if(!name || !email || !phone) { showAlert('Uzuza imyanya yose neza.', 'error'); return; }
-            if(phone.length !== 10 || !phone.startsWith('07') || !['8','9','3','2'].includes(phone[2])) {
-                showAlert('Nomero ya telefone ntabwo yuzuye. Injiza nimero nka 0788000000.', 'error');
+            if(!/^07[8923]\d{7}$/.test(phone)) {
+                showAlert('Koresha nimero itangira na 078, 079, 072 cyangwa 073, igakurikirwa n’imibare 7.', 'error');
                 document.getElementById('regPhoneInput').focus();
                 return;
             }

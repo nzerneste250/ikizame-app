@@ -1303,14 +1303,10 @@
                 document.addEventListener('click', () => { waPopup.style.display = 'none'; });
             }
 
-            // Normalize the first two digits and allow all supported Rwanda prefixes.
+            // Keep entered digits intact; the validation handler reports invalid prefixes.
             if (phoneField) {
                 phoneField.addEventListener('input', function () {
-                    let v = this.value.replace(/\D/g, '');
-                    if (v.length >= 1 && v[0] !== '0') v = '0' + v.replace(/^0+/, '');
-                    if (v.length >= 2 && v[1] !== '7') v = v[0] + '7' + v.slice(2);
-                    if (v.length >= 3 && !['8','9','2','3'].includes(v[2])) v = v.slice(0,2) + '8' + v.slice(3);
-                    this.value = v.substring(0, 10);
+                    this.value = this.value.replace(/\D/g, '').slice(0, 10);
                 });
             }
             // 🎯 SPLASH SCREEN — show only once per browser session
@@ -1344,6 +1340,10 @@
                     } else if (v.length >= 3 && !['8','9','2','3'].includes(v.charAt(2))) {
                         phoneHint.textContent = "IKOSA: Nimero igomba gutangirana na 078, 079, 072, cyangwa 073!";
                         phoneHint.className = "hint error";
+                    } else if (v.length >= 3 && v.length < 10) {
+                        const carrier = ['2','3'].includes(v.charAt(2)) ? 'Airtel' : 'MTN';
+                        phoneHint.textContent = `✓ Prefix ya ${carrier} yemerewe. Uzuza imibare 7 isigaye (${v.length}/10).`;
+                        phoneHint.className = "hint";
                     } else if (v.length > 0 && v.length < 10) {
                         phoneHint.textContent = `Haracyabura imibare (${v.length} / 10)`;
                         phoneHint.className = "hint error";

@@ -346,7 +346,7 @@
             <div class="phone-field-label"><i class="fa-solid fa-sim-card"></i> Nimero ya Telefone</div>
             <div class="phone-input-row">
                 <div class="phone-prefix"><i class="fa-solid fa-phone"></i>&nbsp;+25</div>
-                <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" maxlength="10">
+                <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric">
             </div>
             <div id="lookupPhoneHint" class="hint">Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079</div>
             <button class="btn-submit-lookup" id="submitLookupBtn">
@@ -514,11 +514,7 @@
             // 🎯 AUTO-FIX: digit 1→0, digit 2→7, digit 3→8 if invalid
             if (lookupPhoneInp) {
                 lookupPhoneInp.addEventListener('input', function () {
-                    let v = this.value.replace(/\D/g, '');
-                    if (v.length >= 1 && v[0] !== '0') v = '0' + v.replace(/^0+/, '');
-                    if (v.length >= 2 && v[1] !== '7') v = v[0] + '7' + v.slice(2);
-                    if (v.length >= 3 && !['8','9','3','2'].includes(v[2])) v = v.slice(0,2) + '8' + v.slice(3);
-                    this.value = v.substring(0, 10);
+                    this.value = this.value.replace(/\D/g, '').slice(0, 10);
                 });
             }
 
@@ -546,19 +542,13 @@
 
                     // 🎯 ADAPTIVE LOGIC PARSER: Handles variations like 078..., +25078..., or 78... uniformly 
                     // and extracts the last 9 digits cleanly before dispatching the background fetch
-                    if (phoneVal.length < 9) {
-                        lookupPhoneHint.textContent = "IKOSA: Numero ya telephone ntabwo yuzuye!";
+                    if (!/^07[8923]\d{7}$/.test(phoneVal)) {
+                        lookupPhoneHint.textContent = "Koresha nimero itangira na 072, 073, 078 cyangwa 079, igakurikirwa n'imibare 7.";
                         lookupPhoneHint.className = "hint error";
                         return;
                     }
 
                     const extractedLast9Digits = phoneVal.slice(-9);
-                    if (!extractedLast9Digits.startsWith('7')) {
-                        lookupPhoneHint.textContent = "IKOSA: Numero igomba kuba irimo imvugo ya 78, 79, cyangwa 73!";
-                        lookupPhoneHint.className = "hint error";
-                        return;
-                    }
-
                     lookupPhoneHint.className = "hint";
                     lookupPhoneHint.textContent = "Iri gushakisha amanota yawe...";
                     submitLookupBtn.disabled = true;

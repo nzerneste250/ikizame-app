@@ -596,7 +596,7 @@
                         <div class="balance-section-title"><i class="fa-solid fa-magnifying-glass"></i> Reba Ibisigaye kuri Nomero Yawe</div>
                         <div class="balance-check-block" id="balanceCheckBlock">
                             <div class="balance-input-row">
-                                <input type="tel" id="balancePhoneInput" placeholder="0788000000" maxlength="10" oninput="sanitizeBalancePhoneInput()">
+                                <input type="tel" id="balancePhoneInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" oninput="sanitizeBalancePhoneInput()">
                                 <button class="btn-balance-check" onclick="fetchRemainingExamBalance()"><i class="fa-solid fa-search"></i> Reba</button>
                             </div>
                             <div id="balanceStatusPanel"></div>
@@ -700,7 +700,7 @@
                             <svg class="rw-flag-sm" viewBox="0 0 4 3"><rect width="4" height="1.1" y="0" fill="#1EB5E5"/><rect width="4" height="0.9" y="1.1" fill="#FAD201"/><rect width="4" height="0.9" y="2" fill="#20603D"/><circle cx="3.1" cy="0.55" r="0.28" fill="#FAD201"/></svg>
                             +25
                         </div>
-                        <input type="tel" id="momoPhoneNumberInput" placeholder="0788000000" maxlength="10" autocomplete="tel-national" oninput="sanitizeMomoPhone()">
+                        <input type="tel" id="momoPhoneNumberInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" autocomplete="tel-national" oninput="sanitizeMomoPhone()">
                     </div>
                     <span class="phone-hint" id="momoPhoneHint">Injiza imibare 10: MTN (078/079) cyangwa Airtel (072/073)</span>
                     <span id="momoCarrierChip" style="display:none;"></span>
@@ -772,16 +772,14 @@
             const chip = document.getElementById('momoCarrierChip');
             const btn = document.getElementById('momoSubmitPaymentBtn');
             // Strip non-digits, enforce leading 0
-            let v = inp.value.replace(/\D/g, '');
-            if (v.length >= 1 && v[0] !== '0') v = '0' + v.replace(/^0+/, '');
-            inp.value = v.substring(0, 10);
-            v = inp.value;
+            let v = inp.value.replace(/\D/g, '').slice(0, 10);
+            inp.value = v;
 
             const isMTN    = v.length >= 3 && (v.startsWith('078') || v.startsWith('079'));
             const isAirtel = v.length >= 3 && (v.startsWith('072') || v.startsWith('073'));
             const isKnownPrefix = isMTN || isAirtel;
             const isFull = v.length === 10;
-            const isValid = isFull && isKnownPrefix;
+            const isValid = isFull && isKnownPrefix && /^07[8923]\d{7}$/.test(v);
 
             // Hint message
             if (v.length === 0) {
@@ -986,19 +984,16 @@
         window.sanitizeBalancePhoneInput = function() {
             const input = document.getElementById('balancePhoneInput');
             if (!input) return;
-            let v = input.value.replace(/\D/g, '');
-            if (v.length >= 1 && v[0] !== '0') v = '0' + v.replace(/^0+/, '');
-            if (v.length >= 2 && v[1] !== '7') v = v[0] + '7' + v.slice(2);
-            if (v.length >= 3 && !['8','9','3'].includes(v[2])) v = v.slice(0,2) + '8' + v.slice(3);
-            input.value = v.substring(0, 10);
+            const v = input.value.replace(/\D/g, '').slice(0, 10);
+            input.value = v;
         };
 
         window.fetchRemainingExamBalance = function() {
             const phoneInput = document.getElementById('balancePhoneInput');
             const statusPanel = document.getElementById('balanceStatusPanel');
             const rawPhone = phoneInput ? phoneInput.value.trim() : '';
-            if (!rawPhone || rawPhone.length < 10) {
-                statusPanel.textContent = 'Injiza nomero ya telephone yuzuye ya 10 digits, urugero 0788000000.';
+            if (!/^07[8923]\d{7}$/.test(rawPhone)) {
+                statusPanel.textContent = 'Koresha nimero itangira na 078, 079, 072 cyangwa 073, igakurikirwa n’imibare 7.';
                 statusPanel.className = '';
                 return;
             }

@@ -3,6 +3,7 @@ const bcrypt  = require('bcrypt');
 const axios   = require('axios');
 const BCRYPT_ROUNDS = 10;
 const { PROTECTED_REPORT_EMAIL, LEGACY_REPORT_EMAILS, normalizePhoneNumber, normalizeEmailList, getConfiguredReportEmails } = require('../helpers/adminSettings');
+const { normalizeRwandaPhone } = require('../helpers/rwandaPhone');
 const { requireAdminLogin, getAdminSessionState } = require('../middleware/auth');
 
 const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
@@ -353,7 +354,12 @@ module.exports = (db, loginLimiter) => {
     });
 
     router.post('/settings/exam-access', requireSuperAdmin, (req, res) => {
-        const phoneNumber = normalizePhoneNumber(req.body.phone_number || req.body.phone || '');
+        let phoneNumber;
+        try {
+            phoneNumber = normalizeRwandaPhone(req.body.phone_number || req.body.phone || '');
+        } catch (error) {
+            return res.status(400).json({ ok: false, error: error.message });
+        }
         const email = String(req.body.email || '').trim().toLowerCase();
         const otpEmail = String(req.body.otp_email || req.body.otpEmail || '').trim().toLowerCase();
 
@@ -378,7 +384,12 @@ module.exports = (db, loginLimiter) => {
 
     router.patch('/settings/exam-access/:id', requireSuperAdmin, (req, res) => {
         const id = Number(req.params.id);
-        const phoneNumber = normalizePhoneNumber(req.body.phone_number || req.body.phone || '');
+        let phoneNumber;
+        try {
+            phoneNumber = normalizeRwandaPhone(req.body.phone_number || req.body.phone || '');
+        } catch (error) {
+            return res.status(400).json({ ok: false, error: error.message });
+        }
         const email = String(req.body.email || '').trim().toLowerCase();
         const otpEmail = String(req.body.otp_email || req.body.otpEmail || '').trim().toLowerCase();
 

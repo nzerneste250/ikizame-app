@@ -265,7 +265,7 @@
         <div class="pay-modal-title"><i class="fa-solid fa-lock"></i> <span id="payModalTitle">Ishyura kugira ngo ugure</span></div>
         <div class="pay-modal-price" id="payModalPrice"></div>
         <div class="pay-form-label">Nomero ya telephone (MTN / Airtel)</div>
-        <input type="tel" id="payModalPhone" placeholder="0788000000" autocomplete="tel" maxlength="10">
+        <input type="tel" id="payModalPhone" placeholder="0788000000" autocomplete="tel" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric">
         <div class="pay-modal-actions">
             <button class="btn-pay" onclick="submitModalPayment()"><i class="fa-solid fa-credit-card"></i> Ishyura</button>
             <button class="btn-cancel" onclick="closePayModal()">Hagarika</button>
@@ -458,8 +458,11 @@ function submitModalPayment() {
     if (!doc) return;
     var phoneInput = document.getElementById('payModalPhone');
     var status = document.getElementById('payModalStatus');
-    var cleanPhone = (phoneInput.value || '').replace(/[\s\-+]/g, '');
-    if (cleanPhone.length < 10) { status.textContent = 'Injiza nomero ya telephone yuzuye.'; return; }
+    var cleanPhone = (phoneInput.value || '').replace(/\D/g, '');
+    if (!/^07[8923]\d{7}$/.test(cleanPhone)) {
+        status.textContent = 'Koresha nimero itangira na 078, 079, 072, cyangwa 073, ikurikirwe n’imibare 7.';
+        return;
+    }
     status.textContent = 'Tegereza gato...';
     fetch('/api/payments/momo-push', {
         method: 'POST',
@@ -528,4 +531,3 @@ function openViewer(docOrIdx) {
 </script>
 </body>
 </html>
-

@@ -125,7 +125,7 @@
                 </div>
                 <div class="field">
                     <label>Telephone</label>
-                    <input id="studentPhone" required placeholder="0788000000">
+                    <input id="studentPhone" type="tel" inputmode="numeric" maxlength="10" pattern="07[8923][0-9]{7}" title="Use 078, 079, 072, or 073 followed by seven digits." required placeholder="0788000000">
                 </div>
                 <div class="field">
                     <label>Ibizamini byahawe</label>
@@ -148,7 +148,7 @@
             </div>
             <div class="form-grid" style="margin-top:16px;">
                 <div class="field"><label>Amazina y’umunyeshuri</label><input id="editStudentName" placeholder="e.g. Aline Uwase"></div>
-                <div class="field"><label>Telephone</label><input id="editStudentPhone" placeholder="0788000000"></div>
+                <div class="field"><label>Telephone</label><input id="editStudentPhone" type="tel" inputmode="numeric" maxlength="10" pattern="07[8923][0-9]{7}" title="Use 078, 079, 072, or 073 followed by seven digits." placeholder="0788000000"></div>
                 <div class="field"><label>Ibizamini byahawe</label><input id="editStudentExamCount" type="number" min="1"></div>
                 <div class="field" style="align-self:end;"><button id="studentEditSubmit" class="btn btn-primary" onclick="submitStudentEdit(event)"><i class="fa-solid fa-pen-to-square"></i> Save changes</button></div>
             </div>
@@ -280,6 +280,11 @@ async function submitStudentEdit(event){
     message.textContent='Andika amazina, telefone, kandi uhitamo nibura 1 exam.';
     return;
   }
+  if (!/^07[8923]\d{7}$/.test(phone)) {
+    message.className='form-message error';
+    message.textContent='Use 078, 079, 072, or 073 followed by seven digits.';
+    return;
+  }
   message.className='form-message muted';
   message.textContent='Updating student...';
   const res = await fetch(`/api/school/students/${editStudentId}`, {
@@ -321,6 +326,11 @@ async function toggleStudentStatus(studentId, currentStatus){
 }
 
 async function submitStudent(event){ event.preventDefault(); const name=document.getElementById('studentName').value.trim(); const phone=document.getElementById('studentPhone').value.trim(); const examCount=document.getElementById('examCount').value; const message=document.getElementById('formMessage');
+  if (!/^07[8923]\d{7}$/.test(phone)) {
+    message.className='form-message error';
+    message.textContent='Use 078, 079, 072, or 073 followed by seven digits.';
+    return;
+  }
   if (!walletState.canRegister) {
     message.className='form-message error';
     message.textContent='You cannot register students until your school has active exam credits.';

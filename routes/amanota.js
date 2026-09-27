@@ -1,13 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const { normalizeRwandaPhone } = require('../helpers/rwandaPhone');
 
 module.exports = (db) => {
 
     // GET remaining exams balance for a phone number
     router.get('/remaining/:phoneNumber', (req, res) => {
-        const raw = req.params.phoneNumber.trim();
-        const last9 = raw.slice(-9);
-        if (last9.length !== 9) return res.status(400).json({ remaining: 0 });
+        let last9;
+        try {
+            last9 = normalizeRwandaPhone(req.params.phoneNumber).slice(-9);
+        } catch (error) {
+            return res.status(400).json({ remaining: 0, error: error.message });
+        }
 
         db.query(
             `SELECT COALESCE(SUM(remaining_exams), 0) AS remaining FROM payment_transactions WHERE RIGHT(phone_number, 9) = ? AND status = 'SUCCESS' AND remaining_exams > 0`,
@@ -21,11 +25,11 @@ module.exports = (db) => {
 
     // GET lookup exam attempts by phone number
     router.get('/lookup/:phoneNumber', (req, res) => {
-        const rawUserInputParam = req.params.phoneNumber.trim();
-        const cleanLast9Digits = rawUserInputParam.slice(-9);
-
-        if (cleanLast9Digits.length !== 9) {
-            return res.status(400).json({ error: 'Nomero ya telephone ntabwo yuzuye.' });
+        let cleanLast9Digits;
+        try {
+            cleanLast9Digits = normalizeRwandaPhone(req.params.phoneNumber).slice(-9);
+        } catch (error) {
+            return res.status(400).json({ error: error.message });
         }
 
         db.query(

@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const axios  = require('axios');
 const { normalizeAndValidatePaymentPhone } = require('../helpers/paymentPhone');
+const { normalizeRwandaPhone } = require('../helpers/rwandaPhone');
 const BCRYPT_ROUNDS = 10;
 
 const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
@@ -32,8 +33,12 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
             return res.status(400).json({ success: false, error: 'Uzuza bisabwa byose: Izina, Email, na Telephone.' });
         }
 
-        let cleanPhone = phoneNumber.toString().replace(/[\s\-\+]+/g, '').trim();
-        if (cleanPhone.startsWith('250')) cleanPhone = '0' + cleanPhone.substring(3);
+        let cleanPhone;
+        try {
+            cleanPhone = normalizeRwandaPhone(phoneNumber);
+        } catch (error) {
+            return res.status(400).json({ success: false, error: error.message });
+        }
 
         const generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
         const targetedRecipientEmail = email.trim().toLowerCase();
@@ -296,7 +301,12 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
         const { studentName, phoneNumber, examCount } = req.body;
         const schoolId = req.session.schoolAccountId;
         const trimmedName = (studentName || '').trim();
-        const cleanedPhone = (phoneNumber || '').toString().replace(/[^0-9+]/g, '').trim();
+        let cleanedPhone;
+        try {
+            cleanedPhone = normalizeRwandaPhone(phoneNumber);
+        } catch (error) {
+            return res.status(400).json({ success: false, error: error.message });
+        }
         const assignedExams = parseInt(examCount || '0', 10);
 
         if (!trimmedName || !cleanedPhone || assignedExams <= 0) {
@@ -366,7 +376,12 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
         const studentId = parseInt(req.params.id, 10);
         const { studentName, phoneNumber, examCount } = req.body;
         const trimmedName = (studentName || '').trim();
-        const cleanedPhone = (phoneNumber || '').toString().replace(/[^0-9+]/g, '').trim();
+        let cleanedPhone;
+        try {
+            cleanedPhone = normalizeRwandaPhone(phoneNumber);
+        } catch (error) {
+            return res.status(400).json({ success: false, error: error.message });
+        }
         const assignedExams = parseInt(examCount || '0', 10);
         if (!studentId || !trimmedName || !cleanedPhone || assignedExams <= 0) {
             return res.status(400).json({ success: false, error: 'Andika amazina, telefone, kandi ubaze exams 1+.' });

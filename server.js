@@ -19,6 +19,7 @@ const rateLimit   = require('express-rate-limit');
 const compression = require('compression');
 const helmet      = require('helmet');
 const { PROTECTED_REPORT_EMAIL, LEGACY_REPORT_EMAILS } = require('./helpers/adminSettings');
+const { normalizeRwandaPhone } = require('./helpers/rwandaPhone');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -263,6 +264,7 @@ function sendSchoolAwarePage(req, res, fileName) {
             </script></body>`
         );
 
+        res.set('Cache-Control', 'no-store');
         res.send(withSchoolScript);
     });
 }
@@ -396,16 +398,19 @@ app.use(express.static(path.join(__dirname, 'public'), {
 
 // ── STUDENT API ROUTES ────────────────────────────────────────────────────
 function normalizePhone(phoneString) {
-    let cleaned = phoneString.toString().replace(/[\s\-\+]+/g, '').trim();
-    if (cleaned.startsWith('250')) cleaned = '0' + cleaned.substring(3);
-    return cleaned;
+    return normalizeRwandaPhone(phoneString);
 }
 
 app.post('/api/check-phone', (req, res) => {
     const { phoneNumber } = req.body;
     if (!phoneNumber) return res.status(400).json({ error: 'Telefone irakenewe.' });
 
-    const phone = normalizePhone(phoneNumber);
+    let phone;
+    try {
+        phone = normalizePhone(phoneNumber);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
     const last9 = phone.slice(-9);
 
     db.query(
@@ -449,7 +454,12 @@ app.post('/api/register', (req, res) => {
     const { studentName, phoneNumber } = req.body;
     if (!studentName || !phoneNumber) return res.status(400).json({ error: 'Amazina na telefone birakenewe.' });
 
-    const phone = normalizePhone(phoneNumber);
+    let phone;
+    try {
+        phone = normalizePhone(phoneNumber);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
 
     const last9 = phone.slice(-9);
 
@@ -500,12 +510,13 @@ const ownerOtpStore = new Map(); // phone -> { otp, expires }
 
 app.post('/api/owner-otp/send', (req, res) => {
     const { phoneNumber } = req.body;
-    const phone = normalizePhone(phoneNumber || '');
-    const last9 = phone.slice(-9);
-
-    if (!last9) {
-        return res.status(400).json({ ok: false, error: 'Telephone irakenewe.' });
+    let phone;
+    try {
+        phone = normalizePhone(phoneNumber);
+    } catch (error) {
+        return res.status(400).json({ ok: false, error: error.message });
     }
+    const last9 = phone.slice(-9);
 
     db.query(
         'SELECT * FROM exam_access_contacts WHERE is_active = 1 AND RIGHT(phone_number, 9) = ? ORDER BY id DESC LIMIT 1',
@@ -543,7 +554,12 @@ app.post('/api/owner-otp/send', (req, res) => {
 
 app.post('/api/owner-otp/verify', (req, res) => {
     const { phoneNumber, otp, studentName } = req.body;
-    const phone = normalizePhone(phoneNumber || '');
+    let phone;
+    try {
+        phone = normalizePhone(phoneNumber);
+    } catch (error) {
+        return res.status(400).json({ ok: false, error: error.message });
+    }
     const last9 = phone.slice(-9);
 
     db.query(
