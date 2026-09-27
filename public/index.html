@@ -1130,9 +1130,9 @@
                                 </svg>
                                 <span>+25</span>
                             </div>
-                            <input type="tel" id="studentPhoneInput" name="studentPhoneInput" placeholder="0788000000" maxlength="10" required autocomplete="tel-national">
+                            <input type="tel" id="studentPhoneInput" name="studentPhoneInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" title="Koresha nimero itangira na 078, 079, 072, cyangwa 073, igakurikirwa n'imibare 7." required autocomplete="tel-national" inputmode="numeric">
                         </div>
-                        <span class="hint" id="phoneValidationHint">Tangira na 0 (Inimero 10 gusa, urugero: 0788000000)</span>
+                        <span class="hint" id="phoneValidationHint">Koresha 078, 079, 072, cyangwa 073, hakurikireho imibare 7 (urugero: 0788000000)</span>
                     </div>
 
                     <div class="btn-submit-row">
@@ -1330,9 +1330,10 @@
                 }
             });
 
-            // Live Phone validation checking (10 digits starting with 0)
+            // Live Rwanda phone validation: MTN 078/079 and Airtel 072/073.
             if (phoneField) {
                 phoneField.addEventListener('input', function () {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 10);
                     const v = this.value;
                     if (v.length > 0 && v.charAt(0) !== '0') {
                         phoneHint.textContent = "IKOSA: Numero igomba gutangirana na 0 (urugero: 0788000000)!";
@@ -1340,17 +1341,17 @@
                     } else if (v.length >= 2 && v.charAt(1) !== '7') {
                         phoneHint.textContent = "IKOSA: Umubare wa kabiri ugomba kuba 7 (07...)!";
                         phoneHint.className = "hint error";
-                    } else if (v.length >= 3 && !['8','9','3'].includes(v.charAt(2))) {
-                        phoneHint.textContent = "IKOSA: Umubare wa gatatu ugomba kuba 8, 9, cyangwa 3 (078/079/073)!";
+                    } else if (v.length >= 3 && !['8','9','2','3'].includes(v.charAt(2))) {
+                        phoneHint.textContent = "IKOSA: Nimero igomba gutangirana na 078, 079, 072, cyangwa 073!";
                         phoneHint.className = "hint error";
                     } else if (v.length > 0 && v.length < 10) {
                         phoneHint.textContent = `Haracyabura imibare (${v.length} / 10)`;
                         phoneHint.className = "hint error";
                     } else if (v.length === 10) {
-                        phoneHint.textContent = "✓ Numero yuzuye neza kandi iremewe mu Rwanda!";
+                        phoneHint.textContent = "✓ Nimero yuzuye neza (078/079 MTN cyangwa 072/073 Airtel)!";
                         phoneHint.className = "hint ok";
                     } else {
-                        phoneHint.textContent = "Tangira na 0 (Inimero 10 gusa, urugero: 0788000000)";
+                        phoneHint.textContent = "Koresha 078, 079, 072, cyangwa 073, hakurikireho imibare 7 (urugero: 0788000000)";
                         phoneHint.className = "hint";
                     }
                 });
@@ -1385,10 +1386,10 @@
                         valid = false;
                     }
 
-                    // Validate: must be 10 digits, start with 07, third digit 8/9/3
-                    const okFormat = phone.length === 10 && phone.startsWith('07') && ['8','9','3'].includes(phone.charAt(2));
+                    // Validate 078/079 (MTN) and 072/073 (Airtel), followed by seven digits.
+                    const okFormat = /^07[8923]\d{7}$/.test(phone);
                     if (!okFormat) {
-                        phoneHint.textContent = "IKOSA: Numero ntabwo yuzuye cyangwa ntabwo ihuye n'imirongo ya Rwanda (078, 079, 073)!";
+                        phoneHint.textContent = "IKOSA: Koresha nimero itangira na 078, 079, 072, cyangwa 073, igakurikirwa n'imibare 7!";
                         phoneHint.className = "hint error";
                         if (valid) phoneField.focus();
                         valid = false;
