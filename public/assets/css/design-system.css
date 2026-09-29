@@ -519,6 +519,27 @@ button:not(:disabled):hover,
   transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
 }
 
+@media (max-width: 640px) {
+  :root {
+    --space-xl: 28px;
+    --space-2xl: 44px;
+    --space-3xl: 56px;
+  }
+  .section { padding-block: 48px; }
+  .card-xl,
+  .section-shell { padding: 20px; }
+  .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
+  .footer-bottom { align-items: flex-start; flex-direction: column; }
+  .btn { min-height: 44px; line-height: 1.35; text-align: center; white-space: normal; }
+}
+
+@media (max-width: 380px) {
+  .container { padding-inline: 12px; }
+  .card-xl,
+  .section-shell { padding: 16px; }
+  .footer-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }

@@ -81,8 +81,8 @@ body {
     z-index: 0;
     pointer-events: none;
     opacity: 0.22;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cpath d='M0%2016L16%200L32%2016L48%200L64%2016M0%2048L16%2032L32%2048L48%2032L64%2048' fill='none' stroke='%237dd3fc' stroke-width='1' stroke-opacity='.17'/%3E%3C/svg%3E");
-    background-size: 64px 64px;
+    background-image: url('../images/imigongo-pattern.svg');
+    background-size: 160px 160px;
     background-repeat: repeat;
 }
 .hero > * { position: relative; z-index: 1; }
@@ -94,8 +94,9 @@ body {
 .hero h1 span { color: #bae6fd; }
 .section-header-meta {
     background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cpath d='M0%2016L16%200L32%2016L48%200L64%2016M0%2048L16%2032L32%2048L48%2032L64%2048' fill='none' stroke='%237dd3fc' stroke-width='1' stroke-opacity='.17'/%3E%3C/svg%3E"),
+        url('../images/imigongo-pattern.svg'),
         linear-gradient(135deg, var(--public-navy) 0%, var(--public-blue) 100%);
+    background-size: 160px 160px, cover;
 }
 .section-header-meta > * { position: relative; z-index: 1; }
 .guide-card {
@@ -111,8 +112,8 @@ body {
     z-index: 0;
     pointer-events: none;
     opacity: 0.22;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cpath d='M0%2016L16%200L32%2016L48%200L64%2016M0%2048L16%2032L32%2048L48%2032L64%2048' fill='none' stroke='%237dd3fc' stroke-width='1' stroke-opacity='.17'/%3E%3C/svg%3E");
-    background-size: 64px 64px;
+    background-image: url('../images/imigongo-pattern.svg');
+    background-size: 160px 160px;
     background-repeat: repeat;
 }
 .guide-card > * { position: relative; z-index: 1; }
