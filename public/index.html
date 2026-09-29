@@ -389,24 +389,41 @@
 
         .hero-actions {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             margin-top: 4px;
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 3px 2px 8px;
+            scrollbar-width: none;
         }
-        .hero-cta {
-            align-self: flex-start;
+        .hero-actions::-webkit-scrollbar { display: none; }
+        .hero-actions > * { flex: 0 0 auto; }
+        .hero-actions .pill {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 7px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 0.68rem;
+            letter-spacing: 0.04em;
+        }
+        .hero-actions .pill i { color: #7dd3fc; font-size: 0.78rem; }
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             border: 2px solid transparent;
             color: #ffffff;
             text-decoration: none;
-            padding: 12px 24px;
-            font-size: 0.9rem;
+            padding: 10px 14px;
+            min-height: 42px;
+            font-size: 0.82rem;
             font-weight: 700;
-            border-radius: 48px;
+            border-radius: 8px;
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
             box-shadow: 0 16px 32px rgba(0, 102, 255, 0.22);
@@ -418,6 +435,7 @@
             box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
         }
         .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(11, 105, 139, 0.24); }
+        .hero-cta:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
         .hero-cta svg { width: 16px; height: 16px; }
 
 
@@ -1285,6 +1303,8 @@
         }
         .hero-copy,
         .reg-card { position: relative; z-index: 1; }
+        .reg-card { order: 1; }
+        .quick-actions { order: 2; }
         .hero-copy {
             max-width: 700px;
             gap: 20px;
@@ -1438,7 +1458,9 @@
             .hero-live-icon { width: 22px; height: 22px; }
             .hero-live-value { font-size: 1.22rem; }
             .hero-live-detail { font-size: 0.58rem; }
-            .reg-card { order: 1; margin: 0 auto; max-width: 560px; }
+            .hero-actions .hero-cta { margin-bottom: 0; }
+            .reg-card { order: -1; margin: 0 auto; max-width: 560px; }
+            .quick-actions { order: 2; }
             .card-body { padding: 22px 20px 20px; }
             .card-body h2 { font-size: 1.15rem; }
             .hero-live-stat .hero-live-detail { color: rgba(240,248,255,0.7); }
@@ -1453,6 +1475,33 @@
             .hero-live-detail { font-size: 0.54rem; }
             .hero-support-pill { font-size: 0.69rem; padding: 7px 9px; }
             .card-body { padding: 20px 16px 18px; }
+        }
+        @media (min-width: 1101px) and (min-height: 950px) {
+            .workspace {
+                min-height: calc(100svh - 110px);
+                padding-top: 84px;
+                padding-bottom: 22px;
+            }
+            .hero-copy { gap: 14px; }
+            .quick-actions { margin-top: 8px; }
+            .quick-action-card { gap: 7px; padding: 12px; min-height: 0; }
+            .quick-action-icon { width: 36px; height: 36px; border-radius: 9px; font-size: 1rem; }
+            .quick-action-card h3 { font-size: 0.86rem; line-height: 1.25; }
+            .quick-action-card p { font-size: 0.68rem; line-height: 1.4; }
+            .quick-action-card a { font-size: 0.68rem; }
+            .reg-card {
+                max-width: 560px;
+                border: 2px solid rgba(56, 189, 248, 0.55);
+                border-top: 6px solid var(--secondary);
+                box-shadow: 0 28px 72px rgba(1, 16, 31, 0.3), 0 0 0 6px rgba(56, 189, 248, 0.08);
+            }
+            .card-body { padding: 30px 32px 28px; gap: 18px; }
+            .card-body h2 { font-size: 1.45rem; }
+            .card-body .sub { font-size: 0.94rem; line-height: 1.55; }
+            .field-group label { font-size: 0.82rem; }
+            .input-wrap input { min-height: 58px; font-size: 1rem; }
+            .hint { font-size: 0.8rem; line-height: 1.45; }
+            .btn-submit { min-height: 60px; font-size: 1.02rem; }
         }
  </style>
 </head>
@@ -1494,9 +1543,6 @@
     <main class="workspace">
         <!-- Hero Copy -->
         <section class="hero-copy">
-            <div class="pill-row">
-                <span class="pill">Isuzuma Ryihuse</span>
-            </div>
             <div class="hero-live-stats" data-hero-stats aria-label="Imibare y'urubuga" aria-live="polite">
                 <div class="hero-live-stat">
                     <div class="hero-live-heading">
@@ -1528,8 +1574,9 @@
             </h1>
             <p class="hero-desc">Koresha urubuga rwizewe rwo kwiga amategeko y'umuhanda, gukora imyitozo y'ikizamini, kumenya aho ukeneye kongera kwiga, no gutegura neza ikizamini cyawe ku buryo bworoshye kandi bwihuse.</p>
             <div class="hero-actions">
-                <a class="hero-cta" href="/exam">Tangira Ikizamini</a>
-                <a class="hero-cta secondary" href="/ifashanyigisho">Soma amategeko</a>
+                <span class="pill"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Isuzuma Ryihuse</span>
+                <a class="hero-cta" href="/exam"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Tangira Ikizamini</a>
+                <a class="hero-cta secondary" href="/ifashanyigisho"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Soma amategeko</a>
             </div>
             <div class="hero-support-row">
                 <div class="hero-support-pill"><i class="fa-solid fa-bolt"></i> Imyitozo yihuta</div>
@@ -1538,42 +1585,42 @@
             </div>
         </section>
 
-        <section class="quick-actions" aria-label="Quick actions">
+        <section class="quick-actions" aria-label="Ibikorwa byihuse">
             <article class="quick-action-card">
-                <div class="quick-action-icon"><i class="fa-solid fa-clipboard-question"></i></div>
-                <h3>Practice Test</h3>
-                <p>Start a realistic driving-theory mock exam in seconds.</p>
-                <a href="/exam">Open now <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="quick-action-icon"><i class="fa-solid fa-clipboard-question" aria-hidden="true"></i></div>
+                <h3>Ikizamini cy'imyitozo</h3>
+                <p>Kora ikizamini cy'imyitozo gisa n'ikizamini nyacyo cy'amategeko y'umuhanda.</p>
+                <a href="/exam">Tangira ubu <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </article>
             <article class="quick-action-card">
-                <div class="quick-action-icon"><i class="fa-solid fa-traffic-light"></i></div>
-                <h3>Road Signs</h3>
-                <p>Review key traffic signs and what they mean in Rwanda.</p>
-                <a href="/ifashanyigisho">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="quick-action-icon"><i class="fa-solid fa-signs-post" aria-hidden="true"></i></div>
+                <h3>Ibimenyetso byo mu muhanda</h3>
+                <p>Iga ibimenyetso by'ingenzi byo mu muhanda n'icyo bisobanura mu Rwanda.</p>
+                <a href="/ifashanyigisho">Sobanukirwa <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </article>
             <article class="quick-action-card">
-                <div class="quick-action-icon"><i class="fa-solid fa-book-open-reader"></i></div>
-                <h3>Study Materials</h3>
-                <p>Read clear road-rule lessons and exam preparation notes.</p>
-                <a href="/ifashanyigisho">Browse <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="quick-action-icon"><i class="fa-solid fa-book-open-reader" aria-hidden="true"></i></div>
+                <h3>Imfashanyigisho</h3>
+                <p>Soma amasomo asobanutse ku mategeko y'umuhanda n'inyandiko zigufasha kwitegura ikizamini.</p>
+                <a href="/ifashanyigisho">Reba byose <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </article>
             <article class="quick-action-card">
-                <div class="quick-action-icon"><i class="fa-solid fa-chart-column"></i></div>
-                <h3>My Scores</h3>
-                <p>Check your recent tests, pass rate, and performance history.</p>
-                <a href="/amanota">View results <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="quick-action-icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
+                <h3>Amanota yanjye</h3>
+                <p>Reba amanota y'ibizamini byawe biheruka, uko utsinda n'amateka y'uko wakoze.</p>
+                <a href="/amanota">Reba amanota <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </article>
             <article class="quick-action-card">
-                <div class="quick-action-icon"><i class="fa-solid fa-tags"></i></div>
-                <h3>Pricing</h3>
-                <p>Choose a package and see the exam credit options clearly.</p>
-                <a href="/ibiciro">See plans <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="quick-action-icon"><i class="fa-solid fa-tags" aria-hidden="true"></i></div>
+                <h3>Ibiciro</h3>
+                <p>Hitamo ipaki y'ibizamini ikubereye, urebe n'ibiciro byayo.</p>
+                <a href="/ibiciro">Reba ibiciro <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </article>
             <article class="quick-action-card">
-                <div class="quick-action-icon"><i class="fa-solid fa-school"></i></div>
-                <h3>Driving Schools</h3>
-                <p>Track learners, allocate exams, and manage performance.</p>
-                <a href="/school-auth">Open portal <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="quick-action-icon"><i class="fa-solid fa-school" aria-hidden="true"></i></div>
+                <h3>Amashuri yigisha gutwara ibinyabiziga</h3>
+                <p>Kurikirana abanyeshuri, ubahe ibizamini, kandi urebe uko bitwara.</p>
+                <a href="/school-auth">Injira ku rubuga <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </article>
         </section>
 
