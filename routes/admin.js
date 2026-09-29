@@ -4,6 +4,7 @@ const axios   = require('axios');
 const BCRYPT_ROUNDS = 10;
 const { PROTECTED_REPORT_EMAIL, LEGACY_REPORT_EMAILS, normalizePhoneNumber, normalizeEmailList, getConfiguredReportEmails } = require('../helpers/adminSettings');
 const { normalizeRwandaPhone } = require('../helpers/rwandaPhone');
+const { createOtpState, canIssueOtp, registerOtpCode, verifyOtpCode } = require('../helpers/otp');
 const { requireAdminLogin, getAdminSessionState } = require('../middleware/auth');
 
 const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
@@ -25,6 +26,7 @@ module.exports = (db, loginLimiter) => {
 
     // In-memory OTP store: email -> { otp, expires }
     const otpStore = new Map();
+    const adminOtpState = createOtpState();
 
     // POST admin login — uses email instead of username
     router.post('/auth', loginLimiter, (req, res) => {
@@ -73,9 +75,19 @@ module.exports = (db, loginLimiter) => {
         if (email.toLowerCase() !== adminEmail.toLowerCase())
             return res.json({ ok: false, error: 'Iyi email ntabwo izwi nk\'iy\'umunyamabanga.' });
 
+        const issueCheck = canIssueOtp(adminOtpState, email.toLowerCase(), {
+            windowMs: 60 * 1000,
+            maxRequests: 3,
+            cooldownMs: 30 * 1000
+        });
+        if (!issueCheck.ok) return res.json({ ok: false, error: issueCheck.error });
+
         const otp     = Math.floor(100000 + Math.random() * 900000).toString();
         const expires = Date.now() + 10 * 60 * 1000; // 10 min
         otpStore.set(email.toLowerCase(), { otp, expires });
+        registerOtpCode(adminOtpState, email.toLowerCase(), otp, 10 * 60 * 1000, {
+            windowMs: 60 * 1000
+        });
 
         const transport = req.app.get('emailTransport');
         if (!transport) return res.json({ ok: false, error: 'Email service ntabwo itangiye.' });
@@ -107,16 +119,16 @@ module.exports = (db, loginLimiter) => {
         if (newPassword.length < 8)
             return res.json({ ok: false, error: 'Password igomba kuba nibura inyuguti 8.' });
 
-        const record = otpStore.get(email.toLowerCase());
-        if (!record) return res.json({ ok: false, error: 'Nta OTP yoherejwe kuri iyi email.' });
-        if (Date.now() > record.expires) {
-            otpStore.delete(email.toLowerCase());
-            return res.json({ ok: false, error: 'OTP yarangiye. Saba indi.' });
+        const otpVerification = verifyOtpCode(adminOtpState, email, otp, {
+            maxAttempts: 5,
+            lockMs: 60 * 1000
+        });
+        if (!otpVerification.ok) {
+            return res.json({ ok: false, error: otpVerification.error });
         }
-        if (record.otp !== otp.trim())
-            return res.json({ ok: false, error: 'OTP ntabwo ari yo. Gerageza nanone.' });
 
-        otpStore.delete(email.toLowerCase());
+        const record = otpStore.get(email.toLowerCase());
+        if (record) otpStore.delete(email.toLowerCase());
 
         bcrypt.hash(newPassword, BCRYPT_ROUNDS, (hashErr, hash) => {
             if (hashErr) return res.json({ ok: false, error: 'Hashage yabuze.' });

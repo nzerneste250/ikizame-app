@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="L5qjMDyaAezWE7cphPgTUBzcnpEGaB_PHli2ANASgas" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="IKIZAME helps learners prepare for the Rwanda driving theory test with road rules practice, mock exams, learning materials, scores, payment options, and school support.">
+    <meta name="keywords" content="Rwanda driving test, driving theory test Rwanda, provisional driving test Rwanda, road signs Rwanda, learner licence Rwanda, practice driving exam Rwanda">
+    <meta name="theme-color" content="#0b698b">
         <!-- 🎯 BRANDING HEADER: LINKS DIRECTLY TO YOUR LOGO IN THE UPLOADS FOLDER -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>IKIZAMINI | Ahabanza - Ikizamini cya Provisoire mu Rwanda | Practice Driving Theory Exam</title>
+    <title>IKIZAME | Rwanda Driving Theory Test Practice | Learn Road Rules & Pass</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -215,6 +218,73 @@
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
         }
 
+        .quick-actions {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+        .quick-action-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 18px;
+            padding: 16px 14px;
+            min-height: 136px;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.05);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+        .quick-action-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(11, 105, 139, 0.2);
+            box-shadow: 0 18px 30px rgba(15, 23, 42, 0.08);
+        }
+        .quick-action-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(11, 105, 139, 0.12), rgba(56, 189, 248, 0.18));
+            color: var(--accent-teal);
+            font-size: 1.1rem;
+        }
+        .quick-action-card h3 {
+            margin: 0;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .quick-action-card p {
+            margin: 0;
+            font-size: 0.72rem;
+            line-height: 1.5;
+            color: #475569;
+        }
+        .quick-action-card a {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent-teal);
+            text-decoration: none;
+        }
+        .quick-action-card a i {
+            font-size: 0.68rem;
+        }
+        @media (max-width: 1100px) {
+            .quick-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        @media (max-width: 600px) {
+            .quick-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
         .hero-live-stats {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -317,6 +387,13 @@
             margin: 0;
         }
 
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin-top: 4px;
+        }
         .hero-cta {
             align-self: flex-start;
             display: inline-flex;
@@ -333,6 +410,12 @@
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
             box-shadow: 0 16px 32px rgba(0, 102, 255, 0.22);
+        }
+        .hero-cta.secondary {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--accent-teal);
+            border-color: rgba(11, 105, 139, 0.12);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
         }
         .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(11, 105, 139, 0.24); }
         .hero-cta svg { width: 16px; height: 16px; }
@@ -1444,11 +1527,54 @@
                 kandi utsinde ku nshuro ya mbere.
             </h1>
             <p class="hero-desc">Koresha urubuga rwizewe rwo kwiga amategeko y'umuhanda, gukora imyitozo y'ikizamini, kumenya aho ukeneye kongera kwiga, no gutegura neza ikizamini cyawe ku buryo bworoshye kandi bwihuse.</p>
+            <div class="hero-actions">
+                <a class="hero-cta" href="/exam">Tangira Ikizamini</a>
+                <a class="hero-cta secondary" href="/ifashanyigisho">Soma amategeko</a>
+            </div>
             <div class="hero-support-row">
                 <div class="hero-support-pill"><i class="fa-solid fa-bolt"></i> Imyitozo yihuta</div>
                 <div class="hero-support-pill"><i class="fa-solid fa-mobile-screen-button"></i> Kuri telefone na mudasobwa</div>
                 <div class="hero-support-pill"><i class="fa-solid fa-graduation-cap"></i> Kwiga no kugenzura</div>
             </div>
+        </section>
+
+        <section class="quick-actions" aria-label="Quick actions">
+            <article class="quick-action-card">
+                <div class="quick-action-icon"><i class="fa-solid fa-clipboard-question"></i></div>
+                <h3>Practice Test</h3>
+                <p>Start a realistic driving-theory mock exam in seconds.</p>
+                <a href="/exam">Open now <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+            <article class="quick-action-card">
+                <div class="quick-action-icon"><i class="fa-solid fa-traffic-light"></i></div>
+                <h3>Road Signs</h3>
+                <p>Review key traffic signs and what they mean in Rwanda.</p>
+                <a href="/ifashanyigisho">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+            <article class="quick-action-card">
+                <div class="quick-action-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+                <h3>Study Materials</h3>
+                <p>Read clear road-rule lessons and exam preparation notes.</p>
+                <a href="/ifashanyigisho">Browse <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+            <article class="quick-action-card">
+                <div class="quick-action-icon"><i class="fa-solid fa-chart-column"></i></div>
+                <h3>My Scores</h3>
+                <p>Check your recent tests, pass rate, and performance history.</p>
+                <a href="/amanota">View results <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+            <article class="quick-action-card">
+                <div class="quick-action-icon"><i class="fa-solid fa-tags"></i></div>
+                <h3>Pricing</h3>
+                <p>Choose a package and see the exam credit options clearly.</p>
+                <a href="/ibiciro">See plans <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+            <article class="quick-action-card">
+                <div class="quick-action-icon"><i class="fa-solid fa-school"></i></div>
+                <h3>Driving Schools</h3>
+                <p>Track learners, allocate exams, and manage performance.</p>
+                <a href="/school-auth">Open portal <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
         </section>
 
         <!-- Registration Card -->

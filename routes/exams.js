@@ -6,6 +6,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const { execSync } = require('child_process');
 const { requireAdminLogin } = require('../middleware/auth');
+const { verifySessionExamAccess } = require('../helpers/examAccess');
 
 const uploadDirectoryPath = path.resolve(__dirname, '..', 'public', 'assets', 'uploads');
 
@@ -106,6 +107,23 @@ module.exports = (db) => {
         }
         consume('RIGHT(phone_number, 9) = ? ORDER BY id DESC LIMIT 1', [phone.slice(-9)], null);
     }
+
+    router.use((req, res, next) => {
+        if (req.session && req.session.isAdminAuthenticated) return next();
+
+        verifySessionExamAccess(db, req, (accessErr, access) => {
+            if (accessErr) {
+                console.error('Exam access verification error:', accessErr.message);
+                return res.status(500).json({ error: 'Exam access verification failed.' });
+            }
+
+            if (!access || !access.allowed) {
+                return res.status(403).json({ error: access && access.reason ? access.reason : 'No valid exam access found for this learner.' });
+            }
+
+            next();
+        });
+    });
 
     // GET all exams (shuffled for students, full list for admin)
     router.get('/', (req, res) => {

@@ -266,7 +266,10 @@
             width: 100%; align-items: start; min-height: 0;
         }
 
-        .cards-column { display: grid; gap: 16px; align-content: start; width: 100%; max-width: 520px; }
+        .cards-column { display: grid; gap: 14px; align-content: start; width: 100%; max-width: 520px; }
+        .pricing-options-heading { padding: 2px 2px 4px; }
+        .pricing-options-heading h3 { color: #0f172a; font-size: 1rem; font-weight: 800; line-height: 1.3; }
+        .pricing-options-heading p { color: #64748b; font-size: 0.78rem; line-height: 1.55; margin-top: 4px; }
 
         .price-card { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px; position: relative; transition: box-shadow .2s, transform .2s; box-shadow: 0 4px 16px rgba(15,23,42,0.06); }
         .price-card:hover { box-shadow: 0 12px 32px rgba(11,105,139,0.12); transform: translateY(-2px); }
@@ -297,6 +300,9 @@
 
         /* ===== RIGHT PANEL ===== */
         .payment-guide-container { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 4px 16px rgba(15,23,42,0.06); }
+        .payment-guide-heading { border-bottom: 1px solid #e8eef4; padding-bottom: 14px; }
+        .payment-guide-heading h3 { color: #0f172a; font-size: 1rem; font-weight: 800; line-height: 1.35; }
+        .payment-guide-heading p { color: #64748b; font-size: 0.76rem; line-height: 1.55; margin-top: 4px; }
 
         /* Balance check */
         .balance-section-title { font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: .5px; display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
@@ -437,6 +443,10 @@
         }
         .footer a:hover { opacity: 0.9; }
         .footer strong { color: #38bdf8; }
+        .btn-pay-trigger:focus-visible, .btn-balance-check:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+        }
         @media (max-width: 900px) {
             .footer { position: relative !important; }
             .workspace-scroll-container { padding-bottom: 16px !important; }
@@ -519,6 +529,10 @@
 
             <div class="pricing-split-layout">
                 <div class="cards-column">
+                    <div class="pricing-options-heading">
+                        <h3>Hitamo umubare w'ibizamini</h3>
+                        <p>Reba igiciro kuri buri kizamini, hanyuma uhitemo ipaki ijyanye n'uko witeguye.</p>
+                    </div>
                     <!-- Starter Pack -->
                     <div class="price-card">
                         <div class="pc-top">
@@ -591,6 +605,10 @@
                 </div>
 
                 <section class="payment-guide-container">
+                    <div class="payment-guide-heading">
+                        <h3>Kwishyura no gufungura ibizamini</h3>
+                        <p>Wishyura kuri MTN MoMo cyangwa Airtel Money. Wemeza ubusabe kuri telefone yawe.</p>
+                    </div>
 
                     <!-- Balance Check -->
                     <div>

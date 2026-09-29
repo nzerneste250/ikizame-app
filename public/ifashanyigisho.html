@@ -35,6 +35,62 @@
         .hero h1 { font-size:clamp(1.2rem,3vw,1.7rem); font-weight:800; color:#fff; margin-bottom:6px; }
         .hero p { font-size:.85rem; color:rgba(255,255,255,.8); max-width:520px; margin:0 auto; line-height:1.5; }
         .main { flex:1 0 auto; min-height:0; max-width:1100px; width:100%; margin:0 auto; padding:20px 5% 28px; display:flex; flex-direction:column; }
+        .summary-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin: 16px 0 18px;
+        }
+        .summary-stat {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            box-shadow: 0 10px 24px rgba(15,23,42,0.04);
+        }
+        .summary-stat .label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: #64748b;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .summary-stat .value {
+            font-size: clamp(1.05rem, 2vw, 1.5rem);
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.1;
+        }
+        .summary-stat .value small {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-left: 5px;
+        }
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 14px 0 10px;
+        }
+        .filter-pill {
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: var(--muted);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+        .filter-pill.active {
+            background: linear-gradient(135deg, var(--brand) 0%, #0ea5e9 100%);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 10px 20px rgba(11,105,139,0.18);
+        }
         .search-wrap { position:relative; margin-bottom:14px; }
         .s-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.9rem; pointer-events:none; }
         .search-input { width:100%; padding:11px 44px; border:1.5px solid var(--border); border-radius:12px; font-size:.9rem; font-family:inherit; color:var(--text); background:var(--surface); outline:none; }
@@ -225,9 +281,30 @@
 </section>
 
 <main class="main">
+    <div class="summary-strip">
+        <div class="summary-stat">
+            <span class="label">Road rules</span>
+            <div class="value"><span id="summaryRulesCount">0</span><small>topics</small></div>
+        </div>
+        <div class="summary-stat">
+            <span class="label">Road signs</span>
+            <div class="value"><span id="summarySignsCount">0</span><small>topics</small></div>
+        </div>
+        <div class="summary-stat">
+            <span class="label">Study focus</span>
+            <div class="value">Ready<small>for practice</small></div>
+        </div>
+    </div>
     <div class="section-head">
         <h2><i class="fa-solid fa-folder-open"></i> Imfashanyigisho Zihari</h2>
         <span class="doc-count-badge" id="docCountBadge">Irimo gushaka...</span>
+    </div>
+    <div class="filter-row" id="docFilterPills">
+        <button class="filter-pill active" data-filter="all" type="button">Byose</button>
+        <button class="filter-pill" data-filter="road-rules" type="button">Amategeko y'umuhanda</button>
+        <button class="filter-pill" data-filter="road-signs" type="button">Ibimenyetso</button>
+        <button class="filter-pill" data-filter="traffic-regulations" type="button">Itegeko ry'umuhanda</button>
+        <button class="filter-pill" data-filter="exam-prep" type="button">Gutegura ikizamini</button>
     </div>
     <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass s-icon"></i>
@@ -289,6 +366,20 @@
 <script src="assets/js/enter-to-action.js"></script>
 <script>
 var allDocs = [];
+var currentFilter = 'all';
+
+function slugifyText(value) {
+    return String(value || '').toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function getDocCategory(doc) {
+    const text = slugifyText((doc.title || '') + ' ' + (doc.description || '') + ' ' + (doc.file_type || ''));
+    if (/sign|traffic sign|ibimenyetso|road sign/.test(text)) return 'road-signs';
+    if (/rule|law|regulation|amategeko|itegeko|traffic/.test(text)) return 'traffic-regulations';
+    if (/exam|practice|mock|ikizamini|gutegura|preparation/.test(text)) return 'exam-prep';
+    if (/rule|law|road/.test(text)) return 'road-rules';
+    return 'road-rules';
+}
 
 function getUnlockedResourceMap() {
     try {
@@ -318,8 +409,6 @@ function markResourceUnlocked(doc) {
 function formatAmount(amount) {
     return 'RWF ' + Number(amount || 0).toLocaleString();
 }
-
-document.addEventListener('DOMContentLoaded', loadDocs);
 
 function loadDocs() {
     fetch('/api/public/documents')
@@ -358,13 +447,17 @@ function renderDocs() {
         badge.textContent = '0 imfashanyigisho';
         return;
     }
-    var filtered = !term ? allDocs : allDocs.filter(function(doc) {
-        return doc.title.toLowerCase().includes(term) || (doc.description && doc.description.toLowerCase().includes(term));
+    var filtered = allDocs.filter(function(doc) {
+        var matchesTerm = !term || (doc.title || '').toLowerCase().includes(term) || ((doc.description || '').toLowerCase().includes(term));
+        var matchesCat = currentFilter === 'all' || getDocCategory(doc) === currentFilter;
+        return matchesTerm && matchesCat;
     });
     badge.textContent = filtered.length + (term ? ' ibisubizo' : ' inyandiko');
+    document.getElementById('summaryRulesCount').textContent = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-rules'; }).length;
+    document.getElementById('summarySignsCount').textContent = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-signs'; }).length;
     grid.innerHTML = filtered.length
         ? filtered.map(function(doc) { return buildCard(doc, allDocs.indexOf(doc)); }).join('')
-        : '<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zibonetse.</p></div>';
+        : '<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zibonetse kuri iyi kategori.</p></div>';
 }
 
 function filterDocs(q) {
@@ -380,6 +473,22 @@ function clearSearch() {
     filterDocs('');
     input.focus();
 }
+
+function attachFilterHandlers() {
+    var pills = document.querySelectorAll('.filter-pill');
+    pills.forEach(function(button) {
+        button.addEventListener('click', function() {
+            currentFilter = button.dataset.filter || 'all';
+            pills.forEach(function(item) { item.classList.toggle('active', item === button); });
+            renderDocs();
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    attachFilterHandlers();
+    loadDocs();
+});
 
 function buildCard(doc, idx) {
     // For paid resources file_path is null — derive ext from file_name instead

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const axios  = require('axios');
 const { normalizeAndValidatePaymentPhone } = require('../helpers/paymentPhone');
 const { normalizeRwandaPhone } = require('../helpers/rwandaPhone');
+const { createOtpState, canIssueOtp, registerOtpCode, verifyOtpCode } = require('../helpers/otp');
 const BCRYPT_ROUNDS = 10;
 
 const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
@@ -25,6 +26,7 @@ const schoolPendingMap = new Map();
 exports.schoolPendingMap = schoolPendingMap;
 
 module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
+    const schoolOtpState = createOtpState();
 
     // POST register school (sends OTP) — rate limited
     router.post('/register', otpLimiter, (req, res) => {
@@ -42,6 +44,14 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
 
         const generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
         const targetedRecipientEmail = email.trim().toLowerCase();
+        const issueCheck = canIssueOtp(schoolOtpState, targetedRecipientEmail, {
+            windowMs: 60 * 1000,
+            maxRequests: 3,
+            cooldownMs: 30 * 1000
+        });
+        if (!issueCheck.ok) {
+            return res.status(429).json({ success: false, error: issueCheck.error });
+        }
 
         const htmlTemplate = `
             <div style="font-family:'Inter',sans-serif;max-width:550px;margin:0 auto;background:#f8fafc;padding:30px;border-radius:12px;border:1px solid #e2e8f0;color:#0f172a;">
@@ -72,6 +82,10 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
             db.query(saveQuery, saveParams, (dbErr) => {
                 if (dbErr) return res.status(500).json({ success: false, error: dbErr.message });
 
+                registerOtpCode(schoolOtpState, targetedRecipientEmail, generatedOtpCode, 5 * 60 * 1000, {
+                    windowMs: 60 * 1000
+                });
+
                 emailTransport.sendMail({
                     from: '"IKIZAME Support Engine" <nzerneste250@gmail.com>',
                     to: targetedRecipientEmail,
@@ -93,6 +107,14 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
     router.post('/verify-otp', (req, res) => {
         const { email, otpCode } = req.body;
         if (!email || !otpCode) return res.status(400).json({ success: false, error: 'Injiza email hamwe na OTP.' });
+
+        const otpValidation = verifyOtpCode(schoolOtpState, email, otpCode, {
+            maxAttempts: 5,
+            lockMs: 60 * 1000
+        });
+        if (!otpValidation.ok) {
+            return res.status(400).json({ success: false, error: otpValidation.error });
+        }
 
         db.query(`SELECT id FROM driving_schools WHERE email = ? AND otp_code = ?`, [email.trim().toLowerCase(), otpCode.trim()], (err, results) => {
             if (err) return res.status(500).json({ success: false, error: err.message });
@@ -222,7 +244,15 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
             if (!results || results.length === 0) return res.status(404).json({ success: false, error: 'Nta Konti yabonetse kuri iyi email.' });
 
             const schoolName = results[0].school_name;
+            const issueCheck = canIssueOtp(schoolOtpState, cleanEmail, {
+                windowMs: 60 * 1000,
+                maxRequests: 3,
+                cooldownMs: 30 * 1000
+            });
+            if (!issueCheck.ok) return res.status(429).json({ success: false, error: issueCheck.error });
+
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            registerOtpCode(schoolOtpState, cleanEmail, otp, 5 * 60 * 1000, { windowMs: 60 * 1000 });
 
             db.query('UPDATE driving_schools SET otp_code = ? WHERE email = ?', [otp, cleanEmail], (updErr) => {
                 if (updErr) return res.status(500).json({ success: false, error: updErr.message });

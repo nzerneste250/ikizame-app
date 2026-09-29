@@ -20,6 +20,7 @@ const compression = require('compression');
 const helmet      = require('helmet');
 const { PROTECTED_REPORT_EMAIL, LEGACY_REPORT_EMAILS } = require('./helpers/adminSettings');
 const { normalizeRwandaPhone } = require('./helpers/rwandaPhone');
+const { createOtpState, canIssueOtp, registerOtpCode, verifyOtpCode } = require('./helpers/otp');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -371,9 +372,20 @@ app.get('/school-performance', (req, res) => {
 });
 
 app.get('/exam', (req, res) => {
-    if (req.session && req.session.examStudentName)
+    if (!req.session || !req.session.examStudentName) return res.redirect('/');
+
+    verifySessionExamAccess(db, req, (accessErr, access) => {
+        if (accessErr) {
+            console.error('Exam page access verification error:', accessErr.message);
+            return res.status(500).json({ error: 'Exam access verification failed.' });
+        }
+
+        if (!access || !access.allowed) {
+            return res.redirect('/');
+        }
+
         return res.sendFile(path.join(__dirname, 'public', 'exam.html'));
-    res.redirect('/');
+    });
 });
 
 app.get('/exam-score', (req, res) => {
@@ -532,6 +544,7 @@ app.post('/api/register', (req, res) => {
                 req.session.assignedStudentId = null;
                 req.session.lockedExamQuestionIds = [];
                 req.session.hasCompletedActiveExamToken = false;
+                req.session.isOwnerBypass = false;
                 return res.json({ ok: true, remaining: payRows[0].remaining_exams });
             }
 
@@ -548,6 +561,7 @@ app.post('/api/register', (req, res) => {
                         req.session.assignedStudentId = stuRows[0].id;
                         req.session.lockedExamQuestionIds = [];
                         req.session.hasCompletedActiveExamToken = false;
+                        req.session.isOwnerBypass = false;
                         return res.json({ ok: true, remaining: stuRows[0].assigned_exams });
                     }
 
@@ -561,7 +575,7 @@ app.post('/api/register', (req, res) => {
 // ── OWNER BYPASS OTP ─────────────────────────────────────────────────────
 const OWNER_PHONE = '0786663377';
 const OWNER_EMAIL = PROTECTED_REPORT_EMAIL;
-const ownerOtpStore = new Map(); // phone -> { otp, expires }
+const ownerOtpState = createOtpState();
 
 app.post('/api/owner-otp/send', (req, res) => {
     const { phoneNumber } = req.body;
@@ -581,8 +595,17 @@ app.post('/api/owner-otp/send', (req, res) => {
             const contact = rows && rows.length ? rows[0] : null;
             if (!contact) return res.status(403).json({ ok: false, error: 'Not authorized.' });
 
+            const issueCheck = canIssueOtp(ownerOtpState, last9, {
+                windowMs: 60 * 1000,
+                maxRequests: 3,
+                cooldownMs: 30 * 1000
+            });
+            if (!issueCheck.ok) {
+                return res.status(429).json({ ok: false, error: issueCheck.error });
+            }
+
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
-            ownerOtpStore.set(last9, { otp, expires: Date.now() + 5 * 60 * 1000, email: contact.otp_email || contact.email });
+            registerOtpCode(ownerOtpState, last9, otp, 5 * 60 * 1000, { windowMs: 60 * 1000 });
 
             const toEmail = contact.otp_email || contact.email || OWNER_EMAIL;
             emailTransport.sendMail({
@@ -625,16 +648,14 @@ app.post('/api/owner-otp/verify', (req, res) => {
             const contact = rows && rows.length ? rows[0] : null;
             if (!contact) return res.status(403).json({ ok: false, error: 'Not authorized.' });
 
-            const record = ownerOtpStore.get(last9);
-            if (!record) return res.status(400).json({ ok: false, error: 'Nta OTP yoherejwe. Ongera ugerageze.' });
-            if (Date.now() > record.expires) {
-                ownerOtpStore.delete(last9);
-                return res.status(400).json({ ok: false, error: 'OTP yarangiye. Saba indi.' });
+            const otpValidation = verifyOtpCode(ownerOtpState, last9, otp, {
+                maxAttempts: 5,
+                lockMs: 60 * 1000
+            });
+            if (!otpValidation.ok) {
+                return res.status(400).json({ ok: false, error: otpValidation.error });
             }
-            if (record.otp !== String(otp).trim())
-                return res.status(400).json({ ok: false, error: 'OTP ntabwo ari yo. Ongera ugerageze.' });
 
-            ownerOtpStore.delete(last9);
             req.session.examStudentName = (studentName || contact.email?.split('@')[0] || 'Owner').trim();
             req.session.examPhoneNumber = phone;
             req.session.activePaymentRecordId = null;
@@ -653,6 +674,8 @@ app.post('/api/clear-session', (req, res) => {
     req.session.examPhoneNumber             = null;
     req.session.lockedExamQuestionIds       = [];
     req.session.activePaymentRecordId       = null;
+    req.session.assignedStudentId           = null;
+    req.session.isOwnerBypass               = false;
     res.json({ ok: true });
 });
 
