@@ -34,10 +34,7 @@
 
         html, body {
             min-height: 100vh;
-            background:
-                radial-gradient(circle at top left, rgba(11, 105, 139, 0.18) 0%, transparent 24%),
-                radial-gradient(circle at 82% 12%, rgba(56, 189, 248, 0.16) 0%, transparent 26%),
-                linear-gradient(135deg, #f5fbff 0%, #edf7ff 48%, #f9fcff 100%);
+            background: linear-gradient(135deg, #202925 0%, #29332e 52%, #222c28 100%);
             color: #0f172a;
             display: flex;
             flex-direction: column;
@@ -62,29 +59,25 @@
             z-index: 0;
             overflow: hidden;
             pointer-events: none;
-            opacity: 0.7;
-            filter: blur(1px);
-            background:
-                radial-gradient(circle at 20% 22%, rgba(255,255,255,0.68) 0%, transparent 20%),
-                radial-gradient(circle at 84% 18%, rgba(56,189,248,0.24) 0%, transparent 24%),
-                linear-gradient(135deg, rgba(7, 89, 120, 0.96) 0%, rgba(11, 105, 139, 0.92) 42%, rgba(15, 23, 42, 0.94) 100%);
+            background: linear-gradient(135deg, #202925 0%, #29332e 52%, #222c28 100%);
         }
-        /* stars */
         .highway-canvas::before {
             content: '';
             position: absolute;
             inset: 0;
+            opacity: 0.72;
             background-image:
-                radial-gradient(1px 1px at 8% 12%, rgba(255,255,255,0.34) 0%, transparent 100%),
-                radial-gradient(1px 1px at 22% 6%, rgba(255,255,255,0.24) 0%, transparent 100%),
-                radial-gradient(1px 1px at 38% 18%, rgba(255,255,255,0.24) 0%, transparent 100%),
-                radial-gradient(1px 1px at 55% 4%, rgba(255,255,255,0.28) 0%, transparent 100%),
-                radial-gradient(1px 1px at 70% 14%, rgba(255,255,255,0.2) 0%, transparent 100%),
-                radial-gradient(1px 1px at 85% 9%, rgba(255,255,255,0.16) 0%, transparent 100%),
-                radial-gradient(1px 1px at 14% 32%, rgba(255,255,255,0.14) 0%, transparent 100%),
-                radial-gradient(1px 1px at 48% 26%, rgba(255,255,255,0.16) 0%, transparent 100%),
-                radial-gradient(1px 1px at 78% 22%, rgba(255,255,255,0.1) 0%, transparent 100%),
-                radial-gradient(1px 1px at 92% 30%, rgba(255,255,255,0.12) 0%, transparent 100%);
+                repeating-linear-gradient(45deg, transparent 0 27px, rgba(197, 185, 145, 0.12) 27px 28px, transparent 28px 56px),
+                repeating-linear-gradient(-45deg, transparent 0 27px, rgba(197, 185, 145, 0.09) 27px 28px, transparent 28px 56px),
+                linear-gradient(rgba(151, 175, 162, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(151, 175, 162, 0.045) 1px, transparent 1px),
+                radial-gradient(circle, rgba(197, 185, 145, 0.22) 1px, transparent 1.5px);
+            background-size: 112px 112px, 112px 112px, 28px 28px, 28px 28px, 56px 56px;
+        }
+        .road-strip,
+        .sign-pole,
+        .car-rtl {
+            display: none;
         }
         /* ===== ROAD STRIP ===== */
         .road-strip {
@@ -223,6 +216,42 @@
             padding: 8px 16px;
             border-radius: 40px;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+
+        .hero-live-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            width: 100%;
+            border-block: 1px solid rgba(11, 105, 139, 0.18);
+            background: rgba(255, 255, 255, 0.52);
+        }
+        .hero-live-stat {
+            min-width: 0;
+            padding: 12px 14px;
+        }
+        .hero-live-stat + .hero-live-stat {
+            border-left: 1px solid rgba(11, 105, 139, 0.14);
+        }
+        .hero-live-value {
+            display: block;
+            color: #0b698b;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            font-variant-numeric: tabular-nums;
+        }
+        .hero-live-label {
+            display: block;
+            margin-top: 5px;
+            color: #475569;
+            font-size: 0.72rem;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+        @media (max-width: 600px) {
+            .hero-live-stat { padding: 11px 8px; }
+            .hero-live-value { font-size: 1.25rem; }
+            .hero-live-label { font-size: 0.66rem; }
         }
 
         .hero-h1 {
@@ -1080,12 +1109,20 @@
         <section class="hero-copy">
             <div class="pill-row">
                 <span class="pill">Isuzuma Ryihuse</span>
-                <span class="pill">Amategeko 2026</span>
             </div>
-            <div class="pill-row">
-                <span class="pill">10,000+ Abigishwa</span>
-                <span class="pill">50,000+ Ibibazo</span>
-                <span class="pill">Amanota y'ukuri</span>
+            <div class="hero-live-stats" data-hero-stats aria-label="Imibare y'urubuga" aria-live="polite">
+                <div class="hero-live-stat">
+                    <span class="hero-live-value" data-stat="learners">—</span>
+                    <span class="hero-live-label">Abanyeshuri</span>
+                </div>
+                <div class="hero-live-stat">
+                    <span class="hero-live-value" data-stat="questions">—</span>
+                    <span class="hero-live-label">Ibibazo bihari</span>
+                </div>
+                <div class="hero-live-stat">
+                    <span class="hero-live-value" data-stat="completedExams">—</span>
+                    <span class="hero-live-label">Ibizamini byakozwe</span>
+                </div>
             </div>
             <h1 class="hero-h1">
                 Itegure Ikizamini cyo Gutwara Ibinyabiziga<br>
@@ -1624,6 +1661,28 @@
                 hint.textContent = '';
             }
         });
+    </script>
+    <script>
+        (() => {
+            const statElements = document.querySelectorAll('[data-stat]');
+            const numberFormat = new Intl.NumberFormat('en-US');
+
+            async function refreshHeroStats() {
+                try {
+                    const response = await fetch('/api/public-stats', { cache: 'no-store' });
+                    if (!response.ok) return;
+                    const stats = await response.json();
+
+                    statElements.forEach((element) => {
+                        const value = Number(stats[element.dataset.stat]);
+                        if (Number.isFinite(value)) element.textContent = numberFormat.format(value);
+                    });
+                } catch {}
+            }
+
+            refreshHeroStats();
+            window.setInterval(refreshHeroStats, 5 * 60 * 1000);
+        })();
     </script>
 </body>
 </html>

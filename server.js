@@ -270,6 +270,28 @@ function sendSchoolAwarePage(req, res, fileName) {
 }
 
 // ── PAGE ROUTES ───────────────────────────────────────────────────────────
+app.get('/api/public-stats', (req, res) => {
+    db.query(
+        `SELECT
+            (SELECT COUNT(DISTINCT NULLIF(TRIM(phone_number), '')) FROM exam_attempts) AS learners,
+            (SELECT COUNT(*) FROM exams) AS questions,
+            (SELECT COUNT(*) FROM exam_attempts) AS completedExams`,
+        (err, rows) => {
+            if (err) {
+                console.error('Failed to load public homepage stats:', err.message);
+                return res.status(503).json({ error: 'Imibare ntibashije kuboneka.' });
+            }
+
+            res.set('Cache-Control', 'no-store');
+            res.json({
+                learners: Number(rows[0].learners) || 0,
+                questions: Number(rows[0].questions) || 0,
+                completedExams: Number(rows[0].completedExams) || 0
+            });
+        }
+    );
+});
+
 app.get('/',               (req, res) => renderPublicPage('index.html', res));
 app.get('/index',          (req, res) => renderPublicPage('index.html', res));
 app.get('/admin-login',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
