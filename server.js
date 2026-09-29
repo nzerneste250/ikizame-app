@@ -275,14 +275,14 @@ let retrySchoolStudentsAfter = 0;
 function loadPublicStats(includeSchoolStudents, callback) {
     const schoolStudentSource = includeSchoolStudents ? `
             UNION
-            SELECT phone_number
+            SELECT phone_number COLLATE utf8mb4_general_ci AS phone_number
             FROM school_students
             WHERE phone_number <> ''` : '';
 
     db.query(
         `SELECT
             (SELECT COUNT(*) FROM (
-                SELECT phone_number
+                SELECT phone_number COLLATE utf8mb4_general_ci AS phone_number
                 FROM exam_attempts
                 WHERE phone_number <> ''
                 ${schoolStudentSource}
