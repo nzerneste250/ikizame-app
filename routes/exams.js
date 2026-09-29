@@ -102,10 +102,30 @@ module.exports = (db) => {
 
         if (preferredRecordId) {
             return consume('id = ?', [preferredRecordId], () => {
-                consume('RIGHT(phone_number, 9) = ? ORDER BY id DESC LIMIT 1', [phone.slice(-9)], null);
+                consume(
+                    `id = (
+                        SELECT id FROM (
+                            SELECT id FROM payment_transactions
+                            WHERE RIGHT(phone_number, 9) = ? AND status = 'SUCCESS' AND remaining_exams > 0
+                            ORDER BY id DESC LIMIT 1
+                        ) AS eligible_payment
+                    )`,
+                    [phone.slice(-9)],
+                    null
+                );
             });
         }
-        consume('RIGHT(phone_number, 9) = ? ORDER BY id DESC LIMIT 1', [phone.slice(-9)], null);
+        consume(
+            `id = (
+                SELECT id FROM (
+                    SELECT id FROM payment_transactions
+                    WHERE RIGHT(phone_number, 9) = ? AND status = 'SUCCESS' AND remaining_exams > 0
+                    ORDER BY id DESC LIMIT 1
+                ) AS eligible_payment
+            )`,
+            [phone.slice(-9)],
+            null
+        );
     }
 
     router.use((req, res, next) => {
@@ -294,7 +314,7 @@ module.exports = (db) => {
                         res.json({ score, total: finalTotal });
                     };
 
-                    if (req.session.activePaymentRecordId) {
+                    if (req.session.activePaymentRecordId || (!req.session.assignedStudentId && !req.session.isOwnerBypass && !req.session.isAdminAuthenticated)) {
                         return consumePaymentCredit(
                             sessionPhone,
                             req.session.activePaymentRecordId,
