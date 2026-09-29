@@ -19,6 +19,7 @@ const rateLimit   = require('express-rate-limit');
 const compression = require('compression');
 const helmet      = require('helmet');
 const { PROTECTED_REPORT_EMAIL, LEGACY_REPORT_EMAILS } = require('./helpers/adminSettings');
+const { verifySessionExamAccess } = require('./helpers/examAccess');
 const { normalizeRwandaPhone } = require('./helpers/rwandaPhone');
 const { createOtpState, canIssueOtp, registerOtpCode, verifyOtpCode } = require('./helpers/otp');
 
