@@ -999,7 +999,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(duplicateToggle) duplicateToggle.addEventListener('change', applyFiltersSearchAndDuplicateLogic);
 
     function loadRepositoryQuestionsPool() {
-        fetch('/api/exams')
+        fetch('/api/exams?full=1')
             .then(res => res.json())
             .then(data => {
                 allQuestionsCachedArray = data || [];

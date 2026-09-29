@@ -135,7 +135,7 @@
         }
         .opt-row:last-child { border-bottom: none; }
         .opt-row:hover { background: #f9fafb; border-color: #dbeafe; }
-        .opt-row.selected { background: var(--primary-soft); border-color: #bfdbfe; }
+        .opt-row.selected, .opt-row:has(input:checked) { background: var(--primary-soft); border-color: #bfdbfe; }
         .opt-radio { width: 20px; height: 20px; accent-color: var(--blue); flex-shrink: 0; cursor: pointer; }
         .opt-label { font-size: 1.02rem; font-weight: 500; color: var(--text); line-height: 1.5; }
         .opt-label strong { font-weight: 700; }
@@ -390,7 +390,7 @@
             box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
         }
 
-        .opt-row.selected {
+        .opt-row.selected, .opt-row:has(input:checked) {
             background: linear-gradient(135deg, #eef9ff 0%, #f8fbff 100%);
             border-color: var(--brand);
             box-shadow: 0 0 0 3px rgba(11, 105, 139, 0.1);

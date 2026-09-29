@@ -102,3 +102,30 @@ test('submits a paid exam using the newest eligible payment when no active recor
     await new Promise((resolve, reject) => server.close((err) => err ? reject(err) : resolve()));
   }
 });
+
+test('limits exam sessions to 20 questions while admins can request the full question bank', async () => {
+  const questions = Array.from({ length: 30 }, (_, index) => ({
+    id: index + 1,
+    question: `Question ${index + 1}`
+  }));
+  const db = {
+    query(sql, values, callback) {
+      if (typeof values === 'function') callback = values;
+      callback(null, questions);
+    }
+  };
+
+  const router = createExamRouter(db);
+  const listRoute = router.stack.find((layer) => layer.route?.path === '/' && layer.route.methods.get);
+  const getExamList = listRoute.route.stack[0].handle;
+  const session = { isAdminAuthenticated: true, lockedExamQuestionIds: [] };
+  const executeListRequest = (query) => new Promise((resolve) => {
+    getExamList({ query, session }, { json: resolve });
+  });
+
+  const examQuestions = await executeListRequest({});
+  const allQuestions = await executeListRequest({ full: '1' });
+
+  assert.equal(examQuestions.length, 20);
+  assert.equal(allQuestions.length, 30);
+});

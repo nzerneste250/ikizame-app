@@ -1,5 +1,4 @@
 const express = require('express');
-const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
@@ -83,6 +82,7 @@ const examUploadFieldsConfig = upload.fields([
 ]);
 
 module.exports = (db) => {
+    const router = express.Router();
 
     function consumePaymentCredit(phone, preferredRecordId, done) {
         const consume = (where, values, fallback) => {
@@ -151,7 +151,9 @@ module.exports = (db) => {
             if (err) return res.status(500).json({ error: err.message });
             if (!results || results.length === 0) return res.json([]);
 
-            if (req.session && req.session.isAdminAuthenticated) return res.json(results);
+            if (req.session && req.session.isAdminAuthenticated && req.query.full === '1') {
+                return res.json(results);
+            }
 
             // Return locked set only if it has exactly 20 questions (valid exam in progress)
             if (req.session.lockedExamQuestionIds && req.session.lockedExamQuestionIds.length === 20) {
