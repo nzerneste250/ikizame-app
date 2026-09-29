@@ -44,6 +44,23 @@
             width: 100%;
             position: relative;
             font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            .hero-copy-panel {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+                width: 100%;
+                padding: clamp(18px, 2.2vw, 28px);
+                border: 1px solid rgba(125,211,252,0.3);
+                border-radius: 18px;
+                background: linear-gradient(145deg, rgba(4,33,57,0.68), rgba(7,48,77,0.6));
+                box-shadow: 0 18px 42px rgba(3,20,35,0.2), inset 0 1px 0 rgba(255,255,255,0.07);
+                -webkit-backdrop-filter: blur(7px);
+                backdrop-filter: blur(7px);
+            }
+            .hero-copy-panel .hero-h1 { max-width: none; color: #fff; }
+            .hero-copy-panel .hero-h1 em { color: #7dd3fc; }
+            .hero-copy-panel .hero-desc { max-width: none; color: rgba(240,248,255,0.9); }
+            .hero-copy-panel .hero-support-row { flex-wrap: wrap; overflow: visible; padding: 0; }
             overflow-x: hidden;
         }
         @media (min-width: 901px) {
@@ -1612,21 +1629,23 @@
                     <span class="hero-live-value" data-stat="completedExams">—</span>
                 </div>
             </div>
-            <h1 class="hero-h1">
-                Itegure Ikizamini cyo Gutwara Ibinyabiziga<br>
-                <em>mu Rwanda</em><br>
-                kandi utsinde ku nshuro ya mbere.
-            </h1>
-            <p class="hero-desc">Koresha urubuga rwizewe rwo kwiga amategeko y'umuhanda, gukora imyitozo y'ikizamini, kumenya aho ukeneye kongera kwiga, no gutegura neza ikizamini cyawe ku buryo bworoshye kandi bwihuse.</p>
+            <div class="hero-copy-panel">
+                <h1 class="hero-h1">
+                    Itegure Ikizamini cyo Gutwara Ibinyabiziga<br>
+                    <em>mu Rwanda</em><br>
+                    kandi utsinde ku nshuro ya mbere.
+                </h1>
+                <p class="hero-desc">Koresha urubuga rwizewe rwo kwiga amategeko y'umuhanda, gukora imyitozo y'ikizamini, kumenya aho ukeneye kongera kwiga, no gutegura neza ikizamini cyawe ku buryo bworoshye kandi bwihuse.</p>
+                <div class="hero-support-row">
+                    <div class="hero-support-pill"><i class="fa-solid fa-bolt"></i> Imyitozo yihuta</div>
+                    <div class="hero-support-pill"><i class="fa-solid fa-mobile-screen-button"></i> Kuri telefone na mudasobwa</div>
+                    <div class="hero-support-pill"><i class="fa-solid fa-graduation-cap"></i> Kwiga no kugenzura</div>
+                </div>
+            </div>
             <div class="hero-actions">
                 <span class="pill"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Isuzuma Ryihuse</span>
                 <a class="hero-cta" href="/exam"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Tangira Ikizamini</a>
                 <a class="hero-cta secondary" href="/ifashanyigisho"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Soma amategeko</a>
-            </div>
-            <div class="hero-support-row">
-                <div class="hero-support-pill"><i class="fa-solid fa-bolt"></i> Imyitozo yihuta</div>
-                <div class="hero-support-pill"><i class="fa-solid fa-mobile-screen-button"></i> Kuri telefone na mudasobwa</div>
-                <div class="hero-support-pill"><i class="fa-solid fa-graduation-cap"></i> Kwiga no kugenzura</div>
             </div>
         </section>
 
