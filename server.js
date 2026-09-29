@@ -270,26 +270,27 @@ function sendSchoolAwarePage(req, res, fileName) {
 }
 
 // ── PAGE ROUTES ───────────────────────────────────────────────────────────
+let retrySchoolStudentsAfter = 0;
+
 function loadPublicStats(includeSchoolStudents, callback) {
     const schoolStudentSource = includeSchoolStudents ? `
             UNION
-            SELECT RIGHT(TRIM(phone_number), 9) AS phone_number
+            SELECT phone_number
             FROM school_students
-            WHERE NULLIF(TRIM(phone_number), '') IS NOT NULL` : '';
+            WHERE phone_number <> ''` : '';
 
     db.query(
         `SELECT
-            (SELECT COUNT(DISTINCT phone_number) FROM (
-                SELECT RIGHT(TRIM(phone_number), 9) AS phone_number
+            (SELECT COUNT(*) FROM (
+                SELECT phone_number
                 FROM exam_attempts
-                WHERE NULLIF(TRIM(phone_number), '') IS NOT NULL
+                WHERE phone_number <> ''
                 ${schoolStudentSource}
             ) AS all_users) AS totalUsers,
-            (SELECT COALESCE(ROUND(
-                100 * SUM(CASE WHEN score >= 12 THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0)
-            ), 0) FROM exam_attempts) AS passRate,
-            (SELECT COALESCE(ROUND(AVG(score), 1), 0) FROM exam_attempts) AS averageScore,
-            (SELECT COUNT(*) FROM exam_attempts) AS completedExams`,
+            COUNT(*) AS completedExams,
+            COALESCE(SUM(CASE WHEN score >= 12 THEN 1 ELSE 0 END), 0) AS passedAttempts,
+            COALESCE(ROUND(AVG(score), 1), 0) AS averageScore
+         FROM exam_attempts`,
         callback
     );
 }
@@ -302,19 +303,24 @@ app.get('/api/public-stats', (req, res) => {
             }
 
             res.set('Cache-Control', 'no-store');
+            const totalAttempts = Number(rows[0].completedExams) || 0;
+            const passedAttempts = Number(rows[0].passedAttempts) || 0;
             res.json({
                 totalUsers: Number(rows[0].totalUsers) || 0,
-                passRate: Number(rows[0].passRate) || 0,
+                passRate: totalAttempts > 0 ? Math.round((passedAttempts / totalAttempts) * 100) : 0,
                 averageScore: Number(rows[0].averageScore) || 0,
-                completedExams: Number(rows[0].completedExams) || 0
+                completedExams: totalAttempts
             });
 
     }
 
-    loadPublicStats(true, (err, rows) => {
-        if (err && err.code === 'ER_NO_SUCH_TABLE' && err.message.includes('school_students')) {
+    const includeSchoolStudents = Date.now() >= retrySchoolStudentsAfter;
+    loadPublicStats(includeSchoolStudents, (err, rows) => {
+        if (includeSchoolStudents && err && err.code === 'ER_NO_SUCH_TABLE' && err.message.includes('school_students')) {
+            retrySchoolStudentsAfter = Date.now() + 5 * 60 * 1000;
             return loadPublicStats(false, sendStats);
         }
+        if (includeSchoolStudents && !err) retrySchoolStudentsAfter = 0;
         sendStats(err, rows);
     });
 });
