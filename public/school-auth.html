@@ -290,6 +290,16 @@
             .auth-heading-block .portal-pill { font-size: 10px; padding: 7px 10px; }
             .portal-pill { margin-bottom: 12px; }
         }
+        body.school-auth-page .workspace-scroll-container { padding-top: 28px; }
+        @media (min-width: 901px) {
+            body.school-auth-page .workspace-scroll-container {
+                margin-top: 72px !important;
+                min-height: calc(100vh - 72px);
+            }
+        }
+        @media (max-width: 768px) {
+            body.school-auth-page .workspace-scroll-container:not(.results-open) { padding-top: 28px !important; }
+        }
 
         .auth-heading-block { text-align: center; margin-bottom: 28px; }
         .auth-heading-block .portal-pill {
@@ -473,7 +483,7 @@
     <link rel="stylesheet" href="assets/css/public-pages-theme.css">
     <link rel="stylesheet" href="assets/css/public-navigation.css">
 </head>
-<body>
+<body class="school-auth-page">
         <header class="navbar">
         <a href="/" class="navbar-brand-wrap">
             <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
