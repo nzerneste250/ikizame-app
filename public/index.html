@@ -221,37 +221,75 @@
         .hero-live-stats {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
             width: 100%;
-            border-block: 1px solid rgba(11, 105, 139, 0.18);
-            background: rgba(255, 255, 255, 0.52);
         }
         .hero-live-stat {
+            position: relative;
             min-width: 0;
-            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 14px 13px 12px;
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 8px;
+            background: linear-gradient(145deg, #ffffff 0%, #f0f5f1 100%);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
         }
-        .hero-live-stat + .hero-live-stat {
-            border-left: 1px solid rgba(11, 105, 139, 0.14);
+        .hero-live-stat::before {
+            content: '';
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 3px;
+            background: #537c70;
         }
+        .hero-live-stat:nth-child(2)::before { background: #85805a; }
+        .hero-live-stat:nth-child(3)::before { background: #577486; }
+        .hero-live-heading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            color: #475569;
+            font-size: 0.73rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .hero-live-icon {
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border-radius: 7px;
+            background: #e6efea;
+            color: #456e61;
+        }
+        .hero-live-stat:nth-child(2) .hero-live-icon { background: #f0efe4; color: #77724e; }
+        .hero-live-stat:nth-child(3) .hero-live-icon { background: #e8eef1; color: #506c7c; }
         .hero-live-value {
             display: block;
-            color: #0b698b;
-            font-size: 1.5rem;
+            color: #263a33;
+            font-size: 1.6rem;
             font-weight: 800;
             line-height: 1.15;
             font-variant-numeric: tabular-nums;
         }
-        .hero-live-label {
+        .hero-live-detail {
             display: block;
-            margin-top: 5px;
-            color: #475569;
-            font-size: 0.72rem;
-            font-weight: 700;
+            color: #64716a;
+            font-size: 0.66rem;
+            font-weight: 600;
             line-height: 1.35;
         }
         @media (max-width: 600px) {
-            .hero-live-stat { padding: 11px 8px; }
-            .hero-live-value { font-size: 1.25rem; }
-            .hero-live-label { font-size: 0.66rem; }
+            .hero-live-stats { gap: 7px; }
+            .hero-live-stat { gap: 7px; padding: 11px 9px 10px; }
+            .hero-live-heading { gap: 6px; font-size: 0.64rem; }
+            .hero-live-icon { width: 25px; height: 25px; }
+            .hero-live-value { font-size: 1.2rem; }
+            .hero-live-detail { font-size: 0.58rem; }
         }
 
         .hero-h1 {
@@ -1112,16 +1150,29 @@
             </div>
             <div class="hero-live-stats" data-hero-stats aria-label="Imibare y'urubuga" aria-live="polite">
                 <div class="hero-live-stat">
-                    <span class="hero-live-value" data-stat="learners">—</span>
-                    <span class="hero-live-label">Abanyeshuri</span>
+                    <div class="hero-live-heading">
+                        <span class="hero-live-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
+                        <span>Abakoresha bose</span>
+                    </div>
+                    <span class="hero-live-value" data-stat="totalUsers">—</span>
+                    <span class="hero-live-detail">Abiyandikishije cyangwa bakoze ikizamini</span>
                 </div>
                 <div class="hero-live-stat">
-                    <span class="hero-live-value" data-stat="questions">—</span>
-                    <span class="hero-live-label">Ibibazo bihari</span>
+                    <div class="hero-live-heading">
+                        <span class="hero-live-icon"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i></span>
+                        <span>Igipimo cyo gutsinda</span>
+                    </div>
+                    <span class="hero-live-value" data-stat="passRate">—</span>
+                    <span class="hero-live-detail">Impuzandengo: <span data-stat="averageScore">—</span>/20</span>
+                    <span class="hero-live-detail">Amanota 12/20 cyangwa arenga</span>
                 </div>
                 <div class="hero-live-stat">
+                    <div class="hero-live-heading">
+                        <span class="hero-live-icon"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i></span>
+                        <span>Ibizamini byakozwe</span>
+                    </div>
                     <span class="hero-live-value" data-stat="completedExams">—</span>
-                    <span class="hero-live-label">Ibizamini byakozwe</span>
+                    <span class="hero-live-detail">Ibizamini byarangiye</span>
                 </div>
             </div>
             <h1 class="hero-h1">
@@ -1675,7 +1726,10 @@
 
                     statElements.forEach((element) => {
                         const value = Number(stats[element.dataset.stat]);
-                        if (Number.isFinite(value)) element.textContent = numberFormat.format(value);
+                        if (Number.isFinite(value)) {
+                            const suffix = element.dataset.stat === 'passRate' ? '%' : '';
+                            element.textContent = `${numberFormat.format(value)}${suffix}`;
+                        }
                     });
                 } catch {}
             }

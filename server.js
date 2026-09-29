@@ -270,13 +270,32 @@ function sendSchoolAwarePage(req, res, fileName) {
 }
 
 // ── PAGE ROUTES ───────────────────────────────────────────────────────────
-app.get('/api/public-stats', (req, res) => {
+function loadPublicStats(includeSchoolStudents, callback) {
+    const schoolStudentSource = includeSchoolStudents ? `
+            UNION
+            SELECT RIGHT(TRIM(phone_number), 9) AS phone_number
+            FROM school_students
+            WHERE NULLIF(TRIM(phone_number), '') IS NOT NULL` : '';
+
     db.query(
         `SELECT
-            (SELECT COUNT(DISTINCT NULLIF(TRIM(phone_number), '')) FROM exam_attempts) AS learners,
-            (SELECT COUNT(*) FROM exams) AS questions,
+            (SELECT COUNT(DISTINCT phone_number) FROM (
+                SELECT RIGHT(TRIM(phone_number), 9) AS phone_number
+                FROM exam_attempts
+                WHERE NULLIF(TRIM(phone_number), '') IS NOT NULL
+                ${schoolStudentSource}
+            ) AS all_users) AS totalUsers,
+            (SELECT COALESCE(ROUND(
+                100 * SUM(CASE WHEN score >= 12 THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0)
+            ), 0) FROM exam_attempts) AS passRate,
+            (SELECT COALESCE(ROUND(AVG(score), 1), 0) FROM exam_attempts) AS averageScore,
             (SELECT COUNT(*) FROM exam_attempts) AS completedExams`,
-        (err, rows) => {
+        callback
+    );
+}
+
+app.get('/api/public-stats', (req, res) => {
+    function sendStats(err, rows) {
             if (err) {
                 console.error('Failed to load public homepage stats:', err.message);
                 return res.status(503).json({ error: 'Imibare ntibashije kuboneka.' });
@@ -284,12 +303,20 @@ app.get('/api/public-stats', (req, res) => {
 
             res.set('Cache-Control', 'no-store');
             res.json({
-                learners: Number(rows[0].learners) || 0,
-                questions: Number(rows[0].questions) || 0,
+                totalUsers: Number(rows[0].totalUsers) || 0,
+                passRate: Number(rows[0].passRate) || 0,
+                averageScore: Number(rows[0].averageScore) || 0,
                 completedExams: Number(rows[0].completedExams) || 0
             });
+
+    }
+
+    loadPublicStats(true, (err, rows) => {
+        if (err && err.code === 'ER_NO_SUCH_TABLE' && err.message.includes('school_students')) {
+            return loadPublicStats(false, sendStats);
         }
-    );
+        sendStats(err, rows);
+    });
 });
 
 app.get('/',               (req, res) => renderPublicPage('index.html', res));
