@@ -332,6 +332,47 @@
             .back-link { width: 100%; font-size: 0.82rem; }
             .page-footer { min-height: 52px; }
         }
+        @media (max-width: 960px) and (max-height: 950px) {
+            .brand-panel { padding: 10px 16px; }
+            .brand-lockup { gap: 0; }
+            .card-icon { width: 42px; height: 42px; padding: 5px; border-radius: 10px; }
+            .card-icon img { border-radius: 6px; }
+            .brand-heading { gap: 10px; }
+            .top-bar-brand { font-size: 0.92rem; }
+            .login-panel { padding: 10px 12px; }
+            .card { padding: 16px 16px 14px; }
+            .card h1 { font-size: 1.3rem; margin-bottom: 4px; }
+            .card .sub { font-size: 0.78rem; line-height: 1.4; margin-bottom: 12px; }
+            .alert { padding: 8px 10px; margin-bottom: 8px; }
+            .form { gap: 9px; }
+            .field { gap: 4px; }
+            .field label { font-size: 11px; }
+            .field input { padding: 10px 38px; font-size: 0.9rem; }
+            .forgot-link { font-size: 11px; }
+            .btn { padding: 10px 14px; font-size: 0.88rem; }
+            .back-link { min-height: 40px; margin-top: 12px; padding: 8px 12px; }
+            .brand-guide {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                align-content: start;
+                gap: 12px;
+                padding: 12px 14px;
+            }
+            .brand-guide-section + .brand-guide-section {
+                padding: 0 0 0 12px;
+                border-top: 0;
+                border-left: 1px solid rgba(255,255,255,0.16);
+            }
+            .brand-guide-title { margin-bottom: 6px; font-size: 0.64rem; }
+            .brand-guide-list { gap: 5px; }
+            .brand-guide-list li {
+                grid-template-columns: 22px minmax(0, 1fr);
+                gap: 6px;
+                font-size: 0.67rem;
+                line-height: 1.25;
+            }
+            .brand-guide-number { width: 22px; height: 22px; font-size: 0.64rem; }
+            .footer.page-footer { min-height: 40px; padding: 6px 10px; font-size: 9px; }
+        }
     </style>
 </head>
 <body>
