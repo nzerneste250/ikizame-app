@@ -168,6 +168,72 @@
             font-weight: 700;
             font-variant-numeric: tabular-nums;
         }
+        .brand-guide-step-icon { display: none; }
+        .brand-guide-step-description { display: none; }
+        @media (min-width: 961px) {
+            .brand-guide {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-rows: minmax(0, 1fr) auto;
+                align-content: stretch;
+                gap: 18px 28px;
+                padding: 30px 48px 22px;
+            }
+            .brand-guide-section {
+                width: 100%;
+                min-width: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            .brand-guide-section + .brand-guide-section {
+                padding: 0 0 0 24px;
+                border-top: 0;
+                border-left: 1px solid rgba(255,255,255,0.16);
+            }
+            .brand-guide-title { margin-bottom: 12px; font-size: 0.8rem; }
+            .brand-guide-list { flex: 1; align-content: space-between; gap: 12px; }
+            .brand-guide-list li {
+                grid-template-columns: 32px 20px minmax(0, 1fr);
+                grid-template-rows: auto auto;
+                align-items: start;
+                gap: 9px;
+                font-size: 0.88rem;
+                line-height: 1.45;
+            }
+            .brand-guide-number { width: 32px; height: 32px; font-size: 0.78rem; }
+            .brand-guide-step-description {
+                display: block;
+                grid-column: 3;
+                grid-row: 2;
+                margin-top: -5px;
+                color: rgba(255,255,255,0.68);
+                font-size: 0.74rem;
+                line-height: 1.35;
+            }
+            .brand-guide-step-icon {
+                width: 20px;
+                height: 24px;
+                display: grid;
+                place-items: center;
+                color: #7dd3fc;
+                font-size: 0.88rem;
+            }
+            .brand-guide-note {
+                position: relative;
+                z-index: 1;
+                grid-column: 1 / -1;
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                margin: 0;
+                padding-top: 10px;
+                border-top: 1px solid rgba(255,255,255,0.16);
+                color: rgba(255,255,255,0.76);
+                font-size: 0.76rem;
+                line-height: 1.4;
+            }
+        }
         .page-footer {
             flex: 0 0 auto;
             width: 100%;
@@ -339,38 +405,54 @@
             .card-icon img { border-radius: 6px; }
             .brand-heading { gap: 10px; }
             .top-bar-brand { font-size: 0.92rem; }
-            .login-panel { padding: 10px 12px; }
-            .card { padding: 16px 16px 14px; }
+            .login-panel { padding: 12px 12px; }
+            .card { padding: 20px 18px 18px; }
             .card h1 { font-size: 1.3rem; margin-bottom: 4px; }
-            .card .sub { font-size: 0.78rem; line-height: 1.4; margin-bottom: 12px; }
+            .card .sub { font-size: 0.78rem; line-height: 1.4; margin-bottom: 16px; }
             .alert { padding: 8px 10px; margin-bottom: 8px; }
-            .form { gap: 9px; }
+            .form { gap: 11px; }
             .field { gap: 4px; }
             .field label { font-size: 11px; }
-            .field input { padding: 10px 38px; font-size: 0.9rem; }
+            .field input { padding: 12px 38px; font-size: 0.9rem; }
             .forgot-link { font-size: 11px; }
-            .btn { padding: 10px 14px; font-size: 0.88rem; }
-            .back-link { min-height: 40px; margin-top: 12px; padding: 8px 12px; }
+            .btn { padding: 12px 14px; font-size: 0.88rem; }
+            .back-link { min-height: 42px; margin-top: 14px; padding: 9px 12px; }
             .brand-guide {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                align-content: start;
-                gap: 12px;
-                padding: 12px 14px;
+                flex: 1 0 auto;
+                grid-template-columns: minmax(0, 1fr);
+                grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) auto;
+                align-content: stretch;
+                gap: 8px;
+                padding: 12px 18px;
             }
+            .brand-guide-section { display: flex; flex-direction: column; justify-content: center; }
             .brand-guide-section + .brand-guide-section {
-                padding: 0 0 0 12px;
-                border-top: 0;
-                border-left: 1px solid rgba(255,255,255,0.16);
+                padding: 10px 0 0;
+                border-top: 1px solid rgba(255,255,255,0.16);
+                border-left: 0;
             }
-            .brand-guide-title { margin-bottom: 6px; font-size: 0.64rem; }
+            .brand-guide-note {
+                position: relative;
+                z-index: 1;
+                grid-column: 1 / -1;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding-top: 10px;
+                border-top: 1px solid rgba(255,255,255,0.16);
+                color: rgba(255,255,255,0.76);
+                font-size: 0.68rem;
+                line-height: 1.35;
+            }
+            .brand-guide-title { margin-bottom: 6px; font-size: 0.68rem; }
             .brand-guide-list { gap: 5px; }
             .brand-guide-list li {
-                grid-template-columns: 22px minmax(0, 1fr);
-                gap: 6px;
-                font-size: 0.67rem;
-                line-height: 1.25;
+                grid-template-columns: 24px minmax(0, 1fr);
+                gap: 8px;
+                font-size: 0.72rem;
+                line-height: 1.3;
             }
-            .brand-guide-number { width: 22px; height: 22px; font-size: 0.64rem; }
+            .brand-guide-number { width: 24px; height: 24px; font-size: 0.68rem; }
             .footer.page-footer { min-height: 40px; padding: 6px 10px; font-size: 9px; }
         }
     </style>
@@ -538,19 +620,20 @@
             <section class="brand-guide-section" aria-labelledby="sign-in-steps-title">
                 <h2 class="brand-guide-title" id="sign-in-steps-title">Sign in</h2>
                 <ol class="brand-guide-list">
-                    <li><span class="brand-guide-number">1</span><span>Enter your admin email</span></li>
-                    <li><span class="brand-guide-number">2</span><span>Enter your password</span></li>
-                    <li><span class="brand-guide-number">3</span><span>Select “Sign in securely”</span></li>
+                    <li><span class="brand-guide-number">1</span><span class="brand-guide-step-icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span><span>Enter your admin email</span><span class="brand-guide-step-description">Use the email registered for your IKIZAME admin account. This is the address linked to your administrator profile.</span></li>
+                    <li><span class="brand-guide-number">2</span><span class="brand-guide-step-icon" aria-hidden="true"><i class="fa-solid fa-lock"></i></span><span>Enter your password</span><span class="brand-guide-step-description">Type the password for your admin account. Use the eye icon to check your entry before continuing.</span></li>
+                    <li><span class="brand-guide-number">3</span><span class="brand-guide-step-icon" aria-hidden="true"><i class="fa-solid fa-arrow-right-to-bracket"></i></span><span>Select “Sign in securely”</span><span class="brand-guide-step-description">Submit your email and password to continue to the admin area.</span></li>
                 </ol>
             </section>
             <section class="brand-guide-section" aria-labelledby="forgot-password-steps-title">
                 <h2 class="brand-guide-title" id="forgot-password-steps-title">Forgot password?</h2>
                 <ol class="brand-guide-list">
-                    <li><span class="brand-guide-number">1</span><span>Select “Forgot password?”</span></li>
-                    <li><span class="brand-guide-number">2</span><span>Enter your email and 6-digit code</span></li>
-                    <li><span class="brand-guide-number">3</span><span>Create and confirm a new password</span></li>
+                    <li><span class="brand-guide-number">1</span><span class="brand-guide-step-icon" aria-hidden="true"><i class="fa-solid fa-key"></i></span><span>Select “Forgot password?”</span><span class="brand-guide-step-description">Choose the recovery link below the password field to begin resetting access.</span></li>
+                    <li><span class="brand-guide-number">2</span><span class="brand-guide-step-icon" aria-hidden="true"><i class="fa-solid fa-envelope-open-text"></i></span><span>Enter your email and 6-digit code</span><span class="brand-guide-step-description">Enter your admin email and the six-digit OTP sent to that inbox. Keep access to the inbox during recovery.</span></li>
+                    <li><span class="brand-guide-number">3</span><span class="brand-guide-step-icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span><span>Create and confirm a new password</span><span class="brand-guide-step-description">Create a password that meets the listed requirements, then enter it again to confirm.</span></li>
                 </ol>
             </section>
+            <p class="brand-guide-note"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Password reset codes are sent to your admin email.</span></p>
         </section>
     </div>
     <footer class="footer page-footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
