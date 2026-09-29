@@ -34,7 +34,7 @@
 
         html, body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #202925 0%, #29332e 52%, #222c28 100%);
+            background: linear-gradient(135deg, #102a3c 0%, #12364a 52%, #0c293d 100%);
             color: #0f172a;
             display: flex;
             flex-direction: column;
@@ -59,7 +59,7 @@
             z-index: 0;
             overflow: hidden;
             pointer-events: none;
-            background: linear-gradient(135deg, #202925 0%, #29332e 52%, #222c28 100%);
+            background: linear-gradient(135deg, #102a3c 0%, #12364a 52%, #0c293d 100%);
         }
         .highway-canvas::before {
             content: '';
@@ -67,11 +67,11 @@
             inset: 0;
             opacity: 0.72;
             background-image:
-                repeating-linear-gradient(45deg, transparent 0 27px, rgba(197, 185, 145, 0.12) 27px 28px, transparent 28px 56px),
-                repeating-linear-gradient(-45deg, transparent 0 27px, rgba(197, 185, 145, 0.09) 27px 28px, transparent 28px 56px),
-                linear-gradient(rgba(151, 175, 162, 0.045) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(151, 175, 162, 0.045) 1px, transparent 1px),
-                radial-gradient(circle, rgba(197, 185, 145, 0.22) 1px, transparent 1.5px);
+                repeating-linear-gradient(45deg, transparent 0 27px, rgba(56, 189, 248, 0.13) 27px 28px, transparent 28px 56px),
+                repeating-linear-gradient(-45deg, transparent 0 27px, rgba(11, 105, 139, 0.2) 27px 28px, transparent 28px 56px),
+                linear-gradient(rgba(56, 189, 248, 0.055) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.055) 1px, transparent 1px),
+                radial-gradient(circle, rgba(0, 184, 217, 0.28) 1px, transparent 1.5px);
             background-size: 112px 112px, 112px 112px, 28px 28px, 28px 28px, 56px 56px;
         }
         .road-strip,
@@ -234,7 +234,7 @@
             overflow: hidden;
             border: 1px solid rgba(15, 23, 42, 0.08);
             border-radius: 8px;
-            background: linear-gradient(145deg, #ffffff 0%, #f0f5f1 100%);
+            background: linear-gradient(145deg, #ffffff 0%, #f2f7fc 100%);
             box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
         }
         .hero-live-stat::before {
@@ -242,10 +242,10 @@
             position: absolute;
             inset: 0 auto 0 0;
             width: 3px;
-            background: #537c70;
+            background: var(--primary);
         }
-        .hero-live-stat:nth-child(2)::before { background: #85805a; }
-        .hero-live-stat:nth-child(3)::before { background: #577486; }
+        .hero-live-stat:nth-child(2)::before { background: var(--secondary); }
+        .hero-live-stat:nth-child(3)::before { background: var(--accent-teal); }
         .hero-live-heading {
             display: flex;
             align-items: center;
@@ -263,14 +263,14 @@
             place-items: center;
             flex: 0 0 auto;
             border-radius: 7px;
-            background: #e6efea;
-            color: #456e61;
+            background: var(--primary-soft);
+            color: var(--primary);
         }
-        .hero-live-stat:nth-child(2) .hero-live-icon { background: #f0efe4; color: #77724e; }
-        .hero-live-stat:nth-child(3) .hero-live-icon { background: #e8eef1; color: #506c7c; }
+        .hero-live-stat:nth-child(2) .hero-live-icon { background: #e5f8fb; color: #07839a; }
+        .hero-live-stat:nth-child(3) .hero-live-icon { background: #e7f2f5; color: var(--accent-teal); }
         .hero-live-value {
             display: block;
-            color: #263a33;
+            color: #0f172a;
             font-size: 1.6rem;
             font-weight: 800;
             line-height: 1.15;
@@ -278,7 +278,7 @@
         }
         .hero-live-detail {
             display: block;
-            color: #64716a;
+            color: #64748b;
             font-size: 0.66rem;
             font-weight: 600;
             line-height: 1.35;
@@ -1152,27 +1152,24 @@
                 <div class="hero-live-stat">
                     <div class="hero-live-heading">
                         <span class="hero-live-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
-                        <span>Abakoresha bose</span>
+                        <span>Abakoresha</span>
                     </div>
                     <span class="hero-live-value" data-stat="totalUsers">—</span>
-                    <span class="hero-live-detail">Abiyandikishije cyangwa bakoze ikizamini</span>
                 </div>
                 <div class="hero-live-stat">
                     <div class="hero-live-heading">
                         <span class="hero-live-icon"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i></span>
-                        <span>Igipimo cyo gutsinda</span>
+                        <span>Abatsinze ≥12/20</span>
                     </div>
                     <span class="hero-live-value" data-stat="passRate">—</span>
                     <span class="hero-live-detail">Impuzandengo: <span data-stat="averageScore">—</span>/20</span>
-                    <span class="hero-live-detail">Amanota 12/20 cyangwa arenga</span>
                 </div>
                 <div class="hero-live-stat">
                     <div class="hero-live-heading">
                         <span class="hero-live-icon"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i></span>
-                        <span>Ibizamini byakozwe</span>
+                        <span>Ibizamini</span>
                     </div>
                     <span class="hero-live-value" data-stat="completedExams">—</span>
-                    <span class="hero-live-detail">Ibizamini byarangiye</span>
                 </div>
             </div>
             <h1 class="hero-h1">
