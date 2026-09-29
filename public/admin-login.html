@@ -423,11 +423,11 @@
             .page-footer { min-height: 52px; }
         }
         @media (max-width: 960px) {
-            body { min-height: auto; }
-            .admin-layout { flex: 0 0 auto; min-height: 0; }
+            body { min-height: 100vh; min-height: 100dvh; }
+            .admin-layout { flex: 1 0 auto; min-height: 0; }
             .brand-panel { padding-top: calc(20px + env(safe-area-inset-top, 0px)); }
             .brand-guide {
-                flex: 0 0 auto;
+                flex: 1 0 auto;
                 grid-template-rows: auto;
                 align-content: start;
             }
