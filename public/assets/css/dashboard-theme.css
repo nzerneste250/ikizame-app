@@ -591,12 +591,12 @@
 .dashboard-page .repository-no-media, .dashboard-page .repository-empty-value { display: inline-flex; align-items: center; gap: 5px; color: #94A3B8; font-size: 10px; }
 .dashboard-page .repository-option-image { display: block; max-width: 100%; max-height: 58px; object-fit: contain; }
 .dashboard-page .repository-correct-badge { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 48px; padding: 6px 8px; border-radius: 999px; background: #EAF7EF; color: #15803D; font-size: 11px; font-weight: 800; }
-.dashboard-page .repository-actions-cell { white-space: nowrap; }
-.dashboard-page .repository-action-edit, .dashboard-page .repository-action-delete { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 10px; border: 1px solid transparent; border-radius: 8px; font-size: 11px; font-weight: 750; text-decoration: none; cursor: pointer; }
-.dashboard-page .repository-action-edit { background: #E3EFFA; color: #0D47A1; }
-.dashboard-page .repository-action-edit:hover { background: #D1E4F5; }
-.dashboard-page .repository-action-delete { margin-left: 5px; background: #FDECEC; color: #B42318; }
-.dashboard-page .repository-action-delete:hover { background: #FBD5D5; }
+.dashboard-page .repository-actions-cell { width: 154px; white-space: normal; }
+.dashboard-page .repository-action-edit, .dashboard-page .repository-action-delete { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-width: 0; min-height: 40px; padding: 0 10px; border: 1px solid transparent; border-radius: 8px; font-size: 11px; font-weight: 750; text-decoration: none; cursor: pointer; transition: background-color .15s ease, box-shadow .15s ease, transform .15s ease; }
+.dashboard-page .repository-action-edit { background: #1565C0; color: #FFFFFF; box-shadow: 0 2px 5px rgba(21,101,192,.18); }
+.dashboard-page .repository-action-edit:hover { background: #0D47A1; box-shadow: 0 3px 9px rgba(13,71,161,.24); }
+.dashboard-page .repository-action-delete { margin: 6px 0 0; background: #DC2626; color: #FFFFFF; box-shadow: 0 2px 5px rgba(220,38,38,.16); }
+.dashboard-page .repository-action-delete:hover { background: #B91C1C; box-shadow: 0 3px 9px rgba(185,28,28,.22); }
 .dashboard-page .repository-empty-state { padding: 42px 16px !important; text-align: center; }
 .dashboard-page .repository-empty-state > * { display: block; margin: 5px auto; }
 .dashboard-page .repository-empty-state strong { color: var(--repo-ink); font-size: 14px; }
@@ -626,8 +626,10 @@
 .dashboard-page.admin-sidebar-collapsed .sidebar-nav a[title] { position: relative; }
 @media (max-width: 1200px) {
   .dashboard-page .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dashboard-page .form-scroll { overflow: visible !important; }
   .dashboard-page .repository-toolbar { align-items: flex-start; flex-direction: column; }
   .dashboard-page .repository-toolbar-controls { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+  .dashboard-page .questions-repository-table thead th { position: static; }
 }
 @media (max-width: 700px) {
   .dashboard-page .topbar { align-items: center; flex-wrap: wrap; }
@@ -657,7 +659,7 @@
   .dashboard-page .repository-media-preview { width: 54px; height: 54px; }
   .dashboard-page .questions-repository-table .repository-key-cell { grid-column: 2; grid-row: 4; align-self: center; }
   .dashboard-page .questions-repository-table .repository-actions-cell { grid-column: 1 / -1; display: flex !important; gap: 8px; margin-top: 10px; }
-  .dashboard-page .repository-action-edit, .dashboard-page .repository-action-delete { flex: 1; min-height: 42px; margin: 0; }
+  .dashboard-page .repository-action-edit, .dashboard-page .repository-action-delete { flex: 1; width: auto; min-height: 44px; margin: 0; }
   .dashboard-page .repository-pagination { flex-wrap: wrap; padding: 9px; }
   .dashboard-page .repository-pagination-summary { width: 100%; text-align: center; }
   .dashboard-page .repository-pagination-buttons { width: 100%; justify-content: space-between; }
@@ -673,7 +675,7 @@
 .dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(2) { width: auto !important; }
 .dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(3) { width: 92px !important; }
 .dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(4) { width: 86px !important; }
-.dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(5) { width: 142px !important; }
+.dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(5) { width: 154px !important; }
 .dashboard-page.admin-sidebar-collapsed .sidebar-nav a:hover::after { content: attr(title); position: absolute; left: calc(100% + 9px); z-index: 10; padding: 8px 10px; border-radius: 7px; background: #172F3D; color: #fff; font-size: 11px; font-weight: 650; white-space: nowrap; box-shadow: 0 5px 14px rgba(15,35,45,.18); }
 @media (max-width: 1100px) { .dashboard-page .sidebar-collapse-toggle { display: none; } }
 .dashboard-page #questionsTableContainerViewSection > .questions-repository-table { display: table; width: 100% !important; min-width: 0 !important; max-width: 100%; table-layout: fixed; }
