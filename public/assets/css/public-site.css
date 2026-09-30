@@ -464,17 +464,24 @@ body.school-auth-page .guide-card::before { opacity: .1; }
 body.school-auth-page .guide-card-title { color: #fff; font-size: .95rem; }
 body.school-auth-page .guide-card-sub { padding-top: 6px; border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.9); }
 body.school-auth-page .guide-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
-body.school-auth-page .guide-step { display: block; min-width: 0; }
-body.school-auth-page .guide-step:not(:last-child)::after {
-  left: 40px;
-  right: -14px;
-  top: 14px;
-  width: auto;
-  height: 2px;
-  background: rgba(255,255,255,.28);
+body.school-auth-page .guide-step {
+  position: relative;
+  display: block;
+  min-width: 0;
+  padding: 16px 14px 15px;
+  border: 1px solid rgba(147, 197, 253, .24);
+  border-radius: 15px;
+  background: linear-gradient(145deg, rgba(15, 40, 79, .94), rgba(10, 27, 57, .9));
+  color: #f8fbff;
+  box-shadow: 0 10px 24px rgba(2, 10, 29, .22), inset 0 1px 0 rgba(255,255,255,.07);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  backdrop-filter: blur(12px) saturate(125%);
 }
-body.school-auth-page .gs-num { position: relative; z-index: 1; width: 30px; height: 30px; margin-bottom: 9px; background: #15803d; color: #fff; }
-body.school-auth-page .gs-tag { background: rgba(255,255,255,.12); color: #bbf7d0; }
+body.school-auth-page .guide-step:not(:last-child)::after {
+  display: none;
+}
+body.school-auth-page .gs-num { position: relative; z-index: 1; width: 30px; height: 30px; margin-bottom: 9px; border-color: rgba(147, 197, 253, .55); background: #163d73; color: #fff; }
+body.school-auth-page .gs-tag { background: rgba(147, 197, 253, .16); color: #bfdbfe; }
 body.school-auth-page .gs-body { padding-bottom: 0; }
 body.school-auth-page .gs-body h4 { color: #fff; font-size: .8rem; }
 body.school-auth-page .gs-body p { color: rgba(255,255,255,.9); font-size: .78rem; line-height: 1.55; }
@@ -493,9 +500,8 @@ body.school-auth-page #viewSectionAccessDenied button { border: 1px solid #cbd5e
   body.school-auth-page .auth-layout { gap: 20px; }
   body.school-auth-page .auth-card-frame { padding: 24px; }
   body.school-auth-page .guide-card { padding: 20px; }
-  body.school-auth-page .guide-steps { grid-template-columns: 1fr; gap: 0; }
-  body.school-auth-page .guide-step { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 0 12px; padding-bottom: 14px; }
-  body.school-auth-page .guide-step:not(:last-child)::after { left: 14px; right: auto; top: 30px; width: 2px; height: calc(100% - 30px); background: rgba(255,255,255,.28); }
+  body.school-auth-page .guide-steps { grid-template-columns: 1fr; gap: 12px; }
+  body.school-auth-page .guide-step { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 0 12px; padding: 14px; }
   body.school-auth-page .gs-num { grid-row: 1 / span 3; margin-bottom: 0; }
   body.school-auth-page .gs-body { min-width: 0; }
 }
