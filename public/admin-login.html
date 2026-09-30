@@ -948,6 +948,146 @@
             .login-hero { flex: 1 0 auto; }
             .footer { flex: 0 0 auto; margin-top: auto; }
         }
+
+        /* Admin-login visual refresh: light institutional sections, with IKIZAME accents. */
+        body { background: #EAF0F6; color: #1F2937; }
+        .admin-header { min-height: 54px; background: #0D47A1; }
+        .admin-header-inner { min-height: 54px; }
+        .login-hero {
+            padding: clamp(34px, 5vw, 58px) 24px;
+            background: linear-gradient(180deg, #EAF1F7 0%, #F3F7FA 55%, #E8EFF5 100%);
+        }
+        .login-hero::before {
+            opacity: .05;
+            background-image:
+                url('assets/images/imigongo-pattern.svg'),
+                linear-gradient(135deg, transparent 49.8%, rgba(13,71,161,.16) 49.95%, rgba(13,71,161,.16) 50.05%, transparent 50.2%),
+                linear-gradient(45deg, transparent 49.85%, rgba(21,101,192,.13) 49.96%, rgba(21,101,192,.13) 50.04%, transparent 50.15%),
+                radial-gradient(circle, rgba(100,130,160,.22) 1px, transparent 1.7px);
+            background-size: 180px 180px, 144px 144px, 144px 144px, 96px 96px;
+            background-position: left 3% top 8%, left 0 top 0, left 72px top 72px, left 24px top 24px;
+            mask-image: linear-gradient(90deg, #000 0%, #000 30%, transparent 67%);
+        }
+        .admin-layout {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+            gap: clamp(32px, 4vw, 48px);
+            width: min(100%, 1180px);
+        }
+        .admin-intro { position: relative; z-index: 1; }
+        .admin-intro h1 { color: #1F2937; }
+        .admin-intro p { color: #526174; }
+        .login-panel { position: relative; z-index: 1; }
+        .card {
+            max-width: 460px;
+            border-color: #D7E1EA;
+            border-radius: 14px;
+            background: #F8FAFC;
+            box-shadow: 0 12px 30px rgba(31,60,90,.10);
+        }
+        .login-card-header {
+            min-height: 56px;
+            background: #E3EFFA;
+            color: #1F2937;
+            font-size: 1.12rem;
+        }
+        .login-card-header i { color: #0D47A1; }
+        .field label { color: #334155; font-weight: 600; }
+        .field-wrap input {
+            min-height: 49px;
+            border: 1px solid #D7E1EA;
+            border-radius: 8px;
+            background: #FFFFFF;
+            color: #1F2937;
+        }
+        .field-wrap input::placeholder { color: #94A3B8; }
+        .field-wrap input:focus { border-color: #1565C0; box-shadow: 0 0 0 3px rgba(21,101,192,.10); outline: none; }
+        .ico-left, .ico-right { color: #1565C0; }
+        .btn-primary { min-height: 50px; border-radius: 8px; background: #0D47A1; }
+        .btn-primary:hover { background: #0B3D91; }
+        .btn-primary:active { background: #082F78; }
+        .forgot-link, .back-link, .btn-ghost { color: #1565C0; }
+        .forgot-link:hover, .back-link:hover, .btn-ghost:hover { color: #0D47A1; text-decoration: underline; }
+        .help-section { padding: 28px 24px 32px; background: #F8FAFC; }
+        .recovery-section { padding: 28px 24px 32px; background: #E3EBF3; }
+        .info-section-inner { width: min(100%, 1180px); }
+        .brand-guide-title { margin-bottom: 14px; color: #1F2937; }
+        .brand-guide-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .brand-guide-list li {
+            position: relative;
+            grid-template-columns: 42px minmax(0,1fr);
+            gap: 6px 10px;
+            padding: 8px 20px;
+            border-right: 1px solid #D7E1EA;
+        }
+        .brand-guide-list li:first-child { padding-left: 0; }
+        .brand-guide-list li:last-child { padding-right: 0; }
+        .brand-guide-number {
+            display: block;
+            width: auto;
+            height: auto;
+            padding-top: 1px;
+            border-radius: 0;
+            background: transparent;
+            color: #0D47A1;
+            font-size: 0;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        .brand-guide-list li:nth-child(1) .brand-guide-number::after { content: '01'; }
+        .brand-guide-list li:nth-child(2) .brand-guide-number::after { content: '02'; }
+        .brand-guide-list li:nth-child(3) .brand-guide-number::after { content: '03'; }
+        .brand-guide-number::after { font-size: 1.35rem; }
+        .brand-guide-list li > span:nth-child(3) { color: #334155; }
+        .brand-guide-step-description { color: #64748B; }
+        .brand-guide-note { border-color: #D1DDE8; background: rgba(248,250,252,.74); color: #526174; }
+        .brand-guide-note i { background: #DCEAF7; color: #0D47A1; }
+        .steps-tracker { gap: 9px; }
+        .step-dot .dot { background: #E9EEF3; color: #64748B; }
+        .step-dot.active .dot { background: #0D47A1; color: #FFFFFF; }
+        .step-dot.done .dot { background: #DCEAF7; color: #0D47A1; }
+        .step-line { background: #CBD5E1; }
+        .footer {
+            min-height: 64px;
+            padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+            border-top: 0;
+            background: #0D47A1;
+            color: #FFFFFF;
+        }
+        .footer strong { color: #C9D9EA; }
+        @media (max-width: 960px) {
+            .admin-layout { grid-template-columns: minmax(0,1fr) minmax(0,380px); gap: 28px; width: min(100%, 820px); }
+        }
+        @media (max-width: 760px) {
+            .login-hero { padding: 22px 14px 26px; }
+            .login-hero::before {
+                opacity: .035;
+                background-position: left -65px top 0, left 0 top 0, left 72px top 72px, left 24px top 24px;
+                mask-image: linear-gradient(90deg, #000 0%, transparent 85%);
+            }
+            .admin-layout { display: flex; flex-direction: column; gap: 20px; width: min(calc(100% - 28px), 440px); }
+            .admin-intro { padding: 0; }
+            .admin-intro h1 { font-size: clamp(1.65rem, 7vw, 2rem); }
+            .login-panel { width: 100%; }
+            .card { width: 100%; max-width: none; padding: 20px; }
+            .login-card-header { margin-bottom: 16px; }
+            .help-section, .recovery-section { padding: 22px 14px; }
+            .brand-guide-list { grid-template-columns: 1fr; }
+            .brand-guide-list li, .brand-guide-list li:first-child, .brand-guide-list li:last-child {
+                grid-template-columns: 40px minmax(0,1fr);
+                padding: 12px 0;
+                border-right: 0;
+                border-bottom: 1px solid #D7E1EA;
+            }
+            .brand-guide-list li:last-child { border-bottom: 0; }
+            .brand-guide-number::after { font-size: 1.15rem; }
+            .footer { min-height: 64px; padding: 20px 14px calc(20px + env(safe-area-inset-bottom)); text-align: center; }
+        }
+        @media (max-width: 380px) {
+            .admin-header { padding-inline: 14px; }
+            .card { padding: 18px 16px; }
+            .login-card-header { margin-inline: -16px; margin-top: -18px; padding-inline: 16px; }
+            .field-wrap input { min-height: 48px; font-size: 16px; }
+        }
     </style>
 </head>
 <body>
