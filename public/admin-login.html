@@ -878,17 +878,17 @@
         .admin-feature-list span { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border: 1px solid #D7E1EA; border-radius: 999px; background: rgba(248,250,252,.76); color: #475569; font-size: .78rem; font-weight: 700; }
         .admin-feature-list i { color: #1976D2; }
         .login-panel { grid-column: 2; grid-row: 1; display: flex; align-items: center; justify-content: center; min-width: 0; min-height: 0; padding: 0; overflow: visible; background: transparent; }
-        .card { width: 100%; max-width: 460px; padding: clamp(24px, 3vw, 34px); border: 1px solid #D7E1EA; border-top: 1px solid #D7E1EA; border-radius: 14px; background: #F8FAFC; box-shadow: 0 12px 32px rgba(31,60,90,.1); backdrop-filter: none; -webkit-backdrop-filter: none; }
-        .login-card-header { display: flex; align-items: center; gap: 11px; margin: 0 0 20px; padding: 15px 17px; border-radius: 10px; background: #0D47A1; color: #FFFFFF; font-size: 1.15rem; font-weight: 800; line-height: 1.25; }
+        .card { --card-pad-x: clamp(24px, 3vw, 34px); --card-pad-y: clamp(22px, 2.6vw, 30px); width: 100%; max-width: 460px; padding: var(--card-pad-y) var(--card-pad-x); border: 1px solid #D7E1EA; border-radius: 14px; background: #F8FAFC; box-shadow: 0 12px 32px rgba(31,60,90,.1); backdrop-filter: none; -webkit-backdrop-filter: none; }
+        .login-card-header { display: flex; align-items: center; gap: 11px; min-height: 62px; margin: calc(-1 * var(--card-pad-y)) calc(-1 * var(--card-pad-x)) 20px; padding: 16px 22px; border-radius: 13px 13px 0 0; background: #0D47A1; color: #FFFFFF; font-size: 1.18rem; font-weight: 800; line-height: 1.25; letter-spacing: .045em; text-transform: uppercase; }
         .login-card-header i { color: #90CAF9; font-size: 1rem; }
-        .card::before { height: 3px; border-radius: 14px 14px 0 0; }
+        .card::before { display: none; }
         .card h1 { color: #1F2937; }
         .card .sub { color: #64748B; }
         .field input { border-color: #D7E1EA; background: #FFFFFF; }
         .field input:focus { border-color: #1565C0; box-shadow: 0 0 0 3px rgba(21,101,192,.10); }
         .btn-primary:hover { background: #0B3D91; }
-        .help-section { padding: 32px 24px 36px; background: #F8FAFC; }
-        .recovery-section { padding: 30px 24px 34px; background: #E7EEF5; }
+        .help-section { padding: 22px 24px 24px; background: #F8FAFC; }
+        .recovery-section { padding: 20px 24px 22px; background: #E7EEF5; }
         .info-section-inner { width: min(100%, 1180px); margin: 0 auto; }
         .brand-guide, .signin-guide, .recovery-guide { display: block; width: 100%; max-width: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
         .brand-guide-section { display: block; width: 100%; min-width: 0; margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
@@ -904,28 +904,29 @@
         .brand-guide-step-description { display: block; grid-column: 2; grid-row: 2; margin: 0; color: #64748B; font-size: .78rem; font-weight: 400; line-height: 1.5; }
         .brand-guide-note { display: flex; align-items: center; gap: 10px; width: fit-content; max-width: 100%; margin: 18px 0 0; padding: 9px 12px; border: 1px solid #D7E1EA; border-radius: 9px; background: rgba(248,250,252,.7); color: #64748B; font-size: .82rem; font-weight: 600; box-shadow: none; }
         .brand-guide-note i { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: #DCEAF7; color: #0D47A1; }
-        .footer { min-height: 42px; padding: 9px 16px calc(9px + env(safe-area-inset-bottom)); border-top: 0; background: #0D47A1; color: #FFFFFF; font-size: 10px; }
+        .footer { min-height: 94px; padding: 25px 16px calc(25px + env(safe-area-inset-bottom)); border-top: 4px solid #1976D2; background: #0D47A1; color: #FFFFFF; font-size: 11px; }
         .footer strong { color: #C9D9EA; }
         @media (max-width: 960px) {
             .admin-header { min-height: 52px; padding-inline: 18px; }
             .admin-header-inner { min-height: 52px; }
-            .login-hero { padding: 30px 20px; }
+            .login-hero { padding: 22px 20px; }
             .admin-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,380px); gap: 26px; width: min(100%, 820px); }
             .admin-intro h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); }
             .brand-guide-list li { padding-inline: 14px; }
         }
         @media (max-width: 760px) {
-            .login-hero { padding: 24px 14px 28px; }
+            .login-hero { padding: 18px 14px 20px; }
             .login-hero::before { opacity: .025; background-position: right -70px top 0, right 0 top 0, right 72px top 72px, right 24px top 24px; }
-            .admin-layout { display: flex; flex-direction: column; gap: 20px; width: min(100%, 500px); }
+            .admin-layout { display: flex; flex-direction: column; gap: 16px; width: min(100%, 500px); }
             .admin-intro { width: 100%; padding: 0 4px; }
             .admin-intro h1 { margin-top: 9px; font-size: 1.8rem; }
             .admin-intro p { font-size: .92rem; line-height: 1.55; }
             .admin-feature-list { gap: 7px; margin-top: 14px; }
             .admin-feature-list span { padding: 6px 9px; font-size: .74rem; }
             .login-panel { width: 100%; }
-            .card { max-width: none; padding: 24px 20px; }
-            .help-section, .recovery-section { padding: 24px 18px; }
+            .card { --card-pad-x: 20px; --card-pad-y: 22px; max-width: none; padding: var(--card-pad-y) var(--card-pad-x); }
+            .login-card-header { min-height: 56px; padding-inline: 18px; margin-bottom: 16px; }
+            .help-section, .recovery-section { padding: 18px 18px; }
             .brand-guide-title { margin-bottom: 12px; }
             .brand-guide-list { grid-template-columns: 1fr; }
             .brand-guide-list li, .brand-guide-list li:first-child, .brand-guide-list li:last-child { grid-template-columns: 30px minmax(0,1fr); padding: 12px 0; border-right: 0; border-bottom: 1px solid #D7E1EA; }
@@ -937,7 +938,7 @@
         @media (max-width: 380px) {
             .admin-header { padding-inline: 14px; }
             .login-hero { padding-inline: 12px; }
-            .card { padding: 21px 16px; }
+            .card { --card-pad-x: 16px; --card-pad-y: 19px; padding: var(--card-pad-y) var(--card-pad-x); }
             .secure-access-label { font-size: 11px; }
             .help-section, .recovery-section { padding-inline: 14px; }
         }
