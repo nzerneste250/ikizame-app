@@ -544,7 +544,7 @@
             .badge-square { width: 36px; height: 36px; font-size: 15px; }
         }
     </style>
-    <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=slate-table-workspace-20261001">
+    <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=question-repository-cards-20261001">
 </head>
 <body class="dashboard-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -552,7 +552,7 @@
 <div class="shell">
     <!-- RECALIBRATED NAVIGATION SIDEBAR -->
     <aside class="sidebar">
-        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
+        <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> <span>IKIZAME</span><button class="sidebar-collapse-toggle" type="button" onclick="toggleAdminSidebarCollapse()" aria-label="Collapse sidebar" title="Collapse sidebar"><i class="fa-solid fa-angles-left"></i></button></div>
                 <nav class="sidebar-nav">
             <!-- 🎯 UNIFIED ADMIN NAVIGATION TREE WITH SYNCHRONIZED LINK STATE CHANGER -->
             <a href="#" class="active" id="navLinkDashboard" onclick="switchAdminControlView('table-view'); document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active')); this.classList.add('active');"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
@@ -578,11 +578,13 @@
         <header class="topbar">
             <button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button>
             <div>
-                <h1 id="workspaceMainTitle">Questions Repository Dashboard</h1>
-                <p id="workspaceMainSub">Live inventory management control node displaying all database question pool data elements</p>
+                <h1 id="workspaceMainTitle">Questions Repository</h1>
+                <p id="workspaceMainSub">Manage and maintain all exam questions</p>
             </div>
-            <div class="search-box-wrap">
-                <input type="text" id="dashboardSearchInput" name="dashboardSearchInput" placeholder="Search questions, options..." autocomplete="off">
+            <div class="search-box-wrap dashboard-search-wrap">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="dashboardSearchInput" name="dashboardSearchInput" placeholder="Search question text, answers or ID..." autocomplete="off" aria-label="Search questions, answers or ID">
+                <button type="button" id="clearDashboardSearch" aria-label="Clear question search" title="Clear search" hidden><i class="fa-solid fa-xmark"></i></button>
             </div>
         </header>
 
@@ -634,31 +636,38 @@
                 </div>
             </div>
 
-            <!-- EXCLUSIVELY SECURED SCROLL-LOCKED STICKY TABLE COMPONENT -->
+            <section class="repository-toolbar" aria-label="Question list tools">
+                <div class="repository-toolbar-title"><i class="fa-solid fa-layer-group"></i><span>Question inventory</span><span class="repository-result-count" id="repositoryResultCount">0 questions</span></div>
+                <div class="repository-toolbar-controls">
+                    <label><span>Correct answer</span><select id="correctAnswerFilter"><option value="all">All answers</option><option value="A">Answer A</option><option value="B">Answer B</option><option value="C">Answer C</option><option value="D">Answer D</option></select></label>
+                    <label><span>Order</span><select id="questionSortOrder"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></label>
+                    <label><span>Rows</span><select id="questionPageSize"><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></label>
+                    <button class="repository-export-button" id="exportQuestionsButton" type="button"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
+                </div>
+            </section>
+
+            <!-- Responsive question repository: grouped answers avoid a wide database-style table. -->
             <div class="table-container" id="questionsTableContainerViewSection">
-                <table>
+                <table class="questions-repository-table">
                     <thead>
                         <tr>
-                            <th style="width: 55px; text-align: center;">NO.</th>
-                            <th style="width: 290px;">QUESTION</th>
-                            <th style="width: 90px; text-align: center;">SIGN</th>
-                            <th>OPTION A</th>
-                            <th>OPTION B</th>
-                            <th>OPTION C</th>
-                            <th>OPTION D</th>
-                            <th style="width: 65px; text-align: center;">KEY</th>
-                            <th style="width: 100px; text-align: center;">ACTIONS</th>
+                            <th class="repository-number-heading">NO.</th>
+                            <th>QUESTION &amp; ANSWERS</th>
+                            <th class="repository-media-heading">MEDIA</th>
+                            <th class="repository-key-heading">CORRECT</th>
+                            <th class="repository-actions-heading">ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody id="questionsMasterTableBody">
                         <tr>
-                            <td colspan="9" style="text-align: center; padding: 40px; color: #64748b; font-style: italic;">
-                                <i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i> Loading pool records...
+                            <td colspan="5" class="repository-loading-cell">
+                                <span class="repository-loading-skeleton"></span><span class="repository-loading-skeleton"></span><span class="repository-loading-skeleton"></span>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <nav class="repository-pagination" id="repositoryPagination" aria-label="Question pages"></nav>
 
             <!-- ==========================================================================
                  📊 DYNAMIC STUDENT PERFORMANCE ANALYTICS PANEL (GLASSMORPHIC VIEW SHEETS)
@@ -777,6 +786,12 @@ document.addEventListener('keydown', function(e) {
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('questionsMasterTableBody');
     const searchInp = document.getElementById('dashboardSearchInput');
+    const answerFilter = document.getElementById('correctAnswerFilter');
+    const sortOrder = document.getElementById('questionSortOrder');
+    const pageSizeSelect = document.getElementById('questionPageSize');
+    const pagination = document.getElementById('repositoryPagination');
+    const resultCount = document.getElementById('repositoryResultCount');
+    const clearSearchButton = document.getElementById('clearDashboardSearch');
     const studentPerformanceSearchInput = document.getElementById('studentPerformanceSearchInput');
         const duplicateToggle = document.getElementById('duplicateToggleSwitch');
     
@@ -787,6 +802,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allQuestionsCachedArray = [];
     let activeCardFilter = 'all';
+    let currentQuestionPage = 1;
+    let filteredQuestionsForExport = [];
+
+    window.toggleAdminSidebarCollapse = function() {
+        if (window.innerWidth <= 1100) return;
+        const collapsed = document.body.classList.toggle('admin-sidebar-collapsed');
+        try { localStorage.setItem('ikizame-admin-sidebar-collapsed', collapsed ? '1' : '0'); } catch (_) {}
+        const control = document.querySelector('.sidebar-collapse-toggle');
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            if (collapsed) link.title = link.textContent.trim();
+            else link.removeAttribute('title');
+        });
+        if (control) {
+            control.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+            control.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+            control.innerHTML = `<i class="fa-solid fa-angles-${collapsed ? 'right' : 'left'}"></i>`;
+        }
+    };
+    try {
+        if (window.innerWidth > 1100 && localStorage.getItem('ikizame-admin-sidebar-collapsed') === '1') {
+            document.body.classList.add('admin-sidebar-collapsed');
+            document.querySelectorAll('.sidebar-nav a').forEach(link => { link.title = link.textContent.trim(); });
+            const control = document.querySelector('.sidebar-collapse-toggle');
+            if (control) { control.setAttribute('aria-label', 'Expand sidebar'); control.title = 'Expand sidebar'; control.innerHTML = '<i class="fa-solid fa-angles-right"></i>'; }
+        }
+    } catch (_) {}
 
     window.filterByCardType = function(type) {
         activeCardFilter = type;
@@ -798,6 +839,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             document.getElementById('duplicateToggleSwitch').checked = false;
         }
+        currentQuestionPage = 1;
         applyFiltersSearchAndDuplicateLogic();
     };
 
@@ -816,11 +858,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderCellContentHTML(val) {
-        if (!val || !val.trim()) return `<span style="color:#94a3b8; font-style:italic;">None</span>`;
-        if (checkIsGraphicAssetString(val)) {
-            return `<img src="assets/uploads/${val.trim()}" class="cell-img" alt="Option image" title="Click to preview" onclick="showImgPreview('assets/uploads/${val.trim()}')" onerror="this.outerHTML='<span class=\'fallback-filename-txt\'>${val}</span>'">`;
+        const content = String(val || '').trim();
+        if (!content) return `<span class="repository-empty-value">Not provided</span>`;
+        if (checkIsGraphicAssetString(content)) {
+            const safePath = escapeHtml(content);
+            return `<img src="assets/uploads/${safePath}" class="repository-option-image" alt="Answer option image" loading="lazy" title="Click to preview" onclick="showImgPreview('assets/uploads/${safePath}')">`;
         }
-        return `<span class="table-cell-content" title="${escapeHtml(val)}">${val}</span>`;
+        return `<span class="table-cell-content">${escapeHtml(content)}</span>`;
     }
 
     function escapeHtml(str) {
@@ -850,41 +894,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return `<span>${val}</span>`;
     }
-        function executeTableRenderPipeline(filteredArray) {
-        if (!filteredArray || filteredArray.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#64748b;">No matching data records found inside database repository.</td></tr>`;
+    function executeTableRenderPipeline(filteredArray) {
+        filteredQuestionsForExport = [...(filteredArray || [])];
+        const pageSize = Number(pageSizeSelect.value) || 25;
+        const totalPages = Math.max(1, Math.ceil(filteredQuestionsForExport.length / pageSize));
+        currentQuestionPage = Math.min(currentQuestionPage, totalPages);
+        const startIndex = (currentQuestionPage - 1) * pageSize;
+        const pageQuestions = filteredQuestionsForExport.slice(startIndex, startIndex + pageSize);
+        resultCount.textContent = `${filteredQuestionsForExport.length.toLocaleString()} ${filteredQuestionsForExport.length === 1 ? 'question' : 'questions'}`;
+
+        if (pageQuestions.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" class="repository-empty-state"><span class="repository-empty-icon"><i class="fa-solid fa-magnifying-glass"></i></span><strong>No questions found</strong><span>Try changing your search or filters.</span><button type="button" onclick="clearQuestionRepositoryFilters()">Clear search and filters</button></td></tr>`;
+            pagination.innerHTML = '';
             return;
         }
 
-        tableBody.innerHTML = filteredArray.map((q, i) => {
-            return `
-                <tr>
-                    <td style="text-align:center; font-weight:700; color:var(--brand);">${i + 1}</td>
-                    <td class="question-cell" style="font-weight:600; line-height:1.45; min-width:220px; color:#0f172a; white-space:normal; overflow:visible;"><div class="question-cell-content" title="${escapeHtml(q.question)}">${q.question}</div></td>
-                    <td style="text-align:center;">
-                        ${q.image_path ? `<img src="assets/uploads/${q.image_path}" class="cell-img" style="margin:0 auto;" alt="Sign" title="Click or hover to preview" onclick="showImgPreview('assets/uploads/${q.image_path}')">` : `<span style="color:#cbd5e1; font-weight:600; font-size:12px;">None</span>`}
-                    </td>
-                    <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_a)}</td>
-                    <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_b)}</td>
-                    <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_c)}</td>
-                    <td style="white-space:normal; overflow:visible;">${renderCellContentHTML(q.option_d)}</td>
-                    <td style="text-align:center;"><span class="cell-badge correct">${q.correct_option}</span></td>
-                    <td style="text-align:center;">
-                        <!-- 🎯 FIXED CLASS NAMES: Now perfectly wired to the retro screenshot look -->
-                        <div class="actions-cell">
-                            <a href="edit-exam?id=${q.id}" class="btn-text-action btn-edit">
-    <i class="fa-solid fa-pencil" style="font-size:12px;"></i> Edit
-</a>
-<button onclick="triggerQuestionDeletionCycle(${q.id}, this)" class="btn-text-action btn-delete">
-    <i class="fa-solid fa-trash" style="font-size:12px;"></i> Delete
-</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
+        tableBody.innerHTML = pageQuestions.map((q, i) => {
+            const correct = String(q.correct_option || '').toUpperCase();
+            const options = [['A', q.option_a], ['B', q.option_b], ['C', q.option_c], ['D', q.option_d]]
+                .map(([letter, value]) => `<div class="repository-answer ${letter === correct ? 'is-correct' : ''}"><span class="repository-answer-letter">${letter}</span><span class="repository-answer-value">${renderCellContentHTML(value)}</span>${letter === correct ? '<span class="repository-answer-check" aria-label="Correct answer"><i class="fa-solid fa-check"></i></span>' : ''}</div>`).join('');
+            const questionText = escapeHtml(q.question || 'Question text missing');
+            const imagePath = String(q.image_path || '').trim();
+            const mediaContent = imagePath
+                ? `<button type="button" class="repository-media-preview" aria-label="Preview question sign" onclick="showImgPreview('assets/uploads/${escapeHtml(imagePath)}')"><img src="assets/uploads/${escapeHtml(imagePath)}" alt="Question sign" loading="lazy"></button>`
+                : '<span class="repository-no-media"><i class="fa-regular fa-image"></i> No image</span>';
+            return `<tr class="repository-question-row"><td class="repository-row-number"><span>#${(startIndex + i + 1).toString().padStart(3, '0')}</span><small>ID ${escapeHtml(q.id)}</small></td><td class="repository-question-cell"><div class="repository-question-text">${questionText}</div><div class="repository-answers-grid">${options}</div></td><td class="repository-media-cell">${mediaContent}</td><td class="repository-key-cell"><span class="repository-correct-badge"><i class="fa-solid fa-check"></i> ${escapeHtml(correct || '—')}</span></td><td class="repository-actions-cell"><a href="edit-exam?id=${encodeURIComponent(q.id)}" class="repository-action-edit" aria-label="Edit question ${escapeHtml(q.id)}"><i class="fa-solid fa-pen"></i><span>Edit</span></a><button type="button" onclick="triggerQuestionDeletionCycle(${Number(q.id)}, this)" class="repository-action-delete" aria-label="Delete question ${escapeHtml(q.id)}"><i class="fa-solid fa-trash"></i><span>Delete</span></button></td></tr>`;
         }).join('');
-    }
 
+        const from = startIndex + 1;
+        const to = Math.min(startIndex + pageSize, filteredQuestionsForExport.length);
+        pagination.innerHTML = `<span class="repository-pagination-summary">Showing <strong>${from}–${to}</strong> of <strong>${filteredQuestionsForExport.length}</strong></span><div class="repository-pagination-buttons"><button type="button" data-page="${currentQuestionPage - 1}" ${currentQuestionPage === 1 ? 'disabled' : ''} aria-label="Previous page"><i class="fa-solid fa-chevron-left"></i><span>Previous</span></button><span class="repository-page-indicator">${currentQuestionPage} / ${totalPages}</span><button type="button" data-page="${currentQuestionPage + 1}" ${currentQuestionPage >= totalPages ? 'disabled' : ''} aria-label="Next page"><span>Next</span><i class="fa-solid fa-chevron-right"></i></button></div>`;
+    }
     let allStudentPerformanceRecords = [];
 
     function renderStudentPerformanceTable(studentRecords, query) {
@@ -956,7 +996,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const normC = normalizeStringContentForComparison(q.option_c);
                 const normD = normalizeStringContentForComparison(q.option_d);
                 
-                return normQ.includes(searchVal) || 
+                const normId = normalizeStringContentForComparison(q.id);
+                const normKey = normalizeStringContentForComparison(q.correct_option);
+                return normQ.includes(searchVal) || normId.includes(searchVal) || normKey.includes(searchVal) ||
                        normA.includes(searchVal) || 
                        normB.includes(searchVal) || 
                        normC.includes(searchVal) || 
@@ -993,11 +1035,59 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        if (answerFilter.value !== 'all') {
+            pool = pool.filter(q => String(q.correct_option || '').toUpperCase() === answerFilter.value);
+        }
+
+        pool.sort((a, b) => {
+            const difference = Number(a.id) - Number(b.id);
+            return sortOrder.value === 'oldest' ? difference : -difference;
+        });
+        clearSearchButton.hidden = !searchInp.value;
         executeTableRenderPipeline(pool);
     }
 
-    if(searchInp) searchInp.addEventListener('input', applyFiltersSearchAndDuplicateLogic);
-    if(duplicateToggle) duplicateToggle.addEventListener('change', applyFiltersSearchAndDuplicateLogic);
+    window.clearQuestionRepositoryFilters = function() {
+        searchInp.value = '';
+        answerFilter.value = 'all';
+        sortOrder.value = 'newest';
+        activeCardFilter = 'all';
+        if (duplicateToggle) duplicateToggle.checked = false;
+        document.querySelectorAll('.summary-card').forEach(card => card.classList.remove('active-filter'));
+        document.getElementById('cardAll').classList.add('active-filter');
+        currentQuestionPage = 1;
+        applyFiltersSearchAndDuplicateLogic();
+    };
+
+    if(searchInp) searchInp.addEventListener('input', () => { currentQuestionPage = 1; applyFiltersSearchAndDuplicateLogic(); });
+    if(duplicateToggle) duplicateToggle.addEventListener('change', () => { currentQuestionPage = 1; applyFiltersSearchAndDuplicateLogic(); });
+    if(answerFilter) answerFilter.addEventListener('change', () => { currentQuestionPage = 1; applyFiltersSearchAndDuplicateLogic(); });
+    if(sortOrder) sortOrder.addEventListener('change', () => { currentQuestionPage = 1; applyFiltersSearchAndDuplicateLogic(); });
+    if(pageSizeSelect) pageSizeSelect.addEventListener('change', () => { currentQuestionPage = 1; executeTableRenderPipeline(filteredQuestionsForExport); });
+    if(clearSearchButton) clearSearchButton.addEventListener('click', () => { searchInp.value = ''; currentQuestionPage = 1; applyFiltersSearchAndDuplicateLogic(); searchInp.focus(); });
+    if(pagination) pagination.addEventListener('click', event => {
+        const button = event.target.closest('button[data-page]');
+        if (!button || button.disabled) return;
+        currentQuestionPage = Number(button.dataset.page);
+        executeTableRenderPipeline(filteredQuestionsForExport);
+        document.getElementById('questionsTableContainerViewSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    document.getElementById('exportQuestionsButton').addEventListener('click', () => {
+        const columns = ['ID', 'Question', 'Option A', 'Option B', 'Option C', 'Option D', 'Correct answer', 'Sign image'];
+        const quote = value => `"${String(value || '').replace(/"/g, '""')}"`;
+        const csv = [columns, ...filteredQuestionsForExport.map(q => [q.id, q.question, q.option_a, q.option_b, q.option_c, q.option_d, q.correct_option, q.image_path])].map(row => row.map(quote).join(',')).join('\r\n');
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' }));
+        link.download = 'ikizame-questions.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+    });
+    document.addEventListener('keydown', event => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+            event.preventDefault();
+            searchInp.focus();
+        }
+    });
 
     function loadRepositoryQuestionsPool() {
         fetch('/api/exams?full=1')
@@ -1046,7 +1136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(err => {
                 console.error(err);
-                tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--danger); font-weight:700;">Connection timeout. Unable to communicate with remote database architecture engine nodes.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="5" class="repository-empty-state"><strong>Could not load questions</strong><span>Please check your connection and try again.</span><button type="button" onclick="location.reload()">Try again</button></td></tr>`;
             });
     }
 
@@ -1071,6 +1161,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.switchAdminControlView = function(targetSectionName) {
         const questionsTableContainer = document.getElementById('questionsTableContainerViewSection');
         const countsSummaryCardsRow   = document.getElementById('countsSummaryCardsRowViewSection');
+        const repositoryToolbar = document.querySelector('.repository-toolbar');
+        const repositoryPagination = document.getElementById('repositoryPagination');
                 const analyticsWorkspaceView  = document.getElementById('analyticsWorkspaceViewSection');
         const topbarSearchField       = document.querySelector('.search-box-wrap');
         
@@ -1082,6 +1174,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (targetSectionName === 'analytics-view') {
             questionsTableContainer.style.display = 'none';
+            repositoryToolbar.style.display = 'none';
+            repositoryPagination.style.display = 'none';
             countsSummaryCardsRow.style.display = 'none';
             if(topbarSearchField) topbarSearchField.style.display = 'none';
             analyticsWorkspaceView.style.display = 'flex';
@@ -1145,11 +1239,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             analyticsWorkspaceView.style.display = 'none';
             questionsTableContainer.style.display = 'block';
+            repositoryToolbar.style.display = '';
+            repositoryPagination.style.display = '';
             countsSummaryCardsRow.style.display = 'grid';
-            if(topbarSearchField) topbarSearchField.style.display = 'block';
+            if(topbarSearchField) topbarSearchField.style.display = '';
             
-            mainTitle.textContent = "Questions Repository Dashboard";
-            mainSub.textContent = "Live inventory management control node displaying all database question pool data elements";
+            mainTitle.textContent = "Questions Repository";
+            mainSub.textContent = "Manage and maintain all exam questions";
         }
     };
 

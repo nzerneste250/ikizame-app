@@ -517,3 +517,163 @@
   .dashboard-page .leaderboard-table td { display: table-cell !important; width: auto !important; padding: 11px 10px !important; white-space: nowrap; }
   .dashboard-page .leaderboard-table td::before { content: none !important; display: none !important; }
 }
+
+/* Question repository workspace: compact, accessible and responsive. */
+.dashboard-page {
+  --repo-blue: #1565C0;
+  --repo-blue-dark: #0D47A1;
+  --repo-teal: #0F766E;
+  --repo-border: #D7E1EA;
+  --repo-ink: #1F2937;
+  --repo-muted: #64748B;
+  overflow-x: hidden;
+}
+.dashboard-page .shell,
+.dashboard-page .workspace,
+.dashboard-page .form-scroll,
+.dashboard-page .table-container { min-width: 0; max-width: 100%; }
+.dashboard-page .sidebar { width: 250px; background: linear-gradient(180deg, #172F3D 0%, #1D3543 100%); transition: width .18s ease; }
+.dashboard-page .sidebar-brand { min-height: 72px; padding: 16px; gap: 11px; color: #fff; }
+.dashboard-page .sidebar-brand > span { flex: 1; }
+.dashboard-page .sidebar-collapse-toggle { width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.19); border-radius: 9px; background: rgba(255,255,255,.08); color: #fff; cursor: pointer; }
+.dashboard-page .sidebar-collapse-toggle:hover { background: rgba(255,255,255,.16); }
+.dashboard-page .workspace { flex: 1 1 0; min-width: 0; }
+.dashboard-page .topbar { min-width: 0; height: 72px; padding-inline: clamp(16px, 2.2vw, 32px); gap: 18px; }
+.dashboard-page .topbar > div:first-of-type { min-width: 0; }
+.dashboard-page .topbar h1 { font-size: clamp(18px, 1.65vw, 23px); color: var(--repo-ink); }
+.dashboard-page .topbar p { max-width: 60ch; color: var(--repo-muted); }
+.dashboard-page .dashboard-search-wrap { flex: 0 1 390px; width: min(390px, 36vw); min-width: 220px; display: flex; align-items: center; gap: 10px; padding: 0 13px; border: 1px solid var(--repo-border); border-radius: 11px; background: #fff; color: #8493A0; }
+.dashboard-page .dashboard-search-wrap:focus-within { border-color: #6A9BD0; box-shadow: 0 0 0 3px rgba(21,101,192,.11); }
+.dashboard-page .dashboard-search-wrap input { min-width: 0; padding: 11px 0; border: 0; border-radius: 0; outline: 0; background: transparent; box-shadow: none; }
+.dashboard-page .dashboard-search-wrap input:focus { box-shadow: none; }
+.dashboard-page #clearDashboardSearch { flex: 0 0 30px; width: 30px; height: 30px; border: 0; border-radius: 8px; background: #EDF2F6; color: #526675; cursor: pointer; }
+.dashboard-page #clearDashboardSearch[hidden] { display: none; }
+.dashboard-page .form-scroll { overflow-x: hidden; overflow-y: auto; height: auto; min-height: 0; padding: 22px clamp(16px, 2vw, 30px) 20px; gap: 16px; background: #EDF2F6; }
+.dashboard-page .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.dashboard-page .summary-card { min-width: 0; min-height: 86px; padding: 14px 15px; gap: 12px; border-radius: 12px; box-shadow: 0 4px 14px rgba(31,60,90,.06); }
+.dashboard-page .summary-card div p { font-size: 23px; }
+.dashboard-page .summary-card div h3 { font-size: 9px; }
+.dashboard-page .badge-square { width: 38px; height: 38px; }
+.dashboard-page .repository-toolbar { position: sticky; top: 0; z-index: 8; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-width: 0; padding: 12px 14px; border: 1px solid var(--repo-border); border-radius: 12px 12px 0 0; background: rgba(255,255,255,.97); box-shadow: 0 4px 12px rgba(31,60,90,.04); backdrop-filter: blur(10px); }
+.dashboard-page .repository-toolbar-title { display: flex; align-items: center; gap: 9px; min-width: 0; color: var(--repo-ink); font-size: 13px; font-weight: 750; }
+.dashboard-page .repository-toolbar-title > i { color: var(--repo-blue); }
+.dashboard-page .repository-result-count { padding: 4px 8px; border-radius: 999px; background: #EDF2F6; color: var(--repo-muted); font-size: 10px; font-weight: 700; white-space: nowrap; }
+.dashboard-page .repository-toolbar-controls { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-width: 0; }
+.dashboard-page .repository-toolbar-controls label { display: flex; align-items: center; gap: 6px; color: var(--repo-muted); font-size: 10px; font-weight: 700; white-space: nowrap; }
+.dashboard-page .repository-toolbar-controls select { max-width: 150px; min-width: 0; height: 34px; padding: 0 25px 0 9px; border: 1px solid var(--repo-border); border-radius: 8px; background: #fff; color: #34434A; font: inherit; font-size: 11px; }
+.dashboard-page .repository-export-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 36px; padding: 0 11px; border: 1px solid #C8D8E8; border-radius: 8px; background: #F4F8FC; color: var(--repo-blue-dark); font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.dashboard-page .repository-export-button:hover { background: #E3EFFA; }
+.dashboard-page #questionsTableContainerViewSection { flex: 0 0 auto; width: 100%; min-width: 0; min-height: 180px; overflow: visible; border: 1px solid var(--repo-border); border-top: 0; border-radius: 0 0 12px 12px; background: #fff; box-shadow: 0 5px 18px rgba(31,60,90,.05); }
+.dashboard-page .questions-repository-table { width: 100%; min-width: 0; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+.dashboard-page .questions-repository-table th { position: sticky; top: 57px; z-index: 3; padding: 11px 12px; border-bottom: 1px solid var(--repo-border); background: #F4F7F9 !important; color: #64748B; font-size: 9px; font-weight: 800; letter-spacing: .07em; text-align: left; }
+.dashboard-page .questions-repository-table th:first-child { width: 76px; }
+.dashboard-page .questions-repository-table th:nth-child(2) { width: auto; }
+.dashboard-page .questions-repository-table th:nth-child(3) { width: 92px; }
+.dashboard-page .questions-repository-table th:nth-child(4) { width: 86px; }
+.dashboard-page .questions-repository-table th:nth-child(5) { width: 142px; }
+.dashboard-page .questions-repository-table td { min-width: 0; padding: 15px 12px; border-bottom: 1px solid #E8EEF3; color: var(--repo-ink); font-size: 12px; line-height: 1.5; vertical-align: top; overflow-wrap: anywhere; }
+.dashboard-page .questions-repository-table tbody tr:last-child td { border-bottom: 0; }
+.dashboard-page .repository-question-row { transition: background-color .15s ease; }
+.dashboard-page .repository-question-row:hover { background: #F8FAFC; }
+.dashboard-page .repository-row-number { color: var(--repo-teal) !important; font-size: 12px !important; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.dashboard-page .repository-row-number small { display: block; margin-top: 3px; color: #94A3B8; font-size: 9px; font-weight: 600; }
+.dashboard-page .repository-question-text { margin-bottom: 10px; color: #202A32; font-size: 12px; font-weight: 750; line-height: 1.55; }
+.dashboard-page .repository-answers-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 8px; }
+.dashboard-page .repository-answer { display: flex; align-items: flex-start; gap: 7px; min-width: 0; padding: 7px 8px; border: 1px solid #E7EDF1; border-radius: 8px; background: #FBFCFD; color: #46545E; font-size: 11px; line-height: 1.45; }
+.dashboard-page .repository-answer.is-correct { border-color: #B9DCC3; background: #F0F8F2; color: #285E38; }
+.dashboard-page .repository-answer-letter { display: inline-flex; flex: 0 0 19px; align-items: center; justify-content: center; width: 19px; height: 19px; border-radius: 5px; background: #E9EFF4; color: #526675; font-size: 9px; font-weight: 800; }
+.dashboard-page .repository-answer.is-correct .repository-answer-letter { background: #D8EEDD; color: #15803D; }
+.dashboard-page .repository-answer-value { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.dashboard-page .repository-answer-check { flex: 0 0 15px; color: #15803D; font-size: 10px; }
+.dashboard-page .repository-media-cell, .dashboard-page .repository-key-cell { text-align: center; }
+.dashboard-page .repository-media-preview { display: inline-grid; place-items: center; width: 62px; height: 62px; padding: 3px; border: 1px solid var(--repo-border); border-radius: 9px; background: #fff; cursor: zoom-in; }
+.dashboard-page .repository-media-preview img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.dashboard-page .repository-no-media, .dashboard-page .repository-empty-value { display: inline-flex; align-items: center; gap: 5px; color: #94A3B8; font-size: 10px; }
+.dashboard-page .repository-option-image { display: block; max-width: 100%; max-height: 58px; object-fit: contain; }
+.dashboard-page .repository-correct-badge { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 48px; padding: 6px 8px; border-radius: 999px; background: #EAF7EF; color: #15803D; font-size: 11px; font-weight: 800; }
+.dashboard-page .repository-actions-cell { white-space: nowrap; }
+.dashboard-page .repository-action-edit, .dashboard-page .repository-action-delete { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 10px; border: 1px solid transparent; border-radius: 8px; font-size: 11px; font-weight: 750; text-decoration: none; cursor: pointer; }
+.dashboard-page .repository-action-edit { background: #E3EFFA; color: #0D47A1; }
+.dashboard-page .repository-action-edit:hover { background: #D1E4F5; }
+.dashboard-page .repository-action-delete { margin-left: 5px; background: #FDECEC; color: #B42318; }
+.dashboard-page .repository-action-delete:hover { background: #FBD5D5; }
+.dashboard-page .repository-empty-state { padding: 42px 16px !important; text-align: center; }
+.dashboard-page .repository-empty-state > * { display: block; margin: 5px auto; }
+.dashboard-page .repository-empty-state strong { color: var(--repo-ink); font-size: 14px; }
+.dashboard-page .repository-empty-state > span:not(.repository-empty-icon) { color: var(--repo-muted); font-size: 12px; }
+.dashboard-page .repository-empty-icon { color: var(--repo-blue); font-size: 20px; }
+.dashboard-page .repository-empty-state button { min-height: 36px; margin-top: 12px; padding: 0 13px; border: 0; border-radius: 8px; background: var(--repo-blue); color: #fff; font-weight: 700; cursor: pointer; }
+.dashboard-page .repository-loading-cell { padding: 22px !important; }
+.dashboard-page .repository-loading-skeleton { display: block; height: 18px; margin: 9px 0; border-radius: 6px; background: linear-gradient(90deg,#EFF3F6 25%,#F8FAFC 50%,#EFF3F6 75%); background-size: 200% 100%; animation: repository-shimmer 1.4s ease-in-out infinite; }
+@keyframes repository-shimmer { to { background-position: -200% 0; } }
+.dashboard-page .repository-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 55px; padding: 9px 13px; border: 1px solid var(--repo-border); border-radius: 10px; background: #fff; color: var(--repo-muted); font-size: 11px; }
+.dashboard-page .repository-pagination-summary strong { color: var(--repo-ink); }
+.dashboard-page .repository-pagination-buttons { display: flex; align-items: center; gap: 8px; }
+.dashboard-page .repository-pagination-buttons button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 36px; padding: 0 11px; border: 1px solid var(--repo-border); border-radius: 8px; background: #fff; color: #34434A; font-size: 11px; font-weight: 700; cursor: pointer; }
+.dashboard-page .repository-pagination-buttons button:disabled { opacity: .45; cursor: not-allowed; }
+.dashboard-page .repository-page-indicator { min-width: 42px; color: var(--repo-ink); font-variant-numeric: tabular-nums; text-align: center; }
+.dashboard-page .admin-footer { min-height: 44px; padding: 10px 16px; font-size: 11px; text-align: center; }
+.dashboard-page.admin-sidebar-collapsed .sidebar { width: 76px; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-brand { justify-content: center; padding-inline: 10px; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-brand > span, .dashboard-page.admin-sidebar-collapsed .sidebar-nav a { font-size: 0; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-brand > i { font-size: 18px; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-collapse-toggle { position: absolute; top: 19px; right: -13px; z-index: 5; width: 26px; height: 30px; border-radius: 0 8px 8px 0; background: #294655; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-nav { padding-inline: 12px; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-nav a { justify-content: center; padding-inline: 8px; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-nav a i { width: auto; font-size: 16px; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-footer { justify-content: center; padding-inline: 8px; }
+.dashboard-page.admin-sidebar-collapsed .admin-meta, .dashboard-page.admin-sidebar-collapsed .session-pill { display: none; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-nav a[title] { position: relative; }
+@media (max-width: 1200px) {
+  .dashboard-page .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dashboard-page .repository-toolbar { align-items: flex-start; flex-direction: column; }
+  .dashboard-page .repository-toolbar-controls { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+}
+@media (max-width: 700px) {
+  .dashboard-page .topbar { align-items: center; flex-wrap: wrap; }
+  .dashboard-page .topbar > div:first-of-type { flex: 1 1 calc(100% - 68px); }
+  .dashboard-page .dashboard-search-wrap { order: 3; flex: 1 1 100%; width: 100%; min-width: 0; }
+  .dashboard-page .form-scroll { padding: 14px 10px 18px !important; }
+  .dashboard-page .grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .dashboard-page .summary-card { min-height: 72px; padding: 10px !important; }
+  .dashboard-page .repository-toolbar { position: static; gap: 10px; padding: 11px; }
+  .dashboard-page .repository-toolbar-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .dashboard-page .repository-toolbar-controls label { min-width: 0; align-items: flex-start; flex-direction: column; gap: 4px; }
+  .dashboard-page .repository-toolbar-controls select { width: 100%; max-width: none; height: 38px; }
+  .dashboard-page .repository-export-button { min-height: 38px; }
+  .dashboard-page #questionsTableContainerViewSection { overflow: visible !important; border-top: 1px solid var(--repo-border); border-radius: 12px; }
+  .dashboard-page .questions-repository-table, .dashboard-page .questions-repository-table tbody { display: block !important; width: 100% !important; }
+  .dashboard-page .questions-repository-table thead { display: none !important; }
+  .dashboard-page .questions-repository-table tr.repository-question-row { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; gap: 0 10px; width: 100% !important; padding: 12px; border-bottom: 1px solid #E8EEF3 !important; }
+  .dashboard-page .questions-repository-table tr.repository-question-row:last-child { border-bottom: 0 !important; }
+  .dashboard-page .questions-repository-table tr.repository-question-row > td { display: block !important; width: auto !important; max-width: none !important; min-width: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; text-align: left; }
+  .dashboard-page .questions-repository-table .repository-row-number { grid-column: 1 / -1; margin-bottom: 8px; }
+  .dashboard-page .repository-row-number small { display: inline; margin-left: 7px; }
+  .dashboard-page .questions-repository-table .repository-question-cell { grid-column: 1 / -1; }
+  .dashboard-page .repository-question-text { font-size: 13px; }
+  .dashboard-page .repository-answers-grid { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .dashboard-page .repository-answer { min-height: 34px; }
+  .dashboard-page .questions-repository-table .repository-media-cell { grid-column: 1; grid-row: 4; margin-top: 10px; }
+  .dashboard-page .repository-media-preview { width: 54px; height: 54px; }
+  .dashboard-page .questions-repository-table .repository-key-cell { grid-column: 2; grid-row: 4; align-self: center; }
+  .dashboard-page .questions-repository-table .repository-actions-cell { grid-column: 1 / -1; display: flex !important; gap: 8px; margin-top: 10px; }
+  .dashboard-page .repository-action-edit, .dashboard-page .repository-action-delete { flex: 1; min-height: 42px; margin: 0; }
+  .dashboard-page .repository-pagination { flex-wrap: wrap; padding: 9px; }
+  .dashboard-page .repository-pagination-summary { width: 100%; text-align: center; }
+  .dashboard-page .repository-pagination-buttons { width: 100%; justify-content: space-between; }
+  .dashboard-page .repository-pagination-buttons button { min-height: 42px; }
+}
+@media (max-width: 380px) {
+  .dashboard-page .grid { grid-template-columns: 1fr !important; }
+  .dashboard-page .repository-toolbar-controls { grid-template-columns: 1fr 1fr; }
+  .dashboard-page .repository-toolbar-title { flex-wrap: wrap; }
+  .dashboard-page .repository-result-count { margin-left: auto; }
+}
+.dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(1) { width: 76px !important; }
+.dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(2) { width: auto !important; }
+.dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(3) { width: 92px !important; }
+.dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(4) { width: 86px !important; }
+.dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(5) { width: 142px !important; }
+.dashboard-page.admin-sidebar-collapsed .sidebar-nav a:hover::after { content: attr(title); position: absolute; left: calc(100% + 9px); z-index: 10; padding: 8px 10px; border-radius: 7px; background: #172F3D; color: #fff; font-size: 11px; font-weight: 650; white-space: nowrap; box-shadow: 0 5px 14px rgba(15,35,45,.18); }
+@media (max-width: 1100px) { .dashboard-page .sidebar-collapse-toggle { display: none; } }
+.dashboard-page #questionsTableContainerViewSection > .questions-repository-table { display: table; width: 100% !important; min-width: 0 !important; max-width: 100%; table-layout: fixed; }
