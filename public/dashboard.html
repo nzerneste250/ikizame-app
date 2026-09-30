@@ -544,7 +544,7 @@
             .badge-square { width: 36px; height: 36px; font-size: 15px; }
         }
     </style>
-    <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=blue-gray-dashboard-20261001">
+    <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=slate-table-workspace-20261001">
 </head>
 <body class="dashboard-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -820,7 +820,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (checkIsGraphicAssetString(val)) {
             return `<img src="assets/uploads/${val.trim()}" class="cell-img" alt="Option image" title="Click to preview" onclick="showImgPreview('assets/uploads/${val.trim()}')" onerror="this.outerHTML='<span class=\'fallback-filename-txt\'>${val}</span>'">`;
         }
-        return `<span>${val}</span>`;
+        return `<span class="table-cell-content" title="${escapeHtml(val)}">${val}</span>`;
     }
 
     function escapeHtml(str) {
@@ -860,7 +860,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `
                 <tr>
                     <td style="text-align:center; font-weight:700; color:var(--brand);">${i + 1}</td>
-                    <td style="font-weight:600; line-height:1.45; min-width:220px; color:#0f172a; white-space:normal; overflow:visible;">${q.question}</td>
+                    <td class="question-cell" style="font-weight:600; line-height:1.45; min-width:220px; color:#0f172a; white-space:normal; overflow:visible;"><div class="question-cell-content" title="${escapeHtml(q.question)}">${q.question}</div></td>
                     <td style="text-align:center;">
                         ${q.image_path ? `<img src="assets/uploads/${q.image_path}" class="cell-img" style="margin:0 auto;" alt="Sign" title="Click or hover to preview" onclick="showImgPreview('assets/uploads/${q.image_path}')">` : `<span style="color:#cbd5e1; font-weight:600; font-size:12px;">None</span>`}
                     </td>
@@ -1498,4 +1498,3 @@ fetch('/api/admin/check-session').then(function(r){return r.json();}).then(funct
 <script src="assets/js/admin-responsive.js"></script>
 </body>
 </html>
-
