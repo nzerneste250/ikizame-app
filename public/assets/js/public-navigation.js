@@ -26,6 +26,13 @@
       links.appendChild(item);
     }
 
+    // The homepage keeps its full navigation visible on mobile instead of
+    // collapsing it behind a menu toggle. Other public pages retain the toggle.
+    if (header.classList.contains('home-visible-nav')) {
+      nav.hidden = false;
+      return;
+    }
+
     if (!nav.id) nav.id = `public-navigation-${index + 1}`;
     const toggle = document.createElement('button');
     toggle.className = 'mobile-menu-toggle';
