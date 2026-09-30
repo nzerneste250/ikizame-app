@@ -166,8 +166,16 @@ p { color: #475569; }
 :where(.btn-primary, .btn-read, .btn-auth-submit, .btn-submit-lookup, .rem-buy-btn, .btn-open-review, .btn-balance-check):hover { background: var(--site-green); }
 :where(button, .btn-primary, .btn-secondary, .btn-read, .btn-auth-submit, .btn-submit-lookup, .rem-buy-btn, .btn-open-review, .btn-balance-check):disabled { cursor: not-allowed; opacity: .58; }
 
-/* Homepage keeps the existing sign-up form prominent in a calmer brand hero. */
-body:has(.workspace) { background: var(--site-bg); }
+/* Homepage carries the Imigongo brand pattern across the full viewport and page. */
+body:has(.workspace) {
+  background-color: #f8fafc;
+  background-image:
+    url('../images/imigongo-pattern.svg'),
+    linear-gradient(135deg, #edf7ef, #f8fafc 72%);
+  background-size: 160px 160px, cover;
+  background-repeat: repeat, no-repeat;
+  background-attachment: fixed, fixed;
+}
 body:has(.workspace) .highway-canvas { display: none !important; }
 body:has(.workspace) .workspace {
   max-width: 1240px;
@@ -176,7 +184,7 @@ body:has(.workspace) .workspace {
   background: linear-gradient(135deg, #edf7ef, #f8fafc 72%);
   gap: clamp(24px, 4vw, 56px);
 }
-body:has(.workspace) .workspace::before { opacity: .025; }
+body:has(.workspace) .workspace::before { opacity: .045; }
 body:has(.workspace) .hero-h1 { color: var(--site-ink); font-size: clamp(2.1rem, 4vw, 3.2rem); }
 body:has(.workspace) .hero-h1 em { color: var(--site-green); }
 body:has(.workspace) .hero-desc { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: #475569; backdrop-filter: none; }

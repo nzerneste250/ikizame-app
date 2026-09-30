@@ -110,7 +110,7 @@ body {
     z-index: 0;
     pointer-events: none;
     opacity: 0.34;
-    background: url('../images/imigongo-pattern.svg') round;
+    background: url('../images/imigongo-pattern.svg') repeat;
     background-size: 160px 160px;
 }
 .hero-copy-glass > * { position: relative; z-index: 1; }
@@ -137,7 +137,7 @@ body {
     z-index: 0;
     pointer-events: none;
     opacity: 0.34;
-    background: url('../images/imigongo-pattern.svg') round;
+    background: url('../images/imigongo-pattern.svg') repeat;
     background-size: 160px 160px;
 }
 .section-header-meta::after { content: none; }
