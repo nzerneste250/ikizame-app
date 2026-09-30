@@ -178,13 +178,15 @@ body:has(.workspace) {
 }
 body:has(.workspace) .highway-canvas { display: none !important; }
 body:has(.workspace) .workspace {
-  max-width: 1240px;
-  min-height: 0;
+  width: 100%;
+  max-width: none;
+  min-height: calc(100svh - 72px);
+  margin: 0;
   padding: clamp(34px, 6vw, 76px) 20px 40px;
-  background: linear-gradient(135deg, #edf7ef, #f8fafc 72%);
+  background: rgba(248, 250, 252, .9);
   gap: clamp(24px, 4vw, 56px);
 }
-body:has(.workspace) .workspace::before { opacity: .045; }
+body:has(.workspace) .workspace::before { opacity: .075; }
 body:has(.workspace) .hero-h1 { color: var(--site-ink); font-size: clamp(2.1rem, 4vw, 3.2rem); }
 body:has(.workspace) .hero-h1 em { color: var(--site-green); }
 body:has(.workspace) .hero-desc { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: #475569; backdrop-filter: none; }
