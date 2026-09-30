@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>IKIZAMINI | Imfashanyigisho - Ikizamini cya Provisoire mu Rwanda | Practice Driving Theory Exam</title>
+    <title>IKIZAME | Imfashanyigisho</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -244,6 +244,12 @@
             border-radius: 18px;
             box-shadow: 0 16px 34px rgba(15, 23, 42, 0.05);
         }
+        .summary-strip { display: none; }
+        .main { display: flex; flex-direction: column; }
+        .search-wrap { order: 0; }
+        .section-head { order: 1; }
+        .filter-row { order: 2; }
+        .cards-grid { order: 3; }
         .btn-read,
         .btn-download {
             box-shadow: 0 8px 18px rgba(11, 105, 139, 0.12);
@@ -251,6 +257,8 @@
     </style>
     <link rel="stylesheet" href="assets/css/public-pages-theme.css">
     <link rel="stylesheet" href="assets/css/public-navigation.css">
+    <link rel="stylesheet" href="/assets/css/public-site.css">
+    <script defer src="/assets/js/public-navigation.js"></script>
 </head>
 <body>
 
@@ -278,24 +286,24 @@
 <section class="hero">
     <div class="hero-copy-glass">
         <div class="hero-icon"><i class="fa-solid fa-book-open"></i></div>
-        <h1>Imfashanyigisho z'Amategeko</h1>
-        <p>aho ushobora Gusomera no gukura inyandiko z'amategeko y'umuhanda zitandukanye kugirango witegure ikizamini cyawe neza.</p>
+        <h1>Imfashanyigisho</h1>
+        <p>Aha ushobora gusoma no gukura imfashanyigisho zitandukanye ku mategeko y’umuhanda kugira ngo witegure ikizamini neza.</p>
     </div>
 </section>
 
 <main class="main">
     <div class="summary-strip">
         <div class="summary-stat">
-            <span class="label">Road rules</span>
+            <span class="label">Amategeko y’umuhanda</span>
             <div class="value"><span id="summaryRulesCount">0</span><small>topics</small></div>
         </div>
         <div class="summary-stat">
-            <span class="label">Road signs</span>
+            <span class="label">Ibimenyetso byo mu muhanda</span>
             <div class="value"><span id="summarySignsCount">0</span><small>topics</small></div>
         </div>
         <div class="summary-stat">
-            <span class="label">Study focus</span>
-            <div class="value">Ready<small>for practice</small></div>
+            <span class="label">Iby’ingenzi byo kwiga</span>
+            <div class="value">Witeguye<small>gukora imyitozo</small></div>
         </div>
     </div>
     <div class="section-head">
@@ -311,7 +319,7 @@
     </div>
     <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass s-icon"></i>
-        <input type="text" class="search-input" id="searchInput" placeholder="Shakisha imfashanyigisho..." oninput="filterDocs(this.value)" autocomplete="off">
+        <input type="text" class="search-input" id="searchInput" aria-label="Shakisha imfashanyigisho" placeholder="Shakisha imfashanyigisho..." oninput="filterDocs(this.value)" autocomplete="off">
         <button class="search-clear" id="searchClear" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="cards-grid" id="cardsGrid">
@@ -355,15 +363,12 @@
     </div>
 </div>
 
-<footer>
-    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
-        <span style="font-size:0.7rem;">© 2026 IKIZAME Empowering Learners Across Rwanda</span>
-        <span style="color:rgba(255,255,255,0.3);">|</span>
-        <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
-        <span style="color:rgba(255,255,255,0.3);">|</span>
-        <a href="/about" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
-        <a href="/terms" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
-    </div>
+<footer class='site-footer'>
+  <div><a class='site-footer-brand' href='/'>IKIZAME</a><p>Kwitegura ikizamini cy&#8217;amategeko y&#8217;umuhanda hifashishijwe imyitozo n&#8217;imfashanyigisho.</p><p><strong>DOTADO STATIONERY STORE LTD</strong></p></div>
+  <div><h3>Serivisi</h3><ul><li><a href='/'>Ahabanza</a></li><li><a href='/ifashanyigisho'>Imfashanyigisho</a></li><li><a href='/ibiciro'>Ibiciro</a></li><li><a href='/amanota'>Amanota</a></li></ul></div>
+  <div><h3>IKIZAME</h3><ul><li><a href='/about'>Ibyerekeye IKIZAME</a></li><li><a href='/terms'>Amategeko n&#8217;amabwiriza</a></li><li><a href='/ubufasha'>Ubufasha</a></li></ul></div>
+  <div><h3>Twandikire</h3><ul><li><a href='tel:+250786663377'>+250 786 663 377</a></li><li><a href='https://wa.me/250786663377'>WhatsApp</a></li><li><a href='mailto:ikizame.rw@gmail.com'>ikizame.rw@gmail.com</a></li><li>Kigali &#8211; Kabuga</li></ul></div>
+  <div class='site-footer-bottom'>&#169; 2026 IKIZAME &#183; DOTADO STATIONERY STORE LTD</div>
 </footer>
 
 <script src="assets/js/enter-to-action.js"></script>
@@ -424,7 +429,7 @@ function loadDocs() {
             var badge = document.getElementById('docCountBadge');
             if (!docs || docs.length === 0) {
                 grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta imfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwaho vuba. Subira nyuma.</p></div>';
-                badge.textContent = '0 imfashanyigisho';
+                badge.textContent = 'Nta bihari ubu';
                 return;
             }
             allDocs = docs;
@@ -447,7 +452,7 @@ function renderDocs() {
     var term = (input ? input.value : '').trim().toLowerCase();
     if (!allDocs || allDocs.length === 0) {
         grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta imfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwaho vuba. Subira nyuma.</p></div>';
-        badge.textContent = '0 imfashanyigisho';
+        badge.textContent = 'Nta bihari ubu';
         return;
     }
     var filtered = allDocs.filter(function(doc) {
@@ -455,7 +460,7 @@ function renderDocs() {
         var matchesCat = currentFilter === 'all' || getDocCategory(doc) === currentFilter;
         return matchesTerm && matchesCat;
     });
-    badge.textContent = filtered.length + (term ? ' ibisubizo' : ' inyandiko');
+    badge.textContent = filtered.length ? filtered.length + (term ? ' ibisubizo' : ' inyandiko') : 'Nta bisubizo';
     document.getElementById('summaryRulesCount').textContent = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-rules'; }).length;
     document.getElementById('summarySignsCount').textContent = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-signs'; }).length;
     grid.innerHTML = filtered.length
@@ -515,7 +520,7 @@ function buildCard(doc, idx) {
             : '<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>');
     var paymentPanel = '';
     return '<div class="doc-card' + (isLocked ? ' paid' : '') + '" onclick="handleResourceAction(' + idx + ')">'
-        + (isLocked ? '<span class="paid-badge"><i class="fa-solid fa-lock" style="font-size:.6rem;margin-right:4px;"></i> Premium</span>' : '')
+        + (isLocked ? '<span class="paid-badge"><i class="fa-solid fa-lock" style="font-size:.6rem;margin-right:4px;"></i> Byishyuwe</span>' : '')
         + '<div class="doc-card-top">'
         + '<div class="doc-type-icon ' + iconClass + '"><i class="fa-solid ' + iconFA + '"></i></div>'
         + '<div class="doc-info"><h3>' + doc.title + '</h3>' + desc + '</div>'

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 🎯 BRANDING HEADER ICON BINDING -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>IKIZAMINI | Amanota - Ikizamini cya Provisoire mu Rwanda | Practice Driving Theory Exam</title>
+    <title>IKIZAME | Amanota</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -319,6 +319,8 @@
     </style>
     <link rel="stylesheet" href="assets/css/public-pages-theme.css">
     <link rel="stylesheet" href="assets/css/public-navigation.css">
+    <link rel="stylesheet" href="/assets/css/public-site.css">
+    <script defer src="/assets/js/public-navigation.js"></script>
 </head>
 <body>
 
@@ -360,11 +362,11 @@
                     <rect x="88" y="26" width="7" height="5" rx="1" fill="#fef08a"/>
                 </svg>
             </div>
-            <h2>Reba Amanota Yawe</h2>
-            <p>Injiza nimero ya telefoni yakoreshejwe mu kizamini kugira ngo urebe amanota yawe yose.</p>
-            <div class="phone-field-label"><i class="fa-solid fa-sim-card"></i> Nimero ya Telefone</div>
+            <h2>Reba amanota yawe</h2>
+            <p>Injiza nimero ya telefone wakoresheje mu kizamini kugira ngo ubone amateka y&#39;amanota yawe.</p>
+            <label class="phone-field-label" for="lookupPhoneNumber"><i class="fa-solid fa-sim-card"></i> Nimero ya telefone</label>
             <div class="phone-input-row">
-                <div class="phone-prefix"><i class="fa-solid fa-phone"></i>&nbsp;+25</div>
+                <div class="phone-prefix"><i class="fa-solid fa-phone"></i>&nbsp;+250</div>
                 <input type="tel" id="lookupPhoneNumber" placeholder="0780 000 000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric">
             </div>
             <div id="lookupPhoneHint" class="hint">Injiza imibare 10 gutangira na 072, 073, 078 cyangwa 079</div>
@@ -417,7 +419,7 @@
                 <div class="stats-grid">
                     <div class="stat-tile">
                         <div class="st-val" id="statTotal">0</div>
-                        <div class="st-lbl">Ibizamini Byose Wakoze</div>
+                        <div class="st-lbl">Ibizamini byose wakoze</div>
                     </div>
                     <div class="stat-tile pass-tile">
                         <div class="st-val" id="statPassed">0</div>
@@ -429,22 +431,22 @@
                     </div>
                     <div class="stat-tile avg-tile">
                         <div class="st-val" id="statAvg">0/20</div>
-                        <div class="st-lbl">Amanota Hagati</div>
+                        <div class="st-lbl">Impuzandengo y&#39;amanota</div>
                     </div>
                     <div class="stat-tile">
                         <div class="st-val" id="statBest">0/20</div>
-                        <div class="st-lbl">Amanota Menshi</div>
+                        <div class="st-lbl">Amanota menshi wabonye</div>
                     </div>
                     <div class="stat-tile">
                         <div class="st-val" id="statPassMark">12/20</div>
-                        <div class="st-lbl">Amanota Asabwa</div>
+                        <div class="st-lbl">Amanota asabwa kugira ngo utsinde</div>
                     </div>
                 </div>
 
 
                 <!-- Attempts table -->
                 <div>
-                    <div class="attempts-section-title"><i class="fa-solid fa-list-check" style="margin-right:5px;color:var(--brand)"></i>Ibizamini Biherutse Gukorwa, <span id="attemptsCount">0</span> tests</div>
+                    <div class="attempts-section-title"><i class="fa-solid fa-list-check" style="margin-right:5px;color:var(--brand)"></i>Ibizamini biherutse gukorwa (<span id="attemptsCount">0</span>)</div>
                     <div class="attempts-table-wrap">
                         <button class="back-to-top-btn" id="backToTopBtn" type="button"><i class="fa-solid fa-arrow-up"></i> Subira hejuru</button>
                         <div class="attempts-scroll">
@@ -453,7 +455,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Amazina</th>
-                                        <th>Code</th>
+                                        <th>Kode</th>
                                         <th>Itariki</th>
                                         <th>Imimerere</th>
                                         <th>Amanota</th>
@@ -470,16 +472,13 @@
 
     </div><!-- /workspace-scroll-container -->
 
-    <footer class="footer">
-        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; text-align:center;">
-            <span style="font-size:0.7rem;">© 2026 IKIZAME Empowering Learners Across Rwanda</span>
-            <span style="color:rgba(255,255,255,0.3);">|</span>
-            <span style="font-size:0.7rem;">Developed by <strong style="color:#38bdf8;">Dotado Stationery Store Ltd</strong></span>
-            <span style="color:rgba(255,255,255,0.3);">|</span>
-            <a href="/about" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">About</a>
-            <a href="/terms" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
-        </div>
-    </footer>
+    <footer class='site-footer'>
+  <div><a class='site-footer-brand' href='/'>IKIZAME</a><p>Kwitegura ikizamini cy&#8217;amategeko y&#8217;umuhanda hifashishijwe imyitozo n&#8217;imfashanyigisho.</p><p><strong>DOTADO STATIONERY STORE LTD</strong></p></div>
+  <div><h3>Serivisi</h3><ul><li><a href='/'>Ahabanza</a></li><li><a href='/ifashanyigisho'>Imfashanyigisho</a></li><li><a href='/ibiciro'>Ibiciro</a></li><li><a href='/amanota'>Amanota</a></li></ul></div>
+  <div><h3>IKIZAME</h3><ul><li><a href='/about'>Ibyerekeye IKIZAME</a></li><li><a href='/terms'>Amategeko n&#8217;amabwiriza</a></li><li><a href='/ubufasha'>Ubufasha</a></li></ul></div>
+  <div><h3>Twandikire</h3><ul><li><a href='tel:+250786663377'>+250 786 663 377</a></li><li><a href='https://wa.me/250786663377'>WhatsApp</a></li><li><a href='mailto:ikizame.rw@gmail.com'>ikizame.rw@gmail.com</a></li><li>Kigali &#8211; Kabuga</li></ul></div>
+  <div class='site-footer-bottom'>&#169; 2026 IKIZAME &#183; DOTADO STATIONERY STORE LTD</div>
+</footer>
 
     <script src="assets/js/ikizame-ui.js"></script>
     <script src="assets/js/enter-to-action.js"></script>
@@ -579,7 +578,7 @@
 
                         const attempts = await response.json();
                         if (!attempts || attempts.length === 0) {
-                            lookupPhoneHint.textContent = "Nta kizamini na kimwe cyabonetse kuri iyi numero!";
+                            lookupPhoneHint.textContent = "Nta kizamini na kimwe cyabonetse kuri iyi nimero!";
                             lookupPhoneHint.className = "hint error";
                             submitLookupBtn.disabled = false;
                             submitLookupBtn.innerHTML = `Shakisha Amanota <i class="fa-solid fa-magnifying-glass"></i>`;
@@ -601,9 +600,7 @@
                             .then(data => {
                                 const rem = data.remaining || 0;
                                 const bigNum = document.getElementById('remBigNum');
-                                const remainingBadge = document.getElementById('remainingBadge');
                                 bigNum.textContent = rem;
-                                remainingBadge.style.display = 'block';
                                 document.getElementById('remainingNum').textContent = rem;
                                 if (rem === 0) bigNum.classList.add('zero'); else bigNum.classList.remove('zero');
 
@@ -628,7 +625,7 @@
                                 }
                             })
                             .catch(() => {
-                                document.getElementById('remBigNum').textContent = '?';
+                                document.getElementById('remBigNum').textContent = '—';
                                 document.getElementById('remDesc').textContent = 'Gushaka ibisigaye byanze.';
                                 document.getElementById('remStatusChip').className = 'rem-status-chip empty';
                                 document.getElementById('remStatusChip').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Ikosa';
