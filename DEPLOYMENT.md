@@ -27,7 +27,7 @@ git status --short
 Stage only the files you intend to publish. Replace the example paths with the files you changed:
 
 ```powershell
-git add public/index.html public/school-auth.html
+git add public/ibiciro.html public/ifashanyigisho.html public/index.html public/school-auth.html public/terms.html public/ubufasha.html
 git diff --cached --check
 git diff --cached --stat
 git commit -m "Describe the change"
