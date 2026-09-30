@@ -1,0 +1,258 @@
+/* Imfashanyigisho page colors aligned with the IKIZAME blue-gray theme. */
+:root {
+  --brand: #0D47A1;
+  --brand-dark: #0B3D91;
+  --brand-light: #E3EFFA;
+  --bg: #EAF0F6;
+  --surface: #F8FAFC;
+  --text: #1F2937;
+  --muted: #64748B;
+  --border: #D7E1EA;
+  --site-ink: #1F2937;
+  --site-green: #0D47A1;
+  --site-green-dark: #0B3D91;
+  --site-green-strong: #0D47A1;
+  --site-green-soft: #E3EFFA;
+  --site-bg: #EAF0F6;
+  --site-surface: #F8FAFC;
+  --site-border: #D7E1EA;
+  --site-muted: #64748B;
+  --site-shadow: 0 8px 24px rgba(31,60,90,.08);
+}
+
+html,
+body {
+  background: linear-gradient(180deg, #EAF1F7 0%, #F3F7FA 52%, #E8EFF5 100%);
+  color: #1F2937;
+}
+
+/* Keep the existing navigation layout and emphasize its current-page link. */
+.navbar {
+  border-bottom-color: rgba(255,255,255,.14);
+  background: #0D47A1;
+  box-shadow: 0 2px 12px rgba(13,71,161,.12);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.navbar-brand,
+.navbar-brand-wrap { color: #FFFFFF; }
+.navbar-brand-wrap img { filter: drop-shadow(0 2px 6px rgba(187,222,251,.18)); }
+.navbar .navbar-links a {
+  border-color: transparent;
+  background: transparent;
+  color: #D6E4F2;
+  box-shadow: none;
+}
+.navbar .navbar-links a i { color: #D6E4F2; }
+.navbar .navbar-links a:hover:not(.active) {
+  border-color: rgba(255,255,255,.14);
+  background: rgba(255,255,255,.10);
+  color: #FFFFFF;
+  transform: none;
+  box-shadow: none;
+}
+.navbar .navbar-links a:hover:not(.active) i,
+.navbar .navbar-links a.active,
+.navbar .navbar-links a.active i { color: #FFFFFF; }
+.navbar .navbar-links a.active {
+  border-color: rgba(255,255,255,.18);
+  border-radius: 6px;
+  background: rgba(255,255,255,.12);
+  box-shadow: none;
+}
+.navbar .navbar-links a:focus-visible { outline-color: #BBDEFB; }
+.lang-badge {
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.10);
+  color: #D6E4F2;
+  box-shadow: none;
+}
+.mobile-menu-toggle {
+  border-color: rgba(255,255,255,.25);
+  background: rgba(255,255,255,.10);
+  color: #FFFFFF;
+}
+
+/* Give the title area a soft Imigongo texture without reducing text contrast. */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-bottom: 1px solid #D7E1EA;
+  background: linear-gradient(135deg, #E7EFF6 0%, #F3F7FA 55%, #E1EAF3 100%);
+  color: #1F2937;
+  box-shadow: none;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .05;
+  pointer-events: none;
+  background-image:
+    url('../images/imigongo-pattern.svg'),
+    linear-gradient(135deg, transparent 49.8%, rgba(13,71,161,.12) 49.95%, rgba(13,71,161,.12) 50.05%, transparent 50.2%),
+    linear-gradient(45deg, transparent 49.85%, rgba(21,101,192,.10) 49.96%, rgba(21,101,192,.10) 50.04%, transparent 50.15%),
+    radial-gradient(circle, rgba(100,130,160,.18) 1px, transparent 1.7px);
+  background-size: 180px 180px, 144px 144px, 144px 144px, 96px 96px;
+  background-position: left 3% top 8%, left 0 top 0, left 72px top 72px, left 24px top 24px;
+  background-repeat: repeat;
+  mask-image: linear-gradient(90deg, #000 0%, #000 22%, transparent 78%);
+}
+.hero::after { background: radial-gradient(circle, rgba(21,101,192,.06) 0%, transparent 70%); }
+.hero-icon {
+  border: 1px solid #C9DCEB;
+  background: #E3EFFA;
+  color: #0D47A1;
+}
+.hero h1 { color: #1F2937; }
+.hero p { color: #64748B; }
+
+.main { color: #1F2937; }
+.summary-stat,
+.doc-card,
+.skeleton-card {
+  border-color: #D7E1EA;
+  background: #F8FAFC;
+  color: #1F2937;
+  box-shadow: 0 8px 24px rgba(31,60,90,.08);
+}
+.summary-stat .label,
+.summary-stat .value small,
+.doc-info p { color: #64748B; }
+.summary-stat .value,
+.section-head h2,
+.doc-info h3 { color: #1F2937; }
+.section-head h2 i { color: #0D47A1; }
+.doc-count-badge { background: #E3EFFA; color: #0D47A1; }
+.filter-pill {
+  border-color: #D7E1EA;
+  background: #F8FAFC;
+  color: #64748B;
+}
+.filter-pill:hover { border-color: #BFCFDF; background: #EEF5FB; color: #0D47A1; }
+.filter-pill.active {
+  border-color: #0D47A1;
+  background: #0D47A1;
+  color: #FFFFFF;
+  box-shadow: 0 6px 16px rgba(13,71,161,.16);
+}
+.search-input {
+  border-color: #D7E1EA;
+  background: #F8FAFC;
+  color: #1F2937;
+}
+.search-input:focus { border-color: #1565C0; box-shadow: 0 0 0 3px rgba(21,101,192,.12); }
+.search-clear { background: #E3EFFA; color: #0D47A1; }
+.doc-card { transition: transform .2s, box-shadow .2s, border-color .2s; }
+.doc-card:hover { border-color: #BFCFDF; box-shadow: 0 14px 30px rgba(31,60,90,.12); }
+.doc-type-icon { background: #E3EFFA; color: #0D47A1; }
+.icon-pdf { background: #FDECEC; color: #B42318; }
+.icon-word { background: #E3EFFA; color: #1565C0; }
+.icon-img { background: #E8F3EC; color: #15803D; }
+.tag-pdf { background: #FDECEC; color: #B42318; }
+.tag-word { background: #E3EFFA; color: #1565C0; }
+.tag-read { background: #E8F3EC; color: #15803D; }
+.tag-paid,
+.pay-pill { background: #E3EFFA; color: #0D47A1; }
+
+/* Paid resources remain visually distinct while using the same calm surfaces. */
+.doc-card.paid {
+  border-color: #B7D0E8;
+  background: linear-gradient(160deg, #F8FAFC 0%, #EEF5FB 100%);
+  box-shadow: 0 8px 24px rgba(31,60,90,.08);
+}
+.doc-card.paid:hover { border-color: #8FB2D3; box-shadow: 0 14px 30px rgba(31,60,90,.12); }
+.doc-card.paid .doc-type-icon { background: #E3EFFA; color: #0D47A1; }
+.doc-card.paid .doc-info h3 { color: #1F2937; }
+.paid-badge {
+  background: #0D47A1;
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(13,71,161,.2);
+}
+.btn-read {
+  background: #0D47A1;
+  box-shadow: 0 6px 16px rgba(13,71,161,.16);
+}
+.btn-read:hover { background: #0B3D91; }
+.btn-download {
+  border-color: #CDE4D4;
+  background: #E8F3EC;
+  color: #166534;
+  box-shadow: none;
+}
+.btn-download:hover { background: #DCEDE2; }
+.btn-download.locked { border-color: #D7E1EA; background: #EEF2F6; color: #94A3B8; }
+.btn-pay { background: #0D47A1; color: #FFFFFF; }
+.btn-pay:hover { background: #0B3D91; }
+.btn-secondary { border-color: #B7D0E8; background: #E3EFFA; color: #0D47A1; }
+.btn-secondary:hover { background: #DCEAF7; }
+
+/* Payment labels and controls follow the page palette; status text keeps its meaning. */
+.resource-payment-panel { border-color: #D7E1EA; background: #EEF5FB; }
+.resource-payment-panel .pay-form-label { color: #1F2937; }
+.resource-payment-panel .pay-note { color: #64748B; }
+.resource-payment-panel input,
+.pay-modal-box input { border-color: #D7E1EA; color: #1F2937; }
+.resource-payment-panel input:focus,
+.pay-modal-box input:focus { border-color: #1565C0; box-shadow: 0 0 0 3px rgba(21,101,192,.12); }
+.pay-modal-box { border: 1px solid #D7E1EA; background: #F8FAFC; }
+.pay-modal-title { color: #1F2937; }
+.pay-modal-title i { color: #0D47A1; }
+.pay-modal-price { background: #E3EFFA; color: #0D47A1; }
+.pay-modal-actions .btn-pay { background: #0D47A1; }
+.pay-modal-actions .btn-pay:hover { background: #0B3D91; }
+.pay-modal-actions .btn-cancel { background: #E3EFFA; color: #334155; }
+.pay-modal-status,
+.resource-payment-panel .payment-status { color: #64748B; }
+.skeleton-card { background: #F8FAFC; }
+.skel { background-image: linear-gradient(90deg, #EEF2F6 25%, #D7E1EA 50%, #EEF2F6 75%); }
+.empty-state i,
+.no-results i { color: #B7C7D8; }
+.empty-state h3,
+.no-results p { color: #64748B; }
+
+.site-footer,
+footer {
+  background: #0D47A1;
+  color: #FFFFFF;
+}
+.site-footer h2,
+.site-footer h3,
+.site-footer-brand,
+footer strong { color: #FFFFFF; }
+.site-footer p,
+.site-footer a,
+footer a { color: #C9D9EA; }
+.site-footer a:hover,
+footer a:hover { color: #FFFFFF; }
+.site-footer-bottom { border-top-color: rgba(214,228,242,.22); color: #C9D9EA; }
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid rgba(21,101,192,.38);
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .navbar .navbar-links a {
+    border-color: transparent !important;
+    background: transparent !important;
+    color: #D6E4F2 !important;
+    box-shadow: none !important;
+  }
+  .navbar .navbar-links a i { color: #D6E4F2 !important; }
+  .navbar .navbar-links a:hover:not(.active) {
+    border-color: rgba(255,255,255,.14) !important;
+    background: rgba(255,255,255,.10) !important;
+    color: #FFFFFF !important;
+  }
+  .navbar .navbar-links a:hover:not(.active) i,
+  .navbar .navbar-links a.active,
+  .navbar .navbar-links a.active i { color: #FFFFFF !important; }
+  .navbar .navbar-links a.active {
+    border-color: rgba(255,255,255,.18) !important;
+    background: rgba(255,255,255,.12) !important;
+  }
+  .hero::before { opacity: .035; }
+}
