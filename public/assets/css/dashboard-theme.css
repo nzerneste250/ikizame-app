@@ -675,7 +675,22 @@
 .dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(2) { width: auto !important; }
 .dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(3) { width: 92px !important; }
 .dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(4) { width: 86px !important; }
-.dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(5) { width: 154px !important; }
+.dashboard-page #questionsTableContainerViewSection .questions-repository-table th:nth-child(5) { width: 164px !important; }
 .dashboard-page.admin-sidebar-collapsed .sidebar-nav a:hover::after { content: attr(title); position: absolute; left: calc(100% + 9px); z-index: 10; padding: 8px 10px; border-radius: 7px; background: #172F3D; color: #fff; font-size: 11px; font-weight: 650; white-space: nowrap; box-shadow: 0 5px 14px rgba(15,35,45,.18); }
 @media (max-width: 1100px) { .dashboard-page .sidebar-collapse-toggle { display: none; } }
 .dashboard-page #questionsTableContainerViewSection > .questions-repository-table { display: table; width: 100% !important; min-width: 0 !important; max-width: 100%; table-layout: fixed; }
+/* Keep action controls inside their fixed table/card cell on every layout. */
+.dashboard-page .repository-actions-cell { width: 164px !important; max-width: 164px !important; padding: 10px 8px !important; overflow: hidden; box-sizing: border-box; }
+.dashboard-page .repository-action-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 7px; width: 100%; min-width: 0; max-width: 100%; }
+.dashboard-page .repository-action-stack .repository-action-edit,
+.dashboard-page .repository-action-stack .repository-action-delete { display: flex; width: 100% !important; min-width: 0 !important; max-width: 100% !important; min-height: 40px; margin: 0; padding-inline: 7px; box-sizing: border-box; white-space: nowrap; }
+.dashboard-page .repository-action-stack .repository-action-edit { background: #1565C0; color: #fff; }
+.dashboard-page .repository-action-stack .repository-action-delete { background: #DC2626; color: #fff; }
+.dashboard-page .repository-action-stack .repository-action-edit:hover { background: #0D47A1; }
+.dashboard-page .repository-action-stack .repository-action-delete:hover { background: #B91C1C; }
+@media (max-width: 700px) {
+  .dashboard-page .repository-actions-cell { width: auto !important; max-width: none !important; padding: 0 !important; overflow: visible; }
+  .dashboard-page .repository-action-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .dashboard-page .repository-action-stack .repository-action-edit,
+  .dashboard-page .repository-action-stack .repository-action-delete { min-height: 44px; }
+}
