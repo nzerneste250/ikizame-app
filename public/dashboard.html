@@ -544,8 +544,9 @@
             .badge-square { width: 36px; height: 36px; font-size: 15px; }
         }
     </style>
+    <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=blue-gray-dashboard-20261001">
 </head>
-<body>
+<body class="dashboard-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
 
 <div class="shell">
@@ -1497,5 +1498,4 @@ fetch('/api/admin/check-session').then(function(r){return r.json();}).then(funct
 <script src="assets/js/admin-responsive.js"></script>
 </body>
 </html>
-
 
