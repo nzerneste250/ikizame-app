@@ -1,0 +1,236 @@
+/* Ubufasha-only colors aligned with the homepage and admin portal. */
+:root {
+  --brand: #0D47A1;
+  --brand-dark: #0B3D91;
+  --cyan: #1976D2;
+  --bg: #EAF0F6;
+  --card: #F8FAFC;
+  --border: #D7E1EA;
+  --muted: #64748B;
+  --text: #1F2937;
+  --public-navy: #0D47A1;
+  --public-blue: #1565C0;
+  --public-teal: #0D47A1;
+  --public-cyan: #1976D2;
+  --site-ink: #1F2937;
+  --site-green: #0D47A1;
+  --site-green-dark: #0B3D91;
+  --site-green-strong: #0D47A1;
+  --site-green-soft: #E3EFFA;
+  --site-bg: #EAF0F6;
+  --site-surface: #F8FAFC;
+  --site-border: #D7E1EA;
+  --site-muted: #64748B;
+  --site-shadow: 0 8px 24px rgba(31,60,90,.08);
+}
+
+html, body {
+  background: linear-gradient(180deg, #EAF1F7 0%, #F3F7FA 50%, #E8EFF5 100%);
+  color: #1F2937;
+}
+
+/* The shared blue header with one clear, route-correct active link. */
+.navbar {
+  border-bottom-color: rgba(255,255,255,.14);
+  background: #0D47A1;
+  box-shadow: 0 2px 12px rgba(13,71,161,.12);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.navbar-brand { color: #FFFFFF; }
+.navbar-brand-wrap img { filter: drop-shadow(0 2px 6px rgba(187,222,251,.18)); }
+.navbar .navbar-links a {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  color: #D6E4F2;
+}
+.navbar .navbar-links a i { color: #D6E4F2; }
+.navbar .navbar-links a:hover:not(.active) {
+  border-color: rgba(255,255,255,.14);
+  background: rgba(255,255,255,.10);
+  color: #FFFFFF;
+  transform: none;
+  box-shadow: none;
+}
+.navbar .navbar-links a:hover:not(.active) i { color: #FFFFFF; }
+.navbar .navbar-links a.active {
+  border-color: rgba(255,255,255,.18);
+  border-radius: 6px;
+  background: rgba(255,255,255,.12);
+  color: #FFFFFF;
+  font-weight: 700;
+  box-shadow: none;
+}
+.navbar .navbar-links a.active i { color: #FFFFFF; }
+.navbar .navbar-links a.active::after { display: none; }
+.navbar .navbar-links a:focus-visible { outline-color: #BBDEFB; }
+.lang-badge {
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.10);
+  color: #D6E4F2;
+  box-shadow: none;
+}
+
+/* Soft title surface; Imigongo and technology lines stay near the edges. */
+.hero {
+  border-bottom-color: #D7E1EA;
+  background: linear-gradient(135deg, #E7EFF6 0%, #F3F7FA 55%, #E1EAF3 100%);
+  color: #1F2937;
+  box-shadow: none;
+}
+.hero::before {
+  opacity: .05;
+  background-image:
+    url('../images/imigongo-pattern.svg'),
+    linear-gradient(135deg, transparent 49.8%, rgba(13,71,161,.12) 49.95%, rgba(13,71,161,.12) 50.05%, transparent 50.2%),
+    linear-gradient(45deg, transparent 49.85%, rgba(21,101,192,.10) 49.96%, rgba(21,101,192,.10) 50.04%, transparent 50.15%),
+    radial-gradient(circle, rgba(100,130,160,.18) 1px, transparent 1.7px);
+  background-size: 180px 180px, 144px 144px, 144px 144px, 96px 96px;
+  background-position: left 3% top 8%, left 0 top 0, left 72px top 72px, left 24px top 24px;
+  background-repeat: repeat;
+  mask-image: linear-gradient(90deg, #000 0%, #000 22%, transparent 78%);
+}
+.hero::after { background: radial-gradient(circle, rgba(21,101,192,.06) 0%, transparent 70%); }
+.hero-pill {
+  border-color: #C9DCEB;
+  background: #E3EFFA;
+  color: #0D47A1;
+}
+.hero-copy-glass {
+  border-color: #D7E1EA;
+  background: rgba(248,250,252,.92);
+  color: #1F2937;
+  box-shadow: 0 8px 24px rgba(31,60,90,.08);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.hero-copy-glass::before { opacity: .035; }
+.hero-copy-glass p,
+.hero-copy-glass .hero p { color: #64748B; }
+.hero h1,
+.hero h1 span { color: #1F2937; }
+.hero p { color: #64748B; }
+
+/* Light section rhythm and simple information surfaces. */
+.section { background: #F2F6FA; }
+.section-title { color: #0D47A1; }
+.section-title::after { background: #D7E1EA; }
+.support-banner {
+  border-color: #C9DCEB;
+  background: #EEF5FB;
+  color: #334155;
+  box-shadow: 0 8px 24px rgba(31,60,90,.08);
+}
+.support-banner .badge-247 {
+  border-color: #D7E1EA;
+  background: #E3EFFA;
+  color: #0D47A1;
+}
+.support-banner p,
+.support-banner p strong { color: #334155 !important; }
+
+.contact-card-wrap {
+  border-color: #D7E1EA;
+  background: #F8FAFC;
+  color: #1F2937;
+  box-shadow: 0 8px 24px rgba(31,60,90,.08);
+}
+.contact-card-wrap h3 { color: #1F2937 !important; }
+.contact-card-wrap h3 i,
+.contact-row:not(.wa-row) i { color: #0D47A1 !important; }
+.contact-card-wrap .sub { color: #64748B !important; }
+.contact-card-wrap .contact-row {
+  border-color: #D7E1EA;
+  background: #F8FAFC;
+  color: #334155 !important;
+}
+.contact-card-wrap .contact-row:hover {
+  border-color: #BFCFDF;
+  background: #EEF5FB;
+}
+.contact-card-wrap a.contact-row { color: #1565C0 !important; }
+.contact-card-wrap a.contact-row:hover { color: #0D47A1 !important; }
+/* Retain WhatsApp's recognizable brand green on its dedicated contact action. */
+.contact-card-wrap .contact-row.wa-row i { color: #25D366 !important; }
+
+.timeline::before { background: linear-gradient(to bottom, #B7D0E8, transparent); }
+.tl-num {
+  background: #E3EFFA;
+  color: #0D47A1;
+  box-shadow: 0 0 0 4px #F2F6FA;
+}
+.tl-item:hover .tl-num {
+  background: #DCEAF7;
+  color: #0D47A1;
+  box-shadow: 0 0 0 4px #F2F6FA;
+}
+.tl-body {
+  border-color: #D7E1EA;
+  background: #F8FAFC;
+  color: #1F2937;
+  box-shadow: 0 8px 24px rgba(31,60,90,.08);
+}
+.tl-item:hover .tl-body { border-color: #BFCFDF; }
+.tl-body h4 { color: #1F2937; }
+.tl-body p { color: #64748B; }
+
+/* FAQ colors follow the existing open/closed class, without changing its behavior. */
+.faq-item {
+  border-color: #D7E1EA;
+  background: #F8FAFC;
+  box-shadow: 0 8px 24px rgba(31,60,90,.08);
+}
+.faq-item.open {
+  border-color: #B7D0E8;
+  background: #EEF5FB;
+}
+.faq-q { color: #1F2937; }
+.faq-q:hover,
+.faq-item.open .faq-q { color: #0D47A1; }
+.faq-arrow { color: #0D47A1; }
+.faq-a p { color: #64748B; }
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid rgba(21,101,192,.38);
+  outline-offset: 3px;
+}
+
+/* Same institutional footer palette as the homepage and admin login. */
+.site-footer { background: #0D47A1; color: #FFFFFF; }
+.site-footer h2,
+.site-footer h3,
+.site-footer-brand { color: #FFFFFF; }
+.site-footer p,
+.site-footer a { color: #C9D9EA; }
+.site-footer a:hover { color: #FFFFFF; }
+.site-footer-bottom { border-top-color: rgba(214,228,242,.22); color: #C9D9EA; }
+
+@media (max-width: 900px) {
+  .navbar .navbar-links a {
+    border-color: transparent !important;
+    background: transparent !important;
+    color: #D6E4F2 !important;
+    box-shadow: none !important;
+  }
+  .navbar .navbar-links a i { color: #D6E4F2 !important; }
+  .navbar .navbar-links a:hover:not(.active) {
+    border-color: rgba(255,255,255,.14) !important;
+    background: rgba(255,255,255,.10) !important;
+    color: #FFFFFF !important;
+  }
+  .navbar .navbar-links a:hover:not(.active) i { color: #FFFFFF !important; }
+  .navbar .navbar-links a.active {
+    border-color: rgba(255,255,255,.18) !important;
+    background: rgba(255,255,255,.12) !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+  }
+  .navbar .navbar-links a.active i { color: #FFFFFF !important; }
+  .navbar .mobile-menu-toggle {
+    border-color: rgba(255,255,255,.25);
+    background: rgba(255,255,255,.10);
+    color: #FFFFFF;
+  }
+  .hero::before { opacity: .035; }
+}
