@@ -452,17 +452,25 @@ body.school-auth-page .guide-card {
   width: 100%;
   max-width: 900px;
   padding: 22px 24px;
-  border: 1px solid rgba(203, 213, 225, .18);
+  border: 1px solid rgba(21, 128, 61, .2);
   border-radius: 16px;
-  background: rgba(15, 23, 42, .42);
-  color: #fff;
-  box-shadow: 0 16px 38px rgba(15, 23, 42, .12), inset 0 1px 0 rgba(255,255,255,.05);
-  -webkit-backdrop-filter: blur(10px) saturate(115%);
-  backdrop-filter: blur(10px) saturate(115%);
+  background: linear-gradient(145deg, rgba(255,255,255,.97), rgba(240,253,244,.95));
+  color: #14532d;
+  box-shadow: 0 16px 38px rgba(20, 83, 45, .12), inset 0 1px 0 rgba(255,255,255,.8);
+  -webkit-backdrop-filter: blur(12px) saturate(115%);
+  backdrop-filter: blur(12px) saturate(115%);
 }
-body.school-auth-page .guide-card::before { display: none; }
-body.school-auth-page .guide-card-title { color: #fff; font-size: .95rem; }
-body.school-auth-page .guide-card-sub { padding-top: 6px; border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.9); }
+body.school-auth-page .guide-card::before {
+  display: block;
+  opacity: .08;
+  background-image: url('../images/imigongo-pattern.svg');
+  background-size: 160px 160px;
+  background-repeat: repeat;
+  filter: grayscale(1) brightness(0) saturate(100%) invert(33%) sepia(20%) saturate(1900%) hue-rotate(88deg) brightness(88%);
+}
+body.school-auth-page .guide-card-title { color: #14532d; font-size: 1rem; font-weight: 800; letter-spacing: .01em; }
+body.school-auth-page .guide-card-title i { color: #15803d; }
+body.school-auth-page .guide-card-sub { padding-top: 7px; border-color: rgba(21,128,61,.18); color: #365b45; font-size: .82rem; }
 body.school-auth-page .guide-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
 body.school-auth-page .guide-step {
   position: relative;
