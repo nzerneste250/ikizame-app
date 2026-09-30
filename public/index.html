@@ -1712,7 +1712,7 @@
         }
  </style>
      <link rel="stylesheet" href="assets/css/public-navigation.css">
-    <link rel="stylesheet" href="/assets/css/public-site.css?v=registration-anchor-focus-20260930">
+    <link rel="stylesheet" href="/assets/css/public-site.css?v=registration-anchor-submit-focus-20260930">
     <script defer src="/assets/js/public-navigation.js"></script>
 </head>
 <body>
@@ -2116,7 +2116,7 @@
             const registrationCard = registrationAnchor?.closest('.reg-card');
             let registrationHighlightTimer;
             const focusRegistrationCard = () => {
-                if (!registrationCard || window.location.hash !== '#candidateRegistrationInteractiveForm') return;
+                if (!registrationCard) return;
                 window.requestAnimationFrame(() => {
                     window.requestAnimationFrame(() => {
                         registrationCard.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
@@ -2234,6 +2234,7 @@
             if (registrationForm) {
                 registrationForm.addEventListener('submit', function (e) {
                     e.preventDefault(); // Securely blocks browser form refreshes
+                    focusRegistrationCard();
                     
                     const name = nameField.value.trim();
                     const phone = phoneField.value.trim();
@@ -2242,7 +2243,6 @@
                     if (name.length < 3) {
                         nameHint.textContent = "IKOSA: Cyinjize amazina yanyu neza (Atari munsi y'inyuguti 3)!";
                         nameHint.className = "hint error";
-                        nameField.focus();
                         valid = false;
                     }
 
@@ -2251,11 +2251,13 @@
                     if (!okFormat) {
                         phoneHint.textContent = "IKOSA: Koresha nimero itangira na 078, 079, 072, cyangwa 073, igakurikirwa n'imibare 7!";
                         phoneHint.className = "hint error";
-                        if (valid) phoneField.focus();
                         valid = false;
                     }
 
-                    if (!valid) return;
+                    if (!valid) {
+                        focusRegistrationCard();
+                        return;
+                    }
 
                     // phone is like 0788000000, strip leading 0 for +250 format
                     const fullFormattedPhone = '+250' + phone.substring(1);
