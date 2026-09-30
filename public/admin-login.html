@@ -817,18 +817,152 @@
             .brand-guide-section, .brand-guide-section + .brand-guide-section { padding: 10px; }
             .brand-guide-note { width: 100%; }
         }
+        /* SDMS-inspired section rhythm with IKIZAME's Imigongo identity retained quietly. */
+        body { background: #EEF3F8; color: #1F2937; }
+        body::before { content: none; }
+        .admin-header {
+            position: relative;
+            z-index: 2;
+            min-height: 56px;
+            padding: 0 22px;
+            background: #0D47A1;
+            color: #fff;
+        }
+        .admin-header-inner { width: min(100%, 1180px); min-height: 56px; margin: 0 auto; display: flex; align-items: center; }
+        .admin-header-brand { display: inline-flex; align-items: center; gap: 10px; color: #fff; font-size: .98rem; font-weight: 800; letter-spacing: .02em; text-decoration: none; }
+        .admin-header-brand img { width: 32px; height: 32px; padding: 3px; border-radius: 8px; background: #fff; object-fit: contain; }
+        .login-hero {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            padding: clamp(30px, 5vw, 58px) 24px;
+            background: linear-gradient(180deg, #EEF5FB 0%, #F2F6FA 100%);
+        }
+        .login-hero::before {
+            content: '';
+            position: absolute;
+            z-index: 0;
+            inset: 0;
+            pointer-events: none;
+            opacity: .045;
+            background-image:
+                url('assets/images/imigongo-pattern.svg'),
+                linear-gradient(135deg, transparent 49.8%, rgba(13,71,161,.1) 49.95%, rgba(13,71,161,.1) 50.05%, transparent 50.2%),
+                linear-gradient(45deg, transparent 49.85%, rgba(25,118,210,.08) 49.96%, rgba(25,118,210,.08) 50.04%, transparent 50.15%),
+                radial-gradient(circle, rgba(100,130,160,.18) 1px, transparent 1.7px);
+            background-size: 180px 180px, 144px 144px, 144px 144px, 96px 96px;
+            background-position: right 8% top 0, right 0 top 0, right 72px top 72px, right 24px top 24px;
+            mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 82%, transparent 100%);
+        }
+        .admin-layout {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+            grid-template-rows: auto;
+            gap: clamp(32px, 5vw, 64px);
+            align-items: center;
+            width: min(100%, 1180px);
+            min-height: 0;
+            margin: 0 auto;
+            overflow: visible;
+            background: transparent;
+            box-shadow: none;
+        }
+        .admin-intro { min-width: 0; max-width: 590px; padding: 12px 0; }
+        .admin-intro h1 { margin: 12px 0 10px; color: #1F2937; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -.04em; }
+        .admin-intro p { max-width: 520px; margin: 0; color: #64748B; font-size: 1rem; line-height: 1.7; }
+        .secure-access-label { border: 1px solid #C5DCF3; background: #E3EFFA; color: #0D47A1; }
+        .secure-access-label i { color: #1565C0; }
+        .admin-feature-list { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
+        .admin-feature-list span { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border: 1px solid #D7E1EA; border-radius: 999px; background: rgba(248,250,252,.76); color: #475569; font-size: .78rem; font-weight: 700; }
+        .admin-feature-list i { color: #1976D2; }
+        .login-panel { grid-column: 2; grid-row: 1; display: flex; align-items: center; justify-content: center; min-width: 0; min-height: 0; padding: 0; overflow: visible; background: transparent; }
+        .card { width: 100%; max-width: 460px; padding: clamp(24px, 3vw, 34px); border: 1px solid #D7E1EA; border-top: 1px solid #D7E1EA; border-radius: 14px; background: #F8FAFC; box-shadow: 0 12px 32px rgba(31,60,90,.1); backdrop-filter: none; -webkit-backdrop-filter: none; }
+        .card::before { height: 3px; border-radius: 14px 14px 0 0; }
+        .card h1 { color: #1F2937; }
+        .card .sub { color: #64748B; }
+        .field input { border-color: #D7E1EA; background: #FFFFFF; }
+        .field input:focus { border-color: #1565C0; box-shadow: 0 0 0 3px rgba(21,101,192,.10); }
+        .btn-primary:hover { background: #0B3D91; }
+        .help-section { padding: 32px 24px 36px; background: #F8FAFC; }
+        .recovery-section { padding: 30px 24px 34px; background: #E7EEF5; }
+        .info-section-inner { width: min(100%, 1180px); margin: 0 auto; }
+        .brand-guide, .signin-guide, .recovery-guide { display: block; width: 100%; max-width: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+        .brand-guide-section { display: block; width: 100%; min-width: 0; margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+        .brand-guide-section + .brand-guide-section { padding: 0; border: 0; }
+        .brand-guide-title { display: block; width: auto; margin: 0 0 18px; padding: 0; border: 0; border-radius: 0; background: transparent; color: #1F2937; font-size: 1.25rem; font-weight: 800; letter-spacing: -.02em; text-transform: none; }
+        .brand-guide-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; }
+        .brand-guide-list li { display: grid; grid-template-columns: 34px minmax(0,1fr); grid-template-rows: auto auto; align-items: start; gap: 6px 12px; min-width: 0; padding: 10px 22px; border: 0; border-right: 1px solid #D7E1EA; border-radius: 0; background: transparent; color: #1F2937; font-size: .88rem; line-height: 1.45; box-shadow: none; }
+        .brand-guide-list li:first-child { padding-left: 0; }
+        .brand-guide-list li:last-child { padding-right: 0; border-right: 0; }
+        .brand-guide-number { grid-column: 1; grid-row: 1 / span 2; width: 30px; height: 30px; border: 0; border-radius: 50%; background: #DCEAF7; color: #0D47A1; font-size: .8rem; }
+        .brand-guide-step-icon { display: none; }
+        .brand-guide-list li > span:nth-child(3) { grid-column: 2; grid-row: 1; color: #1F2937; font-weight: 700; }
+        .brand-guide-step-description { display: block; grid-column: 2; grid-row: 2; margin: 0; color: #64748B; font-size: .78rem; font-weight: 400; line-height: 1.5; }
+        .brand-guide-note { display: flex; align-items: center; gap: 10px; width: fit-content; max-width: 100%; margin: 18px 0 0; padding: 9px 12px; border: 1px solid #D7E1EA; border-radius: 9px; background: rgba(248,250,252,.7); color: #64748B; font-size: .82rem; font-weight: 600; box-shadow: none; }
+        .brand-guide-note i { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: #DCEAF7; color: #0D47A1; }
+        .footer { min-height: 42px; padding: 9px 16px calc(9px + env(safe-area-inset-bottom)); border-top: 0; background: #0D47A1; color: #FFFFFF; font-size: 10px; }
+        .footer strong { color: #C9D9EA; }
+        @media (max-width: 960px) {
+            .admin-header { min-height: 52px; padding-inline: 18px; }
+            .admin-header-inner { min-height: 52px; }
+            .login-hero { padding: 30px 20px; }
+            .admin-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,380px); gap: 26px; width: min(100%, 820px); }
+            .admin-intro h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); }
+            .brand-guide-list li { padding-inline: 14px; }
+        }
+        @media (max-width: 760px) {
+            .login-hero { padding: 24px 14px 28px; }
+            .login-hero::before { opacity: .025; background-position: right -70px top 0, right 0 top 0, right 72px top 72px, right 24px top 24px; }
+            .admin-layout { display: flex; flex-direction: column; gap: 20px; width: min(100%, 500px); }
+            .admin-intro { width: 100%; padding: 0 4px; }
+            .admin-intro h1 { margin-top: 9px; font-size: 1.8rem; }
+            .admin-intro p { font-size: .92rem; line-height: 1.55; }
+            .admin-feature-list { gap: 7px; margin-top: 14px; }
+            .admin-feature-list span { padding: 6px 9px; font-size: .74rem; }
+            .login-panel { width: 100%; }
+            .card { max-width: none; padding: 24px 20px; }
+            .help-section, .recovery-section { padding: 24px 18px; }
+            .brand-guide-title { margin-bottom: 12px; }
+            .brand-guide-list { grid-template-columns: 1fr; }
+            .brand-guide-list li, .brand-guide-list li:first-child, .brand-guide-list li:last-child { grid-template-columns: 30px minmax(0,1fr); padding: 12px 0; border-right: 0; border-bottom: 1px solid #D7E1EA; }
+            .brand-guide-list li:last-child { border-bottom: 0; }
+            .brand-guide-number { width: 26px; height: 26px; }
+            .brand-guide-step-description { font-size: .8rem; }
+            .brand-guide-note { margin-top: 12px; }
+        }
+        @media (max-width: 380px) {
+            .admin-header { padding-inline: 14px; }
+            .login-hero { padding-inline: 12px; }
+            .card { padding: 21px 16px; }
+            .secure-access-label { font-size: 11px; }
+            .help-section, .recovery-section { padding-inline: 14px; }
+        }
     </style>
 </head>
 <body>
-    <div class="admin-layout">
-        <aside class="brand-panel">
-            <div class="brand-lockup">
-                <div class="brand-heading">
-                    <div class="card-icon"><img src="assets/uploads/logo.png" alt="IKIZAME Admin"></div>
-                    <div class="top-bar"><span class="top-bar-brand">IKIZAME Admin</span></div>
-                </div>
+    <header class="admin-header">
+        <div class="admin-header-inner">
+            <div class="admin-header-brand">
+                <img src="assets/uploads/logo.png" alt="IKIZAME Admin">
+                <span>IKIZAME Admin</span>
             </div>
-        </aside>
+        </div>
+    </header>
+
+    <section class="login-hero" aria-label="Administrator sign in">
+    <div class="admin-layout">
+        <section class="admin-intro">
+            <div class="secure-access-label"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Secure Administrator Access</div>
+            <h1>Welcome Back</h1>
+            <p>Sign in with your admin email to manage exams, students, payments and reports.</p>
+            <div class="admin-feature-list" aria-label="Admin tools">
+                <span><i class="fa-regular fa-file-lines" aria-hidden="true"></i> Exams</span>
+                <span><i class="fa-solid fa-user-group" aria-hidden="true"></i> Students</span>
+                <span><i class="fa-solid fa-chart-column" aria-hidden="true"></i> Reports</span>
+            </div>
+        </section>
 
         <main class="login-panel">
             <div class="card">
@@ -844,9 +978,6 @@
 
         <!-- ── PANEL 1: Login ── -->
         <div class="panel active" id="panelLogin">
-            <div class="secure-access-label"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Secure Administrator Access</div>
-            <h1>Welcome Back</h1>
-            <p class="sub">Sign in with your admin email to manage exams, students, payments and reports.</p>
             <form action="/api/admin/auth" method="POST" class="form" id="loginForm" novalidate>
                 <div class="field">
                     <label>Admin Email</label>
@@ -978,16 +1109,27 @@
         <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Main Website</a>
             </div>
         </main>
+    </div>
+    </section>
 
-        <section class="brand-guide" aria-label="Login and password recovery steps">
+    <section class="help-section" aria-labelledby="sign-in-steps-title">
+        <div class="info-section-inner">
+        <section class="brand-guide signin-guide" aria-label="Sign-in steps">
             <section class="brand-guide-section" aria-labelledby="sign-in-steps-title">
-                <h2 class="brand-guide-title" id="sign-in-steps-title">Sign in</h2>
+                <h2 class="brand-guide-title" id="sign-in-steps-title">How to Sign In</h2>
                 <ol class="brand-guide-list">
                     <li><span class="brand-guide-number">1</span><span class="brand-guide-step-icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span><span>Enter your admin email</span><span class="brand-guide-step-description">Use the email registered for your IKIZAME admin account. This is the address linked to your administrator profile.</span></li>
                     <li><span class="brand-guide-number">2</span><span class="brand-guide-step-icon" aria-hidden="true"><i class="fa-solid fa-lock"></i></span><span>Enter your password</span><span class="brand-guide-step-description">Type the password for your admin account. Use the eye icon to check your entry before continuing.</span></li>
                     <li><span class="brand-guide-number">3</span><span class="brand-guide-step-icon" aria-hidden="true"><i class="fa-solid fa-arrow-right-to-bracket"></i></span><span>Select “Sign in securely”</span><span class="brand-guide-step-description">Submit your email and password to continue to the admin area.</span></li>
                 </ol>
             </section>
+        </section>
+        </div>
+    </section>
+
+    <section class="recovery-section" aria-labelledby="forgot-password-steps-title">
+        <div class="info-section-inner">
+        <section class="brand-guide recovery-guide" aria-label="Password recovery steps">
             <section class="brand-guide-section" aria-labelledby="forgot-password-steps-title">
                 <h2 class="brand-guide-title" id="forgot-password-steps-title">Forgot password?</h2>
                 <ol class="brand-guide-list">
@@ -998,7 +1140,8 @@
             </section>
             <p class="brand-guide-note"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Password reset codes are sent to your admin email.</span></p>
         </section>
-    </div>
+        </div>
+    </section>
     <footer class="footer page-footer">&copy; 2026 IKIZAME Developed by <strong>&nbsp;Dotado Stationery Store Ltd</strong></footer>
 
     <script>
