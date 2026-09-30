@@ -1712,7 +1712,7 @@
         }
  </style>
      <link rel="stylesheet" href="assets/css/public-navigation.css">
-    <link rel="stylesheet" href="/assets/css/public-site.css">
+    <link rel="stylesheet" href="/assets/css/public-site.css?v=registration-anchor-focus-20260930">
     <script defer src="/assets/js/public-navigation.js"></script>
 </head>
 <body>
@@ -2112,6 +2112,31 @@
         </script>
         <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const registrationAnchor = document.getElementById('candidateRegistrationInteractiveForm');
+            const registrationCard = registrationAnchor?.closest('.reg-card');
+            let registrationHighlightTimer;
+            const focusRegistrationCard = () => {
+                if (!registrationCard || window.location.hash !== '#candidateRegistrationInteractiveForm') return;
+                window.requestAnimationFrame(() => {
+                    window.requestAnimationFrame(() => {
+                        registrationCard.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                        registrationCard.classList.remove('registration-anchor-highlight');
+                        void registrationCard.offsetWidth;
+                        registrationCard.classList.add('registration-anchor-highlight');
+                        window.clearTimeout(registrationHighlightTimer);
+                        registrationHighlightTimer = window.setTimeout(() => {
+                            registrationCard.classList.remove('registration-anchor-highlight');
+                        }, 2200);
+                    });
+                });
+            };
+            if (registrationCard) {
+                if (window.location.hash === '#candidateRegistrationInteractiveForm') {
+                    window.setTimeout(focusRegistrationCard, 80);
+                }
+                window.addEventListener('hashchange', focusRegistrationCard);
+            }
+
             // Clean up old storage instances to prevent token pollution
             sessionStorage.removeItem('studentName');
             sessionStorage.removeItem('phoneNumber');

@@ -192,7 +192,14 @@ body:has(.workspace) .hero-h1 em { color: var(--site-green); }
 body:has(.workspace) .hero-desc { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: #475569; backdrop-filter: none; }
 body:has(.workspace) .hero-support-pill { border-color: #d5ead9; background: #fff; color: #334155; }
 body:has(.workspace) .hero-support-pill i { color: var(--site-green); }
-body:has(.workspace) .reg-card { border: 1px solid var(--site-border); border-top: 4px solid var(--site-green); border-radius: 18px; box-shadow: var(--site-shadow); }
+body:has(.workspace) .reg-card { border: 1px solid var(--site-border); border-top: 4px solid var(--site-green); border-radius: 18px; box-shadow: var(--site-shadow); scroll-margin-block: 24px; transition: box-shadow .25s ease, border-color .25s ease; }
+body:has(.workspace) .reg-card.registration-anchor-highlight { border-color: #16a34a; box-shadow: 0 0 0 4px rgba(22,163,74,.16), 0 18px 44px rgba(21,128,61,.2); }
+@media (max-width: 900px) {
+  body:has(.workspace) .reg-card { scroll-margin-block-start: 84px; scroll-margin-block-end: 18px; }
+}
+@media (max-width: 600px) {
+  body:has(.workspace) .reg-card { scroll-margin-block-start: 18px; scroll-margin-block-end: 18px; }
+}
 body:has(.workspace) .btn-submit { background: var(--site-green-strong); box-shadow: none; }
 body:has(.workspace) .quick-action-card { border: 1px solid var(--site-border); border-radius: 14px; background: #fff; box-shadow: var(--site-shadow); }
 body:has(.workspace) .quick-action-icon { background: var(--site-green-soft); color: var(--site-green); }
