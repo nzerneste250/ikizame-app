@@ -208,6 +208,11 @@ body:has(.workspace) .otp-input-wrap input:focus {
   outline: none;
 }
 body:has(.workspace) .hint { color: #64748B; }
+body:has(#candidateRegistrationInteractiveForm) .hint.error,
+body:has(#candidateRegistrationInteractiveForm) .otp-hint.hint.error {
+  color: #DC2626 !important;
+  font-weight: 700;
+}
 body:has(.workspace) .phone-prefix { border-color: #D7E1EA; background: #E9EEF3; color: #334155; }
 body:has(.workspace) .btn-submit,
 body:has(.workspace) .hero-cta:not(.secondary),
@@ -262,6 +267,11 @@ body:has(.workspace) .pay-modal-actions .btn-pay,
 body:has(.workspace) .btn-pay { border-color: #0D47A1; background: #0D47A1; color: #FFFFFF; }
 body:has(.workspace) .pay-modal-actions .btn-pay:hover,
 body:has(.workspace) .btn-pay:hover { background: #0B3D91; }
+
+/* Give the homepage introduction clear separation from the two-row mobile navigation. */
+@media (max-width: 900px) {
+  body:has(.workspace) .workspace { padding-top: clamp(40px, 7vw, 52px) !important; }
+}
 
 /* Keep the footer's existing content and layout, matching the admin-login footer. */
 body:has(.workspace) .site-footer { background: #0D47A1; color: #FFFFFF; }

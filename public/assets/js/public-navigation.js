@@ -26,7 +26,7 @@
       links.appendChild(item);
     }
 
-    // Selected public pages keep navigation visible on mobile in a scrollable row.
+    // Selected public pages keep all navigation links visible on mobile.
     if (header.classList.contains('home-visible-nav') || header.classList.contains('always-visible-nav')) {
       nav.hidden = false;
       return;

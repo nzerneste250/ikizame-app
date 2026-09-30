@@ -69,52 +69,53 @@
   }
   .navbar.home-visible-nav .navbar-links,
   .navbar.always-visible-nav .navbar-links {
-    display: flex !important;
-    grid-template-columns: none !important;
-    flex-wrap: nowrap !important;
-    justify-content: flex-start !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-auto-flow: row;
     gap: 5px !important;
+    justify-content: stretch !important;
     width: 100% !important;
     min-width: 0;
     margin: 0 !important;
-    padding: 3px 0 5px !important;
-    overflow-x: auto;
-    overflow-y: hidden;
-    overscroll-behavior-inline: contain;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(214,228,242,.5) transparent;
+    padding: 3px 0 4px !important;
+    overflow: visible;
   }
   .navbar.home-visible-nav .navbar-links li,
   .navbar.always-visible-nav .navbar-links li {
-    flex: 0 0 auto;
-    min-width: max-content;
+    min-width: 0;
     list-style: none;
   }
   .navbar.home-visible-nav .navbar-links .nav-cta-item,
   .navbar.always-visible-nav .navbar-links .nav-cta-item {
     grid-column: auto !important;
-    margin: 0 0 0 2px !important;
+    margin: 0 !important;
   }
   .navbar.home-visible-nav .navbar-links a,
   .navbar.always-visible-nav .navbar-links a {
-    display: inline-flex !important;
-    width: auto !important;
-    min-height: 38px !important;
-    padding: 7px 10px !important;
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0;
+    min-height: 40px !important;
+    padding: 5px 3px !important;
+    flex-direction: column;
+    gap: 3px !important;
     border-radius: 8px !important;
     color: #D6E4F2 !important;
-    font-size: .74rem !important;
-    line-height: 1.2;
-    white-space: nowrap !important;
-    overflow: visible !important;
+    font-size: .64rem !important;
+    line-height: 1.15;
+    white-space: normal !important;
+    overflow: hidden !important;
     text-overflow: clip !important;
+    text-align: center;
+    overflow-wrap: anywhere;
     background: transparent !important;
     border: 1px solid transparent !important;
     box-shadow: none !important;
   }
   .navbar.home-visible-nav .navbar-links a i,
-  .navbar.always-visible-nav .navbar-links a i { color: #D6E4F2 !important; }
+  .navbar.always-visible-nav .navbar-links a i { color: #D6E4F2 !important; font-size: .78rem !important; }
+  .navbar.home-visible-nav .navbar-links a span,
+  .navbar.always-visible-nav .navbar-links a span { min-width: 0; overflow-wrap: anywhere; }
   .navbar.home-visible-nav .navbar-links a:hover:not(.active):not(.navbar-cta),
   .navbar.always-visible-nav .navbar-links a:hover:not(.active):not(.navbar-cta) {
     border-color: #FFFFFF !important;
