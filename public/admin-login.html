@@ -500,7 +500,29 @@
             filter: grayscale(1) brightness(0) saturate(100%) invert(33%) sepia(20%) saturate(1900%) hue-rotate(88deg) brightness(88%);
         }
         .brand-guide-section + .brand-guide-section { border-color: #dce8df; }
-        .brand-guide-title { color: #166534; }
+        .brand-guide-section {
+            min-width: 0;
+            padding: 16px;
+            border: 1px solid #dce8df;
+            border-radius: 15px;
+            background: rgba(255,255,255,.97);
+            box-shadow: 0 7px 20px rgba(15,23,42,.045);
+        }
+        .brand-guide-section + .brand-guide-section { padding: 16px; border: 1px solid #dce8df; }
+        .brand-guide-title {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            margin-bottom: 12px;
+            padding: 7px 11px;
+            border: 1px solid #bbf7d0;
+            border-radius: 999px;
+            background: #f0fdf4;
+            color: #14532d;
+            font-size: .76rem;
+            font-weight: 800;
+            letter-spacing: .035em;
+        }
         .brand-guide-list { gap: 10px; }
         .brand-guide-list li {
             padding: 12px;
@@ -514,8 +536,17 @@
         .brand-guide-number { border-color: #bbf7d0; background: #dcfce7; color: #14532d; }
         .brand-guide-step-icon { color: #15803d; }
         .brand-guide-step-description { color: #475569; font-weight: 500; }
-        .brand-guide-note { border-color: #bbf7d0; background: #f0fdf4; color: #365b45; }
-        .brand-guide-note i { background: #dcfce7; color: #15803d; }
+        .brand-guide-note {
+            min-width: 0;
+            padding: 12px 14px;
+            border: 1px solid #bbf7d0;
+            border-radius: 13px;
+            background: #ecfdf3;
+            color: #14532d;
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(21,128,61,.07);
+        }
+        .brand-guide-note i { flex: 0 0 auto; background: #dcfce7; color: #15803d; }
         .login-panel {
             background: radial-gradient(ellipse at 100% 0%, rgba(220,252,231,.62), transparent 38%), #f8fafc;
         }
@@ -572,7 +603,8 @@
             .form { gap: 15px; }
             .field input { min-height: 50px; padding: 13px 42px; font-size: 16px; }
             .brand-guide { margin: 0 12px 18px; padding: 20px 18px 22px; border-radius: 16px; }
-            .brand-guide-section + .brand-guide-section { padding-top: 14px; border-top: 1px solid #dce8df; border-left: 0; }
+            .brand-guide-section { padding: 14px; border-radius: 13px; }
+            .brand-guide-section + .brand-guide-section { padding: 14px; border: 1px solid #dce8df; }
             .brand-guide-note { width: 100%; }
             .footer { padding-bottom: calc(12px + env(safe-area-inset-bottom)); text-align: center; }
         }
