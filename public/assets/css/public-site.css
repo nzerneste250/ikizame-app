@@ -303,6 +303,205 @@ body.school-auth-page .gs-tag { background: #dcfce7; color: #166534; }
 body.school-auth-page .gs-body p, body.school-auth-page .guide-note { color: #475569; }
 body.school-auth-page .guide-note { border-color: var(--site-border); background: #fff; }
 body.school-auth-page .guide-note i { color: var(--site-green); }
+/* School authentication: keep the active form first and the school guide below it. */
+body.school-auth-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #0f172a;
+}
+body.school-auth-page .workspace-scroll-container {
+  display: block;
+  width: 100%;
+  min-height: 0;
+  margin: 72px 0 0;
+  padding: clamp(28px, 5vw, 56px) 20px 28px;
+}
+body.school-auth-page .auth-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .82fr) minmax(0, 1fr);
+  grid-template-areas: "intro auth" "guide guide";
+  align-items: center;
+  gap: 30px clamp(32px, 5vw, 72px);
+  width: min(100%, 1220px);
+  max-width: 1220px;
+  margin: 0 auto;
+}
+body.school-auth-page .school-intro-panel {
+  grid-area: intro;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  min-width: 0;
+  padding: clamp(26px, 4vw, 48px);
+  border: 1px solid #dcfce7;
+  border-radius: 20px;
+  background: #f0fdf4;
+}
+body.school-auth-page .school-intro-pattern {
+  position: absolute;
+  z-index: -1;
+  top: -42px;
+  right: -42px;
+  width: 190px;
+  height: 190px;
+  opacity: .08;
+  background: url('../images/imigongo-pattern.svg') center / 120px repeat;
+  mask-image: radial-gradient(circle, #000 0 25%, transparent 76%);
+}
+body.school-auth-page .school-intro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid #bbf7d0;
+  border-radius: 999px;
+  background: #fff;
+  color: #166534;
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .045em;
+}
+body.school-auth-page .school-intro-panel h1 {
+  max-width: 14ch;
+  color: #0f172a;
+  font-size: clamp(2rem, 3.3vw, 3.05rem);
+  line-height: 1.12;
+  letter-spacing: -.045em;
+}
+body.school-auth-page .school-intro-panel > p {
+  max-width: 45ch;
+  color: #475569;
+  font-size: .98rem;
+  line-height: 1.7;
+}
+body.school-auth-page .school-intro-benefits {
+  display: grid;
+  gap: 13px;
+  margin: 4px 0 0;
+  padding: 0;
+  color: #334155;
+  list-style: none;
+  font-size: .9rem;
+  font-weight: 600;
+}
+body.school-auth-page .school-intro-benefits li { display: flex; align-items: center; gap: 10px; }
+body.school-auth-page .school-intro-benefits i { color: #15803d; }
+body.school-auth-page .auth-card-frame {
+  grid-area: auth;
+  width: 100%;
+  max-width: 560px;
+  min-height: 0;
+  justify-self: center;
+  padding: clamp(26px, 3.4vw, 40px);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, .08);
+  backdrop-filter: none;
+}
+body.school-auth-page .auth-heading-block { margin-bottom: 24px; text-align: left; }
+body.school-auth-page .auth-heading-block h2 { margin-bottom: 8px; font-size: clamp(1.55rem, 2.4vw, 2rem); line-height: 1.2; letter-spacing: -.035em; }
+body.school-auth-page .auth-heading-block p { color: #475569; font-size: .9rem; }
+body.school-auth-page .auth-heading-block .portal-pill,
+body.school-auth-page .auth-step-pill { margin-bottom: 12px; border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
+body.school-auth-page .input-form-field { gap: 7px; margin-bottom: 17px; }
+body.school-auth-page .input-form-field label { color: #334155; font-size: .82rem; font-weight: 600; letter-spacing: 0; text-transform: none; }
+body.school-auth-page .input-form-field input {
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 11px;
+  background: #fff;
+  color: #0f172a;
+  font-size: .94rem;
+  font-weight: 500;
+  box-shadow: none;
+}
+body.school-auth-page .input-form-field input::placeholder { color: #94a3b8; }
+body.school-auth-page .input-form-field input:focus { border-color: #15803d; box-shadow: 0 0 0 3px rgba(21,128,61,.1); }
+body.school-auth-page .pw-eye:hover { color: #15803d; }
+body.school-auth-page .btn-auth-submit {
+  min-height: 50px;
+  border-radius: 11px;
+  background: #15803d;
+  box-shadow: none;
+  font-weight: 700;
+}
+body.school-auth-page .btn-auth-submit:hover { background: #166534; box-shadow: none; transform: translateY(-1px); }
+body.school-auth-page .switch-mode-anchor { margin-top: 16px; }
+body.school-auth-page #viewSectionSchoolLogin .switch-mode-anchor[style] { margin-top: 8px !important; text-align: right; font-size: .8rem; }
+body.school-auth-page #viewSectionSchoolLogin .switch-mode-anchor:not([style]) { margin-top: 16px; }
+body.school-auth-page .switch-mode-anchor span,
+body.school-auth-page .auth-extra-action span { color: #15803d; }
+body.school-auth-page .auth-step-pill { position: relative; gap: 7px; }
+body.school-auth-page .auth-step-pill::after { content: ""; display: block; width: 48px; height: 5px; margin-left: 4px; border-radius: 999px; background: linear-gradient(to right, #15803d 0 29%, transparent 29% 36%, #e2e8f0 36% 64%, transparent 64% 71%, #e2e8f0 71% 100%); }
+body.school-auth-page #viewSectionVerifyOtp .auth-step-pill::after { background: linear-gradient(to right, #15803d 0 29%, transparent 29% 36%, #15803d 36% 64%, transparent 64% 71%, #e2e8f0 71% 100%); }
+body.school-auth-page #viewSectionSetPassword .auth-step-pill::after { background: linear-gradient(to right, #15803d 0 29%, transparent 29% 36%, #15803d 36% 64%, transparent 64% 71%, #15803d 71% 100%); }
+body.school-auth-page .auth-card-frame .auth-alert { margin-bottom: 14px; }
+body.school-auth-page .guide-card {
+  grid-area: guide;
+  display: block;
+  width: 100%;
+  max-width: none;
+  padding: 24px 28px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15,23,42,.045);
+}
+body.school-auth-page .guide-card > div:first-child { margin-bottom: 20px; }
+body.school-auth-page .guide-card-title { color: #0f172a; font-size: 1rem; }
+body.school-auth-page .guide-card-sub { max-width: 60ch; padding: 7px 0 0; border: 0; color: #64748b; font-size: .84rem; }
+body.school-auth-page .guide-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+body.school-auth-page .guide-step { display: flex; flex-direction: column; gap: 8px; min-width: 0; order: initial; }
+body.school-auth-page .guide-step:not(:last-child)::after { display: none; }
+body.school-auth-page .gs-num { width: 30px; height: 30px; border: 0; background: #15803d; }
+body.school-auth-page .gs-body { padding: 0 !important; }
+body.school-auth-page .gs-tag { padding: 0; background: transparent; color: #15803d; font-size: .62rem; }
+body.school-auth-page .gs-body h4 { margin: 3px 0 5px; color: #0f172a; font-size: .83rem; }
+body.school-auth-page .gs-body p { color: #64748b; font-size: .76rem; }
+body.school-auth-page .workspace-scroll-container > .auth-trust-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  width: min(100%, 1220px);
+  margin: 15px auto 0;
+}
+body.school-auth-page .auth-trust-chip { padding: 8px 12px; border-color: #e2e8f0; background: #fff; color: #475569; font-size: .76rem; }
+body.school-auth-page .auth-trust-chip i { color: #15803d; }
+body.school-auth-page #viewSectionAccessDenied > div > div:first-child { background: #fef2f2 !important; color: #dc2626 !important; }
+body.school-auth-page #viewSectionAccessDenied h2 { color: #b91c1c !important; }
+body.school-auth-page #viewSectionAccessDenied p,
+body.school-auth-page #viewSectionAccessDenied [style*="font-size:13px"] { color: #475569 !important; }
+body.school-auth-page #viewSectionAccessDenied [style*="background:rgba(239,68,68"] { border-color: #fecaca !important; background: #fef2f2 !important; }
+body.school-auth-page #viewSectionAccessDenied a { color: #15803d !important; }
+body.school-auth-page #viewSectionAccessDenied button { border: 1px solid #cbd5e1 !important; background: #fff !important; color: #334155 !important; }
+body.school-auth-page .success-animation { background: #16a34a; animation: none; box-shadow: none; }
+@media (max-width: 900px) {
+  body.school-auth-page .workspace-scroll-container { margin-top: 0; padding: 116px 18px 32px; }
+  body.school-auth-page .auth-layout { grid-template-columns: minmax(0,1fr); grid-template-areas: "auth" "intro" "guide"; gap: 18px; width: min(100%, 600px); }
+  body.school-auth-page .auth-card-frame { order: 0; max-width: none; padding: 26px 24px; }
+  body.school-auth-page .school-intro-panel { padding: 24px; gap: 13px; }
+  body.school-auth-page .school-intro-panel h1 { max-width: 24ch; font-size: clamp(1.7rem, 5vw, 2.2rem); }
+  body.school-auth-page .guide-card { padding: 22px; }
+  body.school-auth-page .guide-steps { grid-template-columns: 1fr; gap: 0; }
+  body.school-auth-page .guide-step { display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 0 12px; padding-bottom: 14px; }
+  body.school-auth-page .guide-step:not(:last-child)::after { display: block; left: 14px; top: 30px; width: 2px; height: calc(100% - 30px); background: #d1d5db; }
+  body.school-auth-page .gs-num { grid-row: 1 / span 3; }
+  body.school-auth-page .gs-body p { max-width: 60ch; }
+}
+@media (max-width: 420px) {
+  body.school-auth-page .workspace-scroll-container { padding: 108px 16px 26px; }
+  body.school-auth-page .auth-card-frame { padding: 22px 18px; }
+  body.school-auth-page .school-intro-panel { padding: 20px; }
+  body.school-auth-page .auth-trust-bar { display: flex; }
+  body.school-auth-page .auth-trust-chip { justify-content: center; }
+}
 body:has(.contact-card-wrap) .hero-copy-glass p { color: #475569 !important; }
 body:has(.hero-disclaimer) .hero-disclaimer { border-color: var(--site-border); background: #f8fafc; color: #334155; }
 body:has(.hero-disclaimer) .hero-disclaimer i { color: var(--site-green); }
