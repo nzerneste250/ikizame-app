@@ -452,15 +452,15 @@ body.school-auth-page .guide-card {
   width: 100%;
   max-width: 900px;
   padding: 22px 24px;
-  border: 1px solid rgba(125, 211, 252, .38);
+  border: 1px solid rgba(203, 213, 225, .28);
   border-radius: 16px;
-  background: rgba(3, 20, 35, .82);
+  background: rgba(15, 23, 42, .76);
   color: #fff;
-  box-shadow: 0 16px 36px rgba(2, 15, 27, .2), inset 0 1px 0 rgba(255,255,255,.06);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 38px rgba(15, 23, 42, .18), inset 0 1px 0 rgba(255,255,255,.08);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  backdrop-filter: blur(16px) saturate(125%);
 }
-body.school-auth-page .guide-card::before { opacity: .14; }
+body.school-auth-page .guide-card::before { opacity: .1; }
 body.school-auth-page .guide-card-title { color: #fff; font-size: .95rem; }
 body.school-auth-page .guide-card-sub { padding-top: 6px; border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.9); }
 body.school-auth-page .guide-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
