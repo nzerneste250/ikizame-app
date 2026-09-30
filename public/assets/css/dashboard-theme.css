@@ -374,7 +374,7 @@
   border-spacing: 0;
 }
 .dashboard-page #questionsTableContainerViewSection thead th,
-.dashboard-page #questionsTableContainerViewSection tbody td { min-width: 0; overflow-wrap: anywhere; }
+.dashboard-page #questionsTableContainerViewSection tbody td { min-width: 0 !important; overflow-wrap: anywhere; }
 .dashboard-page #questionsTableContainerViewSection thead th:nth-child(1), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(1) { width: 4%; }
 .dashboard-page #questionsTableContainerViewSection thead th:nth-child(2), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(2) { width: 24%; }
 .dashboard-page #questionsTableContainerViewSection thead th:nth-child(3), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(3) { width: 7%; }
@@ -476,7 +476,11 @@
 }
 
 @media (max-width: 700px) {
-  .dashboard-page #questionsTableContainerViewSection > table { width: 100% !important; min-width: 0 !important; table-layout: fixed !important; }
+  .dashboard-page #questionsTableContainerViewSection { width: 100% !important; max-width: 100% !important; overflow-x: hidden !important; }
+  .dashboard-page #questionsTableContainerViewSection > table { width: 100% !important; max-width: 100% !important; min-width: 0 !important; table-layout: fixed !important; }
+  .dashboard-page #questionsTableContainerViewSection th,
+  .dashboard-page #questionsTableContainerViewSection td { min-width: 0 !important; max-width: 0; }
+  .dashboard-page #questionsTableContainerViewSection tbody td.question-cell { min-width: 0 !important; max-width: none !important; }
   .dashboard-page #questionsTableContainerViewSection thead th:nth-child(1), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(1) { width: 5%; }
   .dashboard-page #questionsTableContainerViewSection thead th:nth-child(2), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(2) { width: 22%; }
   .dashboard-page #questionsTableContainerViewSection thead th:nth-child(3), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(3) { width: 6%; }
