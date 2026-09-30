@@ -26,9 +26,8 @@
       links.appendChild(item);
     }
 
-    // The homepage keeps its full navigation visible on mobile instead of
-    // collapsing it behind a menu toggle. Other public pages retain the toggle.
-    if (header.classList.contains('home-visible-nav')) {
+    // Selected public pages keep navigation visible on mobile in a scrollable row.
+    if (header.classList.contains('home-visible-nav') || header.classList.contains('always-visible-nav')) {
       nav.hidden = false;
       return;
     }
