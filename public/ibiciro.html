@@ -470,6 +470,121 @@
             .payment-guide-container { padding: 16px; gap: 14px; }
             .ussd-commands-grid { grid-template-columns: 1fr; }
         }
+
+        /* Pricing page refresh: calm Imigongo accent, clear choices, simple flow. */
+        .pricing-page { gap: clamp(24px, 3vw, 38px); padding-bottom: 24px; }
+        .pricing-hero {
+            position: relative; isolation: isolate; overflow: hidden;
+            display: flex; align-items: center; min-height: 220px;
+            padding: clamp(24px, 5vw, 52px);
+            border: 1px solid #dcebe0; border-radius: 22px;
+            background: #f8fafc;
+            box-shadow: 0 8px 24px rgba(15,23,42,.05);
+        }
+        .pricing-hero::before, .pricing-hero::after {
+            content: ''; position: absolute; z-index: -1; pointer-events: none;
+            background: url('assets/images/imigongo-pattern.svg') repeat;
+            background-size: 160px 160px;
+        }
+        .pricing-hero::before { width: 190px; height: 190px; top: -72px; right: -58px; opacity: .075; }
+        .pricing-hero::after { width: 125px; height: 125px; bottom: -54px; left: -42px; opacity: .05; }
+        .pricing-hero-copy { position: relative; z-index: 1; max-width: 760px; }
+        .pricing-eyebrow {
+            display: inline-flex; align-items: center; gap: 8px; margin-bottom: 13px;
+            padding: 6px 11px; border: 1px solid #d5ead9; border-radius: 999px;
+            background: #fff; color: #166534; font-size: .72rem; font-weight: 800;
+            letter-spacing: .06em; text-transform: uppercase;
+        }
+        .pricing-eyebrow i { color: #16a34a; }
+        .pricing-hero h1 { max-width: 700px; color: #0f172a; font-size: clamp(1.7rem, 3.2vw, 2.65rem); line-height: 1.14; letter-spacing: -.035em; }
+        .pricing-hero-copy > p { max-width: 680px; margin-top: 12px; color: #475569; font-size: clamp(.95rem, 1.4vw, 1.05rem); line-height: 1.65; }
+        .pricing-trust-row { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 20px; color: #334155; font-size: .82rem; font-weight: 700; }
+        .pricing-trust-row span { display: inline-flex; align-items: center; gap: 7px; }
+        .pricing-trust-row i { color: #16a34a; }
+        .pricing-section-heading { margin-bottom: 15px; }
+        .pricing-section-heading h2 { color: #0f172a; font-size: clamp(1.25rem, 2vw, 1.55rem); font-weight: 800; letter-spacing: -.025em; }
+        .pricing-section-heading p { margin-top: 5px; color: #64748b; font-size: .9rem; line-height: 1.6; }
+        .pricing-card-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+        .pricing-page .price-card {
+            min-width: 0; min-height: 250px; padding: 22px 20px 18px; gap: 12px;
+            border: 1px solid #e2e8f0; border-radius: 16px; background: #fff;
+            box-shadow: 0 4px 20px rgba(15,23,42,.06);
+        }
+        .pricing-page .price-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,23,42,.09); }
+        .pricing-page .price-card.is-best { border: 2px solid #16a34a; padding: 21px 19px 17px; }
+        .pricing-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; min-height: 36px; }
+        .pricing-card-range { color: #0f172a; font-size: .96rem; font-weight: 800; line-height: 1.35; }
+        .pricing-card-badge { flex: 0 0 auto; padding: 4px 7px; border-radius: 999px; background: #f0fdf4; color: #166534; font-size: .62rem; font-weight: 800; line-height: 1.25; text-align: center; }
+        .pricing-card-price { display: flex; align-items: baseline; gap: 6px; margin-top: 4px; color: #166534; }
+        .pricing-card-price strong { font-size: clamp(2rem, 3vw, 2.45rem); line-height: 1; letter-spacing: -.05em; }
+        .pricing-card-price span { color: #166534; font-size: .95rem; font-weight: 800; }
+        .pricing-card-unit { margin-top: -5px; color: #64748b; font-size: .78rem; }
+        .pricing-card-description { flex: 1; color: #64748b; font-size: .82rem; line-height: 1.5; }
+        .pricing-page .btn-pay-trigger { min-height: 44px; padding: 10px 14px; border-radius: 10px; background: #166534; box-shadow: none; }
+        .pricing-page .btn-pay-trigger:hover { background: #15803d; box-shadow: none; }
+        .pricing-providers, .balance-card, .payment-timeline, .ussd-help { width: 100%; }
+        .provider-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; max-width: 740px; }
+        .provider-card {
+            display: flex; align-items: center; gap: 14px; min-width: 0;
+            padding: 15px 18px; border: 1px solid #e2e8f0; border-radius: 14px;
+            background: #fff; box-shadow: 0 4px 16px rgba(15,23,42,.04);
+        }
+        .provider-card img { width: 42px; height: 42px; object-fit: contain; flex: 0 0 auto; }
+        .provider-card strong { display: block; color: #0f172a; font-size: .95rem; }
+        .provider-card span { display: block; margin-top: 3px; color: #64748b; font-size: .8rem; }
+        .balance-card { padding: clamp(18px, 3vw, 26px); border: 1px solid #bbf7d0; border-radius: 16px; background: #f0fdf4; }
+        .balance-card .pricing-section-heading { margin-bottom: 14px; }
+        .balance-input-row { max-width: 660px; }
+        .balance-phone-prefix { display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border: 1px solid #e2e8f0; border-right: 0; border-radius: 10px 0 0 10px; background: #fff; color: #334155; font-size: .85rem; font-weight: 700; }
+        .balance-input-row input { min-width: 0; border-radius: 0 10px 10px 0; background: #fff; }
+        .balance-input-row .btn-balance-check { min-width: 144px; background: #166534; box-shadow: none; }
+        .balance-input-row .btn-balance-check:hover { background: #15803d; box-shadow: none; }
+        .payment-timeline { padding: clamp(18px, 3vw, 28px); border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; }
+        .payment-timeline .pricing-section-heading { text-align: center; margin-bottom: 28px; }
+        .pricing-page .steps-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+        .pricing-page .step-item { display: block; min-width: 0; padding: 0; }
+        .pricing-page .step-item:not(:last-child)::before { left: 42px; top: 16px; width: calc(100% - 24px); height: 2px; background: #bbf7d0; }
+        .pricing-page .step-num { position: relative; z-index: 1; width: 34px; height: 34px; margin-bottom: 11px; background: #166534; box-shadow: none; }
+        .pricing-page .step-content h4 { margin: 0 0 5px; font-size: .9rem; }
+        .pricing-page .step-content p { color: #64748b; font-size: .8rem; line-height: 1.55; }
+        .ussd-help { padding: 17px 20px; border: 1px solid #e2e8f0; border-radius: 14px; background: #fff; }
+        .ussd-help summary { color: #334155; font-size: .92rem; font-weight: 800; cursor: pointer; }
+        .ussd-help > p { margin: 8px 0 13px; color: #64748b; font-size: .84rem; }
+        .ussd-help .ussd-fallback-box { border-color: #e2e8f0; background: #f8fafc; }
+        .ussd-help .ussd-fallback-box h4 { color: #334155; }
+        .ussd-help .ussd-card { box-shadow: none; }
+        .payment-modal-overlay { padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); overflow-y: auto; }
+        .pay-modal-card { max-height: min(92dvh, 760px); overflow-y: auto; border-radius: 18px; }
+        .pay-modal-header { background: #0b3a59; }
+        .pay-modal-body { gap: 12px; }
+        .pay-amount-box { border-color: #bbf7d0; background: #f0fdf4; }
+        .pay-amount-label, .pay-amount-value { color: #166534; }
+        @media (max-width: 1000px) { .pricing-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 700px) {
+            .pricing-hero { min-height: 0; padding: 26px 20px; }
+            .pricing-hero::before { width: 140px; height: 140px; top: -58px; right: -54px; opacity: .045; }
+            .pricing-hero::after { opacity: .035; }
+            .pricing-hero-copy > p { font-size: .92rem; }
+            .pricing-trust-row { display: grid; gap: 9px; font-size: .78rem; }
+            .pricing-card-grid { grid-template-columns: 1fr; gap: 12px; }
+            .pricing-page .price-card { min-height: 0; padding: 19px; }
+            .pricing-page .price-card.is-best { padding: 18px; }
+            .provider-grid { gap: 9px; }
+            .provider-card { padding: 12px; gap: 9px; }
+            .provider-card img { width: 34px; height: 34px; }
+            .pricing-page .steps-list { grid-template-columns: 1fr; gap: 0; }
+            .pricing-page .step-item { display: flex; gap: 13px; padding-bottom: 16px; }
+            .pricing-page .step-item:not(:last-child)::before { left: 16px; top: 34px; width: 2px; height: calc(100% - 18px); }
+            .pricing-page .step-num { flex: 0 0 34px; margin: 0; }
+            .payment-timeline .pricing-section-heading { text-align: left; margin-bottom: 20px; }
+            .balance-input-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0; }
+            .balance-input-row .btn-balance-check { grid-column: 1 / -1; width: 100%; margin-top: 10px; }
+        }
+        @media (max-width: 380px) {
+            .provider-grid { grid-template-columns: 1fr; }
+            .pricing-trust-row { font-size: .74rem; }
+            .pay-modal-header, .pay-modal-body { padding-left: 16px; padding-right: 16px; }
+        }
     </style>
     <link rel="stylesheet" href="assets/css/public-pages-theme.css">
     <link rel="stylesheet" href="assets/css/public-navigation.css">
@@ -498,204 +613,131 @@
         </div>
     </header>
     <div class="workspace-scroll-container">
-        <main class="workspace-inner">
-            <section class="section-header-meta">
-                <div class="hero-copy-glass">
-                    <div class="hero-eyebrow"><i class="fa-solid fa-bolt"></i> Ibiciro by&#8217;ibizamini</div>
-                    <h2>Hitamo umubare w&#8217;ibizamini</h2>
-                    <p>Ishyura ukoresheje MTN MoMo cyangwa Airtel Money. Igiciro kuri buri kizamini kigabanuka uko ugura byinshi.</p>
-                </div>
-                <div class="hero-stats-row">
-                    <div class="hero-stat">
-                        <span class="hero-stat-val">100 RWF</span>
-                        <span class="hero-stat-lbl">1&#8211;9 ibizamini</span>
-                    </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-val">80 RWF</span>
-                        <span class="hero-stat-lbl">10&#8211;14 ibizamini</span>
-                    </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-val">70 RWF</span>
-                        <span class="hero-stat-lbl">15&#8211;20 ibizamini</span>
-                    </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-val">50 RWF</span>
-                        <span class="hero-stat-lbl">21+ ibizamini</span>
-                    </div>
-                </div>
-                <div class="channel-support-banner">
-                    <span class="banner-label">Kwishyura ukoresheje</span>
-                    <div class="channel-provider-list">
-                        <div class="channel-provider">
-                            <div class="carrier-logo-square-box header-payment-badge"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN"></div>
-                            <span>MTN MoMo</span>
-                        </div>
-                        <div class="channel-provider">
-                            <div class="carrier-logo-square-box header-payment-badge"><img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel"></div>
-                            <span>Airtel Money</span>
-                        </div>
+        <main class="workspace-inner pricing-page">
+            <section class="pricing-hero" aria-labelledby="pricingTitle">
+                <div class="pricing-hero-copy">
+                    <div class="pricing-eyebrow"><i class="fa-solid fa-shield-heart"></i> Ibiciro by&#8217;ibizamini</div>
+                    <h1 id="pricingTitle">Hitamo umubare w&#8217;ibizamini ukwiriye</h1>
+                    <p>Igiciro kuri buri kizamini kigabanuka uko ugura byinshi. Ishyura byoroshye ukoresheje MTN MoMo cyangwa Airtel Money.</p>
+                    <div class="pricing-trust-row" aria-label="Ibyiza byo kugura ibizamini">
+                        <span><i class="fa-solid fa-circle-check"></i> Kwishyura byizewe</span>
+                        <span><i class="fa-solid fa-circle-check"></i> MTN MoMo na Airtel Money</span>
+                        <span><i class="fa-solid fa-circle-check"></i> Ibizamini bifunguka nyuma yo kwishyura</span>
                     </div>
                 </div>
             </section>
 
-            <div class="pricing-split-layout">
-                <div class="cards-column">
-                    <div class="pricing-options-heading">
-                        <h3>Hitamo umubare w'ibizamini</h3>
-                        <p>Reba igiciro kuri buri kizamini, hanyuma uhitemo ipaki ijyanye n'uko witeguye.</p>
-                    </div>
-                    <!-- Ipaki yo gutangira -->
-                    <div class="price-card">
-                        <div class="pc-top">
-                            <div>
-                                <div class="pc-name">Ipaki yo gutangira</div>
-                                <div style="font-size:12px;color:#64748b;margin-top:3px;">Gutangira no kwiga</div>
-                            </div>
-                            <div class="pc-price-wrap">
-                                <div class="pc-price">100 <sub>RWF</sub></div>
-                                <div class="pc-price-note">kuri buri kizamini</div>
-                            </div>
-                        </div>
-                        <div class="pc-divider"></div>
-                        <div class="pc-tiers">
-                            <div class="pc-tier-row">
-                                <span class="pc-tier-range"><i class="fa-solid fa-circle-check"></i> 1 – 9 Ibizamini</span>
-                                <span class="pc-tier-price">100 RWF / imwe</span>
-                            </div>
-                            <div class="pc-tier-row" style="background:#fafafa;border-color:#f1f5f9;">
-                                <span class="pc-tier-range" style="color:#94a3b8;"><i class="fa-solid fa-circle" style="color:#e2e8f0;font-size:9px;"></i> Ntagabanyirizo</span>
-                                <span style="font-size:11px;color:#94a3b8;font-weight:600;">Igiciro gisanzwe</span>
-                            </div>
-                        </div>
-                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)">
-                            <i class="fa-solid fa-bolt"></i> Ishyura Ubu
-                        </button>
-                    </div>
+            <section aria-labelledby="pricingOptionsTitle">
+                <div class="pricing-section-heading">
+                    <h2 id="pricingOptionsTitle">Hitamo umubare w&#8217;ibizamini</h2>
+                    <p>Igiciro cy&#8217;ikizamini kimwe kigabanuka uko ugura byinshi.</p>
+                </div>
+                <div class="pricing-card-grid">
+                    <article class="price-card">
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">1&#8211;9 ibizamini</h3></div>
+                        <div class="pricing-card-price"><strong>100</strong><span>RWF</span></div>
+                        <p class="pricing-card-unit">kuri buri kizamini</p>
+                        <p class="pricing-card-description">Byiza niba ushaka gukora ibizamini bike.</p>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)">Hitamo</button>
+                    </article>
+                    <article class="price-card">
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">10&#8211;14 ibizamini</h3><span class="pricing-card-badge">Gabanyirizwa 20%</span></div>
+                        <div class="pricing-card-price"><strong>80</strong><span>RWF</span></div>
+                        <p class="pricing-card-unit">kuri buri kizamini</p>
+                        <p class="pricing-card-description">Igiciro cyiza kurushaho ukoze ibizamini byinshi.</p>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(10)">Hitamo</button>
+                    </article>
+                    <article class="price-card">
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">15&#8211;20 ibizamini</h3><span class="pricing-card-badge">Gabanyirizwa 30%</span></div>
+                        <div class="pricing-card-price"><strong>70</strong><span>RWF</span></div>
+                        <p class="pricing-card-unit">kuri buri kizamini</p>
+                        <p class="pricing-card-description">Hitamo iyi niba ushaka kwitoza kenshi.</p>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)">Hitamo</button>
+                    </article>
+                    <article class="price-card is-best">
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">21+ ibizamini</h3><span class="pricing-card-badge">Igiciro cyiza</span></div>
+                        <div class="pricing-card-price"><strong>50</strong><span>RWF</span></div>
+                        <p class="pricing-card-unit">kuri buri kizamini</p>
+                        <p class="pricing-card-description">Igiciro gito kuri buri kizamini.</p>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(21)">Hitamo</button>
+                    </article>
+                </div>
+            </section>
 
-                    <!-- Ipaki y'igiciro cyiza -->
-                    <div class="price-card featured">
-                        <div class="pc-badge">Igiciro cyiza ku bipaki binini</div>
-                        <div class="pc-top">
-                            <div>
-                                <div class="pc-name">Ipaki y’igiciro cyiza</div>
-                                <div style="font-size:12px;color:#0369a1;margin-top:3px;">Ugabanyirijwe uko ugura byinshi</div>
-                            </div>
-                            <div class="pc-price-wrap">
-                                <div class="pc-price">50 <sub>RWF</sub></div>
-                                <div class="pc-price-note">guhera kuri 21+</div>
-                            </div>
-                        </div>
-                        <div class="pc-divider"></div>
-                        <div class="pc-tiers">
-                            <div class="pc-tier-row">
-                                <span class="pc-tier-range"><i class="fa-solid fa-circle-check"></i> 10 – 14 Ibizamini</span>
-                                <div style="display:flex;align-items:center;gap:6px;">
-                                    <span class="pc-tier-price">80 RWF / imwe</span>
-                                    <span class="pc-tier-save">-20%</span>
-                                </div>
-                            </div>
-                            <div class="pc-tier-row">
-                                <span class="pc-tier-range"><i class="fa-solid fa-circle-check"></i> 15 – 20 Ibizamini</span>
-                                <div style="display:flex;align-items:center;gap:6px;">
-                                    <span class="pc-tier-price">70 RWF / imwe</span>
-                                    <span class="pc-tier-save">-30%</span>
-                                </div>
-                            </div>
-                            <div class="pc-tier-row">
-                                <span class="pc-tier-range"><i class="fa-solid fa-circle-check"></i> 21+ Ibizamini</span>
-                                <div style="display:flex;align-items:center;gap:6px;">
-                                    <span class="pc-tier-price">50 RWF / imwe</span>
-                                    <span class="pc-tier-save">-50%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)">
-                            <i class="fa-solid fa-tags"></i> Ishyura Ubu
-                        </button>
+            <section class="pricing-providers" aria-labelledby="providersTitle">
+                <div class="pricing-section-heading">
+                    <h2 id="providersTitle">Kwishyura byoroshye</h2>
+                    <p>Wishyura ukoresheje MTN MoMo cyangwa Airtel Money.</p>
+                </div>
+                <div class="provider-grid">
+                    <div class="provider-card">
+                        <img src="assets/images/providers/mtn-logo.jpg" alt="MTN">
+                        <div><strong>MTN MoMo</strong><span>Nimero zitangira na 078 cyangwa 079</span></div>
+                    </div>
+                    <div class="provider-card">
+                        <img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel">
+                        <div><strong>Airtel Money</strong><span>Nimero zitangira na 072 cyangwa 073</span></div>
                     </div>
                 </div>
+            </section>
 
-                <section class="payment-guide-container">
-                    <div class="payment-guide-heading">
-                        <h3>Kwishyura no gufungura ibizamini</h3>
-                        <p>Wishyura kuri MTN MoMo cyangwa Airtel Money. Wemeza ubusabe kuri telefone yawe.</p>
+            <section class="balance-card" aria-labelledby="balanceTitle">
+                <div class="pricing-section-heading">
+                    <h2 id="balanceTitle">Ufite ibizamini bisigaye?</h2>
+                    <p>Injiza nimero ya telefone wakoresheje wishyura kugira ngo urebe ibizamini bisigaye.</p>
+                </div>
+                <div class="balance-check-block" id="balanceCheckBlock">
+                    <div class="balance-input-row">
+                        <label class="sr-only" for="balancePhoneInput">Nimero ya telefone</label>
+                        <span class="balance-phone-prefix">+250</span>
+                        <input type="tel" id="balancePhoneInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" oninput="sanitizeBalancePhoneInput()">
+                        <button class="btn-balance-check" onclick="fetchRemainingExamBalance()"><i class="fa-solid fa-magnifying-glass"></i> Reba ibizamini</button>
                     </div>
+                    <div id="balanceStatusPanel" role="status" aria-live="polite"></div>
+                </div>
+            </section>
 
-                    <!-- Balance Check -->
-                    <div>
-                        <div class="balance-section-title"><i class="fa-solid fa-magnifying-glass"></i> Reba ibizamini bisigaye kuri nimero yawe</div>
-                        <div class="balance-check-block" id="balanceCheckBlock">
-                            <div class="balance-input-row">
-                                <label class="sr-only" for="balancePhoneInput">Nimero ya telefone</label>
-                                <input type="tel" id="balancePhoneInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" oninput="sanitizeBalancePhoneInput()">
-                                <button class="btn-balance-check" onclick="fetchRemainingExamBalance()"><i class="fa-solid fa-search"></i> Reba</button>
-                            </div>
-                            <div id="balanceStatusPanel"></div>
+            <section class="payment-timeline" aria-labelledby="paymentStepsTitle">
+                <div class="pricing-section-heading">
+                    <h2 id="paymentStepsTitle">Uko kwishyura bigenda</h2>
+                    <p>Intambwe enye zoroshye</p>
+                </div>
+                <div class="steps-list">
+                    <div class="step-item">
+                        <div class="step-num">01</div>
+                        <div class="step-content"><h4>Hitamo ibizamini</h4><p>Hitamo umubare w&#8217;ibizamini ushaka.</p></div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">02</div>
+                        <div class="step-content"><h4>Injiza nimero ya telefone</h4><p>Koresha MTN 078/079 cyangwa Airtel 072/073.</p></div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">03</div>
+                        <div class="step-content"><h4>Emeza ubwishyu</h4><p>Emeza ubusabe bwa MoMo cyangwa Airtel Money kuri telefone yawe.</p></div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">04</div>
+                        <div class="step-content"><h4>Tangira gukora ibizamini</h4><p>Nyuma yo kwishyura, ibizamini byawe birafunguka.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <details class="ussd-help">
+                <summary>Kwishyura ntibyahise bikunda?</summary>
+                <p>Niba ubutumwa bwo kwemeza butaje, ushobora gukoresha USSD.</p>
+                <div class="ussd-fallback-box">
+                    <div class="ussd-commands-grid">
+                        <div class="ussd-card">
+                            <div class="carrier-logo-square-box"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN"></div>
+                            <div class="ussd-text-info"><span>MTN MoMo</span><div class="ussd-code">*182*7*1#</div></div>
+                        </div>
+                        <div class="ussd-card">
+                            <div class="carrier-logo-square-box"><img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel"></div>
+                            <div class="ussd-text-info"><span>Airtel Money</span><div class="ussd-code">*182*4*2#</div></div>
                         </div>
                     </div>
-
-                    <div class="panel-divider"></div>
-
-                    <!-- Steps -->
-                    <div>
-                        <div class="steps-title"><i class="fa-solid fa-list-ol"></i> Uko Kwishyura Bigenda</div>
-                        <div class="steps-list">
-                            <div class="step-item">
-                                <div class="step-num">1</div>
-                                <div class="step-content">
-                                    <h4>Hitamo Igiciro</h4>
-                                    <p>Hitamo umubare w’ibizamini ukeneye. Igiciro kuri buri kizamini kigabanuka uko ugura byinshi.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-num">2</div>
-                                <div class="step-content">
-                                    <h4>Injiza nimero ya telefone</h4>
-                                    <p>Andika nimero ya MTN (078/079) cyangwa Airtel (072/073) mu murongo ugendanwa.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-num">3</div>
-                                <div class="step-content">
-                                    <h4>Emeza kuri telefone</h4>
-                                    <p>Uzabona ikibazo cyo kwemeza kuri telefone yawe. Injiza PIN ya MoMo cyangwa Airtel Money.</p>
-                                </div>
-                            </div>
-                            <div class="step-item" style="padding-bottom:0;">
-                                <div class="step-num" style="background:linear-gradient(135deg,#10b981,#059669);">4</div>
-                                <div class="step-content">
-                                    <h4>Konti Ifunguka Ako Kanya</h4>
-                                    <p>Nyuma yo kwemeza, ibizamini byawe bifunguka vuba kandi ushobora gutangira ikizamini.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="panel-divider"></div>
-
-                    <!-- USSD Fallback -->
-                    <div class="ussd-fallback-box">
-                        <h4><i class="fa-solid fa-mobile-screen-button"></i> Niba ikibazo cyo kwemeza kitaje — Koresha USSD</h4>
-                        <div class="ussd-commands-grid">
-                            <div class="ussd-card">
-                                <div class="carrier-logo-square-box"><img src="assets/images/providers/mtn-logo.jpg" alt="MTN"></div>
-                                <div class="ussd-text-info">
-                                    <span>MTN MoMo</span>
-                                    <div class="ussd-code">*182*7*1#</div>
-                                </div>
-                            </div>
-                            <div class="ussd-card">
-                                <div class="carrier-logo-square-box"><img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel"></div>
-                                <div class="ussd-text-info">
-                                    <span>Airtel Money</span>
-                                    <div class="ussd-code">*182*4*2#</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </section>
-            </div>
+                </div>
+            </details>
         </main>
     </div>
 
@@ -703,7 +745,7 @@
         <div class="pay-modal-card">
             <div class="pay-modal-header">
                 <div class="pay-modal-header-top">
-                    <div class="pay-modal-title"><i class="fa-solid fa-mobile-screen-button"></i> Kwishyura kuri telefone</div>
+                    <div class="pay-modal-title"><i class="fa-solid fa-mobile-screen-button"></i> Ugiye kugura ibizamini</div>
                     <button class="pay-modal-close" onclick="closeTestPaymentModal()">&times;</button>
                 </div>
                 <div class="pay-carrier-row">
@@ -719,7 +761,7 @@
             </div>
             <div class="pay-modal-body">
                 <div class="pay-field">
-                    <label class="pay-field-label" for="examQuantityVolumeSelector">Umubare w'ibizamini</label>
+                    <label class="pay-field-label" for="examQuantityVolumeSelector">Umubare w&#8217;ibizamini</label>
                     <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
                     <div class="pay-tier-hint" id="dynamicPricingHelperLabel"></div>
                     <div class="pay-per-exam" id="pricePerExamLabel">Igiciro cya buri kizamini: 100 RWF</div>
@@ -737,7 +779,7 @@
                     <span id="momoCarrierChip" style="display:none;"></span>
                 </div>
                 <div class="pay-amount-box">
-                    <span class="pay-amount-label">Amafaranga Yishyurwa</span>
+                    <span class="pay-amount-label">Amafaranga yose</span>
                     <span class="pay-amount-value" id="liveAmountBreakdownDisplayStrip">100 RWF</span>
                 </div>
                 <button class="pay-submit-btn" id="momoSubmitPaymentBtn" onclick="dispatchAdaptivePaymentQueryPacket()">
@@ -895,6 +937,7 @@
             const displayStrip = document.getElementById('liveAmountBreakdownDisplayStrip');
             const helperLabel = document.getElementById('dynamicPricingHelperLabel');
             const perExamLabel = document.getElementById('pricePerExamLabel');
+            const payButtonLabel = document.getElementById('momoBtnTextLabel');
             let qty = parseInt(document.getElementById('examQuantityVolumeSelector').value, 10);
             if (isNaN(qty) || qty < 1) qty = 1;
             let totalCost = qty <= 9 ? qty * 100 : qty <= 14 ? 900 + (qty - 9) * 80 : qty <= 20 ? 1300 + (qty - 14) * 70 : 1720 + (qty - 20) * 50;
@@ -905,6 +948,7 @@
             perExamLabel.textContent = `Igiciro cya buri kizamini: ${unitPrice} RWF`;
             
             displayStrip.textContent = `${totalCost.toLocaleString()} RWF`;
+            if (payButtonLabel) payButtonLabel.textContent = `Ishyura ${totalCost.toLocaleString()} RWF`;
         };
 
         window.dispatchAdaptivePaymentQueryPacket = function() {
