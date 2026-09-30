@@ -119,11 +119,11 @@ body:has(.workspace) .hero-copy .hero-copy-panel {
   backdrop-filter: none;
 }
 body:has(.workspace) .hero-h1,
-body:has(.workspace) .hero-h1 em { color: #214E72; text-shadow: none; }
-body:has(.workspace) .hero-desc { color: #526174; }
+body:has(.workspace) .hero-h1 em { color: #1F2937; text-shadow: none; }
+body:has(.workspace) .hero-desc { color: #64748B; }
 body:has(.workspace) .hero-copy-panel .hero-h1,
-body:has(.workspace) .hero-copy-panel .hero-h1 em { color: #214E72 !important; }
-body:has(.workspace) .hero-copy-panel .hero-desc { color: #526174 !important; }
+body:has(.workspace) .hero-copy-panel .hero-h1 em { color: #1F2937 !important; }
+body:has(.workspace) .hero-copy-panel .hero-desc { color: #64748B !important; }
 body:has(.workspace) .hero-support-pill {
   border-color: #D7E1EA;
   background: #E3EFFA;
@@ -132,6 +132,10 @@ body:has(.workspace) .hero-support-pill {
 body:has(.workspace) .hero-support-pill i { color: #1565C0; }
 body:has(.workspace) .hero-actions .pill { color: #64748B; }
 body:has(.workspace) .workspace a:not(.hero-cta) { color: #1565C0; }
+body:has(.workspace) :is(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid rgba(21,101,192,.38);
+  outline-offset: 3px;
+}
 
 /* Cards and metrics share one neutral surface, border, and restrained shadow. */
 body:has(.workspace) .quick-action-card,
@@ -143,6 +147,7 @@ body:has(.workspace) .hero-live-stat {
   box-shadow: 0 8px 24px rgba(31,60,90,.08);
 }
 body:has(.workspace) .quick-action-card:hover { border-color: #BFCFDF; }
+body:has(.workspace) .quick-actions { background: #F2F6FA; }
 body:has(.workspace) .quick-action-icon,
 body:has(.workspace) .hero-live-icon {
   background: #E3EFFA;
@@ -229,7 +234,9 @@ body:has(.workspace) .back-link { color: #1565C0; }
 
 /* Preserve existing modal behavior and set readable, consistent surfaces. */
 body:has(.workspace) .guide-overlay,
-body:has(.workspace) .otp-overlay { background: rgba(15,35,60,.45); }
+body:has(.workspace) .otp-overlay,
+body:has(.workspace) .pay-modal-overlay,
+body:has(.workspace) .payment-modal-overlay { background: rgba(15,35,60,.45); }
 body:has(.workspace) .guide-modal,
 body:has(.workspace) .otp-modal,
 body:has(.workspace) .payment-modal,
@@ -244,13 +251,17 @@ body:has(.workspace) .guide-modal h3,
 body:has(.workspace) .otp-modal h3 { color: #1F2937; }
 body:has(.workspace) .guide-modal p,
 body:has(.workspace) .otp-modal p { color: #64748B; }
-body:has(.workspace) .guide-modal .step-icon { background: #0D47A1 !important; }
+body:has(.workspace) .guide-modal .step-icon { background: #E3EFFA !important; color: #0D47A1 !important; }
 body:has(.workspace) .guide-modal .step-tag { background: #E3EFFA !important; color: #0D47A1 !important; }
 body:has(.workspace) .guide-modal .guide-step { border-color: #D7E1EA; background: #FFFFFF; color: #1F2937; }
 body:has(.workspace) .guide-modal .guide-step h4 { color: #1F2937; }
 body:has(.workspace) .guide-modal .guide-step p { color: #64748B; }
 body:has(.workspace) #ownerOtpOverlay .otp-modal > div:first-child { background: #0D47A1 !important; }
 body:has(.workspace) #ownerOtpOverlay .btn-otp-cancel { color: #64748B; }
+body:has(.workspace) .pay-modal-actions .btn-pay,
+body:has(.workspace) .btn-pay { border-color: #0D47A1; background: #0D47A1; color: #FFFFFF; }
+body:has(.workspace) .pay-modal-actions .btn-pay:hover,
+body:has(.workspace) .btn-pay:hover { background: #0B3D91; }
 
 /* Keep the footer's existing content and layout, matching the admin-login footer. */
 body:has(.workspace) .site-footer { background: #0D47A1; color: #FFFFFF; }
