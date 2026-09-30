@@ -495,6 +495,8 @@
             max-width: 680px;
             max-height: 90vh;
             overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
             box-shadow: 0 30px 70px rgba(0,0,0,0.4);
         }
         .guide-header {
@@ -865,6 +867,7 @@
             background: #fff;
             border-radius: 14px;
             overflow: hidden;
+            overscroll-behavior: contain;
             box-shadow: 0 18px 40px rgba(0,0,0,0.18);
             display: none;
             flex-direction: column;
@@ -952,6 +955,8 @@
         .otp-modal {
             background: #fff; border-radius: 20px; width: 100%; max-width: 360px;
             padding: 28px 24px; box-shadow: 0 30px 70px rgba(0,0,0,0.4); text-align: center;
+            max-height: calc(100vh - 40px); overflow-y: auto; overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
         }
         .otp-modal h3 { font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
         .otp-modal p { font-size: 0.82rem; color: #64748b; margin-bottom: 18px; line-height: 1.5; }
@@ -1998,6 +2003,101 @@
             <a href="/terms" style="color:#a78bfa; text-decoration:none; font-weight:700; font-size:0.7rem;">Terms &amp; Conditions</a>
         </div>
     </footer>
+        <script>
+        (() => {
+            const root = document.documentElement;
+            const body = document.body;
+            const scrollAreas = '.guide-modal, .otp-modal, .wa-popup';
+            let scrollSnapshot = null;
+
+            const saveInlineStyles = (element, properties) => properties.map((property) => ({
+                property,
+                value: element.style.getPropertyValue(property),
+                priority: element.style.getPropertyPriority(property)
+            }));
+
+            const restoreInlineStyles = (element, properties) => {
+                properties.forEach(({ property, value, priority }) => {
+                    if (value) element.style.setProperty(property, value, priority);
+                    else element.style.removeProperty(property);
+                });
+            };
+
+            const hasOpenForeground = () => {
+                if (document.querySelector('.guide-overlay.open, .otp-overlay.open')) return true;
+                const popup = document.getElementById('waPopup');
+                if (popup && getComputedStyle(popup).display !== 'none') return true;
+                const splash = document.getElementById('fullScreenAppLauncherSplashCurtain');
+                return Boolean(splash && getComputedStyle(splash).display !== 'none');
+            };
+
+            const lockPageScroll = () => {
+                const scrollX = window.scrollX;
+                const scrollY = window.scrollY;
+                const scrollbarWidth = Math.max(0, window.innerWidth - root.clientWidth);
+                scrollSnapshot = {
+                    scrollX,
+                    scrollY,
+                    rootStyles: saveInlineStyles(root, ['overflow', 'overscroll-behavior', 'scroll-behavior']),
+                    bodyStyles: saveInlineStyles(body, ['position', 'top', 'left', 'right', 'width', 'overflow'])
+                };
+
+                root.style.setProperty('overflow', 'hidden');
+                root.style.setProperty('overscroll-behavior', 'none');
+                root.style.setProperty('scroll-behavior', 'auto');
+                body.style.setProperty('position', 'fixed');
+                body.style.setProperty('top', `${-scrollY}px`);
+                body.style.setProperty('left', `${-scrollX}px`);
+                body.style.setProperty('right', `${scrollbarWidth}px`);
+                body.style.setProperty('width', 'auto');
+                body.style.setProperty('overflow', 'hidden');
+            };
+
+            const unlockPageScroll = () => {
+                const snapshot = scrollSnapshot;
+                if (!snapshot) return;
+                scrollSnapshot = null;
+
+                restoreInlineStyles(body, snapshot.bodyStyles);
+                restoreInlineStyles(root, snapshot.rootStyles.filter(({ property }) => property !== 'scroll-behavior'));
+                root.style.setProperty('scroll-behavior', 'auto');
+                window.scrollTo(snapshot.scrollX, snapshot.scrollY);
+                restoreInlineStyles(root, snapshot.rootStyles.filter(({ property }) => property === 'scroll-behavior'));
+            };
+
+            const syncPageScrollLock = () => {
+                if (hasOpenForeground()) {
+                    if (!scrollSnapshot) lockPageScroll();
+                } else if (scrollSnapshot) {
+                    unlockPageScroll();
+                }
+            };
+
+            const isInsideForeground = (target) => target instanceof Element && target.closest(scrollAreas);
+
+            const preventBackgroundScroll = (event) => {
+                if (scrollSnapshot && !isInsideForeground(event.target)) event.preventDefault();
+            };
+
+            const preventBackgroundScrollKeys = (event) => {
+                if (!scrollSnapshot || isInsideForeground(event.target)) return;
+                const scrollKeys = [' ', 'Spacebar', 'PageUp', 'PageDown', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+                if (scrollKeys.includes(event.key)) event.preventDefault();
+            };
+
+            document.addEventListener('wheel', preventBackgroundScroll, { capture: true, passive: false });
+            document.addEventListener('touchmove', preventBackgroundScroll, { capture: true, passive: false });
+            document.addEventListener('keydown', preventBackgroundScrollKeys, true);
+
+            new MutationObserver(syncPageScrollLock).observe(root, {
+                subtree: true,
+                childList: true,
+                attributes: true,
+                attributeFilter: ['class', 'style']
+            });
+            syncPageScrollLock();
+        })();
+        </script>
         <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Clean up old storage instances to prevent token pollution
