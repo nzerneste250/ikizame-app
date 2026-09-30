@@ -455,6 +455,118 @@
             .brand-guide-note { gap: 12px; padding: 14px 16px; font-size: 0.85rem; line-height: 1.5; }
             .brand-guide-note i { width: 30px; height: 30px; flex-basis: 30px; }
         }
+
+        /* IKIZAME public-site look: green branding, light Imigongo detail, and clear responsive layout. */
+        body {
+            --brand: #15803d;
+            --brand-dark: #166534;
+            --brand-glow: rgba(21,128,61,.16);
+            --border: #dce8df;
+            background: #f5faf6;
+            background-image: linear-gradient(135deg, rgba(240,253,244,.82), rgba(248,250,252,.96));
+        }
+        .admin-layout {
+            width: min(100%, 1440px);
+            min-height: calc(100vh - 48px);
+            min-height: calc(100svh - 48px);
+            margin-inline: auto;
+            grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+            grid-template-rows: minmax(210px, .58fr) minmax(390px, 1fr);
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 24px 70px rgba(15,23,42,.08);
+        }
+        .brand-panel {
+            background: linear-gradient(145deg, #166534 0%, #15803d 58%, #0f6b36 100%);
+        }
+        .brand-panel::before {
+            opacity: .13;
+            background-image: url('assets/images/imigongo-pattern.svg');
+            background-size: 160px 160px;
+            background-repeat: repeat;
+            mask-image: linear-gradient(135deg, #000 0%, rgba(0,0,0,.7) 75%, transparent 100%);
+        }
+        .brand-guide {
+            isolation: isolate;
+            background: linear-gradient(145deg, #fff 0%, #f0fdf4 100%);
+            border-right: 1px solid #e2eee5;
+        }
+        .brand-guide::before {
+            z-index: -1;
+            opacity: .06;
+            background-image: url('assets/images/imigongo-pattern.svg');
+            background-size: 160px 160px;
+            background-repeat: repeat;
+            filter: grayscale(1) brightness(0) saturate(100%) invert(33%) sepia(20%) saturate(1900%) hue-rotate(88deg) brightness(88%);
+        }
+        .brand-guide-section + .brand-guide-section { border-color: #dce8df; }
+        .brand-guide-title { color: #166534; }
+        .brand-guide-list li { color: #334155; }
+        .brand-guide-number { border-color: #bbf7d0; background: #dcfce7; color: #166534; }
+        .brand-guide-step-icon { color: #15803d; }
+        .brand-guide-step-description { color: #64748b; }
+        .brand-guide-note { border-color: #bbf7d0; background: #f0fdf4; color: #365b45; }
+        .brand-guide-note i { background: #dcfce7; color: #15803d; }
+        .login-panel {
+            background: radial-gradient(ellipse at 100% 0%, rgba(220,252,231,.62), transparent 38%), #f8fafc;
+        }
+        .card {
+            width: min(100%, 500px);
+            max-width: 500px;
+            padding: clamp(28px, 4vw, 44px);
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid #15803d;
+            border-radius: 22px;
+            box-shadow: 0 22px 58px rgba(15,23,42,.1), 0 3px 10px rgba(21,128,61,.04);
+        }
+        .card h1 { color: #0f172a; font-size: clamp(1.55rem, 2.1vw, 1.9rem); letter-spacing: -.035em; }
+        .card .sub { color: #64748b; }
+        .field label { color: #334155; font-weight: 700; }
+        .field input { min-height: 52px; border-color: #dbe5df; border-radius: 12px; background: #fbfdfb; }
+        .field input:focus { border-color: #15803d; box-shadow: 0 0 0 4px rgba(21,128,61,.12); background: #fff; }
+        .field-wrap .ico-left { color: #64748b; }
+        .field:focus-within label, .field:focus-within .ico-left, .field-wrap .ico-right:hover { color: #15803d; }
+        .btn { min-height: 50px; border-radius: 12px; }
+        .btn-primary { background: linear-gradient(135deg, #15803d, #166534); box-shadow: 0 10px 22px rgba(21,128,61,.2); }
+        .btn-primary:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 13px 26px rgba(21,128,61,.23); }
+        .forgot-link { color: #15803d; }
+        .back-link { border-color: #dce8df; border-radius: 12px; background: #f0fdf4; color: #166534; }
+        .back-link:hover { background: #dcfce7; border-color: #bbf7d0; color: #14532d; }
+        .step-dot.active .dot { background: #15803d; box-shadow: 0 0 0 4px rgba(21,128,61,.12); }
+        .step-dot.active .dot-label { color: #15803d; }
+        .footer { background: #0f172a; }
+        .footer strong { color: #86efac; }
+        @media (max-width: 960px) {
+            .admin-layout {
+                width: min(100%, 760px);
+                min-height: auto;
+                margin: 0 auto;
+                overflow: visible;
+                background: transparent;
+                box-shadow: none;
+            }
+            .brand-panel { border-radius: 0 0 20px 20px; }
+            .brand-guide { margin: 0 16px 20px; border: 1px solid #e2eee5; border-radius: 18px; box-shadow: 0 12px 32px rgba(15,23,42,.05); }
+            .login-panel { background: transparent; }
+            .card { border-radius: 20px; }
+        }
+        @media (max-width: 600px) {
+            .brand-panel { padding: calc(16px + env(safe-area-inset-top, 0px)) 18px 18px; border-radius: 0 0 18px 18px; }
+            .brand-lockup { gap: 0; }
+            .brand-heading { gap: 12px; }
+            .card-icon { width: 48px; height: 48px; padding: 6px; }
+            .top-bar-brand { font-size: 1.02rem; }
+            .login-panel { padding: 20px 14px 24px; }
+            .card { width: 100%; padding: 26px 21px 22px; border-radius: 18px; }
+            .card h1 { font-size: 1.55rem; }
+            .card .sub { font-size: .88rem; margin-bottom: 20px; }
+            .form { gap: 15px; }
+            .field input { min-height: 50px; padding: 13px 42px; font-size: 16px; }
+            .brand-guide { margin: 0 12px 18px; padding: 20px 18px 22px; border-radius: 16px; }
+            .brand-guide-section + .brand-guide-section { padding-top: 14px; border-top: 1px solid #dce8df; border-left: 0; }
+            .brand-guide-note { width: 100%; }
+            .footer { padding-bottom: calc(12px + env(safe-area-inset-bottom)); text-align: center; }
+        }
     </style>
 </head>
 <body>
