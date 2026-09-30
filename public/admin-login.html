@@ -657,62 +657,96 @@
             .btn { min-height: 46px; }
             .back-link { min-height: 44px; padding-block: 10px; }
         }
-        /* Final admin-login-only blue and white theme. */
+        /* Final admin-login-only blue, Imigongo, and digital-line theme. */
         body {
             --brand: #1565C0;
             --brand-dark: #0D47A1;
-            --brand-glow: rgba(21,101,192,.12);
+            --brand-glow: rgba(21,101,192,.13);
             --text-dark: #1F2937;
             --text-muted: #64748B;
             --border: #DCE5EF;
             --valid: #15803D;
             --error: #DC2626;
-            background: #F6F9FC;
+            position: relative;
+            isolation: isolate;
+            background: linear-gradient(135deg, #082F78 0%, #0D47A1 52%, #123A72 100%);
         }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: .28;
+            background-image:
+                url('assets/images/imigongo-pattern.svg'),
+                linear-gradient(135deg, transparent 49.72%, rgba(144,202,249,.09) 49.9%, rgba(144,202,249,.09) 50.1%, transparent 50.28%),
+                linear-gradient(45deg, transparent 49.78%, rgba(234,243,252,.055) 49.92%, rgba(234,243,252,.055) 50.08%, transparent 50.22%),
+                linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+                radial-gradient(circle, rgba(234,243,252,.28) 1px, transparent 1.8px);
+            background-size: 176px 176px, 144px 144px, 144px 144px, 48px 48px, 48px 48px, 96px 96px;
+            background-position: center, 0 0, 72px 72px, 0 0, 0 0, 24px 24px;
+        }
+        .admin-layout, .footer { position: relative; z-index: 1; }
         .admin-layout {
-            width: min(100%, 1280px);
-            min-height: 0;
-            margin-inline: auto;
-            grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
-            grid-template-rows: auto auto;
-            align-content: start;
-            overflow: visible;
             background: transparent;
-            box-shadow: none;
         }
-        .brand-panel { background: #EAF3FC; }
-        .brand-panel::before { content: none; }
-        .top-bar-brand { color: #1565C0; }
-        .card-icon { border-color: #DCE5EF; box-shadow: 0 5px 16px rgba(15,65,120,.08); }
+        .brand-panel { background: #0D47A1; }
+        .brand-panel::before {
+            content: '';
+            z-index: 0;
+            opacity: .24;
+            background-image:
+                url('assets/images/imigongo-pattern.svg'),
+                linear-gradient(135deg, transparent 49.7%, rgba(144,202,249,.12) 49.9%, rgba(144,202,249,.12) 50.1%, transparent 50.3%),
+                radial-gradient(circle, rgba(234,243,252,.24) 1px, transparent 1.8px);
+            background-size: 144px 144px, 112px 112px, 72px 72px;
+            background-position: center, 0 0, 18px 18px;
+            mask-image: linear-gradient(135deg, #000 0%, rgba(0,0,0,.75) 75%, transparent 100%);
+        }
+        .top-bar-brand { color: #FFFFFF; }
+        .card-icon { border-color: rgba(255,255,255,.55); box-shadow: 0 8px 20px rgba(3,30,80,.2); }
         .brand-guide {
             isolation: auto;
-            background: #F8FAFC;
-            border-color: #E2E8F0;
+            background: #EDF5FC;
+            border-color: #D5E4F2;
         }
         .brand-guide::before { content: none; }
         .brand-guide-section,
         .brand-guide-section + .brand-guide-section {
-            border-color: #E2E8F0;
-            background: #fff;
-            box-shadow: 0 4px 14px rgba(15,65,120,.04);
+            border-color: #D5E4F2;
+            background: #F4F8FC;
+            box-shadow: 0 4px 14px rgba(3,30,80,.05);
         }
-        .brand-guide-title { border-color: #DCE5EF; background: #EAF3FC; color: #1F2937; }
-        .brand-guide-list li { border-color: #E2E8F0; border-left-color: #1976D2; background: #fff; color: #334155; box-shadow: none; }
-        .brand-guide-number { border-color: #B8D5F3; background: #EAF3FC; color: #1565C0; }
+        .brand-guide-title { border-color: #D5E4F2; background: #EAF3FC; color: #1F2937; }
+        .brand-guide-list li { border-color: #D5E4F2; border-left-color: #1976D2; background: #EDF5FC; color: #1F2937; box-shadow: none; }
+        .brand-guide-number { border-color: #0D47A1; background: #0D47A1; color: #FFFFFF; }
         .brand-guide-step-icon { color: #1976D2; }
         .brand-guide-step-description { color: #64748B; }
-        .brand-guide-note { border-color: #DCE5EF; background: #F8FAFC; color: #475569; box-shadow: none; }
-        .brand-guide-note i { background: #EAF3FC; color: #1565C0; }
-        .login-panel { background: transparent; }
+        .brand-guide-note { border-color: #D5E4F2; background: #EAF3FC; color: #475569; box-shadow: none; }
+        .brand-guide-note i { background: #DCEEFF; color: #0D47A1; }
+        .login-panel { background: radial-gradient(ellipse at 50% 45%, rgba(144,202,249,.14), transparent 60%); }
         .card {
             width: min(100%, 500px);
             max-width: 500px;
-            border: 1px solid #DCE5EF;
-            border-top: 1px solid #DCE5EF;
-            border-radius: 14px;
-            background: #FFFFFF;
-            box-shadow: 0 8px 30px rgba(15,65,120,.08);
+            border: 1px solid rgba(255,255,255,.42);
+            border-top: 1px solid rgba(255,255,255,.42);
+            border-radius: 16px;
+            background: rgba(244,248,252,.97);
+            box-shadow: 0 18px 45px rgba(3,30,80,.22);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             animation: none;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto;
+            height: 4px;
+            border-radius: 16px 16px 0 0;
+            background: linear-gradient(90deg, #0D47A1, #1976D2, #64B5F6);
+            pointer-events: none;
         }
         .card h1 { color: #1F2937; }
         .card .sub { color: #64748B; }
@@ -723,6 +757,7 @@
             margin-bottom: 12px;
             padding: 6px 11px;
             border-radius: 20px;
+            border: 1px solid #C5DCF3;
             background: #EAF3FC;
             color: #0D47A1;
             font-size: 12px;
@@ -732,36 +767,38 @@
         .field label { color: #334155; font-weight: 600; }
         .field input {
             min-height: 50px;
-            border: 1px solid #DCE5EF;
+            border: 1px solid #C9D8E8;
             border-radius: 8px;
-            background: #FFFFFF;
+            background: #F8FBFF;
             color: #1F2937;
         }
         .field input::placeholder { color: #94A3B8; opacity: 1; }
         .field input:focus { border-color: #1565C0; box-shadow: 0 0 0 3px rgba(21,101,192,.12); outline: none; }
-        .field-wrap .ico-left, .field-wrap .ico-right { color: #64748B; }
+        .field-wrap .ico-left, .field-wrap .ico-right { color: #1565C0; }
         .field:focus-within label, .field:focus-within .ico-left, .field-wrap .ico-right:hover { color: #1565C0; }
         .btn { min-height: 50px; border-radius: 8px; font-weight: 600; }
-        .btn-primary { background: #1565C0; color: #fff; box-shadow: none; }
-        .btn-primary:hover { background: #0D47A1; transform: none; box-shadow: none; }
-        .btn-primary:active { background: #0B3D91; }
+        .btn-primary { background: #0D47A1; color: #fff; box-shadow: 0 5px 15px rgba(13,71,161,.22); }
+        .btn-primary:hover { background: #083B8C; transform: none; box-shadow: 0 5px 15px rgba(13,71,161,.22); }
+        .btn-primary:active { background: #072F70; }
         .btn-primary:focus-visible, .btn-ghost:focus-visible { outline: 3px solid rgba(21,101,192,.25); outline-offset: 2px; }
         .forgot-link { color: #1565C0; }
         .forgot-link:hover { color: #0D47A1; text-decoration: underline; }
         .btn-ghost { color: #1565C0; }
         .btn-ghost:hover { color: #0D47A1; text-decoration: underline; }
-        .back-link { border-color: #DCE5EF; border-radius: 8px; background: #EAF3FC; color: #1565C0; }
-        .back-link:hover { border-color: #B8D5F3; background: #EAF3FC; color: #0D47A1; text-decoration: underline; }
-        .step-dot .dot { border: 1px solid transparent; background: #F1F5F9; color: #64748B; box-shadow: none; }
-        .step-dot.active .dot { border-color: #1565C0; background: #1565C0; color: #FFFFFF; box-shadow: none; }
+        .back-link { border-color: #C9D8E8; border-radius: 8px; background: #EAF3FC; color: #1565C0; }
+        .back-link:hover { border-color: #B8D5F3; background: #DCEEFF; color: #0D47A1; text-decoration: underline; }
+        .step-dot .dot { border: 1px solid transparent; background: #EDF3F8; color: #64748B; box-shadow: none; }
+        .step-dot.active .dot { border-color: #0D47A1; background: #0D47A1; color: #FFFFFF; box-shadow: none; }
         .step-dot.active .dot-label { color: #1565C0; }
-        .step-dot.done .dot { border-color: #B8D5F3; background: #EAF3FC; color: #0D47A1; }
+        .step-dot.done .dot { border-color: #B8D5F3; background: #DCEEFF; color: #0D47A1; }
         .step-dot.done .dot-label { color: #0D47A1; }
         .step-line.done { background: #B8D5F3; }
-        .alert.error { border-color: #FECACA; background: #FEF2F2; color: #DC2626; }
-        .alert.success { border-color: #BBF7D0; background: #F0FDF4; color: #15803D; }
-        .footer { border-top: 1px solid #E2E8F0; background: #F6F9FC; color: #64748B; }
-        .footer strong { color: #1565C0; }
+        .alert.error { border-color: #F5B7B7; background: #FDECEC; color: #B91C1C; }
+        .alert.success { border-color: #B8E0C4; background: #EAF7EF; color: #157A38; }
+        .footer { border-top: 1px solid rgba(255,255,255,.14); background: #0D47A1; color: #FFFFFF; }
+        .footer strong { color: #C7D8EA; }
+        .footer a { color: #BBDEFB; }
+        .footer a:hover { color: #FFFFFF; }
         @media (max-width: 960px) {
             .admin-layout { width: min(100%, 760px); min-height: 0; margin-inline: auto; }
             .brand-panel { border-radius: 0 0 14px 14px; }
