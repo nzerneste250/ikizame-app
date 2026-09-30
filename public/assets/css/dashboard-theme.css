@@ -230,14 +230,15 @@
   .dashboard-page .table-container {
     min-height: 280px;
     padding: 0 !important;
-    overflow: auto !important;
+    overflow: visible !important;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
   }
   .dashboard-page .table-container > table {
     display: table !important;
-    width: max-content !important;
-    min-width: 1120px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
     border-collapse: separate !important;
     border-spacing: 0;
   }
@@ -248,14 +249,19 @@
   .dashboard-page .table-container td {
     display: table-cell !important;
     width: auto !important;
-    min-width: 80px;
-    padding: 10px 12px !important;
+    min-width: 0 !important;
+    padding: 8px 5px !important;
     border-bottom: 1px solid #E8EEF4 !important;
     text-align: left;
     vertical-align: middle;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    overflow-wrap: anywhere;
   }
+  .dashboard-page .table-container th { padding: 9px 4px !important; font-size: 8px !important; letter-spacing: .02em !important; overflow-wrap: anywhere; }
   .dashboard-page .table-container td::before { content: none !important; display: none !important; }
-  .dashboard-page .actions-cell { width: 100px; align-items: center; }
+  .dashboard-page .actions-cell { width: auto; flex-direction: column; align-items: stretch; gap: 4px; }
+  .dashboard-page .actions-cell .btn-text-action { width: 100% !important; height: auto !important; min-height: 25px; padding: 4px 2px; font-size: 9px !important; gap: 3px; }
   .dashboard-page .table-surface { padding: 0 12px 14px; overflow-x: auto; }
   .dashboard-page .analytics-panel { padding: 14px; gap: 16px; }
   .dashboard-page .analytics-kpis { grid-template-columns: 1fr; gap: 9px; }
@@ -361,10 +367,20 @@
 .dashboard-page #questionsTableContainerViewSection::-webkit-scrollbar-track { background: #F2F5F5; }
 .dashboard-page #questionsTableContainerViewSection::-webkit-scrollbar-thumb { border: 2px solid #F2F5F5; border-radius: 999px; background: #AEBDBF; }
 .dashboard-page #questionsTableContainerViewSection > table {
-  min-width: 1580px;
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
 }
+.dashboard-page #questionsTableContainerViewSection thead th,
+.dashboard-page #questionsTableContainerViewSection tbody td { min-width: 0; overflow-wrap: anywhere; }
+.dashboard-page #questionsTableContainerViewSection thead th:nth-child(1), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(1) { width: 4%; }
+.dashboard-page #questionsTableContainerViewSection thead th:nth-child(2), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(2) { width: 24%; }
+.dashboard-page #questionsTableContainerViewSection thead th:nth-child(3), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(3) { width: 7%; }
+.dashboard-page #questionsTableContainerViewSection thead th:nth-child(n+4):nth-child(-n+7), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(n+4):nth-child(-n+7) { width: 13%; }
+.dashboard-page #questionsTableContainerViewSection thead th:nth-child(8), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(8) { width: 5%; }
+.dashboard-page #questionsTableContainerViewSection thead th:nth-child(9), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(9) { width: 8%; }
 .dashboard-page #questionsTableContainerViewSection thead th {
   top: 0;
   padding: 13px 14px;
@@ -409,45 +425,22 @@
   font-weight: 600;
 }
 .dashboard-page .question-cell-content {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  display: block;
+  overflow: visible;
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
 .dashboard-page .question-cell-content:hover {
-  display: block;
-  position: relative;
-  z-index: 4;
-  max-height: 240px;
-  overflow: auto;
-  padding: 10px 12px;
-  border: 1px solid #C9D8D5;
-  border-radius: 9px;
-  background: #FFFFFF;
-  box-shadow: 0 10px 24px rgba(31,45,52,.16);
-  -webkit-line-clamp: unset;
+  color: #115E59;
 }
 .dashboard-page .table-cell-content {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  display: block;
+  overflow: visible;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 .dashboard-page .table-cell-content:hover {
-  display: block;
-  position: relative;
-  z-index: 4;
-  max-height: 240px;
-  overflow: auto;
-  padding: 10px 12px;
-  border: 1px solid #C9D8D5;
-  border-radius: 9px;
-  background: #FFFFFF;
-  box-shadow: 0 10px 24px rgba(31,45,52,.16);
-  -webkit-line-clamp: unset;
+  color: #115E59;
 }
 .dashboard-page .actions-cell { flex-direction: row; justify-content: center; gap: 6px; }
 .dashboard-page .btn-text-action.btn-edit,
@@ -483,7 +476,15 @@
 }
 
 @media (max-width: 700px) {
-  .dashboard-page #questionsTableContainerViewSection > table { min-width: 1580px !important; }
+  .dashboard-page #questionsTableContainerViewSection > table { width: 100% !important; min-width: 0 !important; table-layout: fixed !important; }
+  .dashboard-page #questionsTableContainerViewSection thead th:nth-child(1), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(1) { width: 5%; }
+  .dashboard-page #questionsTableContainerViewSection thead th:nth-child(2), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(2) { width: 22%; }
+  .dashboard-page #questionsTableContainerViewSection thead th:nth-child(3), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(3) { width: 6%; }
+  .dashboard-page #questionsTableContainerViewSection thead th:nth-child(n+4):nth-child(-n+7), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(n+4):nth-child(-n+7) { width: 13%; }
+  .dashboard-page #questionsTableContainerViewSection thead th:nth-child(8), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(8) { width: 4%; }
+  .dashboard-page #questionsTableContainerViewSection thead th:nth-child(9), .dashboard-page #questionsTableContainerViewSection tbody td:nth-child(9) { width: 11%; }
+  .dashboard-page #questionsTableContainerViewSection tbody td:first-child { position: static; box-shadow: none; }
+  .dashboard-page #questionsTableContainerViewSection .cell-img { width: 100%; height: auto; max-height: 46px; object-fit: contain; }
   .dashboard-page #questionsTableContainerViewSection .question-cell-content {
     display: block;
     max-height: none;
