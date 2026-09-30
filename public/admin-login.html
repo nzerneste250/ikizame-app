@@ -657,6 +657,129 @@
             .btn { min-height: 46px; }
             .back-link { min-height: 44px; padding-block: 10px; }
         }
+        /* Final admin-login-only blue and white theme. */
+        body {
+            --brand: #1565C0;
+            --brand-dark: #0D47A1;
+            --brand-glow: rgba(21,101,192,.12);
+            --text-dark: #1F2937;
+            --text-muted: #64748B;
+            --border: #DCE5EF;
+            --valid: #15803D;
+            --error: #DC2626;
+            background: #F6F9FC;
+        }
+        .admin-layout {
+            width: min(100%, 1280px);
+            min-height: 0;
+            margin-inline: auto;
+            grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+            grid-template-rows: auto auto;
+            align-content: start;
+            overflow: visible;
+            background: transparent;
+            box-shadow: none;
+        }
+        .brand-panel { background: #EAF3FC; }
+        .brand-panel::before { content: none; }
+        .top-bar-brand { color: #1565C0; }
+        .card-icon { border-color: #DCE5EF; box-shadow: 0 5px 16px rgba(15,65,120,.08); }
+        .brand-guide {
+            isolation: auto;
+            background: #F8FAFC;
+            border-color: #E2E8F0;
+        }
+        .brand-guide::before { content: none; }
+        .brand-guide-section,
+        .brand-guide-section + .brand-guide-section {
+            border-color: #E2E8F0;
+            background: #fff;
+            box-shadow: 0 4px 14px rgba(15,65,120,.04);
+        }
+        .brand-guide-title { border-color: #DCE5EF; background: #EAF3FC; color: #1F2937; }
+        .brand-guide-list li { border-color: #E2E8F0; border-left-color: #1976D2; background: #fff; color: #334155; box-shadow: none; }
+        .brand-guide-number { border-color: #B8D5F3; background: #EAF3FC; color: #1565C0; }
+        .brand-guide-step-icon { color: #1976D2; }
+        .brand-guide-step-description { color: #64748B; }
+        .brand-guide-note { border-color: #DCE5EF; background: #F8FAFC; color: #475569; box-shadow: none; }
+        .brand-guide-note i { background: #EAF3FC; color: #1565C0; }
+        .login-panel { background: transparent; }
+        .card {
+            width: min(100%, 500px);
+            max-width: 500px;
+            border: 1px solid #DCE5EF;
+            border-top: 1px solid #DCE5EF;
+            border-radius: 14px;
+            background: #FFFFFF;
+            box-shadow: 0 8px 30px rgba(15,65,120,.08);
+            animation: none;
+        }
+        .card h1 { color: #1F2937; }
+        .card .sub { color: #64748B; }
+        .secure-access-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 12px;
+            padding: 6px 11px;
+            border-radius: 20px;
+            background: #EAF3FC;
+            color: #0D47A1;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .secure-access-label i { color: #1565C0; }
+        .field label { color: #334155; font-weight: 600; }
+        .field input {
+            min-height: 50px;
+            border: 1px solid #DCE5EF;
+            border-radius: 8px;
+            background: #FFFFFF;
+            color: #1F2937;
+        }
+        .field input::placeholder { color: #94A3B8; opacity: 1; }
+        .field input:focus { border-color: #1565C0; box-shadow: 0 0 0 3px rgba(21,101,192,.12); outline: none; }
+        .field-wrap .ico-left, .field-wrap .ico-right { color: #64748B; }
+        .field:focus-within label, .field:focus-within .ico-left, .field-wrap .ico-right:hover { color: #1565C0; }
+        .btn { min-height: 50px; border-radius: 8px; font-weight: 600; }
+        .btn-primary { background: #1565C0; color: #fff; box-shadow: none; }
+        .btn-primary:hover { background: #0D47A1; transform: none; box-shadow: none; }
+        .btn-primary:active { background: #0B3D91; }
+        .btn-primary:focus-visible, .btn-ghost:focus-visible { outline: 3px solid rgba(21,101,192,.25); outline-offset: 2px; }
+        .forgot-link { color: #1565C0; }
+        .forgot-link:hover { color: #0D47A1; text-decoration: underline; }
+        .btn-ghost { color: #1565C0; }
+        .btn-ghost:hover { color: #0D47A1; text-decoration: underline; }
+        .back-link { border-color: #DCE5EF; border-radius: 8px; background: #EAF3FC; color: #1565C0; }
+        .back-link:hover { border-color: #B8D5F3; background: #EAF3FC; color: #0D47A1; text-decoration: underline; }
+        .step-dot .dot { border: 1px solid transparent; background: #F1F5F9; color: #64748B; box-shadow: none; }
+        .step-dot.active .dot { border-color: #1565C0; background: #1565C0; color: #FFFFFF; box-shadow: none; }
+        .step-dot.active .dot-label { color: #1565C0; }
+        .step-dot.done .dot { border-color: #B8D5F3; background: #EAF3FC; color: #0D47A1; }
+        .step-dot.done .dot-label { color: #0D47A1; }
+        .step-line.done { background: #B8D5F3; }
+        .alert.error { border-color: #FECACA; background: #FEF2F2; color: #DC2626; }
+        .alert.success { border-color: #BBF7D0; background: #F0FDF4; color: #15803D; }
+        .footer { border-top: 1px solid #E2E8F0; background: #F6F9FC; color: #64748B; }
+        .footer strong { color: #1565C0; }
+        @media (max-width: 960px) {
+            .admin-layout { width: min(100%, 760px); min-height: 0; margin-inline: auto; }
+            .brand-panel { border-radius: 0 0 14px 14px; }
+            .brand-guide { border: 1px solid #E2E8F0; border-radius: 10px; box-shadow: none; }
+            .login-panel { background: transparent; }
+        }
+        @media (max-width: 600px) {
+            .brand-panel { padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px; border-radius: 0 0 12px 12px; }
+            .card-icon { width: 46px; height: 46px; padding: 6px; border-radius: 10px; }
+            .top-bar-brand { font-size: 1rem; }
+            .login-panel { padding: 16px 16px 20px; }
+            .card { width: 100%; max-width: 460px; padding: 24px 20px; border-radius: 14px; }
+            .field input { min-height: 48px; font-size: 16px; }
+            .btn { min-height: 48px; width: 100%; }
+            .brand-guide { margin: 0 12px 16px; padding: 12px; }
+            .brand-guide-section, .brand-guide-section + .brand-guide-section { padding: 10px; }
+            .brand-guide-note { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -684,6 +807,7 @@
 
         <!-- ── PANEL 1: Login ── -->
         <div class="panel active" id="panelLogin">
+            <div class="secure-access-label"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Secure Administrator Access</div>
             <h1>Welcome Back</h1>
             <p class="sub">Sign in with your admin email to manage exams, students, payments and reports.</p>
             <form action="/api/admin/auth" method="POST" class="form" id="loginForm" novalidate>
