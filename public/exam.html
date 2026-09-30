@@ -445,7 +445,7 @@
                 min-height: 100svh;
                 height: auto;
                 overflow: visible;
-                padding: max(12px, env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom));
+                padding: max(12px, env(safe-area-inset-top)) 12px calc(78px + env(safe-area-inset-bottom));
                 gap: 12px;
             }
 
@@ -457,6 +457,9 @@
 
             .timer-label { font-size: 0.68rem; }
             .timer-val { font-size: clamp(1.45rem, 7vw, 1.8rem); }
+
+            .prog-desktop { display: none !important; }
+            .prog-mobile { display: flex !important; }
 
             .question-card {
                 width: 100%;
@@ -476,13 +479,15 @@
 
             .prog-mobile .prog-row {
                 width: 100%;
+                display: grid;
+                grid-template-columns: repeat(10, minmax(0, 1fr));
                 gap: clamp(2px, 1vw, 5px);
             }
 
             .prog-mobile .prog-dot {
-                width: clamp(23px, 7.5vw, 30px);
-                height: clamp(23px, 7.5vw, 30px);
-                flex: 0 1 clamp(23px, 7.5vw, 30px);
+                width: clamp(20px, 6.5vw, 28px);
+                height: clamp(20px, 6.5vw, 28px);
+                justify-self: center;
             }
 
             .prog-mobile .prog-line { max-width: 100%; }
@@ -572,10 +577,19 @@
             .btn { justify-content: center; padding: 11px clamp(11px, 3.5vw, 17px); font-size: 0.84rem; }
 
             .footer {
-                padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
+                position: fixed;
+                z-index: 20;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                min-height: 48px;
+                padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
                 line-height: 1.45;
                 text-align: center;
+                box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.12);
             }
+
+            .footer > div { column-gap: 6px !important; }
         }
 
         @media (max-width: 360px) {
@@ -585,7 +599,8 @@
             .nav-btns { gap: 5px; }
             .btn { padding-right: 10px; padding-left: 10px; font-size: 0.8rem; }
             .options-list.img-grid { grid-template-rows: repeat(2, minmax(100px, 33vw)); }
-        }    </style>
+        }
+    </style>
 </head>
 <body>
 
