@@ -195,6 +195,51 @@ body:has(.workspace) .btn-submit { background: var(--site-green-strong); box-sha
 body:has(.workspace) .quick-action-card { border: 1px solid var(--site-border); border-radius: 14px; background: #fff; box-shadow: var(--site-shadow); }
 body:has(.workspace) .quick-action-icon { background: var(--site-green-soft); color: var(--site-green); }
 
+/* Keep the pricing overview in the same light Imigongo style as the homepage. */
+body:has(.pricing-split-layout) .section-header-meta {
+  border: 1px solid #dcebe0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #edf7ef, #f8fafc 72%);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, .08);
+}
+body:has(.pricing-split-layout) .section-header-meta::before {
+  opacity: .045;
+  background-image: url('../images/imigongo-pattern.svg');
+  background-size: 160px 160px;
+  background-repeat: repeat;
+}
+body:has(.pricing-split-layout) .hero-copy-glass {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body:has(.pricing-split-layout) .hero-copy-glass::before { content: none; }
+body:has(.pricing-split-layout) .hero-eyebrow {
+  border-color: #d5ead9;
+  background: #fff;
+  color: var(--site-green);
+}
+body:has(.pricing-split-layout) .section-header-meta h2 { color: var(--site-ink); }
+body:has(.pricing-split-layout) .section-header-meta p { color: #475569; }
+body:has(.pricing-split-layout) .hero-stat {
+  border-color: #dcebe0;
+  background: rgba(255, 255, 255, .88);
+}
+body:has(.pricing-split-layout) .hero-stat-val { color: var(--site-ink); }
+body:has(.pricing-split-layout) .hero-stat-lbl { color: #475569; }
+body:has(.pricing-split-layout) .channel-support-banner {
+  border-color: #dcebe0;
+  background: rgba(255, 255, 255, .88);
+}
+body:has(.pricing-split-layout) .channel-support-banner .banner-label { color: #475569; }
+body:has(.pricing-split-layout) .channel-provider {
+  border-color: #e2e8f0;
+  background: #fff;
+  color: var(--site-ink);
+}
+
 .pay-modal-overlay, .payment-modal-overlay, .otp-overlay, .guide-overlay {
   background: rgba(15,23,42,.62);
   -webkit-backdrop-filter: blur(4px);
