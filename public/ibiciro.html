@@ -478,22 +478,17 @@
         .pricing-page { gap: clamp(44px, 5.5vw, 80px); padding-bottom: 36px; }
         .pricing-hero {
             position: relative; isolation: isolate; overflow: hidden;
-            display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(250px, .8fr);
-            align-items: center; min-height: 340px; padding: clamp(30px, 5vw, 58px);
+            display: flex; align-items: center; min-height: 0; padding: clamp(22px, 3vw, 38px);
             border: 1px solid #dcebe0; border-radius: 22px;
             background: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 100%);
             box-shadow: 0 8px 24px rgba(15,23,42,.05);
         }
-        .pricing-hero-copy { position: relative; z-index: 1; max-width: 700px; }
-        .imigongo-artwork {
-            position: absolute; z-index: 0; top: 50%; right: -24px; width: 39%; height: 92%;
-            transform: translateY(-50%); pointer-events: none; opacity: .92;
+        .pricing-hero::before {
+            content: ''; position: absolute; z-index: 0; inset: 0; pointer-events: none;
+            opacity: .045; background: url('assets/images/imigongo-pattern.svg') repeat;
+            background-size: 160px 160px;
         }
-        .imigongo-artwork svg { display: block; width: 100%; height: 100%; overflow: visible; }
-        .imigongo-artwork .art-green { fill: none; stroke: #166534; stroke-width: 5; }
-        .imigongo-artwork .art-gold { fill: #d4a72c; }
-        .imigongo-artwork .art-navy { fill: #0f172a; }
-        .imigongo-artwork .art-terra { fill: #b4533c; }
+        .pricing-hero-copy { position: relative; z-index: 1; width: 100%; max-width: 100%; }
         .pricing-eyebrow {
             display: inline-flex; align-items: center; gap: 8px; margin-bottom: 13px;
             padding: 6px 11px; border: 1px solid #d5ead9; border-radius: 999px;
@@ -501,12 +496,14 @@
             letter-spacing: .06em; text-transform: uppercase;
         }
         .pricing-eyebrow i { color: #16a34a; }
-        .pricing-hero h1 { max-width: 700px; color: #0f172a; font-size: clamp(2rem, 3.5vw, 3.15rem); line-height: 1.12; letter-spacing: -.04em; }
-        .pricing-hero h1 span { display: block; color: #15803d; }
-        .pricing-hero-copy > p { max-width: 680px; margin-top: 12px; color: #475569; font-size: clamp(.95rem, 1.4vw, 1.05rem); line-height: 1.65; }
-        .pricing-trust-row { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 20px; color: #334155; font-size: .82rem; font-weight: 700; }
+        .pricing-hero h1 { max-width: 100%; color: #0f172a; font-size: clamp(1.8rem, 2.7vw, 2.35rem); line-height: 1.2; letter-spacing: -.035em; }
+        .pricing-hero h1 span { display: inline; color: #15803d; }
+        .pricing-hero-copy > p { max-width: 1040px; margin-top: 9px; color: #475569; font-size: clamp(.9rem, 1.1vw, .98rem); line-height: 1.5; }
+        .pricing-trust-row { display: flex; align-items: center; flex-wrap: wrap; gap: 9px 22px; margin-top: 14px; color: #334155; font-size: .8rem; font-weight: 700; }
         .pricing-trust-row span { display: inline-flex; align-items: center; gap: 7px; }
         .pricing-trust-row i { color: #16a34a; }
+        .pricing-trust-row .trust-provider { gap: 6px; }
+        .trust-provider img { width: 28px; height: 28px; object-fit: contain; }
         .pricing-section-heading { margin-bottom: 15px; }
         .pricing-section-eyebrow { display: inline-block; margin-bottom: 7px; color: #15803d; font-size: .73rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
         .pricing-section-heading h2 { color: #0f172a; font-size: clamp(1.25rem, 2vw, 1.55rem); font-weight: 800; letter-spacing: -.025em; }
@@ -542,13 +539,15 @@
         .provider-card img { width: 42px; height: 42px; object-fit: contain; flex: 0 0 auto; }
         .provider-card strong { display: block; color: #0f172a; font-size: .95rem; }
         .provider-card span { display: block; margin-top: 3px; color: #64748b; font-size: .8rem; }
-        .balance-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, .95fr); align-items: center; gap: 28px; padding: clamp(22px, 3.5vw, 36px); border: 1px solid #bbf7d0; border-radius: 20px; background: #ecfdf5; }
+        .balance-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, .95fr); align-items: center; gap: 28px; padding: 16px 20px; border: 1px solid #bbf7d0; border-radius: 18px; background: #ecfdf5; }
+        .pricing-search { margin-bottom: calc(clamp(44px, 5.5vw, 80px) * -0.55); }
         .balance-card .pricing-section-heading { margin: 0; }
         .balance-input-row { max-width: 660px; }
         .balance-phone-prefix { display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border: 1px solid #e2e8f0; border-right: 0; border-radius: 10px 0 0 10px; background: #fff; color: #334155; font-size: .85rem; font-weight: 700; }
         .balance-input-row input { min-width: 0; border-radius: 0 10px 10px 0; background: #fff; }
         .balance-input-row .btn-balance-check { min-width: 144px; background: #166534; box-shadow: none; }
         .balance-input-row .btn-balance-check:hover { background: #15803d; box-shadow: none; }
+        #balanceStatusPanel:empty { display: none; }
         .payment-timeline { padding: clamp(22px, 3.5vw, 36px); border: 1px solid #e2e8f0; border-radius: 20px; background: #fff; }
         .payment-timeline .pricing-section-heading { text-align: center; margin-bottom: 28px; }
         .pricing-page .steps-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
@@ -575,9 +574,8 @@
         @media (max-width: 1000px) {
             .pricing-page { gap: 56px; }
             body:has(.pricing-page) .workspace-scroll-container { padding-left: 12px; padding-right: 12px; }
-            .pricing-hero { grid-template-columns: minmax(0, 1fr); min-height: 310px; }
-            .imigongo-artwork { right: -34px; width: 34%; opacity: .62; }
-            .pricing-hero-copy { max-width: 64%; }
+            .pricing-hero { min-height: 0; }
+            .pricing-hero h1 { font-size: clamp(1.65rem, 3.5vw, 2.1rem); }
             .pricing-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .balance-card { grid-template-columns: minmax(0, 1fr) minmax(300px, .95fr); gap: 20px; }
         }
@@ -586,11 +584,9 @@
             .pricing-page { width: 100%; max-width: none; min-width: 0; margin-inline: 0; flex: 0 1 auto; }
             .pricing-page > *, .pricing-hero, .pricing-section-heading { min-width: 0; max-width: 100%; }
             .pricing-page { gap: 44px; }
-            .pricing-hero { display: block; min-height: 0; padding: 28px 22px 20px; }
-            .imigongo-artwork { top: auto; right: -12px; bottom: -30px; width: 112px; height: 112px; transform: none; opacity: .13; }
-            .pricing-hero-copy { max-width: none; padding-bottom: 86px; }
+            .pricing-hero { display: block; padding: 21px 18px; }
             .pricing-hero-copy > p { font-size: .92rem; }
-            .pricing-trust-row { display: grid; gap: 9px; font-size: .78rem; }
+            .pricing-trust-row { display: flex; gap: 9px 14px; font-size: .76rem; }
             .pricing-card-grid { grid-template-columns: 1fr; gap: 12px; }
             .pricing-page .price-card { min-height: 0; padding: 22px; }
             .pricing-page .price-card.is-best { padding: 32px 21px 21px; }
@@ -602,7 +598,8 @@
             .pricing-page .step-item:not(:last-child)::before { left: 16px; top: 34px; width: 2px; height: calc(100% - 18px); }
             .pricing-page .step-num { flex: 0 0 34px; margin: 0; }
             .payment-timeline .pricing-section-heading { text-align: left; margin-bottom: 20px; }
-            .balance-card { grid-template-columns: 1fr; gap: 16px; }
+            .balance-card { grid-template-columns: 1fr; gap: 14px; padding: 17px; }
+            .pricing-search { margin-bottom: -20px; }
             .balance-input-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0; }
             .balance-input-row .btn-balance-check { grid-column: 1 / -1; width: 100%; margin-top: 10px; }
         }
@@ -612,7 +609,6 @@
             .pay-modal-header, .pay-modal-body { padding-left: 16px; padding-right: 16px; }
         }
         @media (max-width: 480px) {
-            .imigongo-artwork .art-secondary { opacity: .45; }
             .navbar { width: 100%; min-width: 0; }
             .navbar nav, .navbar-links { width: 100% !important; min-width: 0; }
             .navbar-links { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
@@ -646,28 +642,36 @@
     </header>
     <div class="workspace-scroll-container">
         <main class="workspace-inner pricing-page">
+            <section class="balance-card pricing-search" aria-labelledby="balanceTitle">
+                <div class="pricing-section-heading">
+                    <h2 id="balanceTitle">Ufite ibizamini bisigaye?</h2>
+                    <p>Reba umubare w&#8217;ibizamini ushobora gukomeza gukora.</p>
+                </div>
+                <div class="balance-check-block" id="balanceCheckBlock">
+                    <div class="balance-input-row">
+                        <label class="sr-only" for="balancePhoneInput">Nimero ya telefone</label>
+                        <span class="balance-phone-prefix">+250</span>
+                        <input type="tel" id="balancePhoneInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" oninput="sanitizeBalancePhoneInput()">
+                        <button class="btn-balance-check" onclick="fetchRemainingExamBalance()"><i class="fa-solid fa-magnifying-glass"></i> Reba ibizamini</button>
+                    </div>
+                    <div id="balanceStatusPanel" role="status" aria-live="polite"></div>
+                </div>
+            </section>
+
             <section class="pricing-hero" aria-labelledby="pricingTitle">
                 <div class="pricing-hero-copy">
                     <div class="pricing-eyebrow"><i class="fa-solid fa-shield-heart"></i> Ibiciro by&#8217;ibizamini</div>
-                    <h1 id="pricingTitle">Hitamo ibizamini byawe,<span>utangire kwitoza.</span></h1>
+                    <h1 id="pricingTitle">Hitamo ibizamini byawe, <span>utangire kwitoza.</span></h1>
                     <p>Igiciro kuri buri kizamini kigabanuka uko ugura byinshi. Hitamo umubare ukwiriye, wishyure ukoresheje MTN MoMo cyangwa Airtel Money, maze utangire kwitoza.</p>
                     <div class="pricing-trust-row" aria-label="Ibyiza byo kugura ibizamini">
                         <span><i class="fa-solid fa-circle-check"></i> Kwishyura byoroshye</span>
-                        <span><i class="fa-solid fa-circle-check"></i> MTN MoMo &amp; Airtel Money</span>
+                        <span class="trust-provider">
+                            <img src="assets/images/providers/mtn-logo.jpg" alt="">
+                            <img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="">
+                            MTN MoMo &amp; Airtel Money
+                        </span>
                         <span><i class="fa-solid fa-circle-check"></i> Ibizamini bifunguka nyuma yo kwishyura</span>
                     </div>
-                </div>
-                <div class="imigongo-artwork" aria-hidden="true">
-                    <svg viewBox="0 0 360 300" role="presentation">
-                        <path class="art-green" opacity=".72" d="M194 18 332 150 194 282 56 150 194 18Z"/>
-                        <path class="art-green art-secondary" opacity=".2" d="M194 54 294 150 194 246 94 150 194 54Z"/>
-                        <path class="art-green" opacity=".44" d="M194 91 256 150 194 209 132 150 194 91Z"/>
-                        <path class="art-gold" opacity=".76" d="m194 118 34 32-34 32-34-32 34-32Z"/>
-                        <path class="art-navy art-secondary" opacity=".16" d="m286 28 42 40-42 40-42-40 42-40Z"/>
-                        <path class="art-terra art-secondary" opacity=".18" d="m93 205 28 27-28 27-28-27 28-27Z"/>
-                        <path class="art-green" opacity=".5" d="m24 74 31 30-31 30M336 166l-31 30 31 30"/>
-                        <path class="art-gold art-secondary" opacity=".5" d="M77 56h22M261 244h22"/>
-                    </svg>
                 </div>
             </section>
 
@@ -727,22 +731,6 @@
                         <img src="https://cdn-webportal.airtelstream.net/website/rwanda/assets/images/logo.svg" alt="Airtel">
                         <div><strong>Airtel Money</strong><span>Nimero zitangira na 072 cyangwa 073</span></div>
                     </div>
-                </div>
-            </section>
-
-            <section class="balance-card" aria-labelledby="balanceTitle">
-                <div class="pricing-section-heading">
-                    <h2 id="balanceTitle">Ufite ibizamini bisigaye?</h2>
-                    <p>Reba umubare w&#8217;ibizamini ushobora gukomeza gukora.</p>
-                </div>
-                <div class="balance-check-block" id="balanceCheckBlock">
-                    <div class="balance-input-row">
-                        <label class="sr-only" for="balancePhoneInput">Nimero ya telefone</label>
-                        <span class="balance-phone-prefix">+250</span>
-                        <input type="tel" id="balancePhoneInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" oninput="sanitizeBalancePhoneInput()">
-                        <button class="btn-balance-check" onclick="fetchRemainingExamBalance()"><i class="fa-solid fa-magnifying-glass"></i> Reba ibizamini</button>
-                    </div>
-                    <div id="balanceStatusPanel" role="status" aria-live="polite"></div>
                 </div>
             </section>
 
