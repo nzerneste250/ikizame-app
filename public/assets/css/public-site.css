@@ -284,7 +284,7 @@ th { color: #334155; }
 .site-footer > div { min-width: 0; }
 .site-footer :where(a, strong) { overflow-wrap: anywhere; }
 .site-footer-brand { color: #fff; font-size: 1.15rem; font-weight: 800; letter-spacing: .04em; }
-.site-footer-bottom { grid-column: 1 / -1; padding-top: 16px; border-top: 1px solid rgba(226,232,240,.16); color: #94a3b8; font-size: .78rem; }
+.site-footer-bottom { grid-column: 1 / -1; justify-self: stretch; width: 100%; padding-top: 16px; border-top: 1px solid rgba(226,232,240,.16); color: #94a3b8; font-size: .78rem; text-align: center; }
 
 /* Legal pages stay readable on wide screens and keep their contents collapsible on phones. */
 body:has(.toc-disclosure) main { display: grid; grid-template-columns: minmax(180px, 240px) minmax(0, 1fr); align-items: start; gap: 16px 28px; width: min(100% - 40px, 1180px); padding-block: 32px 64px; }
