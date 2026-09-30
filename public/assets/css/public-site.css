@@ -1,8 +1,23 @@
 /* Shared public-site design system: restrained road-safety green and neutral surfaces. */
 :root {
+  --primary: #15803d;
+  --primary-dark: #166534;
+  --primary-light: #dcfce7;
+  --navy: #0f172a;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #dc2626;
+  --white: #ffffff;
   --site-ink: #0f172a;
   --site-green: #15803d;
-  --site-green-strong: #16a34a;
+  --site-green-dark: #166534;
+  --site-green-strong: #15803d;
   --site-green-soft: #edf7ef;
   --site-bg: #f8fafc;
   --site-surface: #ffffff;
@@ -15,6 +30,7 @@
 }
 
 html { scroll-behavior: smooth; }
+*[hidden] { display: none !important; }
 body { min-width: 320px; background: var(--site-bg); color: var(--site-ink); font-family: Inter, Manrope, sans-serif; }
 img { max-width: 100%; }
 :where(a, button, input, select, textarea, summary):focus-visible { outline: 3px solid rgba(21,128,61,.3); outline-offset: 3px; }
@@ -84,14 +100,16 @@ img { max-width: 100%; }
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
+.hero .hero-copy-glass::before { content: none; }
 .section-header-meta .hero-copy-glass { border: 0; background: transparent; box-shadow: none; color: #fff; }
 .section-header-meta h2 { color: #fff; }
+.section-header-meta .hero-copy-glass p { color: rgba(255,255,255,.9); }
 .section-header-meta .hero-eyebrow { border-color: rgba(255,255,255,.24); background: rgba(255,255,255,.12); color: #dcfce7; }
 .hero-copy-card .hero-meta { border-color: var(--site-border); color: var(--site-muted); }
 .hero-copy-glass p, .hero-copy-card p { color: #475569; font-weight: 450; }
 .hero h1, .hero h2 { color: var(--site-ink); }
 .hero h1 span { color: var(--site-green); }
-.hero-pill, .section-label { color: var(--site-green); }
+.hero-pill, .section-label { color: var(--site-green-dark); }
 .hero-icon { color: var(--site-green); background: var(--site-green-soft); border-color: #d5ead9; }
 
 .contact-card-wrap, .support-banner, .faq-item, .tl-body, .doc-card, .price-card,
@@ -101,6 +119,11 @@ img { max-width: 100%; }
   border-radius: var(--site-radius);
   background: var(--site-surface);
   box-shadow: var(--site-shadow);
+}
+.contact-card-wrap, .faq-item, .tl-body, .doc-card, .price-card,
+.payment-guide-container, .auth-card-frame, #amanotaLookupFormView,
+.remaining-panel, .attempts-table-wrap, .section-card, .stat-tile, .summary-stat {
+  color: var(--site-ink);
 }
 .contact-card-wrap, .doc-card, .price-card, .guide-card, .auth-card-frame, #amanotaLookupFormView,
 .remaining-panel, .attempts-table-wrap, .section-card { padding: clamp(18px, 2.5vw, 28px); }
@@ -112,6 +135,7 @@ img { max-width: 100%; }
 .support-banner { border: 1px solid #d5ead9; background: var(--site-green-soft); color: var(--site-ink); }
 .support-banner p, .support-banner p strong { color: #334155 !important; }
 .support-banner .badge-247 { border: 1px solid #d5ead9; background: #fff; color: var(--site-green); }
+.support-banner .badge-247 i { color: var(--site-green); }
 .contact-grid, .contact-cards, .feature-grid { gap: 16px; }
 .section, .main { padding-block: clamp(30px, 5vw, 64px); }
 h1, h2, h3, h4 { color: var(--site-ink); }
@@ -196,7 +220,7 @@ th { color: #334155; }
 .site-footer a:hover { color: #86efac; }
 .site-footer ul { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
 .site-footer > div { min-width: 0; }
-.site-footer a { overflow-wrap: anywhere; }
+.site-footer :where(a, strong) { overflow-wrap: anywhere; }
 .site-footer-brand { color: #fff; font-size: 1.15rem; font-weight: 800; letter-spacing: .04em; }
 .site-footer-bottom { grid-column: 1 / -1; padding-top: 16px; border-top: 1px solid rgba(226,232,240,.16); color: #94a3b8; font-size: .78rem; }
 
@@ -224,6 +248,64 @@ body.school-auth-page .gs-tag { background: #dcfce7; color: #166534; }
 body.school-auth-page .gs-body p, body.school-auth-page .guide-note { color: #475569; }
 body.school-auth-page .guide-note { border-color: var(--site-border); background: #fff; }
 body.school-auth-page .guide-note i { color: var(--site-green); }
+body:has(.contact-card-wrap) .hero-copy-glass p { color: #475569 !important; }
+body:has(.hero-disclaimer) .hero-disclaimer { border-color: var(--site-border); background: #f8fafc; color: #334155; }
+body:has(.hero-disclaimer) .hero-disclaimer i { color: var(--site-green); }
+body:has(.hero-meta) .hero-meta { color: #475569 !important; }
+body:has(.contact-card-wrap) .faq-arrow,
+body:has(.contact-card-wrap) .faq-q:hover { color: var(--site-green); }
+body:has(.workspace) .step-icon { background: var(--site-green) !important; color: #fff; }
+body:has(.workspace) .btn-otp-cancel { color: #475569; }
+body:has(.price-card) .pc-price-note,
+body:has(.price-card) .pc-tier-range[style],
+body:has(.price-card) .pc-tier-row [style*="#94a3b8"] { color: #64748b !important; }
+body:has(.price-card) .pc-tier-save { color: #166534 !important; }
+body:has(.price-card) .pc-price-note,
+body:has(.price-card) .pc-price sub { color: #475569 !important; }
+body:has(.price-card) .phone-hint { color: #64748b !important; }
+body:has(.price-card) .step-num { background: #15803d !important; }
+body:has(.price-card) .pay-cancel-link { color: #475569; }
+body:has(#payModalOverlay) .pay-modal-actions .btn-pay,
+body:has(#payModalOverlay) .btn-pay { background: #b45309; color: #fff; }
+body:has(#payModalOverlay) .pay-modal-actions .btn-pay:hover,
+body:has(#payModalOverlay) .btn-pay:hover { background: #92400e; }
+body:has(#payModalOverlay) .pay-modal-actions .btn-cancel,
+body:has(#payModalOverlay) .btn-cancel { color: #475569; }
+body:has(.workspace-scroll-container) .stat-tile.pass-tile .st-val { color: #15803d; }
+#remainingBadge { display: none !important; }
+
+/* The home hero and live statistic tiles use light surfaces in this theme. */
+body:has(.workspace) .hero-copy-panel {
+  border: 1px solid var(--site-border);
+  border-radius: var(--site-radius);
+  background: #fff;
+  box-shadow: var(--site-shadow);
+  color: var(--site-ink);
+}
+body:has(.workspace) .hero-copy-panel .hero-h1 { color: var(--site-ink) !important; }
+body:has(.workspace) .hero-copy-panel .hero-h1 em { color: var(--site-green) !important; }
+body:has(.workspace) .hero-copy-panel .hero-desc { color: #475569 !important; }
+body:has(.workspace) .hero-live-stat {
+  border: 1px solid var(--site-border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--site-ink);
+  box-shadow: var(--site-shadow);
+}
+body:has(.workspace) .hero-live-heading,
+body:has(.workspace) .hero-live-value,
+body:has(.workspace) .hero-live-detail { color: var(--site-ink) !important; }
+body:has(.workspace) .hero-live-heading { color: #475569 !important; }
+body:has(.workspace) .hero-live-icon { background: var(--site-green-soft); color: var(--site-green); }
+
+@media (max-width: 600px) {
+  body:has(.contact-card-wrap) .contact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body:has(.contact-card-wrap) .company-row { grid-column: 1 / -1; }
+  body:has(.contact-card-wrap) .hero h1 { font-size: clamp(1.65rem, 7vw, 2rem); overflow-wrap: anywhere; }
+  body:has(.contact-card-wrap) .section-title { color: var(--site-green); font-size: .95rem; }
+  .pc-tier-row { flex-wrap: wrap; gap: 6px; }
+  .pc-tier-row > * { min-width: 0; overflow-wrap: anywhere; }
+}
 
 @media (max-width: 1050px) {
   .navbar { display: grid !important; grid-template-columns: 1fr auto; gap: 8px 12px; padding: 9px 18px !important; }
@@ -262,7 +344,8 @@ body.school-auth-page .guide-note i { color: var(--site-green); }
   .page, .main { width: min(100% - 24px, 1220px); }
   .navbar { padding-inline: 12px !important; }
   .navbar-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .navbar-links a { font-size: .76rem; }
+  .navbar-links a { font-size: .76rem; white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
+  .navbar-links a span { min-width: 0; overflow-wrap: anywhere; }
   .hero { padding: 28px 14px 24px; }
   .section, .main { padding-block: 28px; }
   .contact-card-wrap, .doc-card, .price-card, .guide-card, .auth-card-frame, #amanotaLookupFormView,
