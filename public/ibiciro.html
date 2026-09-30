@@ -472,23 +472,28 @@
         }
 
         /* Pricing page refresh: calm Imigongo accent, clear choices, simple flow. */
-        .pricing-page { gap: clamp(24px, 3vw, 38px); padding-bottom: 24px; }
+        body:has(.pricing-page) .workspace-scroll-container { box-sizing: border-box; width: 100%; max-width: none; padding-left: clamp(12px, 3vw, 32px); padding-right: clamp(12px, 3vw, 32px); }
+        body:has(.pricing-page) .pricing-page { box-sizing: border-box; width: 100%; max-width: 1320px; min-width: 0; margin-inline: auto; flex: 0 1 auto; }
+        body:has(.pricing-page) .pricing-page > * { box-sizing: border-box; min-width: 0; max-width: 100%; }
+        .pricing-page { gap: clamp(44px, 5.5vw, 80px); padding-bottom: 36px; }
         .pricing-hero {
             position: relative; isolation: isolate; overflow: hidden;
-            display: flex; align-items: center; min-height: 220px;
-            padding: clamp(24px, 5vw, 52px);
+            display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(250px, .8fr);
+            align-items: center; min-height: 340px; padding: clamp(30px, 5vw, 58px);
             border: 1px solid #dcebe0; border-radius: 22px;
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 100%);
             box-shadow: 0 8px 24px rgba(15,23,42,.05);
         }
-        .pricing-hero::before, .pricing-hero::after {
-            content: ''; position: absolute; z-index: -1; pointer-events: none;
-            background: url('assets/images/imigongo-pattern.svg') repeat;
-            background-size: 160px 160px;
+        .pricing-hero-copy { position: relative; z-index: 1; max-width: 700px; }
+        .imigongo-artwork {
+            position: absolute; z-index: 0; top: 50%; right: -24px; width: 39%; height: 92%;
+            transform: translateY(-50%); pointer-events: none; opacity: .92;
         }
-        .pricing-hero::before { width: 190px; height: 190px; top: -72px; right: -58px; opacity: .075; }
-        .pricing-hero::after { width: 125px; height: 125px; bottom: -54px; left: -42px; opacity: .05; }
-        .pricing-hero-copy { position: relative; z-index: 1; max-width: 760px; }
+        .imigongo-artwork svg { display: block; width: 100%; height: 100%; overflow: visible; }
+        .imigongo-artwork .art-green { fill: none; stroke: #166534; stroke-width: 5; }
+        .imigongo-artwork .art-gold { fill: #d4a72c; }
+        .imigongo-artwork .art-navy { fill: #0f172a; }
+        .imigongo-artwork .art-terra { fill: #b4533c; }
         .pricing-eyebrow {
             display: inline-flex; align-items: center; gap: 8px; margin-bottom: 13px;
             padding: 6px 11px; border: 1px solid #d5ead9; border-radius: 999px;
@@ -496,33 +501,38 @@
             letter-spacing: .06em; text-transform: uppercase;
         }
         .pricing-eyebrow i { color: #16a34a; }
-        .pricing-hero h1 { max-width: 700px; color: #0f172a; font-size: clamp(1.7rem, 3.2vw, 2.65rem); line-height: 1.14; letter-spacing: -.035em; }
+        .pricing-hero h1 { max-width: 700px; color: #0f172a; font-size: clamp(2rem, 3.5vw, 3.15rem); line-height: 1.12; letter-spacing: -.04em; }
+        .pricing-hero h1 span { display: block; color: #15803d; }
         .pricing-hero-copy > p { max-width: 680px; margin-top: 12px; color: #475569; font-size: clamp(.95rem, 1.4vw, 1.05rem); line-height: 1.65; }
         .pricing-trust-row { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 20px; color: #334155; font-size: .82rem; font-weight: 700; }
         .pricing-trust-row span { display: inline-flex; align-items: center; gap: 7px; }
         .pricing-trust-row i { color: #16a34a; }
         .pricing-section-heading { margin-bottom: 15px; }
+        .pricing-section-eyebrow { display: inline-block; margin-bottom: 7px; color: #15803d; font-size: .73rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
         .pricing-section-heading h2 { color: #0f172a; font-size: clamp(1.25rem, 2vw, 1.55rem); font-weight: 800; letter-spacing: -.025em; }
         .pricing-section-heading p { margin-top: 5px; color: #64748b; font-size: .9rem; line-height: 1.6; }
         .pricing-card-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
         .pricing-page .price-card {
-            min-width: 0; min-height: 250px; padding: 22px 20px 18px; gap: 12px;
-            border: 1px solid #e2e8f0; border-radius: 16px; background: #fff;
-            box-shadow: 0 4px 20px rgba(15,23,42,.06);
+            min-width: 0; min-height: 276px; padding: 24px; gap: 13px;
+            border: 1px solid #e2e8f0; border-radius: 20px; background: #fff;
+            box-shadow: 0 8px 30px rgba(15,23,42,.06);
         }
         .pricing-page .price-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,23,42,.09); }
-        .pricing-page .price-card.is-best { border: 2px solid #16a34a; padding: 21px 19px 17px; }
-        .pricing-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; min-height: 36px; }
+        .pricing-page .price-card.is-best { border: 2px solid #22c55e; padding: 34px 23px 23px; background: linear-gradient(180deg, #fff 0%, #f0fdf4 100%); }
+        .pricing-card-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px; background: #f0fdf4; color: #15803d; font-size: 1rem; }
+        .pricing-card-top { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; min-height: 56px; }
         .pricing-card-range { color: #0f172a; font-size: .96rem; font-weight: 800; line-height: 1.35; }
-        .pricing-card-badge { flex: 0 0 auto; padding: 4px 7px; border-radius: 999px; background: #f0fdf4; color: #166534; font-size: .62rem; font-weight: 800; line-height: 1.25; text-align: center; }
+        .pricing-card-badge { flex: 0 0 auto; padding: 5px 9px; border-radius: 999px; background: #f0fdf4; color: #166534; font-size: .64rem; font-weight: 800; line-height: 1.25; text-align: center; }
+        .pricing-page .price-card.is-best .pricing-card-badge { position: absolute; top: -12px; right: 18px; border: 1px solid #bbf7d0; background: #166534; color: #fff; }
         .pricing-card-price { display: flex; align-items: baseline; gap: 6px; margin-top: 4px; color: #166534; }
         .pricing-card-price strong { font-size: clamp(2rem, 3vw, 2.45rem); line-height: 1; letter-spacing: -.05em; }
         .pricing-card-price span { color: #166534; font-size: .95rem; font-weight: 800; }
         .pricing-card-unit { margin-top: -5px; color: #64748b; font-size: .78rem; }
         .pricing-card-description { flex: 1; color: #64748b; font-size: .82rem; line-height: 1.5; }
-        .pricing-page .btn-pay-trigger { min-height: 44px; padding: 10px 14px; border-radius: 10px; background: #166534; box-shadow: none; }
-        .pricing-page .btn-pay-trigger:hover { background: #15803d; box-shadow: none; }
+        .pricing-page .btn-pay-trigger { min-height: 48px; padding: 11px 14px; border-radius: 12px; background: #15803d; box-shadow: none; }
+        .pricing-page .btn-pay-trigger:hover { background: #166534; box-shadow: none; }
         .pricing-providers, .balance-card, .payment-timeline, .ussd-help { width: 100%; }
+        .pricing-providers { padding: clamp(22px, 3.5vw, 36px); border-radius: 20px; background: #f8fafc; }
         .provider-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; max-width: 740px; }
         .provider-card {
             display: flex; align-items: center; gap: 14px; min-width: 0;
@@ -532,14 +542,14 @@
         .provider-card img { width: 42px; height: 42px; object-fit: contain; flex: 0 0 auto; }
         .provider-card strong { display: block; color: #0f172a; font-size: .95rem; }
         .provider-card span { display: block; margin-top: 3px; color: #64748b; font-size: .8rem; }
-        .balance-card { padding: clamp(18px, 3vw, 26px); border: 1px solid #bbf7d0; border-radius: 16px; background: #f0fdf4; }
-        .balance-card .pricing-section-heading { margin-bottom: 14px; }
+        .balance-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, .95fr); align-items: center; gap: 28px; padding: clamp(22px, 3.5vw, 36px); border: 1px solid #bbf7d0; border-radius: 20px; background: #ecfdf5; }
+        .balance-card .pricing-section-heading { margin: 0; }
         .balance-input-row { max-width: 660px; }
         .balance-phone-prefix { display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border: 1px solid #e2e8f0; border-right: 0; border-radius: 10px 0 0 10px; background: #fff; color: #334155; font-size: .85rem; font-weight: 700; }
         .balance-input-row input { min-width: 0; border-radius: 0 10px 10px 0; background: #fff; }
         .balance-input-row .btn-balance-check { min-width: 144px; background: #166534; box-shadow: none; }
         .balance-input-row .btn-balance-check:hover { background: #15803d; box-shadow: none; }
-        .payment-timeline { padding: clamp(18px, 3vw, 28px); border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; }
+        .payment-timeline { padding: clamp(22px, 3.5vw, 36px); border: 1px solid #e2e8f0; border-radius: 20px; background: #fff; }
         .payment-timeline .pricing-section-heading { text-align: center; margin-bottom: 28px; }
         .pricing-page .steps-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
         .pricing-page .step-item { display: block; min-width: 0; padding: 0; }
@@ -557,18 +567,33 @@
         .pay-modal-card { max-height: min(92dvh, 760px); overflow-y: auto; border-radius: 18px; }
         .pay-modal-header { background: #0b3a59; }
         .pay-modal-body { gap: 12px; }
-        .pay-amount-box { border-color: #bbf7d0; background: #f0fdf4; }
-        .pay-amount-label, .pay-amount-value { color: #166534; }
-        @media (max-width: 1000px) { .pricing-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .pay-summary-card { display: grid; gap: 10px; padding: 15px; border: 1px solid #dcfce7; border-radius: 14px; background: #f8fafc; }
+        .pay-summary-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #475569; font-size: .85rem; }
+        .pay-summary-row strong { color: #0f172a; font-size: .9rem; }
+        .pay-summary-total { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2px; padding-top: 11px; border-top: 1px solid #dcfce7; color: #166534; font-weight: 800; }
+        .pay-summary-total strong { color: #166534; font-size: 1.5rem; }
+        @media (max-width: 1000px) {
+            .pricing-page { gap: 56px; }
+            body:has(.pricing-page) .workspace-scroll-container { padding-left: 12px; padding-right: 12px; }
+            .pricing-hero { grid-template-columns: minmax(0, 1fr); min-height: 310px; }
+            .imigongo-artwork { right: -34px; width: 34%; opacity: .62; }
+            .pricing-hero-copy { max-width: 64%; }
+            .pricing-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .balance-card { grid-template-columns: minmax(0, 1fr) minmax(300px, .95fr); gap: 20px; }
+        }
         @media (max-width: 700px) {
-            .pricing-hero { min-height: 0; padding: 26px 20px; }
-            .pricing-hero::before { width: 140px; height: 140px; top: -58px; right: -54px; opacity: .045; }
-            .pricing-hero::after { opacity: .035; }
+            .workspace-scroll-container { display: block; width: 100%; max-width: none; margin-inline: 0; padding-inline: 12px; }
+            .pricing-page { width: 100%; max-width: none; min-width: 0; margin-inline: 0; flex: 0 1 auto; }
+            .pricing-page > *, .pricing-hero, .pricing-section-heading { min-width: 0; max-width: 100%; }
+            .pricing-page { gap: 44px; }
+            .pricing-hero { display: block; min-height: 0; padding: 28px 22px 20px; }
+            .imigongo-artwork { top: auto; right: -12px; bottom: -30px; width: 112px; height: 112px; transform: none; opacity: .13; }
+            .pricing-hero-copy { max-width: none; padding-bottom: 86px; }
             .pricing-hero-copy > p { font-size: .92rem; }
             .pricing-trust-row { display: grid; gap: 9px; font-size: .78rem; }
             .pricing-card-grid { grid-template-columns: 1fr; gap: 12px; }
-            .pricing-page .price-card { min-height: 0; padding: 19px; }
-            .pricing-page .price-card.is-best { padding: 18px; }
+            .pricing-page .price-card { min-height: 0; padding: 22px; }
+            .pricing-page .price-card.is-best { padding: 32px 21px 21px; }
             .provider-grid { gap: 9px; }
             .provider-card { padding: 12px; gap: 9px; }
             .provider-card img { width: 34px; height: 34px; }
@@ -577,6 +602,7 @@
             .pricing-page .step-item:not(:last-child)::before { left: 16px; top: 34px; width: 2px; height: calc(100% - 18px); }
             .pricing-page .step-num { flex: 0 0 34px; margin: 0; }
             .payment-timeline .pricing-section-heading { text-align: left; margin-bottom: 20px; }
+            .balance-card { grid-template-columns: 1fr; gap: 16px; }
             .balance-input-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0; }
             .balance-input-row .btn-balance-check { grid-column: 1 / -1; width: 100%; margin-top: 10px; }
         }
@@ -584,6 +610,12 @@
             .provider-grid { grid-template-columns: 1fr; }
             .pricing-trust-row { font-size: .74rem; }
             .pay-modal-header, .pay-modal-body { padding-left: 16px; padding-right: 16px; }
+        }
+        @media (max-width: 480px) {
+            .imigongo-artwork .art-secondary { opacity: .45; }
+            .navbar { width: 100%; min-width: 0; }
+            .navbar nav, .navbar-links { width: 100% !important; min-width: 0; }
+            .navbar-links { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
         }
     </style>
     <link rel="stylesheet" href="assets/css/public-pages-theme.css">
@@ -617,45 +649,62 @@
             <section class="pricing-hero" aria-labelledby="pricingTitle">
                 <div class="pricing-hero-copy">
                     <div class="pricing-eyebrow"><i class="fa-solid fa-shield-heart"></i> Ibiciro by&#8217;ibizamini</div>
-                    <h1 id="pricingTitle">Hitamo umubare w&#8217;ibizamini ukwiriye</h1>
-                    <p>Igiciro kuri buri kizamini kigabanuka uko ugura byinshi. Ishyura byoroshye ukoresheje MTN MoMo cyangwa Airtel Money.</p>
+                    <h1 id="pricingTitle">Hitamo ibizamini byawe,<span>utangire kwitoza.</span></h1>
+                    <p>Igiciro kuri buri kizamini kigabanuka uko ugura byinshi. Hitamo umubare ukwiriye, wishyure ukoresheje MTN MoMo cyangwa Airtel Money, maze utangire kwitoza.</p>
                     <div class="pricing-trust-row" aria-label="Ibyiza byo kugura ibizamini">
-                        <span><i class="fa-solid fa-circle-check"></i> Kwishyura byizewe</span>
-                        <span><i class="fa-solid fa-circle-check"></i> MTN MoMo na Airtel Money</span>
+                        <span><i class="fa-solid fa-circle-check"></i> Kwishyura byoroshye</span>
+                        <span><i class="fa-solid fa-circle-check"></i> MTN MoMo &amp; Airtel Money</span>
                         <span><i class="fa-solid fa-circle-check"></i> Ibizamini bifunguka nyuma yo kwishyura</span>
                     </div>
+                </div>
+                <div class="imigongo-artwork" aria-hidden="true">
+                    <svg viewBox="0 0 360 300" role="presentation">
+                        <path class="art-green" opacity=".72" d="M194 18 332 150 194 282 56 150 194 18Z"/>
+                        <path class="art-green art-secondary" opacity=".2" d="M194 54 294 150 194 246 94 150 194 54Z"/>
+                        <path class="art-green" opacity=".44" d="M194 91 256 150 194 209 132 150 194 91Z"/>
+                        <path class="art-gold" opacity=".76" d="m194 118 34 32-34 32-34-32 34-32Z"/>
+                        <path class="art-navy art-secondary" opacity=".16" d="m286 28 42 40-42 40-42-40 42-40Z"/>
+                        <path class="art-terra art-secondary" opacity=".18" d="m93 205 28 27-28 27-28-27 28-27Z"/>
+                        <path class="art-green" opacity=".5" d="m24 74 31 30-31 30M336 166l-31 30 31 30"/>
+                        <path class="art-gold art-secondary" opacity=".5" d="M77 56h22M261 244h22"/>
+                    </svg>
                 </div>
             </section>
 
             <section aria-labelledby="pricingOptionsTitle">
                 <div class="pricing-section-heading">
-                    <h2 id="pricingOptionsTitle">Hitamo umubare w&#8217;ibizamini</h2>
-                    <p>Igiciro cy&#8217;ikizamini kimwe kigabanuka uko ugura byinshi.</p>
+                    <span class="pricing-section-eyebrow">Ibiciro</span>
+                    <h2 id="pricingOptionsTitle">Hitamo ibijyanye n&#8217;uko ushaka kwitoza</h2>
+                    <p>Uko ugura ibizamini byinshi, ni ko igiciro kuri buri kizamini kigabanuka.</p>
                 </div>
                 <div class="pricing-card-grid">
                     <article class="price-card">
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">1&#8211;9 ibizamini</h3></div>
+                        <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></div>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 1&#8211;9</h3></div>
                         <div class="pricing-card-price"><strong>100</strong><span>RWF</span></div>
                         <p class="pricing-card-unit">kuri buri kizamini</p>
-                        <p class="pricing-card-description">Byiza niba ushaka gukora ibizamini bike.</p>
+                        <p class="pricing-card-description">Byiza niba ushaka gutangira ukoresheje ibizamini bike.</p>
                         <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)">Hitamo</button>
                     </article>
                     <article class="price-card">
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">10&#8211;14 ibizamini</h3><span class="pricing-card-badge">Gabanyirizwa 20%</span></div>
+                        <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-bolt"></i></div>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 10&#8211;14</h3><span class="pricing-card-badge">Gabanyirizwa 20%</span></div>
                         <div class="pricing-card-price"><strong>80</strong><span>RWF</span></div>
                         <p class="pricing-card-unit">kuri buri kizamini</p>
                         <p class="pricing-card-description">Igiciro cyiza kurushaho ukoze ibizamini byinshi.</p>
                         <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(10)">Hitamo</button>
                     </article>
                     <article class="price-card">
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">15&#8211;20 ibizamini</h3><span class="pricing-card-badge">Gabanyirizwa 30%</span></div>
+                        <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></div>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 15&#8211;20</h3><span class="pricing-card-badge">Gabanyirizwa 30%</span></div>
                         <div class="pricing-card-price"><strong>70</strong><span>RWF</span></div>
                         <p class="pricing-card-unit">kuri buri kizamini</p>
                         <p class="pricing-card-description">Hitamo iyi niba ushaka kwitoza kenshi.</p>
                         <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)">Hitamo</button>
                     </article>
                     <article class="price-card is-best">
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">21+ ibizamini</h3><span class="pricing-card-badge">Igiciro cyiza</span></div>
+                        <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-award"></i></div>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 21+</h3><span class="pricing-card-badge">Igiciro cyiza</span></div>
                         <div class="pricing-card-price"><strong>50</strong><span>RWF</span></div>
                         <p class="pricing-card-unit">kuri buri kizamini</p>
                         <p class="pricing-card-description">Igiciro gito kuri buri kizamini.</p>
@@ -666,8 +715,8 @@
 
             <section class="pricing-providers" aria-labelledby="providersTitle">
                 <div class="pricing-section-heading">
-                    <h2 id="providersTitle">Kwishyura byoroshye</h2>
-                    <p>Wishyura ukoresheje MTN MoMo cyangwa Airtel Money.</p>
+                    <h2 id="providersTitle">Kwishyura biroroshye</h2>
+                    <p>Koresha nimero yawe ya MTN MoMo cyangwa Airtel Money.</p>
                 </div>
                 <div class="provider-grid">
                     <div class="provider-card">
@@ -684,7 +733,7 @@
             <section class="balance-card" aria-labelledby="balanceTitle">
                 <div class="pricing-section-heading">
                     <h2 id="balanceTitle">Ufite ibizamini bisigaye?</h2>
-                    <p>Injiza nimero ya telefone wakoresheje wishyura kugira ngo urebe ibizamini bisigaye.</p>
+                    <p>Reba umubare w&#8217;ibizamini ushobora gukomeza gukora.</p>
                 </div>
                 <div class="balance-check-block" id="balanceCheckBlock">
                     <div class="balance-input-row">
@@ -700,7 +749,7 @@
             <section class="payment-timeline" aria-labelledby="paymentStepsTitle">
                 <div class="pricing-section-heading">
                     <h2 id="paymentStepsTitle">Uko kwishyura bigenda</h2>
-                    <p>Intambwe enye zoroshye</p>
+                    <p>Intambwe 4 gusa</p>
                 </div>
                 <div class="steps-list">
                     <div class="step-item">
@@ -709,7 +758,7 @@
                     </div>
                     <div class="step-item">
                         <div class="step-num">02</div>
-                        <div class="step-content"><h4>Injiza nimero ya telefone</h4><p>Koresha MTN 078/079 cyangwa Airtel 072/073.</p></div>
+                        <div class="step-content"><h4>Injiza nimero</h4><p>Koresha MTN 078/079 cyangwa Airtel 072/073.</p></div>
                     </div>
                     <div class="step-item">
                         <div class="step-num">03</div>
@@ -717,14 +766,14 @@
                     </div>
                     <div class="step-item">
                         <div class="step-num">04</div>
-                        <div class="step-content"><h4>Tangira gukora ibizamini</h4><p>Nyuma yo kwishyura, ibizamini byawe birafunguka.</p></div>
+                        <div class="step-content"><h4>Tangira kwitoza</h4><p>Nyuma yo kwishyura, ibizamini byawe birafunguka.</p></div>
                     </div>
                 </div>
             </section>
 
             <details class="ussd-help">
                 <summary>Kwishyura ntibyahise bikunda?</summary>
-                <p>Niba ubutumwa bwo kwemeza butaje, ushobora gukoresha USSD.</p>
+                <p>Niba ubutumwa bwo kwemeza butaje kuri telefone yawe, ushobora gukoresha USSD.</p>
                 <div class="ussd-fallback-box">
                     <div class="ussd-commands-grid">
                         <div class="ussd-card">
@@ -745,7 +794,7 @@
         <div class="pay-modal-card">
             <div class="pay-modal-header">
                 <div class="pay-modal-header-top">
-                    <div class="pay-modal-title"><i class="fa-solid fa-mobile-screen-button"></i> Ugiye kugura ibizamini</div>
+                    <div class="pay-modal-title"><i class="fa-solid fa-mobile-screen-button"></i> Kwishyura ibizamini</div>
                     <button class="pay-modal-close" onclick="closeTestPaymentModal()">&times;</button>
                 </div>
                 <div class="pay-carrier-row">
@@ -764,7 +813,11 @@
                     <label class="pay-field-label" for="examQuantityVolumeSelector">Umubare w&#8217;ibizamini</label>
                     <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
                     <div class="pay-tier-hint" id="dynamicPricingHelperLabel"></div>
-                    <div class="pay-per-exam" id="pricePerExamLabel">Igiciro cya buri kizamini: 100 RWF</div>
+                </div>
+                <div class="pay-summary-card" aria-live="polite">
+                    <div class="pay-summary-row"><span>Ibizamini</span><strong id="paySummaryQuantity">1</strong></div>
+                    <div class="pay-summary-row"><span>Igiciro kuri kimwe</span><strong id="pricePerExamLabel">100 RWF</strong></div>
+                    <div class="pay-summary-total"><span>Amafaranga yose</span><strong id="liveAmountBreakdownDisplayStrip">100 RWF</strong></div>
                 </div>
                 <div class="pay-field">
                     <label class="pay-field-label" for="momoPhoneNumberInput">Nimero ya telefone</label>
@@ -777,10 +830,6 @@
                     </div>
                     <span class="phone-hint" id="momoPhoneHint">Injiza imibare 10: MTN (078/079) cyangwa Airtel (072/073)</span>
                     <span id="momoCarrierChip" style="display:none;"></span>
-                </div>
-                <div class="pay-amount-box">
-                    <span class="pay-amount-label">Amafaranga yose</span>
-                    <span class="pay-amount-value" id="liveAmountBreakdownDisplayStrip">100 RWF</span>
                 </div>
                 <button class="pay-submit-btn" id="momoSubmitPaymentBtn" onclick="dispatchAdaptivePaymentQueryPacket()">
                     <span id="momoBtnTextLabel">Ishyura Ubu</span>
@@ -937,6 +986,7 @@
             const displayStrip = document.getElementById('liveAmountBreakdownDisplayStrip');
             const helperLabel = document.getElementById('dynamicPricingHelperLabel');
             const perExamLabel = document.getElementById('pricePerExamLabel');
+            const quantitySummary = document.getElementById('paySummaryQuantity');
             const payButtonLabel = document.getElementById('momoBtnTextLabel');
             let qty = parseInt(document.getElementById('examQuantityVolumeSelector').value, 10);
             if (isNaN(qty) || qty < 1) qty = 1;
@@ -945,11 +995,18 @@
             
             helperLabel.textContent = tierLabelForPurchaseQuantity(qty);
             helperLabel.style.color = unitPrice === 100 ? '#64748b' : unitPrice === 80 ? '#0284c7' : unitPrice === 70 ? '#8b5cf6' : '#10b981';
-            perExamLabel.textContent = `Igiciro cya buri kizamini: ${unitPrice} RWF`;
+            perExamLabel.textContent = `${unitPrice} RWF`;
             
             displayStrip.textContent = `${totalCost.toLocaleString()} RWF`;
+            if (quantitySummary) quantitySummary.textContent = qty.toLocaleString();
             if (payButtonLabel) payButtonLabel.textContent = `Ishyura ${totalCost.toLocaleString()} RWF`;
         };
+
+        function restoreAdaptivePayButtonLabel() {
+            const amount = document.getElementById('liveAmountBreakdownDisplayStrip');
+            const label = document.getElementById('momoBtnTextLabel');
+            if (amount && label) label.textContent = `Ishyura ${amount.textContent}`;
+        }
 
         window.dispatchAdaptivePaymentQueryPacket = function() {
             const phoneField = document.getElementById('momoPhoneNumberInput');
@@ -1028,19 +1085,19 @@
                                     clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     ikToast('Kwishyura byanze. Ongera ugerageze.', 'error');
-                                    payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
+                                    payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
                                 } else if (elapsed >= maxWait) {
                                     clearInterval(activePollTimer); activePollTimer = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
                                     activeReferenceId = null;
                                     ikToast('Igihe cyarangiye (iminuta 2). Ongera ugerageze.', 'warning');
-                                    payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
+                                    payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
                                 }
                             });
                     }, 2000);
                 } else {
-                    ikToast(data.error || 'Uburyo bwanze. Ongera ugerageze.', 'error'); payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
+                    ikToast(data.error || 'Uburyo bwanze. Ongera ugerageze.', 'error'); payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
                 }
             })
             .catch(err => {
@@ -1048,7 +1105,7 @@
                 const msg = err.name === 'AbortError'
                     ? 'Igihe cyarangiye. Reba internet yawe hanyuma ongera ugerageze.'
                     : 'Ikibazo cya internet. Reba connexion yawe hanyuma ongera ugerageze.';
-                ikToast(msg, 'warning'); payBtn.disabled = false; btnText.textContent = 'Ishyura Ubu'; btnIcon.className = 'fa-solid fa-arrow-right';
+                ikToast(msg, 'warning'); payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
             });
         };
         window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };
