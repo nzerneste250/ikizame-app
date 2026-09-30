@@ -1,0 +1,261 @@
+/* Homepage-only color system aligned with the IKIZAME admin portal. */
+:root {
+  --home-primary-dark: #0D47A1;
+  --home-primary: #1565C0;
+  --home-accent: #1976D2;
+  --home-page: #EAF0F6;
+  --home-section: #F2F6FA;
+  --home-alt: #E3EBF3;
+  --home-card: #F8FAFC;
+  --home-white: #FFFFFF;
+  --home-border: #D7E1EA;
+  --home-text: #1F2937;
+  --home-muted: #64748B;
+  --home-subtle: #94A3B8;
+  --home-success: #15803D;
+  --home-error: #DC2626;
+
+  /* Keep shared component variables in step with the homepage palette. */
+  --primary: #0D47A1;
+  --primary-dark: #0B3D91;
+  --primary-light: #E3EFFA;
+  --primary-soft: #E3EFFA;
+  --secondary: #1565C0;
+  --accent-teal: #0D47A1;
+  --accent-teal-hover: #0B3D91;
+  --accent-cyan: #1976D2;
+  --navy: #0D47A1;
+  --background: #EAF0F6;
+  --surface: #F8FAFC;
+  --text-primary: #1F2937;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --border: #D7E1EA;
+  --success: #15803D;
+  --success-emerald: #15803D;
+  --error-crimson: #DC2626;
+  --danger: #DC2626;
+  --site-ink: #1F2937;
+  --site-green: #0D47A1;
+  --site-green-dark: #0B3D91;
+  --site-green-strong: #0D47A1;
+  --site-green-soft: #E3EFFA;
+  --site-bg: #EAF0F6;
+  --site-surface: #F8FAFC;
+  --site-border: #D7E1EA;
+  --site-muted: #64748B;
+  --site-shadow: 0 8px 24px rgba(31, 60, 90, .08);
+}
+
+body:has(.workspace) {
+  background-color: var(--home-page);
+  background-image: linear-gradient(180deg, #EAF1F7 0%, #F3F7FA 52%, #E8EFF5 100%);
+  color: var(--home-text);
+}
+
+/* Header matches the admin portal; preserve its existing dimensions and behavior. */
+body:has(.workspace) .navbar {
+  border-bottom-color: rgba(255,255,255,.14);
+  background: #0D47A1;
+  box-shadow: 0 2px 12px rgba(13,71,161,.12);
+}
+body:has(.workspace) .navbar-brand,
+body:has(.workspace) .navbar-brand-wrap,
+body:has(.workspace) .navbar-links a { color: #FFFFFF; }
+body:has(.workspace) .navbar-links a i { color: #D6E4F2; }
+body:has(.workspace) .navbar-links a:hover:not(.active):not(.navbar-cta) {
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.10);
+  color: #BBDEFB;
+}
+body:has(.workspace) .navbar-links a:hover:not(.active):not(.navbar-cta) i { color: #BBDEFB; }
+body:has(.workspace) .navbar-links a.active {
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.14);
+  color: #FFFFFF;
+  box-shadow: none;
+}
+body:has(.workspace) .navbar-links a.active i { color: #FFFFFF; }
+body:has(.workspace) .navbar-links a:focus-visible { outline-color: #BBDEFB; }
+body:has(.workspace) .navbar-links a.navbar-cta,
+body:has(.workspace) .navbar-links a.navbar-cta:hover {
+  background: #FFFFFF;
+  color: #0D47A1;
+  box-shadow: none;
+}
+body:has(.workspace) .navbar-links a.navbar-cta i { color: #0D47A1; }
+body:has(.workspace) .lang-badge {
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.10);
+  color: #D6E4F2;
+}
+body:has(.workspace) .mobile-menu-toggle { color: #FFFFFF; }
+body:has(.workspace) .mobile-menu-toggle {
+  border-color: rgba(255,255,255,.25);
+  background: rgba(255,255,255,.10);
+}
+
+/* Keep the existing hero geometry while trading the deep teal field for soft blue-gray. */
+body:has(.workspace) .workspace {
+  background: linear-gradient(135deg, #E7EFF6 0%, #F3F7FA 55%, #E1EAF3 100%);
+}
+body:has(.workspace) .workspace::before {
+  opacity: .05;
+  background-image:
+    url('../images/imigongo-pattern.svg'),
+    linear-gradient(135deg, transparent 49.8%, rgba(13,71,161,.12) 49.95%, rgba(13,71,161,.12) 50.05%, transparent 50.2%),
+    linear-gradient(45deg, transparent 49.85%, rgba(21,101,192,.10) 49.96%, rgba(21,101,192,.10) 50.04%, transparent 50.15%),
+    radial-gradient(circle, rgba(100,130,160,.18) 1px, transparent 1.7px);
+  background-size: 180px 180px, 144px 144px, 144px 144px, 96px 96px;
+  background-position: left 3% top 8%, left 0 top 0, left 72px top 72px, left 24px top 24px;
+  background-repeat: repeat, repeat, repeat, repeat;
+  mask-image: linear-gradient(90deg, #000 0%, #000 26%, transparent 72%);
+}
+body:has(.workspace) .hero-copy .hero-copy-panel {
+  border-color: #D7E1EA;
+  background: rgba(248,250,252,.93);
+  box-shadow: 0 8px 24px rgba(31,60,90,.08);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body:has(.workspace) .hero-h1,
+body:has(.workspace) .hero-h1 em { color: #1F2937; text-shadow: none; }
+body:has(.workspace) .hero-desc { color: #64748B; }
+body:has(.workspace) .hero-support-pill {
+  border-color: #D7E1EA;
+  background: #E3EFFA;
+  color: #334155;
+}
+body:has(.workspace) .hero-support-pill i { color: #0D47A1; }
+body:has(.workspace) .hero-actions .pill { color: #64748B; }
+body:has(.workspace) .workspace a:not(.hero-cta) { color: #1565C0; }
+
+/* Cards and metrics share one neutral surface, border, and restrained shadow. */
+body:has(.workspace) .quick-action-card,
+body:has(.workspace) .reg-card,
+body:has(.workspace) .hero-live-stat {
+  border-color: #D7E1EA;
+  background: #F8FAFC;
+  color: #1F2937;
+  box-shadow: 0 8px 24px rgba(31,60,90,.08);
+}
+body:has(.workspace) .quick-action-card:hover { border-color: #BFCFDF; }
+body:has(.workspace) .quick-action-icon,
+body:has(.workspace) .hero-live-icon {
+  background: #E3EFFA;
+  color: #0D47A1;
+}
+body:has(.workspace) .quick-action-card h3,
+body:has(.workspace) .card-body h2,
+body:has(.workspace) .hero-live-value { color: #1F2937; }
+body:has(.workspace) .quick-action-card p,
+body:has(.workspace) .hero-live-heading,
+body:has(.workspace) .hero-live-detail,
+body:has(.workspace) .card-body .sub { color: #64748B; }
+body:has(.workspace) .hero-live-stat::before,
+body:has(.workspace) .hero-live-stat:nth-child(2)::before,
+body:has(.workspace) .hero-live-stat:nth-child(3)::before { background: #1976D2; }
+body:has(.workspace) .quick-action-card a { color: #1565C0; }
+body:has(.workspace) .quick-action-card a:hover { color: #0D47A1; }
+
+/* Forms, focus states, links, and action buttons use the shared blue palette. */
+body:has(.workspace) .reg-card { border-top-color: #0D47A1; }
+body:has(.workspace) .reg-card.registration-anchor-highlight {
+  border-color: #1565C0;
+  box-shadow: 0 0 0 4px rgba(21,101,192,.12), 0 8px 24px rgba(31,60,90,.08);
+}
+body:has(.workspace) .field-group label { color: #334155; }
+body:has(.workspace) .input-wrap input,
+body:has(.workspace) .otp-input-wrap input {
+  border-color: #D7E1EA;
+  background: #FFFFFF;
+  color: #1F2937;
+}
+body:has(.workspace) .input-wrap input::placeholder,
+body:has(.workspace) .otp-input-wrap input::placeholder { color: #94A3B8; }
+body:has(.workspace) .input-wrap input:focus,
+body:has(.workspace) .otp-input-wrap input:focus {
+  border-color: #1565C0;
+  box-shadow: 0 0 0 3px rgba(21,101,192,.10);
+  outline: none;
+}
+body:has(.workspace) .hint { color: #64748B; }
+body:has(.workspace) .phone-prefix { border-color: #D7E1EA; background: #E9EEF3; color: #334155; }
+body:has(.workspace) .btn-submit,
+body:has(.workspace) .hero-cta:not(.secondary),
+body:has(.workspace) .btn-otp-verify {
+  border-color: #0D47A1;
+  background: #0D47A1;
+  color: #FFFFFF;
+  box-shadow: none;
+}
+body:has(.workspace) .btn-submit:hover,
+body:has(.workspace) .hero-cta:not(.secondary):hover,
+body:has(.workspace) .btn-otp-verify:hover { background: #0B3D91; }
+body:has(.workspace) .btn-submit:active,
+body:has(.workspace) .hero-cta:not(.secondary):active,
+body:has(.workspace) .btn-otp-verify:active { background: #082F78; }
+body:has(.workspace) .hero-cta.secondary {
+  border-color: #0D47A1;
+  background: transparent;
+  color: #0D47A1;
+}
+body:has(.workspace) .hero-cta.secondary:hover { background: #E3EFFA; }
+body:has(.workspace) .forgot-link,
+body:has(.workspace) .back-link { color: #1565C0; }
+
+/* Preserve existing modal behavior and set readable, consistent surfaces. */
+body:has(.workspace) .guide-overlay,
+body:has(.workspace) .otp-overlay { background: rgba(15,35,60,.45); }
+body:has(.workspace) .guide-modal,
+body:has(.workspace) .otp-modal,
+body:has(.workspace) .payment-modal,
+body:has(.workspace) .pay-modal,
+body:has(.workspace) .pay-modal-box {
+  border-color: #D7E1EA;
+  background: #F8FAFC;
+  color: #1F2937;
+  box-shadow: 0 8px 24px rgba(31,60,90,.12);
+}
+body:has(.workspace) .guide-modal h3,
+body:has(.workspace) .otp-modal h3 { color: #1F2937; }
+body:has(.workspace) .guide-modal p,
+body:has(.workspace) .otp-modal p { color: #64748B; }
+body:has(.workspace) .guide-modal .step-icon { background: #0D47A1 !important; }
+body:has(.workspace) .guide-modal .step-tag { background: #E3EFFA !important; color: #0D47A1 !important; }
+body:has(.workspace) .guide-modal .guide-step { border-color: #D7E1EA; background: #FFFFFF; color: #1F2937; }
+body:has(.workspace) .guide-modal .guide-step h4 { color: #1F2937; }
+body:has(.workspace) .guide-modal .guide-step p { color: #64748B; }
+body:has(.workspace) #ownerOtpOverlay .otp-modal > div:first-child { background: #0D47A1 !important; }
+body:has(.workspace) #ownerOtpOverlay .btn-otp-cancel { color: #64748B; }
+
+/* Keep the footer's existing content and layout, matching the admin-login footer. */
+body:has(.workspace) .site-footer { background: #0D47A1; color: #FFFFFF; }
+body:has(.workspace) .site-footer h2,
+body:has(.workspace) .site-footer h3,
+body:has(.workspace) .site-footer-brand { color: #FFFFFF; }
+body:has(.workspace) .site-footer p,
+body:has(.workspace) .site-footer a { color: #C9D9EA; }
+body:has(.workspace) .site-footer a:hover { color: #FFFFFF; }
+body:has(.workspace) .site-footer-bottom { border-top-color: rgba(214,228,242,.22); color: #C9D9EA; }
+
+/* Align the transient brand curtain with the same blue; no timing or behavior changes. */
+#fullScreenAppLauncherSplashCurtain { background: #0D47A1 !important; }
+#fullScreenAppLauncherSplashCurtain > div:first-child > div:first-child {
+  background: radial-gradient(circle, rgba(187,222,251,.28) 0%, transparent 70%) !important;
+}
+#fullScreenAppLauncherSplashCurtain > div:nth-child(3) { border-top-color: #BBDEFB !important; }
+
+@media (max-width: 900px) {
+  body:has(.workspace) .navbar-links a,
+  body:has(.workspace) .navbar-links a i { color: #FFFFFF; }
+  body:has(.workspace) .navbar-links a.active { background: rgba(255,255,255,.14); }
+  body:has(.workspace) .navbar-links a:hover:not(.active):not(.navbar-cta) { background: rgba(255,255,255,.10); }
+}
+
+@media (max-width: 600px) {
+  body:has(.workspace) .workspace::before {
+    opacity: .035;
+    mask-image: linear-gradient(90deg, #000 0%, transparent 82%);
+  }
+}
