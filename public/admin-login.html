@@ -608,6 +608,55 @@
             .brand-guide-note { width: 100%; }
             .footer { padding-bottom: calc(12px + env(safe-area-inset-bottom)); text-align: center; }
         }
+        /* Keep the page content-led and remove oversized vertical gaps. */
+        .admin-layout {
+            min-height: 0;
+            grid-template-rows: auto auto;
+            align-content: start;
+        }
+        .brand-panel { padding-block: 22px; }
+        .brand-lockup { gap: 14px; }
+        .brand-guide { gap: 12px; padding-block: 20px 16px; }
+        .brand-guide-section { padding: 12px; }
+        .brand-guide-section + .brand-guide-section { padding: 12px; }
+        .brand-guide-title { margin-bottom: 8px; padding-block: 5px; }
+        .brand-guide-list { gap: 6px; }
+        .brand-guide-list li { padding: 8px 10px; line-height: 1.35; }
+        .brand-guide-note { padding: 9px 11px; line-height: 1.35; }
+        .login-panel { padding-block: 28px; }
+        .card { padding-block: 28px 24px; }
+        .card .sub { margin-bottom: 18px; line-height: 1.5; }
+        .form { gap: 12px; }
+        .back-link { margin-top: 14px; }
+        @media (max-width: 960px) {
+            .brand-panel { padding-block: calc(12px + env(safe-area-inset-top, 0px)) 12px; }
+            .brand-guide { gap: 10px; padding: 14px 16px; }
+            .brand-guide-section, .brand-guide-section + .brand-guide-section { padding: 10px; }
+            .brand-guide-title { margin-bottom: 7px; }
+            .brand-guide-list { gap: 5px; }
+            .brand-guide-list li { padding: 7px 9px; }
+            .brand-guide-note { padding: 8px 10px; }
+            .login-panel { padding: 16px 14px 18px; }
+            .card { padding: 22px 20px 20px; }
+            .card .sub { margin-bottom: 16px; }
+            .back-link { margin-top: 12px; }
+        }
+        @media (max-width: 600px) {
+            .brand-panel { padding-block: calc(10px + env(safe-area-inset-top, 0px)) 10px; }
+            .brand-heading { gap: 10px; }
+            .card-icon { width: 42px; height: 42px; padding: 5px; }
+            .brand-guide { margin: 0 10px 14px; padding: 12px; gap: 9px; }
+            .brand-guide-section, .brand-guide-section + .brand-guide-section { padding: 9px; }
+            .brand-guide-list li { padding: 6px 8px; font-size: .74rem; }
+            .login-panel { padding: 14px 12px 16px; }
+            .card { padding: 20px 17px 18px; }
+            .card .sub { margin-bottom: 14px; font-size: .84rem; }
+            .form { gap: 11px; }
+            .field { gap: 5px; }
+            .field input { min-height: 46px; padding-block: 11px; }
+            .btn { min-height: 46px; }
+            .back-link { min-height: 44px; padding-block: 10px; }
+        }
     </style>
 </head>
 <body>
