@@ -460,7 +460,7 @@ body.school-auth-page .guide-card {
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
-body.school-auth-page .guide-card::before { opacity: .06; }
+body.school-auth-page .guide-card::before { opacity: .14; }
 body.school-auth-page .guide-card-title { color: #fff; font-size: .95rem; }
 body.school-auth-page .guide-card-sub { padding-top: 6px; border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.9); }
 body.school-auth-page .guide-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
