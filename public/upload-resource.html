@@ -128,6 +128,7 @@
         .admin-footer strong { color: #38bdf8; }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
+    <link rel="stylesheet" href="/assets/css/admin-upload-resource-theme.css?v=resource-manager-20261001">
 </head>
 <body>
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -169,12 +170,13 @@
     </aside>
     
     <div class="workspace">
-        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><h1>Instructional Learning Materials</h1></header>
+        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><div class="page-heading"><span class="page-eyebrow">Admin / Learning Materials</span><h1>Instructional Learning Materials</h1><p>Upload, publish and manage educational resources for IKIZAME users.</p></div></header>
         <div class="form-container">
             <!-- Left Side Upload Panel Form -->
-            <div class="card-panel">
-                <h2 id="formPanelMainTitle" style="display:flex;align-items:center;gap:8px;margin-bottom:20px;"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand);"></i> Upload New Resource</h2>
+            <div class="card-panel resource-builder-panel">
+                <div class="panel-heading"><div class="panel-heading-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div><h2 id="formPanelMainTitle"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand);"></i> Create Learning Resource</h2><p>Configure access, pricing and upload the resource file.</p></div></div>
                 <form action="/api/resources/add" method="POST" enctype="multipart/form-data" id="resourcesManagementForm">
+                    <div class="section-divider">Resource Information</div>
                     <div class="form-field">
                         <label>Resource Title *</label>
                         <input type="text" name="title" id="resourceTitleInput" required placeholder="e.g., Amategeko y'Umuhanda PDF">
@@ -182,7 +184,7 @@
 
                     <div class="form-field">
                         <label>Description</label>
-                        <textarea name="description" id="resourceDescriptionInput" rows="2" placeholder="Brief note about this resource..."></textarea>
+                        <textarea name="description" id="resourceDescriptionInput" rows="2" placeholder="Add a short description of this learning material..."></textarea>
                     </div>
 
                     <div class="section-divider">Access Permissions</div>
@@ -220,14 +222,15 @@
 
                     <div class="section-divider">File</div>
 
-                    <div class="file-drop-zone" id="fileDropZone" onclick="document.getElementById('resourceFileInput').click()">
-                        <i class="fa-solid fa-file-arrow-up"></i>
-                        <div class="drop-text">Click to select or drag & drop</div>
+                    <div class="file-drop-zone" id="fileDropZone" role="button" tabindex="0" aria-label="Choose a resource file or drop it here" onclick="document.getElementById('resourceFileInput').click()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <div class="drop-text">Drag &amp; drop your file here</div>
                         <div class="drop-sub">PDF, Word, PNG, JPG — max 20MB</div>
                         <div class="file-chosen" id="fileChosenName" style="display:none;"></div>
                         <input type="file" name="resourceFile" id="resourceFileInput" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
                     </div>
 
+                    <div class="publish-note">Review access and pricing before publishing.</div>
                     <div class="btn-row" style="flex-shrink:0; margin-top:10px;">
                         <button type="submit" class="btn-submit" id="resourceSubmitButton">
                             <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish
@@ -238,10 +241,11 @@
             </div>
             
             <!-- Right Side Library Deck List -->
-            <div class="card-panel">
-                <h2>Active Learning Materials Deck</h2>
+                    <div class="card-panel resource-library-panel">
+                <div class="library-heading"><div class="panel-heading"><div class="panel-heading-icon library-icon"><i class="fa-solid fa-book-open"></i></div><div><h2>Resource Library</h2><p>Manage active learning materials available to users.</p></div></div><span class="resource-count" id="resourceCount">Loading…</span></div>
+                <label class="resource-search" for="resourceSearchInput"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="resourceSearchInput" placeholder="Search resources..." autocomplete="off"><button type="button" id="clearResourceSearch" aria-label="Clear search" hidden><i class="fa-solid fa-xmark"></i></button></label>
                 <div class="resource-deck-list" id="resourcesListTarget">
-                    <p style="font-style:italic; font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Loading uploaded library nodes...</p>
+                    <div class="resource-skeleton" aria-label="Loading resources"><span></span><span></span><span></span></div>
                 </div>
             </div>
         </div>
@@ -309,6 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
             chosenName.style.display = 'block';
         }
     });
+    dropZone.addEventListener('keydown', ev => {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); fileInput.click(); }
+    });
 
     const listTarget = document.getElementById('resourcesListTarget');
     const resourceForm = document.getElementById('resourcesManagementForm');
@@ -324,6 +331,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 listTarget.innerHTML = cachedResourcesArray.map(res => {
+                    const fileType = String(res.file_type || '').toUpperCase();
+                    const fileIconClass = fileType.includes('PDF') ? 'fa-file-pdf file-icon-pdf' : /DOC|WORD/.test(fileType) ? 'fa-file-word file-icon-word' : /PNG|JPG|JPEG|WEBP|IMAGE/.test(fileType) ? 'fa-file-image file-icon-image' : 'fa-file-lines file-icon-generic';
+                    const fileIcon = fileIconClass.split(' ')[0];
                     const readTag  = res.allow_read === 1 ? '<span class="policy-tag allowed">View ✓</span>' : '<span class="policy-tag blocked">View ✗</span>';
                     const downTag  = res.allow_download === 1 ? '<span class="policy-tag allowed">Download ✓</span>' : '<span class="policy-tag blocked">Download ✗</span>';
                     const paidTag  = res.is_paid === 1
@@ -331,6 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         : '<span class="policy-tag free-tag">Free</span>';
                     return `
                         <div class="resource-item">
+                            <div class="resource-file-icon ${fileIconClass}" aria-hidden="true"><i class="fa-solid ${fileIcon}"></i></div>
                             <div class="resource-meta">
                                 <h4>${res.title}</h4>
                                 <p style="margin-bottom:5px;">${res.description || 'No description'}</p>
@@ -434,6 +445,43 @@ document.addEventListener('DOMContentLoaded', () => {
     ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(e=>document.addEventListener(e,reset,{passive:true}));
     reset();
 })();
+</script>
+
+<script>
+// Client-side search over the resource cards already rendered by the existing loader.
+document.addEventListener('DOMContentLoaded', () => {
+    const list = document.getElementById('resourcesListTarget');
+    const search = document.getElementById('resourceSearchInput');
+    const clear = document.getElementById('clearResourceSearch');
+    const count = document.getElementById('resourceCount');
+    if (!list || !search || !clear || !count) return;
+
+    function filterResources() {
+        const cards = [...list.querySelectorAll('.resource-item')];
+        const query = search.value.trim().toLocaleLowerCase();
+        let visible = 0;
+        cards.forEach(card => {
+            const matches = card.textContent.toLocaleLowerCase().includes(query);
+            card.hidden = !matches;
+            if (matches) visible++;
+        });
+        clear.hidden = !search.value;
+        count.textContent = `${query ? visible : cards.length} ${(query ? visible : cards.length) === 1 ? 'resource' : 'resources'}`;
+        let empty = list.querySelector('.resource-search-empty');
+        if (query && cards.length && visible === 0) {
+            if (!empty) {
+                empty = document.createElement('div');
+                empty.className = 'resource-empty resource-search-empty';
+                empty.innerHTML = '<span class="empty-icon"><i class="fa-solid fa-magnifying-glass"></i></span><h3>No resources found</h3><p>Try another title, description or file type.</p>';
+                list.appendChild(empty);
+            }
+        } else if (empty) empty.remove();
+    }
+
+    search.addEventListener('input', filterResources);
+    clear.addEventListener('click', () => { search.value = ''; filterResources(); search.focus(); });
+    new MutationObserver(filterResources).observe(list, { childList: true });
+});
 </script>
 
 
