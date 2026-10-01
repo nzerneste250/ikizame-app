@@ -185,8 +185,9 @@
         }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
+    <link rel="stylesheet" href="/assets/css/admin-payments-theme.css?v=fintech-layout-20261001">
 </head>
-<body>
+<body class="admin-payments-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
 <div id="sessionModal">
     <div class="session-modal-box">
@@ -227,9 +228,9 @@
         <div class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button>
             <div>
                 <h1>Payments Dashboard</h1>
-                <p>Manage payment transactions, revenue totals, and exam credit balances.</p>
+                <p>Manage transactions, revenue, exam credits and settlement balances.</p>
             </div>
-            <a class="btn-outline" href="/admin-paypack"><i class="fa-solid fa-building-columns"></i> PayPack Ledger</a>
+            <a class="btn-outline payments-ledger-link" href="/admin-paypack"><i class="fa-solid fa-building-columns"></i> PayPack Ledger</a>
         </div>
         <div class="form-scroll">
             <div class="grid">
@@ -263,10 +264,11 @@
                     </div>
                 </div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:relative;">
-                <div class="search-bar-wrap" style="flex:1;min-width:200px;">
+            <div class="payments-toolbar">
+                <div class="search-bar-wrap">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="phoneSearch" placeholder="Search by phone number..." oninput="filterByPhone(this.value)">
+                    <button type="button" class="search-clear" aria-label="Clear phone search" title="Clear search" onclick="clearPaymentSearch()"><i class="fa-solid fa-xmark"></i></button>
                     <span class="search-count" id="searchCount"></span>
                 </div>
                 <div class="search-summary" id="searchSummary" aria-live="polite">
@@ -309,25 +311,22 @@
                 </div>
                 <button class="btn-day-clear" onclick="clearDateFilter()">Clear Filter</button>
             </div>
-            <div class="table-container">
-                <table>
+            <div class="table-container payments-table-container">
+                <table class="payments-table" aria-label="Payment transactions">
                     <thead>
                         <tr>
-                            <th>NO.</th>
-                            <th>Phone</th>
-                            <th>Reference</th>
+                            <th>#</th>
+                            <th>Customer</th>
                             <th>Plan</th>
                             <th>Status</th>
-                            <th>Amount</th>
-                            <th>All Exams</th>
-                            <th>Remaining</th>
-                            <th>Price/Exam</th>
-                            <th>Created</th>
-                            <th>Action</th>
+                            <th>Payment</th>
+                            <th>Credits</th>
+                            <th>Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="transactionsTableBody">
-                        <tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">Loading payment transactions...</td></tr>
+                        <tr><td colspan="8" style="text-align:center; padding:30px; color:#64748b;">Loading payment transactions...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -403,6 +402,12 @@
         summary.style.display = 'flex';
     }
 
+    function clearPaymentSearch() {
+        const input = document.getElementById('phoneSearch');
+        input.value = '';
+        filterByPhone('');
+    }
+
     function filterByPhone(q) {
         const term = q.trim();
         const rows = document.querySelectorAll('#transactionsTableBody tr[data-phone]');
@@ -441,13 +446,13 @@
                     const bd = document.getElementById('paypackBreakdown');
                     if (b.error) { el.textContent = 'Error'; el.style.color = '#ef4444'; return; }
                     el.textContent = 'RWF ' + parseFloat(b.net || 0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-                    bd.innerHTML = `In: <b>RWF ${parseFloat(b.cashin||0).toFixed(1)}</b> &nbsp;Fee: <b style="color:#ef4444">-RWF ${parseFloat(b.fee||0).toFixed(1)}</b>`;
+                    bd.innerHTML = `<span class="balance-gross">Gross <b>RWF ${parseFloat(b.cashin||0).toFixed(1)}</b></span><span class="balance-fees">Fees <b>-RWF ${parseFloat(b.fee||0).toFixed(1)}</b></span>`;
                 })
                 .catch(() => { document.getElementById('paypackBalance').textContent = 'N/A'; });
 
             paymentTransactions = Array.isArray(data) ? data : [];
             if (!paymentTransactions.length) {
-                document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
+                document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
                 return;
             }
             renderTransactions(paymentTransactions);
@@ -456,7 +461,7 @@
             document.getElementById('totalPayments').textContent = '0';
             document.getElementById('totalRevenue').textContent = formatCurrency(0);
             document.getElementById('totalExamCredits').textContent = '0';
-            document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#ef4444;">Unable to load transactions.</td></tr>';
+            document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#ef4444;">Unable to load transactions.</td></tr>';
         });
     }
 
@@ -557,36 +562,45 @@
     function renderTransactions(list) {
         const body = document.getElementById('transactionsTableBody');
         if (!list.length) {
-            body.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748b;">No payment transactions found.</td></tr>';
+            body.innerHTML = '<tr><td colspan="8" class="payments-empty">No payment transactions found.</td></tr>';
             return;
         }
         body.innerHTML = list.map((tx, i) => {
             const statusClass = tx.status === 'SUCCESS' ? 'success' : tx.status === 'PENDING' ? 'pending' : 'error';
-            const created = new Date(tx.created_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+            const createdAt = new Date(tx.created_at);
+            const createdDate = createdAt.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+            const createdTime = createdAt.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
             const realRef = tx.rwandapay_tx_id || tx.reference_id || '---';
+            const shortRef = realRef.length > 19 ? `${realRef.slice(0, 8)}...${realRef.slice(-5)}` : realRef;
             const network = detectNetwork(tx.phone_number);
             const rem = Number(tx.remaining_exams);
             const isNeg = rem < 0;
             const remCell = isNeg
-                ? `<span style="color:#dc2626;font-weight:800;">${rem}</span> <span class="new-payment-badge"><i class="fa-solid fa-triangle-exclamation"></i> New payment needed</span>`
-                : rem;
+                ? `<span class="new-payment-badge"><i class="fa-solid fa-triangle-exclamation"></i> New payment needed</span>`
+                : '';
             const rowClass = isNeg ? 'negative-warn-row' : '';
+            const price = tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '-';
             return `<tr class="${rowClass}" data-phone="${tx.phone_number || ''}" data-date="${(tx.created_at||'').slice(0,10)}">
-                <td style="font-weight:700;color:#0b698b;">${i + 1}</td>
-                <td>${tx.phone_number} ${network}</td>
-                <td class="paypack-ref">${realRef}</td>
-                <td>${tx.plan_name || '---'}</td>
-                <td><span class="status-pill ${statusClass}">${tx.status || 'UNKNOWN'}</span></td>
-                <td>${formatCurrency(tx.amount || 0)}</td>
-                <td>${tx.total_exams || 0}</td>
-                <td>${remCell}</td>
-                <td>${tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '—'}</td>
-                <td>${created}</td>
-                <td><button class="btn-text-action btn-edit payment-edit-action" onclick="openEditPaymentModal(${tx.id})">Edit</button></td>
+                <td class="payment-index" data-label="#">#${i + 1}</td>
+                <td class="payment-customer" data-label="Customer">
+                    <span class="customer-primary"><span class="customer-phone">${tx.phone_number || '---'}</span>${network}</span>
+                    <span class="payment-reference" title="${realRef}">Ref: ${shortRef}</span>
+                </td>
+                <td class="payment-plan" data-label="Plan">${tx.plan_name || '---'}</td>
+                <td class="payment-status-cell" data-label="Status"><span class="status-pill ${statusClass}">${tx.status || 'UNKNOWN'}</span></td>
+                <td class="payment-value-cell" data-label="Payment">
+                    <span class="payment-amount">${formatCurrency(tx.amount || 0)}</span>
+                    <span class="payment-secondary">${price} / exam</span>
+                </td>
+                <td class="payment-credits" data-label="Credits">
+                    <span>${tx.total_exams || 0} total</span>
+                    <span class="credit-remaining">${rem} remaining ${remCell}</span>
+                </td>
+                <td class="payment-date-cell" data-label="Date"><span>${createdDate}</span><span class="payment-secondary">${createdTime}</span></td>
+                <td class="payment-actions" data-label="Actions"><button class="btn-text-action btn-edit payment-edit-action" onclick="openEditPaymentModal(${tx.id})"><i class="fa-solid fa-pen"></i><span>Edit</span></button></td>
             </tr>`;
         }).join('');
     }
-
 function applyDateFilter(dateStr) {
         if (!dateStr) return;
         activeDateFilter = dateStr;
