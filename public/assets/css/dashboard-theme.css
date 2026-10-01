@@ -641,7 +641,7 @@ body.dashboard-page::-webkit-scrollbar-thumb:hover { background: #6686A4; }
   .dashboard-page .repository-toolbar-controls { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
   .dashboard-page .questions-repository-table thead th { position: static; }
 }
-@media (max-width: 700px) {
+@media (max-width: 1100px) {
   .dashboard-page .topbar { align-items: center; flex-wrap: wrap; }
   .dashboard-page .topbar > div:first-of-type { flex: 1 1 calc(100% - 68px); }
   .dashboard-page .dashboard-search-wrap { order: 3; flex: 1 1 100%; width: 100%; min-width: 0; }
