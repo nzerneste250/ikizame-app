@@ -170,11 +170,11 @@
     </aside>
     
     <div class="workspace">
-        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><div class="page-heading"><span class="page-eyebrow">Admin / Learning Materials</span><h1>Instructional Learning Materials</h1><p>Upload, publish and manage educational resources for IKIZAME users.</p></div></header>
+        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><div class="page-heading"><span class="page-eyebrow">ADMIN / LEARNING MATERIALS</span><h1>Instructional Learning Materials</h1><p>Manage educational resources for IKIZAME users.</p></div><button type="button" class="add-resource-button" id="openResourceForm"><i class="fa-solid fa-plus"></i><span>Add Resource</span></button></header>
         <div class="form-container">
-            <!-- Left Side Upload Panel Form -->
-            <div class="card-panel resource-builder-panel">
-                <div class="panel-heading"><div class="panel-heading-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div><h2 id="formPanelMainTitle"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand);"></i> Create Learning Resource</h2><p>Configure access, pricing and upload the resource file.</p></div></div>
+            <div class="resource-form-overlay" id="resourceFormOverlay" hidden>
+              <section class="card-panel resource-builder-panel" role="dialog" aria-modal="true" aria-labelledby="formPanelMainTitle">
+                <div class="panel-heading"><div class="panel-heading-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div><h2 id="formPanelMainTitle"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand);"></i> Create Learning Resource</h2><p>Configure access, pricing and upload the resource file.</p></div><button type="button" class="close-resource-form" id="closeResourceForm" aria-label="Close resource form"><i class="fa-solid fa-xmark"></i></button></div>
                 <form action="/api/resources/add" method="POST" enctype="multipart/form-data" id="resourcesManagementForm">
                     <div class="section-divider">Resource Information</div>
                     <div class="form-field">
@@ -238,10 +238,11 @@
                         <button type="button" class="btn-reset" id="resetFormBtn" onclick="resetForm()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
                     </div>
                 </form>
+              </section>
             </div>
             
             <!-- Right Side Library Deck List -->
-                    <div class="card-panel resource-library-panel">
+            <div class="card-panel resource-library-panel">
                 <div class="library-heading"><div class="panel-heading"><div class="panel-heading-icon library-icon"><i class="fa-solid fa-book-open"></i></div><div><h2>Resource Library</h2><p>Manage active learning materials available to users.</p></div></div><span class="resource-count" id="resourceCount">Loading…</span></div>
                 <label class="resource-search" for="resourceSearchInput"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="resourceSearchInput" placeholder="Search resources..." autocomplete="off"><button type="button" id="clearResourceSearch" aria-label="Clear search" hidden><i class="fa-solid fa-xmark"></i></button></label>
                 <div class="resource-deck-list" id="resourcesListTarget">
@@ -255,6 +256,31 @@
 <footer class="admin-footer">&copy; 2026 IKIZAME &middot; DOTADO STATIONERY STORE LTD</footer>
 <script src="assets/js/ikizame-ui.js"></script>
 <script>
+function openResourceForm() {
+    const overlay = document.getElementById('resourceFormOverlay');
+    if (!overlay) return;
+    overlay.hidden = false;
+    document.body.classList.add('resource-form-open');
+    window.setTimeout(() => document.getElementById('resourceTitleInput')?.focus(), 40);
+}
+
+function closeResourceForm() {
+    const overlay = document.getElementById('resourceFormOverlay');
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.classList.remove('resource-form-open');
+    document.getElementById('openResourceForm')?.focus();
+}
+
+document.getElementById('openResourceForm').addEventListener('click', openResourceForm);
+document.getElementById('closeResourceForm').addEventListener('click', closeResourceForm);
+document.getElementById('resourceFormOverlay').addEventListener('click', event => {
+    if (event.target.id === 'resourceFormOverlay') closeResourceForm();
+});
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !document.getElementById('resourceFormOverlay').hidden) closeResourceForm();
+});
+
 // ── Form UI helpers ──
 function toggleChip(label, checkId) {
     const cb = document.getElementById(checkId);
@@ -395,6 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isPaid) document.getElementById('priceInput').value = res.price || '';
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        openResourceForm();
     };
 
     window.deleteResource = function(id) {
