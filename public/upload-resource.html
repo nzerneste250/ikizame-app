@@ -128,7 +128,7 @@
         .admin-footer strong { color: #38bdf8; }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
-    <link rel="stylesheet" href="/assets/css/admin-upload-resource-theme.css?v=resource-manager-20261001">
+    <link rel="stylesheet" href="/assets/css/admin-upload-resource-theme.css?v=resource-manager-20261001-2">
 </head>
 <body>
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -170,11 +170,11 @@
     </aside>
     
     <div class="workspace">
-        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><div class="page-heading"><span class="page-eyebrow">ADMIN / LEARNING MATERIALS</span><h1>Instructional Learning Materials</h1><p>Manage educational resources for IKIZAME users.</p></div><button type="button" class="add-resource-button" id="openResourceForm"><i class="fa-solid fa-plus"></i><span>Add Resource</span></button></header>
+        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><div class="page-heading"><span class="page-eyebrow">ADMIN / LEARNING MATERIALS</span><h1>Instructional Learning Materials</h1><p>Manage educational resources for IKIZAME users.</p></div><button type="button" class="add-resource-button" id="openResourceForm" aria-haspopup="dialog" aria-controls="resourceFormOverlay"><i class="fa-solid fa-plus"></i><span>Add Resource</span></button></header>
         <div class="form-container">
             <div class="resource-form-overlay" id="resourceFormOverlay" hidden>
               <section class="card-panel resource-builder-panel" role="dialog" aria-modal="true" aria-labelledby="formPanelMainTitle">
-                <div class="panel-heading"><div class="panel-heading-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div><h2 id="formPanelMainTitle"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand);"></i> Create Learning Resource</h2><p>Configure access, pricing and upload the resource file.</p></div><button type="button" class="close-resource-form" id="closeResourceForm" aria-label="Close resource form"><i class="fa-solid fa-xmark"></i></button></div>
+                <div class="panel-heading"><div class="panel-heading-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div><h2 id="formPanelMainTitle"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand);"></i> Create Learning Resource</h2><p>Configure access, pricing and upload the resource file.</p></div><button type="button" class="close-resource-form" id="closeResourceForm" aria-label="Close resource form"><i class="fa-solid fa-xmark"></i><span>Close</span></button></div>
                 <form action="/api/resources/add" method="POST" enctype="multipart/form-data" id="resourcesManagementForm">
                     <div class="section-divider">Resource Information</div>
                     <div class="form-field">
