@@ -193,6 +193,54 @@
 .admin-payments-page .modal-card { border: 1px solid var(--pay-border); border-radius: 16px; }
 .admin-payments-page .modal-body input { min-height: 44px; }
 
+/* Compact, centered transaction editor */
+.admin-payments-page .modal-overlay#editPaymentModal {
+  position: fixed; inset: 0; z-index: 9500; display: none; align-items: center; justify-content: center;
+  padding: 20px; overflow-y: auto; background: rgba(15,27,45,.52); backdrop-filter: blur(3px);
+}
+.admin-payments-page .modal-overlay#editPaymentModal[style*="display: flex"] { display: flex !important; }
+.admin-payments-page .modal-overlay#editPaymentModal .modal-card {
+  display: flex; flex-direction: column; width: min(640px,100%); max-width: 640px;
+  max-height: min(82vh,760px); max-height: min(82dvh,760px); margin: auto;
+  overflow: hidden; border: 1px solid #d8e1ea; border-radius: 18px; background: #fff;
+  box-shadow: 0 24px 70px rgba(15,27,45,.28);
+}
+.admin-payments-page .modal-overlay#editPaymentModal .modal-header {
+  flex: 0 0 auto; min-height: 62px; padding: 12px 20px; gap: 14px;
+  border-bottom: 1px solid #e8eef5; background: #fff;
+}
+.admin-payments-page .modal-overlay#editPaymentModal .modal-header h3 { color: #17253a; font-size: 18px; letter-spacing: -.02em; }
+.admin-payments-page .modal-overlay#editPaymentModal .modal-body {
+  display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-content: start;
+  gap: 10px 14px; padding: 15px 20px; overflow-y: auto; overscroll-behavior: contain;
+}
+.admin-payments-page .modal-overlay#editPaymentModal .modal-body > div { display: flex; min-width: 0; flex-direction: column; gap: 5px; }
+.admin-payments-page .modal-overlay#editPaymentModal .modal-body > div:nth-of-type(3) { grid-column: 1 / -1; }
+.admin-payments-page .modal-overlay#editPaymentModal .modal-body label {
+  color: #52637a; font-size: 10px; font-weight: 800; letter-spacing: .055em;
+}
+.admin-payments-page .modal-overlay#editPaymentModal .modal-body input {
+  min-width: 0; min-height: 40px; padding: 8px 11px; border: 1px solid #d8e1ea;
+  border-radius: 9px; background: #f8fafc; color: #1f2937; font-size: 13px;
+}
+.admin-payments-page .modal-overlay#editPaymentModal .modal-body input:focus-visible {
+  border-color: #1565c0; outline: 3px solid rgba(21,101,192,.14); outline-offset: 1px;
+}
+.admin-payments-page .modal-overlay#editPaymentModal .modal-body input:disabled {
+  background: #f3f6fa; color: #596a80; opacity: 1;
+}
+.admin-payments-page .modal-overlay#editPaymentModal .modal-footer {
+  flex: 0 0 auto; padding: 11px 20px 15px; gap: 9px; border-top: 1px solid #e8eef5; background: #fff;
+}
+.admin-payments-page .modal-overlay#editPaymentModal .modal-footer button { min-height: 42px; padding: 0 16px; border-radius: 9px; font: inherit; font-size: 12px; font-weight: 700; }
+.admin-payments-page .modal-overlay#editPaymentModal .modal-footer .btn-primary { background: #0d698b; color: #fff; box-shadow: 0 4px 10px rgba(13,105,139,.16); }
+.admin-payments-page .modal-overlay#editPaymentModal .modal-footer .btn-primary:hover { background: #08536e; }
+.admin-payments-page .modal-overlay#editPaymentModal .modal-footer .close-btn { border: 1px solid #d8e1ea; background: #f1f5f9; color: #475569; }
+.admin-payments-page .modal-overlay#editPaymentModal .modal-footer .close-btn:hover,
+.admin-payments-page .modal-overlay#editPaymentModal .modal-header .close-btn:hover { background: #e7eef6; color: #1f2937; }
+.admin-payments-page .modal-overlay#editPaymentModal :is(button,input):focus-visible { outline: 3px solid rgba(21,101,192,.2); outline-offset: 2px; }
+.admin-payments-page .modal-overlay#editPaymentModal .modal-header .close-btn { min-height: 38px; padding: 0 12px; border: 1px solid #d8e1ea; border-radius: 9px; background: #f8fafc; color: #475569; }
+
 @media (max-width: 1200px) {
   .admin-payments-page .form-scroll { padding: 20px 20px 26px; }
   .admin-payments-page .grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
@@ -264,6 +312,15 @@
   .admin-payments-page .day-report-bar { align-items: stretch; gap: 10px; padding: 12px; }
   .admin-payments-page .dr-section { flex: 1 1 calc(50% - 10px); padding: 2px 0; border: 0; }
   .admin-payments-page .btn-day-clear { width: 100%; margin: 0; }
+  .admin-payments-page .modal-overlay#editPaymentModal { align-items: center; padding: 12px; }
+  .admin-payments-page .modal-overlay#editPaymentModal .modal-card { width: 100%; max-width: 460px; max-height: calc(100dvh - 24px); border-radius: 15px; }
+  .admin-payments-page .modal-overlay#editPaymentModal .modal-header { min-height: 56px; padding: 10px 14px; }
+  .admin-payments-page .modal-overlay#editPaymentModal .modal-header h3 { font-size: 16px; }
+  .admin-payments-page .modal-overlay#editPaymentModal .modal-body { grid-template-columns: minmax(0,1fr); gap: 9px; padding: 12px 14px; }
+  .admin-payments-page .modal-overlay#editPaymentModal .modal-body > div:nth-of-type(3) { grid-column: auto; }
+  .admin-payments-page .modal-overlay#editPaymentModal .modal-body input { min-height: 38px; font-size: 13px; }
+  .admin-payments-page .modal-overlay#editPaymentModal .modal-footer { padding: 10px 14px max(12px,env(safe-area-inset-bottom)); }
+  .admin-payments-page .modal-overlay#editPaymentModal .modal-footer button { min-height: 42px; }
 }
 @media (max-width: 400px) {
   .admin-payments-page .grid { grid-template-columns: minmax(0,1fr); }
