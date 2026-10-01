@@ -295,7 +295,7 @@
         }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
-    <link rel="stylesheet" href="/assets/css/add-exam-builder.css?v=20261001-fit">
+    <link rel="stylesheet" href="/assets/css/add-exam-builder.css?v=20261001-steps">
 </head>
 <body class="question-builder-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -353,9 +353,15 @@
         <div class="form-scroll">
             <form action="/api/exams/add" method="POST" enctype="multipart/form-data" class="form-card" id="addForm">
                 <input type="hidden" id="optionsLayoutMode" name="optionsLayoutMode" value="text">
+                <ol class="builder-progress" aria-label="Question setup steps">
+                    <li class="builder-step"><span class="builder-step-number">01</span><span>Question</span></li>
+                    <li class="builder-step"><span class="builder-step-number">02</span><span>Media</span></li>
+                    <li class="builder-step"><span class="builder-step-number">03</span><span>Answers</span></li>
+                    <li class="builder-step"><span class="builder-step-number">04</span><span>Answer key</span></li>
+                </ol>
 
                 <!-- Question text -->
-                <div class="field">
+                <div class="field question-copy-field">
                     <label for="question">Question Text</label>
                     <textarea id="question" name="question" rows="3" required placeholder="Type the question statement here..."></textarea>
                 </div>
