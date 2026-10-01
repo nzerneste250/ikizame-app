@@ -741,6 +741,37 @@ body.dashboard-page::-webkit-scrollbar-thumb:hover { background: #6686A4; }
 
 /* Clear mobile question-card hierarchy and comfortable search controls. */
 @media (max-width: 1100px) {
+  .dashboard-page .workspace > .topbar {
+    display: grid !important; grid-template-columns: 42px minmax(0, 1fr);
+    grid-template-rows: auto 48px; align-items: center; gap: 10px 12px;
+    width: 100%; height: auto !important; min-height: 0; padding: 12px 16px;
+  }
+  .dashboard-page .workspace > .topbar > .mobile-nav-toggle { grid-column: 1; grid-row: 1; }
+  .dashboard-page .workspace > .topbar > div:first-of-type {
+    grid-column: 2; grid-row: 1; width: auto; min-width: 0; flex: initial;
+  }
+  .dashboard-page .workspace > .topbar > .dashboard-search-wrap {
+    grid-column: 1 / -1; grid-row: 2; display: grid; grid-template-columns: 20px minmax(0, 1fr) 30px;
+    align-items: center; gap: 10px; width: 100%; min-width: 0; height: 48px; min-height: 48px;
+    margin: 0; padding: 0 12px; border: 1px solid #C8D6E2; border-radius: 12px;
+    background: #fff; box-shadow: 0 3px 10px rgba(24,50,70,.07);
+  }
+  .dashboard-page .workspace > .topbar > .dashboard-search-wrap > i {
+    display: grid; place-items: center; width: 20px; color: var(--repo-blue); font-size: 14px;
+  }
+  .dashboard-page .workspace > .topbar > .dashboard-search-wrap input {
+    display: block; grid-column: 2; width: 100%; min-width: 0; height: 44px; min-height: 0;
+    margin: 0; padding: 0; border: 0 !important; border-radius: 0;
+    background: transparent; box-shadow: none !important; color: var(--repo-ink); font-size: 13px;
+  }
+  .dashboard-page .workspace > .topbar > .dashboard-search-wrap input::placeholder { color: #718096; opacity: 1; }
+  .dashboard-page .workspace > .topbar > .dashboard-search-wrap #clearDashboardSearch { grid-column: 3; }
+  .dashboard-page .workspace > .topbar > .dashboard-search-wrap:focus-within {
+    border-color: var(--repo-blue); box-shadow: 0 0 0 3px rgba(21,101,192,.12), 0 3px 10px rgba(24,50,70,.06);
+  }
+}
+
+@media (max-width: 1100px) {
   .dashboard-page .dashboard-search-wrap {
     min-height: 46px; padding: 0 14px; border-color: #C8D6E2;
     border-radius: 12px; background: #fff;
