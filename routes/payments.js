@@ -40,9 +40,10 @@ let tokenExpires = 0;
 let tokenRefreshPromise = null;
 
 function ensurePaymentColumns(db) {
-    db.query(`ALTER TABLE payment_transactions ADD COLUMN service_type VARCHAR(50) NOT NULL DEFAULT 'EXAMS'`, () => {});
-    db.query(`ALTER TABLE payment_transactions ADD COLUMN resource_id INT NULL`, () => {});
-    db.query(`ALTER TABLE payment_transactions ADD COLUMN resource_title VARCHAR(255) NULL`, () => {});
+    // The deployment migration establishes these columns and the unique reference
+    // constraint.  Keep this best-effort compatibility creation only for the
+    // pending-order table; silently attempting ALTERs here could leave an
+    // apparently healthy process with duplicate-credit protection absent.
     db.query(`
         CREATE TABLE IF NOT EXISTS pending_payment_requests (
             id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -229,16 +230,21 @@ module.exports = (db) => {
             serviceType = 'RESOURCES';
             resourceIdValue = resource.id;
             resourceTitleValue = resource.title;
-        } else {
+        } else if (checkoutIntentType === 'PERSONAL' || checkoutIntentType === 'EXAMS') {
             const qty = parseInt(examQuantityVolume, 10) || 1;
+            if (qty < 1 || qty > 200) {
+                return res.status(400).json({ success: false, error: 'Exam quantity must be between 1 and 200.' });
+            }
             examCount = qty;
             amount    = calcTieredAmount(qty);
             planLabel = `Personal Tiered Pass (${qty} Exams Package)`;
+        } else {
+            return res.status(400).json({ success: false, error: 'Unknown checkout type.' });
         }
 
-        const submittedPx  = Number(pricePerExam);
-        const validPrices  = [100, 80, 70, 50];
-        const priceToStore = validPrices.includes(submittedPx) ? submittedPx : getPricePerExam(examCount);
+        // Amount and unit price are server-derived. Client-provided pricing is
+        // display data only and must never influence a stored order.
+        const priceToStore = serviceType === 'EXAMS' ? getPricePerExam(examCount) : null;
 
         try {
             const token = await getAccessToken();
@@ -269,13 +275,18 @@ module.exports = (db) => {
                 expires: Date.now() + 5 * 60 * 1000
             });
 
-            // Also persist to DB so webhook can recover after server restart
-            db.query(
-                `INSERT IGNORE INTO pending_payment_requests (payment_reference, phone_number, amount, plan_name, exam_count, price_per_exam, school_id, service_type, resource_id, resource_title)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [paypackRef, phone, amount, planLabel, examCount || null, priceToStore || null, null, serviceType, resourceIdValue || null, resourceTitleValue || null],
-                (dbErr) => { if (dbErr) console.error('⚠️  Failed to persist pending request:', dbErr.message); }
-            );
+            // Do not claim that a payment was initiated until its order is
+            // durable. Otherwise a restart between these two operations can
+            // make a legitimate paid callback unrecoverable.
+            await new Promise((resolve, reject) => {
+                db.query(
+                    `INSERT INTO pending_payment_requests (payment_reference, phone_number, amount, plan_name, exam_count, price_per_exam, school_id, service_type, resource_id, resource_title)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     ON DUPLICATE KEY UPDATE payment_reference = VALUES(payment_reference)`,
+                    [paypackRef, phone, amount, planLabel, examCount || null, priceToStore, null, serviceType, resourceIdValue || null, resourceTitleValue || null],
+                    (dbErr) => dbErr ? reject(dbErr) : resolve()
+                );
+            });
 
             console.log(`✅ Paypack cashin initiated: ${paypackRef} for ${serviceType}`);
             res.json({ success: true, referenceId: paypackRef, paypackRef, allocatedPlan: planLabel });
