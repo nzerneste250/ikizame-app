@@ -72,6 +72,20 @@ CREATE TABLE IF NOT EXISTS pending_payment_requests (
     service_type VARCHAR(50) NOT NULL DEFAULT 'EXAMS',
     resource_id INT NULL,
     resource_title VARCHAR(255) NULL,
+    expires_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_pending_payment_reference (payment_reference)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET @pending_payment_expires_at_sql := (
+    SELECT IF(COUNT(*) = 0,
+        'ALTER TABLE pending_payment_requests ADD COLUMN expires_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
+        'SELECT 1')
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'pending_payment_requests'
+      AND column_name = 'expires_at'
+);
+PREPARE pending_payment_expires_at_stmt FROM @pending_payment_expires_at_sql;
+EXECUTE pending_payment_expires_at_stmt;
+DEALLOCATE PREPARE pending_payment_expires_at_stmt;

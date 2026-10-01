@@ -58,6 +58,7 @@ function ensurePaymentColumns(db) {
             service_type VARCHAR(50) NOT NULL DEFAULT 'EXAMS',
             resource_id INT NULL,
             resource_title VARCHAR(255) NULL,
+            expires_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             INDEX idx_ref (payment_reference)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -266,6 +267,7 @@ module.exports = (db) => {
 
             const paypackRef = data?.ref;
             if (!paypackRef) throw new Error('No ref returned from Paypack');
+            const expiresAt = Date.now() + 5 * 60 * 1000;
 
             // Store pending data in memory — DB insert happens only on successful webhook
             pendingMap.set(paypackRef, {
@@ -274,7 +276,7 @@ module.exports = (db) => {
                 serviceType,
                 resourceId: resourceIdValue,
                 resourceTitle: resourceTitleValue,
-                expires: Date.now() + 5 * 60 * 1000
+                expires: expiresAt
             });
 
             // Do not claim that a payment was initiated until its order is
@@ -282,10 +284,10 @@ module.exports = (db) => {
             // make a legitimate paid callback unrecoverable.
             await new Promise((resolve, reject) => {
                 db.query(
-                    `INSERT INTO pending_payment_requests (payment_reference, phone_number, amount, plan_name, exam_count, price_per_exam, school_id, service_type, resource_id, resource_title)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    `INSERT INTO pending_payment_requests (payment_reference, phone_number, amount, plan_name, exam_count, price_per_exam, school_id, service_type, resource_id, resource_title, expires_at)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                      ON DUPLICATE KEY UPDATE payment_reference = VALUES(payment_reference)`,
-                    [paypackRef, phone, amount, planLabel, examCount || null, priceToStore, null, serviceType, resourceIdValue || null, resourceTitleValue || null],
+                    [paypackRef, phone, amount, planLabel, examCount || null, priceToStore, null, serviceType, resourceIdValue || null, resourceTitleValue || null, new Date(expiresAt)],
                     (dbErr) => dbErr ? reject(dbErr) : resolve()
                 );
             });

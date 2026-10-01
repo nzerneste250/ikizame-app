@@ -9,6 +9,9 @@ test('payment migration is idempotent without unsupported MySQL ADD COLUMN IF NO
   for (const column of ['service_type', 'resource_id', 'resource_title', 'reference_id']) {
     assert.match(sql, new RegExp(`column_name = '${column}'`));
   }
+  assert.match(sql, /column_name = 'expires_at'/);
+  assert.match(sql, /pending_payment_expires_at_stmt/);
+  assert.match(sql, /expires_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP/);
   assert.match(sql, /PREPARE payment_service_type_stmt/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS pending_payment_requests/);
 });

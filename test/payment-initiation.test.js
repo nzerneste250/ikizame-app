@@ -40,7 +40,10 @@ test('payment initiation derives resource pricing on the server and durably reco
   });
   assert.equal(response.status, 200);
   const pendingInsert = calls.find(call => call.sql.startsWith('INSERT INTO pending_payment_requests'));
-  assert.deepEqual(pendingInsert.values, ['resource-ref', '0781234567', 750, 'Resource Access — Database title', null, null, null, 'RESOURCES', 8, 'Database title']);
+  assert.match(pendingInsert.sql, /resource_title, expires_at/);
+  assert.deepEqual(pendingInsert.values.slice(0, 10), ['resource-ref', '0781234567', 750, 'Resource Access — Database title', null, null, null, 'RESOURCES', 8, 'Database title']);
+  assert.ok(pendingInsert.values[10] instanceof Date);
+  assert.ok(pendingInsert.values[10].getTime() > Date.now());
 
   const rejected = await fetch(`http://127.0.0.1:${server.address().port}/api/payments/momo-push`, {
     method: 'POST', headers: { 'content-type': 'application/json' },
