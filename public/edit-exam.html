@@ -11,6 +11,7 @@
     <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/design-system.css">
+    <link rel="stylesheet" href="assets/css/admin-responsive.css">
     <style>
         :root {
             --brand: #0b698b;
@@ -132,8 +133,10 @@
         @media (max-width: 1100px) { .sidebar { display: none; } .topbar, .form-scroll { padding-left: 20px; padding-right: 20px; } }
         @media (max-width: 700px) { .options-grid, .text-options-grid { grid-template-columns: 1fr; } }
     </style>
+    <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
 </head>
 <body>
+<div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
 
 <div id="sessionModal">
     <div class="session-modal-box">
@@ -191,8 +194,8 @@
     <aside class="sidebar">
         <div class="sidebar-brand"><i class="fa-solid fa-graduation-cap"></i> IKIZAME</div>
         <nav class="sidebar-nav">
-            <a href="dashboard" id="navLinkDashboard"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
-            <a href="add-exam" class="active"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
+            <a href="dashboard" id="navLinkDashboard" class="active"><i class="fa-solid fa-chart-pie"></i> Questions Board</a>
+            <a href="add-exam"><i class="fa-solid fa-square-plus"></i> Add New Question</a>
             <a href="/admin-payments"><i class="fa-solid fa-credit-card"></i> Payments</a>
             <a href="upload-resource"><i class="fa-solid fa-book-bookmark"></i> Upload Resources</a>
             <a href="dashboard?view=analytics"><i class="fa-solid fa-user-graduate"></i> Student Performance</a>
@@ -212,6 +215,7 @@
 
     <div class="workspace">
         <header class="topbar">
+            <button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button>
             <div>
                 <h1>Edit Existing Question</h1>
                 <p>Modify textual contents, select keys, or drop fresh graphic option configurations safely.</p>
@@ -231,10 +235,11 @@
 </div>
 
 <footer class="admin-footer">
-     &copy; 2026 IKIZAME &nbsp;<strong> Developed by Dotado Stationery Store Ltd</strong>
+     &copy; 2026 IKIZAME &middot; DOTADO STATIONERY STORE LTD
 </footer>
 
 <script src="assets/js/ikizame-ui.js"></script>
+<script src="assets/js/admin-responsive.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);

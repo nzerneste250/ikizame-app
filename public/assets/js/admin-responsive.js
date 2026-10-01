@@ -4,7 +4,52 @@
   }
 
   function getShell() {
-    return document.querySelector('.shell');
+    return document.querySelector('.shell, .wrap');
+  }
+
+  function setupDesktopCollapse(sidebar) {
+    const brand = sidebar && sidebar.querySelector('.sidebar-brand, .side-logo');
+    if (!brand) return;
+
+    Array.from(brand.childNodes).forEach(function (node) {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+        const label = document.createElement('span');
+        label.textContent = node.textContent.trim();
+        brand.replaceChild(label, node);
+      }
+    });
+
+    let button = brand.querySelector('.sidebar-collapse-toggle');
+    const hasPageSpecificToggle = Boolean(button);
+    if (!button) {
+      button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'admin-collapse-toggle';
+      button.innerHTML = '<i class="fa-solid fa-angles-left" aria-hidden="true"></i>';
+      brand.appendChild(button);
+    }
+
+    function updateButton(collapsed) {
+      button.setAttribute('aria-label', collapsed ? 'Expand navigation' : 'Collapse navigation');
+      button.title = collapsed ? 'Expand navigation' : 'Collapse navigation';
+      button.innerHTML = '<i class="fa-solid fa-angles-' + (collapsed ? 'right' : 'left') + '" aria-hidden="true"></i>';
+    }
+
+    const shell = getShell();
+    if (!shell) return;
+    try {
+      if (window.innerWidth > 1100 && localStorage.getItem('ikizame-admin-nav-collapsed') === '1') {
+        shell.classList.add('sidebar-collapsed');
+      }
+    } catch (_) {}
+    if (!hasPageSpecificToggle) {
+      updateButton(shell.classList.contains('sidebar-collapsed'));
+      button.addEventListener('click', function () {
+        const collapsed = shell.classList.toggle('sidebar-collapsed');
+        updateButton(collapsed);
+        try { localStorage.setItem('ikizame-admin-nav-collapsed', collapsed ? '1' : '0'); } catch (_) {}
+      });
+    }
   }
 
   function enhanceTablesForMobile() {
@@ -50,6 +95,7 @@
   window.toggleAdminSidebar = function () {
     const sidebar = getSidebar();
     if (!sidebar) return;
+    setupDesktopCollapse(sidebar);
     if (sidebar.classList.contains('open')) {
       closeSidebar();
     } else {
