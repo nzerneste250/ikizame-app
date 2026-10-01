@@ -2,10 +2,46 @@
 -- These additive changes are compatible with the currently deployed code:
 -- old application versions ignore the new columns and table.
 
-ALTER TABLE payment_transactions
-    ADD COLUMN IF NOT EXISTS service_type VARCHAR(50) NOT NULL DEFAULT 'EXAMS',
-    ADD COLUMN IF NOT EXISTS resource_id INT NULL,
-    ADD COLUMN IF NOT EXISTS resource_title VARCHAR(255) NULL;
+-- MySQL 8 does not support ADD COLUMN IF NOT EXISTS. Use information_schema
+-- checks so this migration is safe on both the existing and fresh schemas.
+SET @payment_service_type_sql := (
+    SELECT IF(COUNT(*) = 0,
+        'ALTER TABLE payment_transactions ADD COLUMN service_type VARCHAR(50) NOT NULL DEFAULT ''EXAMS''',
+        'SELECT 1')
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'payment_transactions'
+      AND column_name = 'service_type'
+);
+PREPARE payment_service_type_stmt FROM @payment_service_type_sql;
+EXECUTE payment_service_type_stmt;
+DEALLOCATE PREPARE payment_service_type_stmt;
+
+SET @payment_resource_id_sql := (
+    SELECT IF(COUNT(*) = 0,
+        'ALTER TABLE payment_transactions ADD COLUMN resource_id INT NULL',
+        'SELECT 1')
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'payment_transactions'
+      AND column_name = 'resource_id'
+);
+PREPARE payment_resource_id_stmt FROM @payment_resource_id_sql;
+EXECUTE payment_resource_id_stmt;
+DEALLOCATE PREPARE payment_resource_id_stmt;
+
+SET @payment_resource_title_sql := (
+    SELECT IF(COUNT(*) = 0,
+        'ALTER TABLE payment_transactions ADD COLUMN resource_title VARCHAR(255) NULL',
+        'SELECT 1')
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'payment_transactions'
+      AND column_name = 'resource_title'
+);
+PREPARE payment_resource_title_stmt FROM @payment_resource_title_sql;
+EXECUTE payment_resource_title_stmt;
+DEALLOCATE PREPARE payment_resource_title_stmt;
 
 -- Add the constraint only when no unique index on the reference already exists.
 -- If this ALTER reports duplicate values, reconcile them; do not deploy with
