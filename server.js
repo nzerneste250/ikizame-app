@@ -22,6 +22,7 @@ const { PROTECTED_REPORT_EMAIL, LEGACY_REPORT_EMAILS } = require('./helpers/admi
 const { verifySessionExamAccess } = require('./helpers/examAccess');
 const { normalizeRwandaPhone } = require('./helpers/rwandaPhone');
 const { createOtpState, canIssueOtp, registerOtpCode, verifyOtpCode } = require('./helpers/otp');
+const { ensurePortalAdminIsActiveColumn } = require('./helpers/databaseMigrations');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -114,7 +115,6 @@ db.getConnection((err, conn) => {
     }
     console.log(`✅ Database pool ready on [${dbConfig.host}]`);
     const migrations = [
-        `ALTER TABLE portal_admins ADD COLUMN IF NOT EXISTS is_active TINYINT(1) NOT NULL DEFAULT 1`,
         `UPDATE portal_admins SET email = '${PROTECTED_REPORT_EMAIL}' WHERE id = 1 OR username = 'admin'`,
         `CREATE TABLE IF NOT EXISTS report_notification_emails (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -151,7 +151,14 @@ db.getConnection((err, conn) => {
             runNextMigration();
         });
     }
-    runNextMigration();
+    ensurePortalAdminIsActiveColumn(conn, (portalAdminMigrationError, added) => {
+        if (portalAdminMigrationError) {
+            console.error('Portal admin is_active migration failed:', portalAdminMigrationError.message);
+        } else {
+            console.log(`Portal admin is_active migration ${added ? 'applied' : 'already present'}`);
+        }
+        runNextMigration();
+    });
 });
 
 // ── SESSION STORE ────────────────────────────────────────────────
