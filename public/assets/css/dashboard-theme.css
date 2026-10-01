@@ -753,7 +753,7 @@ body.dashboard-page::-webkit-scrollbar-thumb:hover { background: #6686A4; }
     border-color: var(--repo-blue); box-shadow: 0 0 0 3px rgba(21,101,192,.12), 0 3px 10px rgba(24,50,70,.06);
   }
   .dashboard-page .questions-repository-table .repository-actions-cell {
-    grid-column: 1 / -1; grid-row: 3; display: block !important; margin-top: 9px;
+    grid-column: 1 / -1; grid-row: 4; display: block !important; margin-top: 9px;
   }
   .dashboard-page .repository-action-stack {
     display: flex; align-items: center; justify-content: flex-start; gap: 7px;
@@ -765,7 +765,7 @@ body.dashboard-page::-webkit-scrollbar-thumb:hover { background: #6686A4; }
   }
   .dashboard-page .repository-action-stack .repository-action-delete { margin: 0; }
   .dashboard-page .questions-repository-table .repository-media-cell {
-    grid-column: 1; grid-row: 4; display: flex !important; align-items: center;
+    grid-column: 1; grid-row: 3; display: flex !important; align-items: center;
     justify-content: flex-start; min-height: 84px; margin-top: 8px; text-align: left;
   }
   .dashboard-page .repository-media-preview { width: 82px; height: 82px; padding: 4px; border-radius: 12px; }
@@ -775,7 +775,7 @@ body.dashboard-page::-webkit-scrollbar-thumb:hover { background: #6686A4; }
     font-size: 12px; font-weight: 700;
   }
   .dashboard-page .questions-repository-table .repository-key-cell {
-    grid-column: 2; grid-row: 4; display: flex !important; align-items: center;
+    grid-column: 2; grid-row: 3; display: flex !important; align-items: center;
     justify-content: center; min-height: 84px; margin-top: 8px;
   }
   .dashboard-page .repository-correct-badge { min-height: 34px; padding: 7px 11px; font-size: 12px; }
