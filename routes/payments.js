@@ -3,6 +3,8 @@ const axios   = require('axios');
 const crypto  = require('crypto');
 const { normalizeAndValidatePaymentPhone } = require('../helpers/paymentPhone');
 const { PROTECTED_REPORT_EMAIL } = require('../helpers/adminSettings');
+const { analyticsConfig, excludeAdmin } = require('../helpers/siteAnalytics');
+const { createPurchaseVerifier } = require('../helpers/verifiedAnalyticsPurchase');
 
 const PAYPACK_BASE     = 'https://payments.paypack.rw/api';
 const PAYPACK_CLIENT   = process.env.PAYPACK_CLIENT_ID;
@@ -147,6 +149,15 @@ function insertPaymentTransaction(db, pending, paypackRef, done) {
 module.exports = (db) => {
     const router = express.Router();
     ensurePaymentColumns(db);
+    const verifiedAnalyticsReceipt = createPurchaseVerifier(async reference => {
+        const token = await getAccessToken();
+        const { data } = await axios.get(`${PAYPACK_BASE}/transactions/find/${encodeURIComponent(reference)}`, {
+            headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+            timeout: 2000,
+            maxRedirects: 0
+        });
+        return data;
+    });
 
     // POST — initiate USSD push, do NOT write to DB yet
     router.post('/momo-push', async (req, res) => {
@@ -313,11 +324,17 @@ module.exports = (db) => {
     router.get('/verify/:refId', (req, res) => {
         const ref = req.params.refId;
         db.query(
-            `SELECT status, plan_name FROM payment_transactions WHERE reference_id = ? OR rwandapay_tx_id = ? LIMIT 1`,
+            `SELECT status, plan_name, amount, reference_id FROM payment_transactions WHERE reference_id = ? OR rwandapay_tx_id = ? LIMIT 1`,
             [ref, ref],
-            (err, results) => {
-                if (!err && results && results.length > 0)
-                    return res.json({ status: results[0].status, plan: results[0].plan_name });
+            async (err, results) => {
+                if (!err && results && results.length > 0) {
+                    const response = { status: results[0].status, plan: results[0].plan_name };
+                    if (analyticsConfig().enabled && !excludeAdmin(req)) {
+                        const receipt = await verifiedAnalyticsReceipt(results[0]);
+                        if (receipt) response.analyticsPurchase = receipt;
+                    }
+                    return res.json(response);
+                }
                 return res.json({ status: 'PENDING' });
             }
         );

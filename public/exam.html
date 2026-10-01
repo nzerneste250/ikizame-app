@@ -1066,6 +1066,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function submit() {
+        let analyticsSubmitSucceeded = false;
         const payload = {};
         for (const id in answers) payload[`question_${id}`] = answers[id];
         fetch('/api/exams/submit', {
@@ -1073,8 +1074,11 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
-        .then(r => r.json())
+        .then(r => { analyticsSubmitSucceeded = r.ok; return r.json(); })
         .then(res => {
+            if (analyticsSubmitSucceeded && typeof res.score === 'number' && Number.isFinite(res.score) && Number(res.total) > 0) {
+                window.IkizameAnalytics?.examCompleted(Number(res.total));
+            }
             sessionStorage.setItem('latestScore', res.score);
             sessionStorage.setItem('latestTotal', res.total);
             sessionStorage.setItem('studentAnswerMapping', JSON.stringify(answers));
@@ -1085,8 +1089,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(e => console.error('Submit error:', e));
     }
 
+    let analyticsQuestionsSucceeded = false;
     fetch('/api/exams')
-        .then(r => r.json())
+        .then(r => { analyticsQuestionsSucceeded = r.ok; return r.json(); })
         .then(data => {
             questions = data;
             if (!questions.length) {
@@ -1094,6 +1099,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(timer); return;
             }
             // Render first question immediately, then preload all images in background
+            if (analyticsQuestionsSucceeded) window.IkizameAnalytics?.examStarted(questions.length);
             render();
             setTimeout(() => {
                 questions.forEach(q => {

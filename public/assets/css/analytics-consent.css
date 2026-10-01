@@ -1,0 +1,10 @@
+.ik-analytics-consent { position: fixed; right: 16px; bottom: 16px; left: 16px; z-index: 10000; display: flex; align-items: center; gap: 24px; max-width: 900px; margin: 0 auto; padding: 18px 20px; border: 1px solid #D8E1EA; border-radius: 12px; background: #fff; color: #1F2937; box-shadow: 0 6px 24px rgba(15,27,45,.15); font-family: Inter,sans-serif; }
+.ik-analytics-consent[hidden] { display: none; }
+.ik-analytics-consent strong { font-size: 14px; }
+.ik-analytics-consent p { margin: 5px 0 0; color: #64748B; font-size: 12px; line-height: 1.5; }
+.ik-consent-actions { display: flex; flex-wrap: wrap; gap: 8px; flex-shrink: 0; }
+.ik-consent-actions button { min-height: 44px; padding: 9px 12px; border: 1px solid #D8E1EA; border-radius: 8px; background: #fff; color: #0D47A1; font: 600 12px Inter,sans-serif; cursor: pointer; }
+.ik-consent-actions button[data-choice='granted'] { background: #0D47A1; border-color: #0D47A1; color: #fff; }
+.ik-consent-settings { margin: 6px 10px; padding: 8px; border: 0; background: transparent; color: inherit; text-decoration: underline; font: inherit; font-size: 11px; cursor: pointer; }
+.ik-analytics-consent button:focus-visible, .ik-consent-settings:focus-visible { outline: 3px solid #90B9E6; outline-offset: 3px; }
+@media(max-width:700px) { .ik-analytics-consent { flex-direction: column; align-items: stretch; gap: 12px; padding: 14px; } .ik-consent-actions button { flex: 1; } }

@@ -1,4 +1,5 @@
 const path = require('path');
+const { PUBLIC_PAGES, injectAnalytics } = require('./siteAnalytics');
 
 function injectFooterLinks(html, fileName) {
   if (!html || !fileName) return html;
@@ -32,20 +33,28 @@ function renderPublicPage(fileName, res) {
   }
 
   let html = fs.readFileSync(publicPath, 'utf8');
-  html = injectCanonicalTag(html, `https://ikizame.rw${fileName === 'index.html' ? '/' : '/' + fileName.replace('.html', '')}`);
-  const updatedHtml = injectFooterLinks(html, fileName);
+  const page = PUBLIC_PAGES[fileName];
+  const isPrivate = !page || page.private;
+  if (isPrivate) {
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    html = html.replace(/<\/head>/i, '<meta name="robots" content="noindex, nofollow">\n</head>');
+  } else {
+    html = injectCanonicalTag(html, `https://ikizame.rw${page.path}`);
+  }
+  html = injectAnalytics(html, fileName, res.req);
+  // Keep the existing footer treatment; exam and other page layouts stay intact.
+  const updatedHtml = ['index.html', 'about.html', 'terms.html'].includes(fileName) ? injectFooterLinks(html, fileName) : html;
   res.send(updatedHtml);
 }
 
 function injectCanonicalTag(html, canonicalUrl) {
   if (!html || !canonicalUrl) return html;
   const headClose = '</head>';
-  const canonicalTag = `    <link rel="canonical" href="${canonicalUrl}" />\n`;
+  const canonicalTag = `<link rel="canonical" href="${canonicalUrl}" />\n`;
 
-  if (html.includes(canonicalTag)) return html;
   if (!html.toLowerCase().includes(headClose)) return html;
-
-  return html.replace(headClose, `${canonicalTag}${headClose}`);
+  html = html.replace(/<link\b(?=[^>]*\brel\s*=\s*["']canonical["'])[^>]*>\s*/gi, '');
+  return html.replace(/<\/head>/i, `${canonicalTag}${headClose}`);
 }
 
-module.exports = { injectFooterLinks, renderPublicPage };
+module.exports = { injectFooterLinks, injectCanonicalTag, renderPublicPage };

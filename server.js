@@ -89,6 +89,8 @@ const otpLimiter = rateLimit({
 // ── STAGING ACCESS GATE (disabled in production) ──────────────────────────
 const { restrictAccessToAuthorizedUsers, getAdminSessionState, redirectToAdminLogin } = require('./middleware/auth');
 const { renderPublicPage } = require('./helpers/publicPageRenderer');
+const { indexingHeaders } = require('./middleware/indexing');
+app.use(indexingHeaders);
 
 if (!isProduction) {
     app.use((req, res, next) => {
@@ -330,13 +332,13 @@ app.get('/api/public-stats', (req, res) => {
 app.get('/',               (req, res) => renderPublicPage('index.html', res));
 app.get('/index',          (req, res) => renderPublicPage('index.html', res));
 app.get('/admin-login',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
-app.get('/ifashanyigisho', (req, res) => res.sendFile(path.join(__dirname, 'public', 'ifashanyigisho.html')));
-app.get('/ibiciro',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'ibiciro.html')));
-app.get('/ubufasha',       (req, res) => res.sendFile(path.join(__dirname, 'public', 'ubufasha.html')));
-app.get('/amanota',        (req, res) => res.sendFile(path.join(__dirname, 'public', 'amanota.html')));
-app.get('/exam-result',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'exam-result.html')));
-app.get('/resource-download', (req, res) => res.sendFile(path.join(__dirname, 'public', 'resource-download.html')));
-app.get('/school-auth',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'school-auth.html')));
+app.get('/ifashanyigisho', (req, res) => renderPublicPage('ifashanyigisho.html', res));
+app.get('/ibiciro',        (req, res) => renderPublicPage('ibiciro.html', res));
+app.get('/ubufasha',       (req, res) => renderPublicPage('ubufasha.html', res));
+app.get('/amanota',        (req, res) => renderPublicPage('amanota.html', res));
+app.get('/exam-result',    (req, res) => renderPublicPage('exam-result.html', res));
+app.get('/resource-download', (req, res) => renderPublicPage('resource-download.html', res));
+app.get('/school-auth',    (req, res) => renderPublicPage('school-auth.html', res));
 app.get('/about', (req, res) => renderPublicPage('about.html', res));
 app.get('/terms', (req, res) => renderPublicPage('terms.html', res));
 
@@ -385,13 +387,13 @@ app.get('/exam', (req, res) => {
             return res.redirect('/');
         }
 
-        return res.sendFile(path.join(__dirname, 'public', 'exam.html'));
+        return renderPublicPage('exam.html', res);
     });
 });
 
 app.get('/exam-score', (req, res) => {
     if (req.session && req.session.hasCompletedActiveExamToken === true)
-        return res.sendFile(path.join(__dirname, 'public', 'exam-score.html'));
+        return renderPublicPage('exam-score.html', res);
     res.redirect('/');
 });
 

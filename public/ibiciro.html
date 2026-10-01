@@ -1030,6 +1030,7 @@
             const abortCtrl = new AbortController();
             const fetchTimeout = setTimeout(() => abortCtrl.abort(), 25000);
 
+            window.IkizameAnalytics?.checkout('exams', qty);
             fetch('/api/payments/momo-push', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1066,6 +1067,7 @@
                             .then(r => r.json())
                             .then(d => {
                                 if (d.status === 'SUCCESS') {
+                                    window.IkizameAnalytics?.purchase(d.analyticsPurchase).catch(() => {});
                                     clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     closeTestPaymentModal();
@@ -1179,6 +1181,7 @@
                 fetch(`/api/payments/verify/${ref}`)
                     .then(r => r.json())
                     .then(d => {
+                        if (d.status === 'SUCCESS') window.IkizameAnalytics?.purchase(d.analyticsPurchase).catch(() => {});
                         document.getElementById('customAlertBoxTextContentMessage').textContent =
                             d.status === 'SUCCESS'
                                 ? 'Kwishyura byagenze neza! Ibizamini byawe bifunguwe. Ubu ushobora gutangira ikizamini ukoresheje nimero yawe ya telefone.'

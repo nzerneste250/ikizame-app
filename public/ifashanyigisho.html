@@ -584,6 +584,7 @@ function submitModalPayment() {
         return;
     }
     status.textContent = 'Tegereza gato...';
+    window.IkizameAnalytics?.checkout('resources');
     fetch('/api/payments/momo-push', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -602,6 +603,7 @@ function submitModalPayment() {
                 .then(function(r2) { return r2.json(); })
                 .then(function(sd) {
                     if (sd.status === 'SUCCESS') {
+                        window.IkizameAnalytics?.purchase(sd.analyticsPurchase).catch(() => {});
                         clearInterval(timer);
                         status.textContent = 'Byakunze! Gutegura gukura...';
                         fetch('/api/public/documents/request-download', {

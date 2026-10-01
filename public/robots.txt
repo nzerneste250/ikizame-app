@@ -1,17 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /admin-login
-Disallow: /dashboard
-Disallow: /add-exam
-Disallow: /edit-exam
-Disallow: /system-performance
-Disallow: /visitors
-Disallow: /admin-payments
-Disallow: /upload-resource
-Disallow: /exam
-Disallow: /exam-score
-Disallow: /school-dashboard
-Disallow: /school-profile
 Disallow: /api/
 
+# Private HTML routes use authentication where applicable and noindex headers.
+# They remain crawlable so search engines can see the noindex directive.
 Sitemap: https://ikizame.rw/sitemap.xml
