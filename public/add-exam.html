@@ -295,7 +295,7 @@
         }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
-    <link rel="stylesheet" href="/assets/css/add-exam-builder.css?v=image-answer-flow-20261001">
+    <link rel="stylesheet" href="/assets/css/add-exam-builder.css?v=image-answer-flow-fix3-20261001">
 </head>
 <body class="question-builder-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -389,20 +389,22 @@
                     <p class="upload-help">PNG, JPG or WEBP &middot; Maximum 10 MB</p>
                 </div>
 
-                <!-- Dynamic options area -->
-                <div id="optionsArea"></div>
+                <div class="answer-options-column">
+                    <!-- Dynamic options area -->
+                    <div id="optionsArea"></div>
 
-                <!-- Correct answer -->
-                <div class="field" style="max-width:300px">
-                    <label for="correctOption">Correct Answer</label>
-                    <div class="answer-key-panel">
-                    <select id="correctOption" name="correctOption" required>
-                        <option value="">Select Correct Option</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                    </select>
+                    <!-- Correct answer -->
+                    <div class="field" style="max-width:300px">
+                        <label for="correctOption">Correct Answer</label>
+                        <div class="answer-key-panel">
+                            <select id="correctOption" name="correctOption" required>
+                                <option value="">Select Correct Option</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="form-actions">

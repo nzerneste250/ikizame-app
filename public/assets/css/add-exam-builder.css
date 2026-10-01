@@ -72,11 +72,13 @@
 .question-builder-page .builder-step-marker { display: none; }
 .question-builder-page #addForm > .field,
 .question-builder-page #addForm > div:has(#mainDrop),
-.question-builder-page #optionsArea {
+.question-builder-page #optionsArea,
+.question-builder-page .answer-options-column > .field:has(#correctOption) {
   min-width: 0; padding: 14px 0; border-bottom: 1px solid #e7edf3;
 }
 .question-builder-page #addForm > .question-copy-field { padding-top: 12px; }
 .question-builder-page #addForm > .field > label,
+.question-builder-page .answer-options-column > .field > label,
 .question-builder-page #addForm > div:has(#mainDrop) > label,
 .question-builder-page #optionsArea::before {
   display: block; margin: 0 0 8px; color: var(--builder-text);
@@ -95,23 +97,23 @@
 .question-builder-page #addForm > .question-copy-field > label::before,
 .question-builder-page #addForm > div:has(#mainDrop) > label::before,
 .question-builder-page #optionsArea::before,
-.question-builder-page #addForm > .field:has(#correctOption) > label::before {
+.question-builder-page .answer-options-column > .field:has(#correctOption) > label::before {
   color: var(--builder-blue);
 }
 .question-builder-page #addForm > .question-copy-field > label::before { content: none; }
 .question-builder-page #addForm > div:has(#mainDrop) > label::before,
 .question-builder-page #optionsArea::before,
-.question-builder-page #addForm > .field:has(#correctOption) > label::before { content: none; }
+.question-builder-page .answer-options-column > .field:has(#correctOption) > label::before { content: none; }
 .question-builder-page #optionsArea::before { content: 'Answer options'; }
 .question-builder-page #addForm > .question-copy-field > label::after,
 .question-builder-page #addForm > div:has(#mainDrop) > label::after,
-.question-builder-page #addForm > .field:has(#correctOption) > label::after {
+.question-builder-page .answer-options-column > .field:has(#correctOption) > label::after {
   display: block; margin: 5px 0 0; color: var(--builder-muted); font-size: 12px;
   font-weight: 400; letter-spacing: 0; text-transform: none;
 }
 .question-builder-page #addForm > .question-copy-field > label::after { content: 'Write the question exactly as students should see it.'; }
 .question-builder-page #addForm > div:has(#mainDrop) > label::after { content: 'Add a traffic sign or supporting image when the question requires one.'; }
-.question-builder-page #addForm > .field:has(#correctOption) > label::after { content: 'Choose the answer students must select to receive the mark.'; }
+.question-builder-page .answer-options-column > .field:has(#correctOption) > label::after { content: 'Choose the answer students must select to receive the mark.'; }
 .question-builder-page #addForm textarea#question {
   min-height: 84px; padding: 10px 12px; border: 1px solid var(--builder-border);
   border-radius: 10px; background: #f8fafc; font-size: 14px; line-height: 1.55;
@@ -172,7 +174,12 @@
 .question-builder-page .opt-drop:hover, .question-builder-page .opt-drop.dragover { border-color: var(--builder-primary); background: #f2f7fc; }
 .question-builder-page .opt-drop:focus-visible { outline: 3px solid rgba(21,101,192,.2); outline-offset: 2px; }
 .question-builder-page .opt-card input[type="text"] { min-height: 42px; }
-.question-builder-page #addForm > .field:has(#correctOption) { max-width: none !important; border-bottom: 0; padding-bottom: 12px; }
+.question-builder-page .answer-options-column > .field:has(#correctOption) { max-width: none !important; border-bottom: 0; padding-bottom: 12px; }
+.question-builder-page .answer-options-column {
+  display: flex; flex-direction: column; min-width: 0;
+}
+.question-builder-page .answer-options-column > #optionsArea,
+.question-builder-page .answer-options-column > .field:has(#correctOption) { flex: 0 0 auto; }
 .question-builder-page .answer-key-panel {
   display: flex; align-items: center; justify-content: space-between; gap: 18px;
   padding: 10px 12px; border: 1px solid #d4eadf; border-radius: 12px; background: #f2f8f5;
@@ -205,7 +212,7 @@
   .question-builder-page #addForm {
     height: 100%; max-height: 100%; display: grid; align-content: stretch;
     grid-template-columns: minmax(0,1fr) minmax(0,1fr);
-    grid-template-rows: auto minmax(120px,auto) minmax(0,1fr) auto auto auto;
+    grid-template-rows: auto minmax(120px,auto) minmax(0,1fr) auto auto;
     column-gap: 28px; padding: 15px 24px 0; overflow: hidden;
   }
   .question-builder-page .builder-progress { grid-column: 1 / -1; grid-row: 1; }
@@ -216,23 +223,27 @@
     grid-column: 1; grid-row: 3; align-self: stretch; padding: 11px 0;
   }
   .question-builder-page #optionsArea {
-    grid-column: 2; grid-row: 2 / 5; align-self: stretch; min-width: 0; padding: 10px 0;
+    min-width: 0; padding: 10px 0;
   }
-  .question-builder-page #addForm > .field:has(#correctOption) {
-    grid-column: 2; grid-row: 5; align-self: stretch; min-width: 0; padding: 9px 0 12px;
+  .question-builder-page .answer-options-column {
+    grid-column: 2; grid-row: 2 / 5; align-self: stretch; display: flex;
+    min-width: 0; flex-direction: column; justify-content: flex-start;
+  }
+  .question-builder-page .answer-options-column > .field:has(#correctOption) {
+    min-width: 0; padding: 9px 0 12px;
   }
   .question-builder-page #addForm > .form-actions {
-    grid-column: 1 / -1; grid-row: 6; align-self: end;
+    grid-column: 1 / -1; grid-row: 5; align-self: end;
     position: static; margin: 0 -24px; padding: 10px 24px 12px;
     border-radius: 0 0 16px 16px;
   }
   .question-builder-page #addForm > .question-copy-field > label,
   .question-builder-page #addForm > div:has(#mainDrop) > label,
   .question-builder-page #optionsArea::before,
-  .question-builder-page #addForm > .field:has(#correctOption) > label { margin-bottom: 7px; }
+  .question-builder-page .answer-options-column > .field:has(#correctOption) > label { margin-bottom: 7px; }
   .question-builder-page #addForm > .question-copy-field > label::after,
   .question-builder-page #addForm > div:has(#mainDrop) > label::after,
-  .question-builder-page #addForm > .field:has(#correctOption) > label::after { margin-top: 2px; font-size: 10px; }
+  .question-builder-page .answer-options-column > .field:has(#correctOption) > label::after { margin-top: 2px; font-size: 10px; }
   .question-builder-page #addForm textarea#question { min-height: 76px; height: 100%; padding: 9px 11px; }
   .question-builder-page #mainDrop { min-height: 76px; grid-template-columns: 42px minmax(0,1fr); gap: 10px; padding: 9px 12px; }
   .question-builder-page .preview-box { width: 40px; height: 40px; }
@@ -279,7 +290,7 @@
   .question-builder-page #optionsArea { padding-top: 6px; padding-bottom: 6px; }
   .question-builder-page #addForm > .question-copy-field > label::after,
   .question-builder-page #addForm > div:has(#mainDrop) > label::after,
-  .question-builder-page #addForm > .field:has(#correctOption) > label::after { display: none; }
+  .question-builder-page .answer-options-column > .field:has(#correctOption) > label::after { display: none; }
   .question-builder-page #addForm textarea#question { min-height: 60px; }
   .question-builder-page #mainDrop { min-height: 60px; }
   .question-builder-page .upload-help { margin-top: 2px; }
@@ -292,10 +303,10 @@
   .question-builder-page #addForm > .question-copy-field,
   .question-builder-page #addForm > div:has(#mainDrop),
   .question-builder-page #optionsArea,
-  .question-builder-page #addForm > .field:has(#correctOption) { padding-top: 4px; padding-bottom: 4px; }
+  .question-builder-page .answer-options-column > .field:has(#correctOption) { padding-top: 4px; padding-bottom: 4px; }
   .question-builder-page #addForm > .question-copy-field > label::after,
   .question-builder-page #addForm > div:has(#mainDrop) > label::after,
-  .question-builder-page #addForm > .field:has(#correctOption) > label::after { display: none; }
+  .question-builder-page .answer-options-column > .field:has(#correctOption) > label::after { display: none; }
   .question-builder-page #addForm textarea#question { min-height: 44px; padding: 6px 8px; }
   .question-builder-page #mainDrop { min-height: 50px; padding: 4px 8px; }
   .question-builder-page .drop-sub,
@@ -354,6 +365,7 @@
   .question-builder-page #addForm > div:has(#mainDrop) > label::after { display: none; }
   .question-builder-page #addForm textarea#question { min-height: 64px; padding: 8px 10px; font-size: 13px; }
   .question-builder-page #addForm > .field > label,
+  .question-builder-page .answer-options-column > .field > label,
   .question-builder-page #addForm > div:has(#mainDrop) > label,
   .question-builder-page #optionsArea::before { margin-bottom: 6px; font-size: 13px; }
   .question-builder-page .upload-help { display: none; }
@@ -383,7 +395,7 @@
   .question-builder-page .drop-btn { min-height: 32px; margin-top: 2px; padding: 0 9px; font-size: 10px; }
   .question-builder-page .answer-key-panel { align-items: stretch; flex-direction: column; gap: 6px; padding: 8px; }
   .question-builder-page .answer-key-panel select { width: 100%; }
-  .question-builder-page #addForm > .field:has(#correctOption) { padding: 9px 0; }
+  .question-builder-page .answer-options-column > .field:has(#correctOption) { padding: 9px 0; }
   .question-builder-page .form-actions { position: static; flex-direction: column-reverse; margin: 0 -12px -11px; padding: 10px 12px; }
   .question-builder-page .btn-save, .question-builder-page .btn-cancel { width: 100%; min-height: 40px; }
 }
