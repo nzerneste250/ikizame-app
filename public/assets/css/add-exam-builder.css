@@ -347,7 +347,9 @@
   .question-builder-page #addForm > div:has(#mainDrop),
   .question-builder-page #optionsArea { padding: 17px 0; }
   .question-builder-page .text-options-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
-  .question-builder-page .options-grid { grid-template-columns: minmax(0,1fr); gap: 8px; width: 100%; min-width: 0; }
+  .question-builder-page #optionsArea,
+  .question-builder-page .options-grid { width: 100%; min-width: 0; }
+  .question-builder-page .options-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
   .question-builder-page .text-options-grid .field,
   .question-builder-page .opt-card { padding: 9px; gap: 7px; }
   .question-builder-page .text-options-grid .field label { font-size: 10px; }
@@ -358,7 +360,8 @@
   .question-builder-page .opt-card,
   .question-builder-page .opt-drop,
   .question-builder-page .opt-card input[type="text"] { width: 100%; min-width: 0; box-sizing: border-box; }
-  .question-builder-page .opt-drop-text { max-width: 100%; overflow-wrap: anywhere; }
+  .question-builder-page .opt-card input[type="text"] { padding: 7px 6px; font-size: 10px; }
+  .question-builder-page .opt-drop-text { max-width: 100%; overflow-wrap: anywhere; line-height: 1.25; }
   .question-builder-page #mainDrop { grid-template-columns: 44px minmax(0,1fr); gap: 11px; min-height: 0; padding: 14px; }
   .question-builder-page .preview-box { width: 44px; height: 44px; }
   .question-builder-page .answer-key-panel { align-items: stretch; flex-direction: column; gap: 10px; padding: 14px; }
