@@ -93,6 +93,16 @@
 .dashboard-page .search-box-wrap input::placeholder,
 .dashboard-page .analytics-search-box input::placeholder { color: #94A3B8; }
 
+body.dashboard-page {
+  scrollbar-width: thin;
+  scrollbar-color: #AAB8C5 #E8EEF3;
+  scroll-behavior: smooth;
+  scroll-padding-top: 205px;
+}
+body.dashboard-page::-webkit-scrollbar { width: 10px; height: 10px; }
+body.dashboard-page::-webkit-scrollbar-track { border-radius: 999px; background: #E8EEF3; }
+body.dashboard-page::-webkit-scrollbar-thumb { min-height: 36px; border: 2px solid #E8EEF3; border-radius: 999px; background: #AAB8C5; }
+body.dashboard-page::-webkit-scrollbar-thumb:hover { background: #6686A4; }
 .dashboard-page .form-scroll {
   padding: 24px clamp(16px, 2.4vw, 34px);
   gap: 18px;
@@ -741,4 +751,29 @@
 @media (min-width: 1101px) and (max-width: 1200px) {
   .dashboard-page .form-scroll { overflow-x: hidden !important; overflow-y: auto !important; }
   .dashboard-page .repository-fixed-panel { top: 0; }
+}
+
+/* A quiet, themed scrollbar keeps the dashboard scroll area discoverable without stealing focus. */
+.dashboard-page .form-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #AAB8C5 #E8EEF3;
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  scroll-padding-top: 205px;
+}
+.dashboard-page .form-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
+.dashboard-page .form-scroll::-webkit-scrollbar-track { border-radius: 999px; background: #E8EEF3; }
+.dashboard-page .form-scroll::-webkit-scrollbar-thumb { min-height: 36px; border: 2px solid #E8EEF3; border-radius: 999px; background: #AAB8C5; }
+.dashboard-page .form-scroll::-webkit-scrollbar-thumb:hover { background: #6686A4; }
+.dashboard-page .form-scroll::-webkit-scrollbar-corner { background: transparent; }
+@media (max-width: 1100px) {
+  .dashboard-page .form-scroll { scroll-padding-top: 350px; }
+  body.dashboard-page { scroll-padding-top: 350px; }
+}
+@media (max-width: 700px) {
+  .dashboard-page .form-scroll { scroll-padding-top: 490px; }
+  body.dashboard-page { scroll-padding-top: 490px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.dashboard-page, .dashboard-page .form-scroll { scroll-behavior: auto; }
 }
