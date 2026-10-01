@@ -545,6 +545,7 @@
         }
     </style>
     <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=desktop-scroll-header-20261001">
+    <link rel="stylesheet" href="/assets/css/student-analytics-theme.css?v=analytics-refresh-20261001">
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
 </head>
 <body class="dashboard-page">
@@ -711,15 +712,14 @@
                             <p>Search for students by name or phone to explore their exam history, score trends, and problem areas.</p>
                         </div>
                         <div class="analytics-search-box">
-                            <input id="studentPerformanceSearchInput" type="text" placeholder="Search students by name or phone..." autocomplete="off">
+                            <input id="studentPerformanceSearchInput" type="text" placeholder="Search by student name or phone..." autocomplete="off" aria-label="Search by student name or phone">
                         </div>
                     </div>
 
                     <div class="performance-main-grid">
                         <div class="leaderboard-panel">
                             <div class="panel-header">
-                                <h4>Student leaderboard</h4>
-                                <span class="badge"><i class="fa-solid fa-arrow-up-right-dots"></i> Click row for details</span>
+                                <div class="panel-title-group"><h4>Student Performance</h4><p>Select a student to view details.</p></div>
                             </div>
                             <div class="table-surface">
                                 <table class="leaderboard-table">
@@ -731,17 +731,17 @@
                                             <th style="text-align:right;">Last Attempt</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="leaderboardTableBodyTarget"></tbody>
+                                    <tbody id="leaderboardTableBodyTarget"><tr class="analytics-loading-row"><td colspan="4"><span class="analytics-skeleton-line"></span><span class="analytics-skeleton-line"></span><span class="analytics-skeleton-line"></span></td></tr></tbody>
                                 </table>
                             </div>
                         </div>
 
                         <div class="tricky-panel">
                             <div class="panel-header">
-                                <h4>Most difficult questions</h4>
-                                <span class="badge badge-alert"><i class="fa-solid fa-triangle-exclamation"></i> High failure rate</span>
+                                <div class="panel-title-group"><h4>Most Difficult Questions</h4><p>Questions with the highest student failure rates.</p></div>
+                                <span class="badge badge-alert"><i class="fa-solid fa-triangle-exclamation"></i> Failure insights</span>
                             </div>
-                            <div class="tricky-questions-grid" id="trickyQuestionsListTarget"></div>
+                            <div class="tricky-questions-grid" id="trickyQuestionsListTarget"><div class="analytics-loading-card"><span class="analytics-skeleton-line"></span><span class="analytics-skeleton-line"></span></div><div class="analytics-loading-card"><span class="analytics-skeleton-line"></span><span class="analytics-skeleton-line"></span></div></div>
                         </div>
                     </div>
                 </div>
@@ -935,15 +935,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!leaderboardTarget) return;
 
         if (!studentRecords || studentRecords.length === 0) {
-            leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#64748b; font-style:italic;">No exam history found for this student.</td></tr>`;
+            const hasSearch = Boolean((query || '').trim());
+            leaderboardTarget.innerHTML = `<tr><td colspan="4"><div class="analytics-empty-state"><i class="fa-solid ${hasSearch ? 'fa-magnifying-glass' : 'fa-user-graduate'}" aria-hidden="true"></i><strong>${hasSearch ? 'No students found' : 'No student results yet'}</strong><span>${hasSearch ? 'Try another name or phone number.' : 'Student performance will appear here when exam history is available.'}</span>${hasSearch ? '<button type="button" onclick="document.getElementById(\'studentPerformanceSearchInput\').value=\'\';document.getElementById(\'studentPerformanceSearchInput\').dispatchEvent(new Event(\'input\'))">Clear search</button>' : ''}</div></td></tr>`;
             return;
         }
 
         const normalizedQuery = normalizeStringContentForComparison(query);
         leaderboardTarget.innerHTML = studentRecords.map(s => {
             const avgNum = parseFloat(s.averageScore);
-            const passColor = avgNum >= 12 ? '#166534' : '#991b1b';
-            const passBg    = avgNum >= 12 ? '#dcfce7' : '#fee2e2';
+            const scoreClass = avgNum >= 15 ? 'high' : avgNum >= 10 ? 'mid' : 'low';
             const formattedDate = new Date(s.lastAttemptDate).toLocaleDateString('rw-RW', { month: 'short', day: 'numeric' });
 
             const highlightedName = normalizedQuery ? highlightText(s.studentName, query) : escapeHtml(s.studentName);
@@ -951,14 +951,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const safePhone = s.phoneNumber.replace(/'/g, "\\'");
             const safeName  = (s.studentName || 'Unknown').replace(/'/g, "\\'");
+            const initials = escapeHtml((s.studentName || '?').trim().charAt(0).toLocaleUpperCase());
             return `
-                            <tr style="border-bottom: 1px solid #f1f5f9; cursor:pointer;"
-                                onclick="openStudentAttemptsModal('${safePhone}', '${safeName}')"
-                                onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                                <td style="padding:12px 8px; font-weight:600; color:#0f172a; line-height:1.3;">${highlightedName}<br><span style="font-size:11px; color:#64748b; font-weight:400;">${highlightedPhone}</span></td>
-                                <td style="padding:12px 8px; text-align:center; font-weight:700; color:#0b698b;">${s.totalExams}</td>
-                                <td style="padding:12px 8px; text-align:center;"><span style="background:${passBg}; color:${passColor}; font-weight:800; padding:2px 8px; border-radius:4px;">${s.averageScore}/20</span></td>
-                                <td style="padding:12px 8px; text-align:right; color:#64748b;">${formattedDate}</td>
+                            <tr class="student-performance-row" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"
+                                onclick="openStudentAttemptsModal('${safePhone}', '${safeName}')"><td class="student-name-cell"><div class="student-identity"><span class="student-avatar" aria-hidden="true">${initials}</span><span class="student-name-wrap"><strong>${highlightedName}</strong><small>${highlightedPhone}</small></span></div></td>
+                                <td class="student-exams-cell"><span class="student-mobile-label">Exams</span><span class="student-exam-count">${s.totalExams}</span></td>
+                                <td class="student-average-cell"><span class="student-mobile-label">Average</span><span class="score-pill ${scoreClass}">${s.averageScore}/20</span></td>
+                                <td class="student-date-cell"><span class="student-mobile-label">Last Attempt</span><time>${formattedDate}</time></td>
                             </tr>
                         `;
         }).join('');
@@ -1186,7 +1185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             analyticsWorkspaceView.style.display = 'flex';
             
             mainTitle.textContent = "Student Performance Analytics";
-            mainSub.textContent = "Real-time educational metrics logs tracking pass-rates and tricky failure parameters trends";
+            mainSub.textContent = "Track exam performance, student progress and difficult questions.";
 
                     fetch('/api/admin/performance-stats')
                 .then(res => res.json())
@@ -1198,22 +1197,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     const trickyTarget = document.getElementById('trickyQuestionsListTarget');
                     const trickyQuestions = Array.isArray(data.trickyQuestions) ? data.trickyQuestions : [];
                     if (trickyQuestions.length === 0) {
-                        trickyTarget.innerHTML = `<p style="text-align:center; padding:15px; font-style:italic; color:#64748b; font-size:13px;">No tricky question data available.</p>`;
+                        trickyTarget.innerHTML = `<div class="analytics-empty-state"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><strong>No difficult questions detected</strong><span>There is not enough failure data to display.</span></div>`;
                     } else {
                         trickyTarget.innerHTML = trickyQuestions.map((q, idx) => {
                             return `
-                                <div style="background:#fef2f2; border:1px solid #fee2e2; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:6px;">
-                                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                                        <span style="font-size:11px; background:#ef4444; color:#fff; font-weight:800; padding:1px 6px; border-radius:4px;">Rank #${idx+1} Tricky</span>
-                                        <span style="font-size:11px; color:#b91c1c; font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Failed ${q.failCount} times</span>
+                                <article class="tricky-question-card">
+                                    <div class="tricky-question-meta">
+                                        <span class="tricky-rank">Rank #${idx+1}</span>
+                                        <span class="tricky-fail-count"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Failed ${q.failCount} times</span>
                                     </div>
-                                    <div style="font-size:12.5px; font-weight:600; color:#0f172a; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${q.question}</div>
-                                </div>
+                                    <p title="${escapeHtml(q.question)}">${escapeHtml(q.question)}</p>
+                                </article>
                             `;
                         }).join('');
                     }
                 })
-                .catch(err => console.error(err));
+                .catch(err => {
+                    console.error(err);
+                    const trickyTarget = document.getElementById('trickyQuestionsListTarget');
+                    trickyTarget.innerHTML = `<div class="analytics-empty-state analytics-error-state"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><strong>Could not load performance analytics.</strong><span>Please check your connection and try again.</span><button type="button" onclick="location.reload()">Try again</button></div>`;
+                });
 
             // 👥 GROUPED STUDENT PERFORMANCE TABLE, name, total exams, average score
             fetch('/api/admin/students')
@@ -1224,8 +1227,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(students => {
                     allStudentPerformanceRecords = Array.isArray(students) ? students : [];
                     if (!students || students.length === 0) {
-                        const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
-                        leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#64748b; font-style:italic;">No exam history recorded yet.</td></tr>`;
+                        renderStudentPerformanceTable([], '');
                         return;
                     }
 
@@ -1234,7 +1236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(err => {
                     console.error('Failed to load student performance:', err);
                     const leaderboardTarget = document.getElementById('leaderboardTableBodyTarget');
-                    leaderboardTarget.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#ef4444;">Failed to load student performance. See console for more details.</td></tr>`;
+                    leaderboardTarget.innerHTML = `<tr><td colspan="4"><div class="analytics-empty-state analytics-error-state"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><strong>Could not load performance analytics.</strong><span>Please check your connection and try again.</span><button type="button" onclick="location.reload()">Try again</button></div></td></tr>`;
                 });
 
             if (studentPerformanceSearchInput) {
