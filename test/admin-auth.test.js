@@ -6,9 +6,10 @@ const bcrypt = require('bcrypt');
 
 test('active admin credentials retain the existing dashboard authentication behavior', async t => {
   const hash = await bcrypt.hash('correct-password', 4);
+  let isActive = 1;
   const db = { query(sql, values, callback) {
     if (sql.startsWith('SELECT * FROM portal_admins')) {
-      return callback(null, [{ id: 1, username: 'admin', email: 'admin@example.test', password: hash, role: 'superadmin', is_active: 1 }]);
+      return callback(null, [{ id: 1, username: 'admin', email: 'admin@example.test', password: hash, role: 'superadmin', is_active: isActive }]);
     }
     throw new Error(`Unexpected SQL: ${sql}`);
   }};
@@ -27,4 +28,13 @@ test('active admin credentials retain the existing dashboard authentication beha
   });
   assert.equal(response.status, 302);
   assert.equal(response.headers.get('location'), '/dashboard');
+
+  isActive = 0;
+  const inactiveResponse = await fetch(`http://127.0.0.1:${server.address().port}/api/admin/auth`, {
+    method: 'POST', redirect: 'manual',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: 'email=admin%40example.test&password=correct-password'
+  });
+  assert.equal(inactiveResponse.status, 302);
+  assert.equal(inactiveResponse.headers.get('location'), '/admin-login?error=invalid');
 });

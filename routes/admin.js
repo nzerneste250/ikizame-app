@@ -40,6 +40,9 @@ module.exports = (db, loginLimiter) => {
                 return res.redirect('/admin-login?error=invalid');
 
             const admin = results[0];
+            if (admin.is_active != null && Number(admin.is_active) === 0)
+                return res.redirect('/admin-login?error=invalid');
+
             const storedPassword = admin.password;
             const isHashed = storedPassword && storedPassword.startsWith('$2');
 
