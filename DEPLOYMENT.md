@@ -2,6 +2,10 @@
 
 Use this checklist to publish changes from the Windows development machine and update the production server.
 
+## Runtime requirement
+
+This branch requires Node.js 24.x (currently supported LTS). Check `node --version` on the development and production hosts before installing dependencies or restarting the application. Provision Node 24 through the host's supported runtime manager before deploying; do not restart this branch on Node 20.
+
 ## 1. Sync the local branch before starting work
 
 Run in PowerShell from the project folder:

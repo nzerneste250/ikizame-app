@@ -23,7 +23,6 @@ async function getToken() {
 
 // In-memory pending map for school payments
 const schoolPendingMap = new Map();
-exports.schoolPendingMap = schoolPendingMap;
 
 module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
     const schoolOtpState = createOtpState();
@@ -659,3 +658,5 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
 
     return router;
 };
+
+module.exports.schoolPendingMap = schoolPendingMap;

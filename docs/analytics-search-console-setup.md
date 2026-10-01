@@ -8,20 +8,26 @@ The existing exam scoring, access guards, authentication, payment initiation, pa
 
 ## Dependencies and validation
 
-The repository declares Node `20.x`; `.nvmrc` now selects Node 20. Install that version before running:
+The repository declares Node `24.x`; `.nvmrc` selects Node 24. Node 24 is the supported LTS line for this review date. Validation used Node 24.16.0 and npm 11.13.0. Install that runtime before running:
 
 ```sh
 npm ci
 npm test
 ```
 
-The lockfile is version 3 and is unchanged. Installation and tests used Node 20.20.2. The baseline passed all 15 existing tests, including all five exam-access tests after Express was installed. The final suite passes **28 tests, zero failures, zero skips**, retaining all existing tests. The new npm test script uses the built-in Node test runner.
+The lockfile is version 3. The full suite passes **29 tests, zero failures, zero skips** with a clean `npm ci`. A fresh full audit and a production-only audit both report **zero vulnerabilities**. Compatible fixes updated Axios, Express's parser dependencies, MySQL2, Nodemailer, and `node-cron`; a targeted npm override replaces `express-mysql-session`'s exact vulnerable MySQL2 pin. Multer is upgraded to 2.x to leave the affected 1.x line. The app still uses the built-in Node test runner.
 
-A local Edge/Playwright smoke check exercised the real rendered pages and their browser scripts: six public pages, exam questions and submission, score navigation, both checkout flows, resource download navigation, consent rejection/acceptance, duplicate purchase suppression, admin exclusion, and disabled analytics markup. All external requests were intercepted; payment and exam responses were fixtures. No live database, SMS/email delivery, PayPack payment, production login session, or Google collection was tested. Existing access and OTP tests passed, but a complete production login/payment journey remains to be checked in an approved staging environment.
+A browser-like analytics harness and route-level tests exercise consent rejection/acceptance, duplicate suppression, admin exclusion, exam access/submission, result navigation, login/OTP security, checkout initiation and payment verification with fixtures. Provider, database, SMS/email, Google collection, actual browser rendering, production login, and live payment were not exercised in this run. A complete browser journey still needs an approved staging environment.
 
-Installation reported **nine existing dependency vulnerabilities: six moderate and three high**. Affected dependencies include Axios, MySQL2/session dependencies, Nodemailer, Express dependencies, and node-cron. Broad dependency upgrades were left out because several fixes change major versions and require separate compatibility work. Node 20 is now end of life; this change follows the declared runtime, and migration to a supported runtime remains a separate task. See [Node releases](https://nodejs.org/en/download) and [npm ci](https://docs.npmjs.com/cli/commands/npm-ci/).
+The exposed SMTP app password was hard-coded in tracked `send-real-report.js`; that fallback and the real account name were removed in favor of required environment variables. `.env.example` uses placeholders, and `.env` remains Git-ignored and was not modified. Git history still contains the old credential; it has **not** been rotated, and history was not rewritten. Revoke it and create a replacement as described below.
 
-An SMTP password was present in the tracked environment example. It has been replaced by a placeholder. **Rotate that credential**: removing it from the current file does not remove it from Git history. The real `.env` was not edited.
+The payment callback previously accepted missing signatures and hashed reserialized JSON. It now requires PayPack's configured webhook secret, verifies the documented HMAC-SHA256/base64 signature against the exact raw request body, and independently checks the reference, CASHIN kind, successful status, and exact pending-order amount using PayPack's authenticated transaction lookup before granting access. A supplied currency must be RWF; PayPack's documented lookup response has no currency field, and this product's amount contract is RWF. Paid-resource checkout now derives price/title from the database rather than the client. Existing unique `payment_transactions.reference_id` storage plus duplicate-key handling prevents repeated credits, including concurrent callbacks. The route supports PayPack's HEAD availability probe. Missing webhook secret returns 503; configure it before accepting live webhooks. See [PayPack webhook signature verification](https://docs.paypack.rw/quickstart/webhooks) and [transaction lookup](https://docs.paypack.rw/quickstart/api-reference).
+
+## SMTP rotation and PayPack webhook setup — owner actions
+
+1. In the Google Account that owns the SMTP mailbox, open **Security → App passwords**, revoke the exposed app password, then create a replacement (2-Step Verification must be enabled). Set `SMTP_USER` and `SMTP_PASS` in the server's secret environment, never in Git or chat. Restart the reporting and application processes that use SMTP, then verify delivery with a non-customer test message. This repository does not have access to that Google account, so rotation is not confirmed.
+2. In the PayPack dashboard, open the application/webhook configuration and copy its exact webhook signing secret. Set `PAYPACK_WEBHOOK_SECRET` alongside `PAYPACK_CLIENT_ID` and `PAYPACK_CLIENT_SECRET` in the runtime secret environment. Keep the callback on HTTPS at `https://ikizame.rw/api/payments/callback` and the webhook in Production mode. Do not send the secret in chat. Tests use mocked PayPack responses only; no real payment was initiated.
+3. Deploy only after Node 24 is provisioned on the host and the PayPack signing secret is configured. Missing signing-secret configuration deliberately rejects callbacks with HTTP 503 rather than granting credits.
 
 ## Create and configure GA4 — owner steps
 
@@ -58,7 +64,7 @@ The optional purchase confirmation uses PayPack's documented [transaction lookup
 
 Browser purchase suppression uses the stable hashed transaction ID, memory and local storage, and cross-tab locks where supported. GA4 also deduplicates purchases by transaction ID. See [GA4 ecommerce](https://developers.google.com/analytics/devguides/collection/ga4/ecommerce) and [transaction ID deduplication](https://support.google.com/analytics/answer/12313109). The marker records dispatch, not confirmed Google delivery. Consent refusal, ad blockers, provider outages, navigation, unavailable storage, or network failures can cause missing telemetry. No server-side replay or historical purchase backfill is implemented.
 
-The pre-existing PayPack callback can accept a missing signature and hashes reserialized JSON rather than raw request bytes. That payment security issue remains for separate remediation because this task preserves payment processing. **The new analytics path independently confirms purchases with PayPack rather than trusting that callback alone.** Do not interpret this change as fixing webhook security; see [PayPack signature requirements](https://docs.paypack.rw/quickstart/webhooks).
+The payment callback now requires the documented signature over the exact raw request bytes and performs an independent authenticated transaction lookup before granting access. See the payment-hardening notes and owner setup steps above. Analytics purchase receipts independently use the same provider transaction lookup and never rely on the callback alone.
 
 ## Validate GA4 — owner steps after approved deployment
 

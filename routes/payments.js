@@ -100,6 +100,34 @@ function getPricePerExam(qty) {
     return 50;
 }
 
+function verifyPaypackSignature(rawBody, signature, secret) {
+    if (!Buffer.isBuffer(rawBody) || !secret || typeof signature !== 'string') return false;
+    const expected = crypto.createHmac('sha256', secret).update(rawBody).digest();
+    const supplied = Buffer.from(signature, 'base64');
+    return supplied.length === expected.length && supplied.toString('base64') === signature && crypto.timingSafeEqual(supplied, expected);
+}
+
+function confirmsExpectedPayment(transaction, reference, expectedAmount) {
+    if (!transaction || transaction.ref !== reference || transaction.kind !== 'CASHIN' ||
+        String(transaction.status || '').toLowerCase() !== 'successful') return false;
+    const amount = Number(transaction.amount);
+    if (!Number.isFinite(amount) || amount <= 0 || amount !== Number(expectedAmount)) return false;
+    const currency = transaction.currency || transaction.currency_code;
+    return !currency || String(currency).toUpperCase() === 'RWF';
+}
+
+function confirmsExpectedPayer(transaction, pending) {
+    try {
+        return normalizeAndValidatePaymentPhone(transaction.client) === normalizeAndValidatePaymentPhone(pending.phone);
+    } catch (_) {
+        return false;
+    }
+}
+
+function isDuplicatePaymentError(error) {
+    return error && error.code === 'ER_DUP_ENTRY';
+}
+
 // In-memory map: paypackRef -> pending tx data (cleared on webhook)
 const pendingMap = new Map();
 
@@ -177,15 +205,30 @@ module.exports = (db) => {
         if (checkoutIntentType === 'SCHOOL') {
             amount = 10000; planLabel = 'School Driving Program (200 Exams Package)'; examCount = 200; serviceType = 'SCHOOL';
         } else if (checkoutIntentType === 'RESOURCE') {
-            const parsedPrice = Number(resourcePrice || 0);
-            if (!resourceTitle || !resourceId || !parsedPrice) {
+            if (!resourceId) {
                 return res.status(400).json({ success: false, error: 'Resource payment details are incomplete.' });
             }
-            amount = parsedPrice;
-            planLabel = `Resource Access — ${resourceTitle}`;
+            let resource;
+            try {
+                const rows = await new Promise((resolve, reject) => {
+                    db.query('SELECT id, title, is_paid, price FROM learning_resources WHERE id = ? LIMIT 1', [resourceId], (err, results) => {
+                        if (err) return reject(err);
+                        resolve(results || []);
+                    });
+                });
+                resource = rows[0];
+            } catch (error) {
+                console.error('Resource payment lookup failed:', error.message);
+                return res.status(500).json({ success: false, error: 'Resource payment could not be validated.' });
+            }
+            amount = Number(resource?.price);
+            if (!resource || Number(resource.is_paid) !== 1 || !Number.isFinite(amount) || amount <= 0) {
+                return res.status(400).json({ success: false, error: 'This resource is not available for paid access.' });
+            }
+            planLabel = `Resource Access — ${resource.title}`;
             serviceType = 'RESOURCES';
-            resourceIdValue = resourceId;
-            resourceTitleValue = resourceTitle;
+            resourceIdValue = resource.id;
+            resourceTitleValue = resource.title;
         } else {
             const qty = parseInt(examQuantityVolume, 10) || 1;
             examCount = qty;
@@ -245,79 +288,116 @@ module.exports = (db) => {
         }
     });
 
-    // POST — Paypack webhook: insert to DB only on successful
-    router.post('/callback', (req, res) => {
-        if (WEBHOOK_SECRET) {
-            const signature = req.headers['x-paypack-signature'] || '';
-            const expected  = crypto.createHmac('sha256', WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('base64');
-            if (signature && signature !== expected) {
-                console.warn('⚠️  Invalid Paypack webhook signature — rejected');
-                return res.status(401).json({ ok: false });
-            }
+    router.head('/callback', (req, res) => res.sendStatus(200));
+
+    // POST — verify the signed event and confirm the transaction before granting access.
+    router.post('/callback', async (req, res) => {
+        if (!WEBHOOK_SECRET) return res.status(503).json({ ok: false });
+        if (!verifyPaypackSignature(req.rawBody, req.get('X-Paypack-Signature'), WEBHOOK_SECRET)) {
+            console.warn('Invalid Paypack webhook signature — rejected');
+            return res.status(401).json({ ok: false });
         }
 
-        const body      = req.body;
-        const eventKind = body.kind || '';
-        const txData    = body.data || body;
+        const body = req.body;
+        if (!body || body.kind !== 'transaction:processed' || !body.data || typeof body.data.ref !== 'string') {
+            return res.status(400).json({ ok: false });
+        }
 
-        if (eventKind !== 'transaction:processed' && !txData.ref)
-            return res.status(200).json({ ok: true });
-
+        const txData = body.data;
         const paypackRef = txData.ref;
-        const rawStatus  = (txData.status || '').toLowerCase();
-
-        if (rawStatus !== 'successful') {
+        if (String(txData.status || '').toLowerCase() !== 'successful') {
             pendingMap.delete(paypackRef);
-            console.log(`ℹ️  Paypack webhook: ${paypackRef} → ${rawStatus} (not saved)`);
             return res.json({ ok: true });
         }
 
-        // Check already inserted (duplicate webhook)
-        db.query(
-            `SELECT id FROM payment_transactions WHERE reference_id = ? LIMIT 1`,
-            [paypackRef],
-            (checkErr, checkRows) => {
-                if (!checkErr && checkRows && checkRows.length > 0) {
-                    console.log(`ℹ️  Paypack webhook: ${paypackRef} already processed — skipping`);
-                    return res.json({ ok: true });
+        db.query(`SELECT id FROM payment_transactions WHERE reference_id = ? LIMIT 1`, [paypackRef], async (checkErr, checkRows) => {
+            if (checkErr) return res.status(500).json({ ok: false });
+            if (checkRows && checkRows.length > 0) return res.json({ ok: true });
+
+            const confirmAndInsert = async (pending, schoolPending = null) => {
+                if (!pending || !Number.isFinite(Number(pending.amount)) || Number(pending.amount) <= 0) {
+                    return res.status(409).json({ ok: false });
                 }
 
-                const doInsert = (pending) => {
-                    pendingMap.delete(paypackRef);
-                    insertPaymentTransaction(db, pending, paypackRef, (err) => {
-                        if (err) { console.error('❌ Webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
-                        console.log(`✅ Paypack webhook: ${paypackRef} → SUCCESS (inserted)`);
+                try {
+                    const token = await getAccessToken();
+                    const { data: confirmedTransaction } = await axios.get(
+                        `${PAYPACK_BASE}/transactions/find/${encodeURIComponent(paypackRef)}`,
+                        { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }, timeout: 8000, maxRedirects: 0 }
+                    );
+                    if (!confirmsExpectedPayment(confirmedTransaction, paypackRef, pending.amount) ||
+                        !confirmsExpectedPayer(confirmedTransaction, pending)) {
+                        console.warn(`Paypack webhook confirmation mismatch for ${paypackRef}`);
+                        return res.status(409).json({ ok: false });
+                    }
+
+                    const complete = (err) => {
+                        if (isDuplicatePaymentError(err)) {
+                            pendingMap.delete(paypackRef);
+                            if (schoolPending) schoolPending.map.delete(paypackRef);
+                            return res.json({ ok: true });
+                        }
+                        if (err) {
+                            console.error('Webhook DB insert error:', err.message);
+                            return res.status(500).json({ ok: false });
+                        }
+                        pendingMap.delete(paypackRef);
+                        if (schoolPending) schoolPending.map.delete(paypackRef);
                         sendPaymentNotification(req.app.get('emailTransport'), {
                             phone: pending.phone, amount: pending.amount,
                             planLabel: pending.planLabel, examCount: pending.examCount,
-                            paypackRef, type: pending.serviceType === 'SCHOOL' ? 'School Payment' : pending.serviceType === 'RESOURCES' ? 'Resource Payment' : 'Self Payment'
+                            paypackRef,
+                            type: pending.serviceType === 'SCHOOL' ? 'School Payment' : pending.serviceType === 'RESOURCES' ? 'Resource Payment' : 'Self Payment'
                         });
-                        res.json({ ok: true });
-                    });
-                };
+                        return res.json({ ok: true });
+                    };
 
-                // Try in-memory map first
-                const memPending = pendingMap.get(paypackRef);
-                if (memPending) return doInsert(memPending);
-
-                // Fallback: load from pending_payment_requests table (survives restarts)
-                db.query(
-                    `SELECT phone_number AS phone, amount, plan_name AS planLabel, exam_count AS examCount,
-                            price_per_exam AS priceToStore, school_id, service_type AS serviceType,
-                            resource_id AS resourceId, resource_title AS resourceTitle
-                     FROM pending_payment_requests WHERE payment_reference = ? LIMIT 1`,
-                    [paypackRef],
-                    (dbErr, dbRows) => {
-                        if (!dbErr && dbRows && dbRows.length > 0) {
-                            console.log(`ℹ️  Paypack webhook: ${paypackRef} loaded from DB pending table`);
-                            return doInsert(dbRows[0]);
-                        }
-                        // Unknown ref — try school
-                        return handleSchoolWebhook(db, paypackRef, txData, res);
+                    if (schoolPending) {
+                        return insertPaymentTransaction(db, {
+                            phone: pending.phone,
+                            amount: Number(pending.amount),
+                            planLabel: pending.planLabel,
+                            examCount: pending.examCount,
+                            priceToStore: pending.priceToStore,
+                            school_id: pending.schoolId,
+                            serviceType: 'SCHOOL'
+                        }, paypackRef, complete);
                     }
-                );
-            }
-        );
+                    return insertPaymentTransaction(db, pending, paypackRef, complete);
+                } catch (error) {
+                    console.error('Paypack transaction confirmation failed:', error.message);
+                    return res.status(502).json({ ok: false });
+                }
+            };
+
+            const memoryPending = pendingMap.get(paypackRef);
+            if (memoryPending) return confirmAndInsert(memoryPending);
+
+            db.query(
+                `SELECT phone_number AS phone, amount, plan_name AS planLabel, exam_count AS examCount,
+                        price_per_exam AS priceToStore, school_id, service_type AS serviceType,
+                        resource_id AS resourceId, resource_title AS resourceTitle
+                 FROM pending_payment_requests WHERE payment_reference = ? LIMIT 1`,
+                [paypackRef],
+                (pendingErr, pendingRows) => {
+                    if (pendingErr) return res.status(500).json({ ok: false });
+                    if (pendingRows && pendingRows.length > 0) return confirmAndInsert(pendingRows[0]);
+
+                    const { schoolPendingMap } = require('./school');
+                    const schoolOrder = schoolPendingMap.get(paypackRef);
+                    if (!schoolOrder) return res.json({ ok: true });
+                    return confirmAndInsert({
+                        phone: schoolOrder.phone,
+                        amount: 10000,
+                        planLabel: `School Driving Pass (${schoolOrder.schoolName})`,
+                        examCount: 200,
+                        priceToStore: 50,
+                        serviceType: 'SCHOOL',
+                        schoolId: schoolOrder.schoolId
+                    }, { map: schoolPendingMap });
+                }
+            );
+        });
     });
 
     // GET — poll payment status
