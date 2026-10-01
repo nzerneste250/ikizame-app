@@ -334,6 +334,26 @@
   .question-builder-page .btn-save, .question-builder-page .btn-cancel { min-height: 34px; }
 }
 @media (max-width: 700px) {
+  html, body.question-builder-page {
+    height: auto !important; min-height: 100%; overflow-x: hidden !important;
+    overflow-y: auto !important; touch-action: pan-y;
+  }
+  body.question-builder-page {
+    min-height: 100vh; min-height: 100dvh; -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+  }
+  .question-builder-page .shell {
+    display: flex; flex-direction: column; height: auto !important;
+    min-height: 100vh; min-height: 100dvh; overflow: visible !important;
+  }
+  .question-builder-page .workspace {
+    flex: 0 0 auto; height: auto !important; min-height: 0; overflow: visible !important;
+  }
+  .question-builder-page .form-scroll {
+    flex: 0 0 auto; height: auto !important; min-height: 0;
+    overflow: visible !important; touch-action: pan-y;
+  }
+  .question-builder-page #addForm { height: auto !important; min-height: 0; overflow: visible !important; }
   .question-builder-page .topbar { align-items: center; padding: 12px 14px; }
   .question-builder-page .topbar > div:first-of-type { flex: 1 1 calc(100% - 60px); min-width: 0; }
   .question-builder-page .topbar .mode-badge { width: 100%; grid-column: 1 / -1; }
