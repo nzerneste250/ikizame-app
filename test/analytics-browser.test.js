@@ -58,7 +58,13 @@ test('events discard query strings, referrers, score, identity and arbitrary ser
   await app.window.IkizameAnalytics.purchase({ ...receipt, phone: '0781234567', name: 'Private Name', email: 'private@example.com', password: 'password-secret', items: [{ item_name: 'Private Name' }] });
   assert.deepEqual(app.events().map(event => event[1]), ['page_view', 'exam_started', 'exam_completed', 'begin_checkout', 'purchase']);
   assert.doesNotMatch(JSON.stringify(app.events()), /0781234567|private@example|Private Name|password-secret|access-code|\?phone|score/);
-  assert.equal(app.events().find(event => event[1] === 'purchase')[2].currency, 'RWF');
+  const checkout = app.events().find(event => event[1] === 'begin_checkout')[2];
+  const purchase = app.events().find(event => event[1] === 'purchase')[2];
+  assert.equal(checkout.currency, undefined);
+  assert.equal(purchase.currency, undefined);
+  assert.equal(purchase.value, undefined);
+  assert.equal(purchase.items[0].price, undefined);
+  assert.equal(purchase.items[0].quantity, 1);
 });
 
 test('purchase events are deduplicated through polling, concurrent calls and page reloads', async () => {
@@ -71,7 +77,7 @@ test('purchase events are deduplicated through polling, concurrent calls and pag
   const reloaded = browser({ storage: app.storage });
   assert.equal(await reloaded.window.IkizameAnalytics.purchase(receipt), false);
   assert.equal(reloaded.events().filter(event => event[1] === 'purchase').length, 0);
-  for (const invalid of [null, { ...receipt, transaction_id: 'phone-0781234567' }, { ...receipt, currency: 'USD' }, { ...receipt, value: -1 }]) {
+  for (const invalid of [null, { ...receipt, transaction_id: 'phone-0781234567' }, { ...receipt, transaction_id: 'ikizame_' + 'g'.repeat(64) }]) {
     assert.equal(await app.window.IkizameAnalytics.purchase(invalid), false);
   }
 });

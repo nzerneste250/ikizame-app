@@ -50,7 +50,9 @@ test('payment verification preserves statuses and exposes analytics only after p
     row.status = 'SUCCESS';
     const success = await verify();
     assert.equal(success.status, 'SUCCESS'); assert.equal(success.plan, 'Existing Plan');
-    assert.equal(success.analyticsPurchase.value, 100); assert.equal(success.analyticsPurchase.currency, 'RWF');
+    assert.equal(success.analyticsPurchase.value, undefined); assert.equal(success.analyticsPurchase.currency, undefined);
+    assert.equal(success.analyticsPurchase.items[0].price, undefined);
+    assert.equal(success.analyticsPurchase.items[0].quantity, 1);
     assert.doesNotMatch(JSON.stringify(success.analyticsPurchase), /Existing Plan|payment-ref/);
     assert.equal((await verify()).analyticsPurchase.transaction_id, success.analyticsPurchase.transaction_id);
     assert.equal(lookups, 1);

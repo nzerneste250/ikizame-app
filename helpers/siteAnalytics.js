@@ -38,13 +38,11 @@ function injectAnalytics(html, fileName, req, env = process.env) {
 // label (school names), phone, raw payment reference or other customer fields.
 function purchaseReceipt(row) {
   if (!row || row.status !== 'SUCCESS') return null;
-  const value = Number(row.amount);
-  if (!Number.isFinite(value) || value <= 0 || typeof row.reference_id !== 'string' || !row.reference_id) return null;
+  const amount = Number(row.amount);
+  if (!Number.isFinite(amount) || amount <= 0 || typeof row.reference_id !== 'string' || !row.reference_id) return null;
   return {
     transaction_id: 'ikizame_' + crypto.createHash('sha256').update('ikizame-payment:' + row.reference_id).digest('hex'),
-    value,
-    currency: 'RWF',
-    items: [{ item_id: 'ikizame-access', item_name: 'IKIZAME access', price: value, quantity: 1 }]
+    items: [{ item_id: 'ikizame-access', item_name: 'IKIZAME access', quantity: 1 }]
   };
 }
 

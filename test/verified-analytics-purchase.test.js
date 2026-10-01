@@ -11,8 +11,10 @@ test('analytics receipts require matching provider-confirmed cashin, not merely 
     assert.equal(await createPurchaseVerifier(async () => response)(row), null);
   }
   const receipt = await createPurchaseVerifier(async () => valid)(row);
-  assert.equal(receipt.value, 100);
-  assert.equal(receipt.currency, 'RWF');
+  assert.equal(receipt.value, undefined);
+  assert.equal(receipt.currency, undefined);
+  assert.equal(receipt.items[0].price, undefined);
+  assert.equal(receipt.items[0].quantity, 1);
   assert.doesNotMatch(JSON.stringify(receipt), /"ref"/);
 });
 

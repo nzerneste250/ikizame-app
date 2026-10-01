@@ -32,11 +32,13 @@ test('public renderer injects only one external analytics bootstrap and excludes
   assert.equal(injectAnalytics(existing, 'index.html', {}, enabled), existing);
 });
 
-test('purchase receipts require persisted SUCCESS and contain only anonymous RWF purchase fields', () => {
+test('purchase receipts require persisted SUCCESS and contain anonymous count-only fields', () => {
   const row = { status: 'SUCCESS', amount: '1000.00', reference_id: 'private-payment-ref', phone_number: '0781234567', plan_name: 'Customer Name', email: 'private@example.com' };
   const receipt = purchaseReceipt(row);
-  assert.equal(receipt.currency, 'RWF');
-  assert.equal(receipt.value, 1000);
+  assert.equal(receipt.value, undefined);
+  assert.equal(receipt.currency, undefined);
+  assert.equal(receipt.items[0].price, undefined);
+  assert.equal(receipt.items[0].quantity, 1);
   assert.match(receipt.transaction_id, /^ikizame_[a-f0-9]{64}$/);
   assert.equal(purchaseReceipt(row).transaction_id, receipt.transaction_id);
   assert.notEqual(purchaseReceipt({ ...row, reference_id: 'other-reference' }).transaction_id, receipt.transaction_id);

@@ -79,18 +79,16 @@
   function count(value) { const number = Number(value); return Number.isInteger(number) && number > 0 && number <= 10000 ? number : null; }
   function checkout(service, quantity = 1) {
     if (!['exams', 'resources'].includes(service)) return false;
-    return event('begin_checkout', { currency: 'RWF', items: [{ item_id: service + '-access', item_name: service === 'exams' ? 'Exam access' : 'Resource access', quantity: 1 }], ...(service === 'exams' && count(quantity) ? { exam_count: count(quantity) } : {}) });
+    return event('begin_checkout', { items: [{ item_id: service + '-access', item_name: service === 'exams' ? 'Exam access' : 'Resource access', quantity: 1 }], ...(service === 'exams' && count(quantity) ? { exam_count: count(quantity) } : {}) });
   }
   async function purchase(receipt) {
     if (choice !== 'granted' || !receipt || !/^ikizame_[a-f0-9]{64}$/.test(receipt.transaction_id)) return false;
-    const value = Number(receipt.value);
-    if (!Number.isFinite(value) || value <= 0 || receipt.currency !== 'RWF') return false;
     const transactionId = receipt.transaction_id;
     const key = 'ikizame.ga4.purchase.' + transactionId;
     function emitOnce() {
       if (choice !== 'granted' || sentPurchases.has(transactionId) || read(key) === 'sent') return false;
       // Rebuild the payload from an allowlist, ignoring all customer fields.
-      const sent = event('purchase', { transaction_id: transactionId, value, currency: 'RWF', items: [{ item_id: 'ikizame-access', item_name: 'IKIZAME access', price: value, quantity: 1 }] });
+      const sent = event('purchase', { transaction_id: transactionId, items: [{ item_id: 'ikizame-access', item_name: 'IKIZAME access', quantity: 1 }] });
       if (sent) { sentPurchases.add(transactionId); write(key, 'sent'); }
       return sent;
     }
