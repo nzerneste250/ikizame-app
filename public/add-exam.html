@@ -295,7 +295,7 @@
         }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
-    <link rel="stylesheet" href="/assets/css/add-exam-builder.css?v=20261001-mobile-scroll">
+    <link rel="stylesheet" href="/assets/css/add-exam-builder.css?v=20261001-compact-form">
 </head>
 <body class="question-builder-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -387,14 +387,6 @@
                     <!-- Hidden real file input -->
                     <input type="file" id="imageFile" name="imageFile" accept="image/*" class="hidden-file">
                     <p class="upload-help">PNG, JPG or WEBP &middot; Maximum 10 MB</p>
-
-                    <!-- Reuse existing asset by filename -->
-                    <div class="or-divider" style="margin-top:12px">Or use an existing image</div>
-                    <label class="fallback-label" for="imageFileTextFallback"><i class="fa-regular fa-folder-open" aria-hidden="true"></i> Existing image filename</label>
-                    <input type="text" id="imageFileTextFallback" name="imageFileTextFallback"
-                           placeholder="e.g. stop.png" aria-describedby="existingAssetHelp"
-                           style="margin-top:10px;width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13.5px;font-weight:500;outline:none;font-family:'Inter',sans-serif;">
-                    <p class="field-help" id="existingAssetHelp">Use the filename of an image already stored with the question assets.</p>
                 </div>
 
                 <!-- Dynamic options area -->
@@ -479,7 +471,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainBadge    = document.getElementById('mainFileBadge');
     const mainFileName = document.getElementById('mainFileName');
     const mainClear    = document.getElementById('mainClearBtn');
-    const mainTextFb   = document.getElementById('imageFileTextFallback');
 
     function applyMainFile(file) {
         if (!file || !file.type.startsWith('image/')) return;
@@ -489,7 +480,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mainDrop.classList.add('has-file');
             mainFileName.textContent = file.name;
             mainBadge.classList.add('show');
-            mainTextFb.value = '';
         };
         reader.readAsDataURL(file);
 
@@ -532,15 +522,6 @@ document.addEventListener('DOMContentLoaded', () => {
         mainDrop.classList.remove('has-file');
         mainBadge.classList.remove('show');
         mainFileInp.value = '';
-    });
-
-    mainTextFb.addEventListener('input', function() {
-        const val = this.value.trim();
-        if (val) {
-            mainPreview.innerHTML = `<img src="assets/uploads/${val}" alt="preview" onerror="this.parentElement.innerHTML='<i class=\'ph fa-solid fa-image\' style=\'color:#ef4444\'></i>'">`;
-        } else {
-            mainPreview.innerHTML = `<i class="ph fa-solid fa-image"></i>`;
-        }
     });
 
     /* GöÇGöÇ MODE TOGGLE GöÇGöÇ */
