@@ -839,6 +839,24 @@ body.dashboard-page::-webkit-scrollbar-thumb:hover { background: #6686A4; }
 .dashboard-page .form-scroll::-webkit-scrollbar-thumb { min-height: 36px; border: 2px solid #E8EEF3; border-radius: 999px; background: #AAB8C5; }
 .dashboard-page .form-scroll::-webkit-scrollbar-thumb:hover { background: #6686A4; }
 .dashboard-page .form-scroll::-webkit-scrollbar-corner { background: transparent; }
+@media (min-width: 1101px) {
+  .dashboard-page .workspace > .topbar {
+    position: relative; z-index: 40; flex: 0 0 72px;
+    background: #FFFFFF; isolation: isolate;
+  }
+  .dashboard-page .workspace > .form-scroll {
+    flex: 1 1 0; min-height: 0; height: auto;
+    overflow-x: hidden; overflow-y: auto; padding-top: 0 !important;
+    overscroll-behavior-y: contain;
+  }
+  .dashboard-page .repository-fixed-panel {
+    position: sticky; top: 0; z-index: 30;
+    margin: 0 -1px 14px; padding: 14px 1px;
+    border-bottom: 1px solid #D7E1EA; background: #EDF2F6;
+    box-shadow: 0 10px 18px -15px rgba(31,60,90,.5); isolation: isolate;
+  }
+  .dashboard-page .questions-repository-table thead th { position: static; }
+}
 @media (max-width: 1100px) {
   .dashboard-page .form-scroll { scroll-padding-top: 350px; }
   body.dashboard-page { scroll-padding-top: 350px; }
