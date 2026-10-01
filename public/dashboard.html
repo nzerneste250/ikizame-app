@@ -544,7 +544,7 @@
             .badge-square { width: 36px; height: 36px; font-size: 15px; }
         }
     </style>
-    <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=mobile-repository-cards-20261001">
+    <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=mobile-card-actions-20261001">
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
 </head>
 <body class="dashboard-page">
@@ -920,7 +920,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const imagePath = String(q.image_path || '').trim();
             const mediaContent = imagePath
                 ? `<button type="button" class="repository-media-preview" aria-label="Preview question sign" onclick="showImgPreview('assets/uploads/${escapeHtml(imagePath)}')"><img src="assets/uploads/${escapeHtml(imagePath)}" alt="Question sign" loading="lazy"></button>`
-                : '<span class="repository-no-media"><i class="fa-regular fa-image"></i> No image</span>';
+                : '<span class="repository-no-media"><i class="fa-regular fa-image"></i><span>No Image</span></span>';
             return `<tr class="repository-question-row"><td class="repository-row-number"><span>#${(startIndex + i + 1).toString().padStart(3, '0')}</span><small>ID ${escapeHtml(q.id)}</small></td><td class="repository-question-cell"><div class="repository-question-text">${questionText}</div><div class="repository-answers-grid">${options}</div></td><td class="repository-media-cell">${mediaContent}</td><td class="repository-key-cell"><span class="repository-correct-badge"><i class="fa-solid fa-check"></i> ${escapeHtml(correct || '—')}</span></td><td class="repository-actions-cell"><div class="repository-action-stack"><a href="edit-exam?id=${encodeURIComponent(q.id)}" class="repository-action-edit" aria-label="Edit question ${escapeHtml(q.id)}"><i class="fa-solid fa-pen"></i><span>Edit</span></a><button type="button" onclick="triggerQuestionDeletionCycle(${Number(q.id)}, this)" class="repository-action-delete" aria-label="Delete question ${escapeHtml(q.id)}"><i class="fa-solid fa-trash"></i><span>Delete</span></button></div></td></tr>`;
         }).join('');
 
