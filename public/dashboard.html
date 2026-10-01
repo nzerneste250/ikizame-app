@@ -684,7 +684,7 @@
                             <div class="icon"><i class="fa-solid fa-graduation-cap"></i></div>
                             <div>
                                 <div class="label">Pass Rate</div>
-                                <div class="value" id="statPassRate">--%</div>
+                                <div class="value analytics-kpi-value-loading" id="statPassRate" aria-label="Loading pass rate" aria-busy="true">--%</div>
                                 <div class="meta">Percentage of students passing exams</div>
                             </div>
                         </div>
@@ -692,7 +692,7 @@
                             <div class="icon"><i class="fa-solid fa-user-clock"></i></div>
                             <div>
                                 <div class="label">Total Exams</div>
-                                <div class="value" id="statTotalAttempts">--</div>
+                                <div class="value analytics-kpi-value-loading" id="statTotalAttempts" aria-label="Loading total exams" aria-busy="true">--</div>
                                 <div class="meta">Exams attempted by all students</div>
                             </div>
                         </div>
@@ -700,7 +700,7 @@
                             <div class="icon"><i class="fa-solid fa-star"></i></div>
                             <div>
                                 <div class="label">Average Score</div>
-                                <div class="value" id="statAvgScore">--/20</div>
+                                <div class="value analytics-kpi-value-loading" id="statAvgScore" aria-label="Loading average score" aria-busy="true">--/20</div>
                                 <div class="meta">Average score across all exams</div>
                             </div>
                         </div>
@@ -709,7 +709,7 @@
                     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;">
                         <div class="analytics-heading">
                             <h3><i class="fa-solid fa-users" style="color: #0b698b; margin-right: 8px;"></i>Student Performance</h3>
-                            <p>Search for students by name or phone to explore their exam history, score trends, and problem areas.</p>
+                            <p>Search and review student exam history and scores.</p>
                         </div>
                         <div class="analytics-search-box">
                             <input id="studentPerformanceSearchInput" type="text" placeholder="Search by student name or phone..." autocomplete="off" aria-label="Search by student name or phone">
@@ -719,7 +719,7 @@
                     <div class="performance-main-grid">
                         <div class="leaderboard-panel">
                             <div class="panel-header">
-                                <div class="panel-title-group"><h4>Student Performance</h4><p>Select a student to view details.</p></div>
+                                <div class="panel-title-group"><h4>Student Results</h4><p>Select a student to view details.</p></div>
                             </div>
                             <div class="table-surface">
                                 <table class="leaderboard-table">
@@ -1190,9 +1190,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     fetch('/api/admin/performance-stats')
                 .then(res => res.json())
                 .then(data => {
-                    document.getElementById('statPassRate').textContent = (Number(data.passRate) || 0) + '%';
-                    document.getElementById('statTotalAttempts').textContent = (Number(data.totalAttempts) || Number(data.total) || 0);
-                    document.getElementById('statAvgScore').textContent = (data.avgScore || data.averageScore || '0.0') + '/20';
+                    const passRateTarget = document.getElementById('statPassRate');
+                    const totalAttemptsTarget = document.getElementById('statTotalAttempts');
+                    const averageScoreTarget = document.getElementById('statAvgScore');
+                    [passRateTarget, totalAttemptsTarget, averageScoreTarget].forEach(target => {
+                        target.classList.remove('analytics-kpi-value-loading');
+                        target.removeAttribute('aria-busy');
+                        target.removeAttribute('aria-label');
+                    });
+                    passRateTarget.textContent = (Number(data.passRate) || 0) + '%';
+                    totalAttemptsTarget.textContent = (Number(data.totalAttempts) || Number(data.total) || 0);
+                    averageScoreTarget.textContent = (data.avgScore || data.averageScore || '0.0') + '/20';
 
                     const trickyTarget = document.getElementById('trickyQuestionsListTarget');
                     const trickyQuestions = Array.isArray(data.trickyQuestions) ? data.trickyQuestions : [];
@@ -1214,6 +1222,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(err => {
                     console.error(err);
+                    ['statPassRate', 'statTotalAttempts', 'statAvgScore'].forEach(id => {
+                        const target = document.getElementById(id);
+                        target.textContent = '—';
+                        target.classList.remove('analytics-kpi-value-loading');
+                        target.removeAttribute('aria-busy');
+                        target.removeAttribute('aria-label');
+                    });
                     const trickyTarget = document.getElementById('trickyQuestionsListTarget');
                     trickyTarget.innerHTML = `<div class="analytics-empty-state analytics-error-state"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><strong>Could not load performance analytics.</strong><span>Please check your connection and try again.</span><button type="button" onclick="location.reload()">Try again</button></div>`;
                 });

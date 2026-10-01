@@ -14,6 +14,10 @@
 .dashboard-page #analyticsWorkspaceViewSection .perf-card.avg .icon { background: #EDE9FE; color: #6D28D9; }
 .dashboard-page #analyticsWorkspaceViewSection .perf-card .label { margin-bottom: 5px; color: #64748B; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: none; }
 .dashboard-page #analyticsWorkspaceViewSection .perf-card .value { color: #1F2937; font-size: clamp(24px,2.2vw,30px); font-weight: 800; line-height: 1.05; }
+.dashboard-page #analyticsWorkspaceViewSection .perf-card .analytics-kpi-value-loading {
+  width: 82px; height: 28px; overflow: hidden; border-radius: 6px; background: linear-gradient(90deg,#F1F5F9 25%,#E5EBF0 38%,#F1F5F9 62%);
+  background-size: 400% 100%; color: transparent; font-size: 0; animation: analytics-shimmer 1.3s ease infinite;
+}
 .dashboard-page #analyticsWorkspaceViewSection .perf-card .meta { margin-top: 4px; color: #64748B; font-size: 11px; line-height: 1.35; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-panel > div:nth-child(2) {
   display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
