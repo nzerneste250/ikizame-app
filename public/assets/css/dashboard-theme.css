@@ -694,3 +694,51 @@
   .dashboard-page .repository-action-stack .repository-action-edit,
   .dashboard-page .repository-action-stack .repository-action-delete { min-height: 44px; }
 }
+/* Pin the complete question metrics and controls as one opaque scroll header. */
+.dashboard-page .repository-fixed-panel {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  gap: 12px;
+  margin: -22px -1px 0;
+  padding: 22px 1px 12px;
+  border-bottom: 1px solid #D7E1EA;
+  background: #EDF2F6;
+  box-shadow: 0 12px 18px -16px rgba(31, 60, 90, .42);
+  isolation: isolate;
+}
+.dashboard-page .repository-fixed-panel > .repository-toolbar { position: static; z-index: auto; backdrop-filter: none; }
+.dashboard-page .repository-fixed-panel > #countsSummaryCardsRowViewSection { margin: 0; }
+.dashboard-page .questions-repository-table thead th { top: 192px; }
+@media (max-width: 1200px) {
+  .dashboard-page .repository-fixed-panel { top: 112px; margin-top: 0; padding-top: 12px; }
+  .dashboard-page .questions-repository-table thead th { position: static; }
+}
+@media (max-width: 700px) {
+  .dashboard-page .repository-fixed-panel { top: 126px; gap: 8px; padding: 8px 0 10px; }
+  .dashboard-page .repository-fixed-panel .grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 7px; }
+  .dashboard-page .repository-fixed-panel .summary-card { min-height: 58px; padding: 8px !important; gap: 7px; }
+  .dashboard-page .repository-fixed-panel .badge-square { width: 29px; height: 29px; font-size: 12px; }
+  .dashboard-page .repository-fixed-panel .summary-card div p { font-size: 17px; }
+  .dashboard-page .repository-fixed-panel .summary-card div h3 { font-size: 8px; }
+  .dashboard-page .repository-fixed-panel .repository-toolbar { padding: 9px; }
+  .dashboard-page .questions-repository-table thead { display: none !important; }
+}
+@media (max-width: 380px) {
+  .dashboard-page .repository-fixed-panel .grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 1200px) {
+  .dashboard-page .repository-fixed-panel { top: 0; margin: 0; padding: 12px 1px; }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .dashboard-page .form-scroll { overflow: visible !important; }
+  .dashboard-page .repository-fixed-panel { top: 134px; }
+}
+@media (max-width: 700px) {
+  .dashboard-page .repository-fixed-panel { top: 144px; }
+}
+@media (min-width: 1101px) and (max-width: 1200px) {
+  .dashboard-page .form-scroll { overflow-x: hidden !important; overflow-y: auto !important; }
+  .dashboard-page .repository-fixed-panel { top: 0; }
+}

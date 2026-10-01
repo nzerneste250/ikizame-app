@@ -544,7 +544,7 @@
             .badge-square { width: 36px; height: 36px; font-size: 15px; }
         }
     </style>
-    <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=repository-actions-fit-20261001">
+    <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=repository-fixed-tools-20261001">
 </head>
 <body class="dashboard-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -589,6 +589,7 @@
         </header>
 
         <div class="form-scroll">
+            <div class="repository-fixed-panel" id="repositoryFixedPanel">
             <!-- SUMMARY METRICS CARDS ROW MATRICES (EXACT DESIGN MATCH) -->
             <div class="mobile-dashboard-divider">Dashboard Overview</div>
             <div class="grid" id="countsSummaryCardsRowViewSection">
@@ -645,6 +646,7 @@
                     <button class="repository-export-button" id="exportQuestionsButton" type="button"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
                 </div>
             </section>
+            </div>
 
             <!-- Responsive question repository: grouped answers avoid a wide database-style table. -->
             <div class="table-container" id="questionsTableContainerViewSection">
@@ -1161,6 +1163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.switchAdminControlView = function(targetSectionName) {
         const questionsTableContainer = document.getElementById('questionsTableContainerViewSection');
         const countsSummaryCardsRow   = document.getElementById('countsSummaryCardsRowViewSection');
+        const repositoryFixedPanel = document.getElementById('repositoryFixedPanel');
         const repositoryToolbar = document.querySelector('.repository-toolbar');
         const repositoryPagination = document.getElementById('repositoryPagination');
                 const analyticsWorkspaceView  = document.getElementById('analyticsWorkspaceViewSection');
@@ -1173,6 +1176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainSub = document.getElementById('workspaceMainSub');
 
         if (targetSectionName === 'analytics-view') {
+            repositoryFixedPanel.style.display = 'none';
             questionsTableContainer.style.display = 'none';
             repositoryToolbar.style.display = 'none';
             repositoryPagination.style.display = 'none';
@@ -1237,6 +1241,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 studentPerformanceSearchInput.addEventListener('input', applyStudentPerformanceSearch);
             }
         } else {
+            repositoryFixedPanel.style.display = '';
             analyticsWorkspaceView.style.display = 'none';
             questionsTableContainer.style.display = 'block';
             repositoryToolbar.style.display = '';
