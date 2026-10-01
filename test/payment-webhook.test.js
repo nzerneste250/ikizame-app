@@ -6,10 +6,14 @@ const axios = require('axios');
 
 test('PayPack webhook requires raw-body signatures and grants each confirmed order once', async t => {
   const previousSecret = process.env.PAYPACK_WEBHOOK_SECRET;
+  const previousMerchant = process.env.PAYPACK_MERCHANT_CODE;
   process.env.PAYPACK_WEBHOOK_SECRET = 'test-webhook-secret';
+  process.env.PAYPACK_MERCHANT_CODE = 'test-merchant';
   t.after(() => {
     if (previousSecret === undefined) delete process.env.PAYPACK_WEBHOOK_SECRET;
     else process.env.PAYPACK_WEBHOOK_SECRET = previousSecret;
+    if (previousMerchant === undefined) delete process.env.PAYPACK_MERCHANT_CODE;
+    else process.env.PAYPACK_MERCHANT_CODE = previousMerchant;
   });
 
   t.mock.method(global, 'setTimeout', () => 0);
@@ -21,14 +25,16 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
     ['payment-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
     ['amount-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
     ['race-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
-    ['currency-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }]
+    ['currency-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
+    ['merchant-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }]
   ]);
   const confirmed = new Map([
-    ['payment-ref', { ref: 'payment-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567' }],
-    ['amount-ref', { ref: 'amount-ref', kind: 'CASHIN', status: 'successful', amount: 99, client: '0781234567' }],
-    ['race-ref', { ref: 'race-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567' }],
-    ['currency-ref', { ref: 'currency-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', currency: 'USD' }],
-    ['school-ref', { ref: 'school-ref', kind: 'CASHIN', status: 'successful', amount: 10000, client: '0781234567' }]
+    ['payment-ref', { ref: 'payment-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'test-merchant' }],
+    ['amount-ref', { ref: 'amount-ref', kind: 'CASHIN', status: 'successful', amount: 99, client: '0781234567', merchant: 'test-merchant' }],
+    ['race-ref', { ref: 'race-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'test-merchant' }],
+    ['currency-ref', { ref: 'currency-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'test-merchant', currency: 'USD' }],
+    ['merchant-ref', { ref: 'merchant-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'another-merchant' }],
+    ['school-ref', { ref: 'school-ref', kind: 'CASHIN', status: 'successful', amount: 10000, client: '0781234567', merchant: 'test-merchant' }]
   ]);
   const { schoolPendingMap } = require('../routes/school');
   schoolPendingMap.set('school-ref', { phone: '0781234567', schoolId: 7, schoolName: 'Test School' });
@@ -111,6 +117,9 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
   const amountMismatch = await send('amount-ref');
   assert.equal(amountMismatch.status, 409);
   assert.equal(rows.has('amount-ref'), false);
+  const merchantMismatch = await send('merchant-ref');
+  assert.equal(merchantMismatch.status, 409);
+  assert.equal(rows.has('merchant-ref'), false);
 
   const successful = await send('payment-ref', { pretty: true });
   assert.equal(successful.status, 200);

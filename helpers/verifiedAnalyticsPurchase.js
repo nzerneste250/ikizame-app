@@ -1,7 +1,7 @@
 const { purchaseReceipt } = require('./siteAnalytics');
 
 // Optional analytics confirmation never changes payment status or entitlement.
-function createPurchaseVerifier(findTransaction, { timeoutMs = 2500 } = {}) {
+function createPurchaseVerifier(findTransaction, { timeoutMs = 2500, expectedMerchant = '' } = {}) {
   const cache = new Map();
   return async function verifiedReceipt(row) {
     const receipt = purchaseReceipt(row);
@@ -17,6 +17,7 @@ function createPurchaseVerifier(findTransaction, { timeoutMs = 2500 } = {}) {
     ]).then(transaction => {
       if (transaction?.ref !== row.reference_id || transaction?.status !== 'successful'
           || transaction?.kind !== 'CASHIN' || Number(transaction.amount) !== expectedAmount
+          || (expectedMerchant && String(transaction.merchant || '') !== expectedMerchant)
           || (transaction.currency && String(transaction.currency).toUpperCase() !== 'RWF')) return null;
       return receipt;
     }).catch(() => null).finally(() => clearTimeout(timer));

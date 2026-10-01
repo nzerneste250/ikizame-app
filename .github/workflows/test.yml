@@ -18,6 +18,7 @@ jobs:
       PAYPACK_CLIENT_ID: test-client-id
       PAYPACK_CLIENT_SECRET: test-client-secret
       PAYPACK_WEBHOOK_SECRET: test-webhook-secret
+      PAYPACK_MERCHANT_CODE: test-merchant
       SESSION_SECRET: test-session-secret
       GA4_ENABLED: "false"
     steps:

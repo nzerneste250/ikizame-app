@@ -4,6 +4,8 @@ const express = require('express');
 const axios = require('axios');
 
 test('payment verification preserves statuses and exposes analytics only after provider-confirmed success', async t => {
+  const saved = { enabled: process.env.GA4_ENABLED, id: process.env.GA4_MEASUREMENT_ID, merchant: process.env.PAYPACK_MERCHANT_CODE };
+  process.env.PAYPACK_MERCHANT_CODE = 'test-merchant';
   // Stub only provider token-refresh startup timers; never call the payment provider.
   t.mock.method(global, 'setTimeout', () => 0);
   t.mock.method(global, 'setInterval', () => 0);
@@ -16,11 +18,10 @@ test('payment verification preserves statuses and exposes analytics only after p
     assert.equal(url, 'https://payments.paypack.rw/api/transactions/find/payment-ref');
     assert.equal(options.maxRedirects, 0);
     if (providerUnavailable) throw new Error('Provider unavailable');
-    return { data: { ref: 'payment-ref', status: 'successful', kind: 'CASHIN', amount: 100 } };
+    return { data: { ref: 'payment-ref', status: 'successful', kind: 'CASHIN', amount: 100, merchant: 'test-merchant' } };
   });
-  const saved = { enabled: process.env.GA4_ENABLED, id: process.env.GA4_MEASUREMENT_ID };
   t.after(() => {
-    for (const [key, value] of [['GA4_ENABLED', saved.enabled], ['GA4_MEASUREMENT_ID', saved.id]]) {
+    for (const [key, value] of [['GA4_ENABLED', saved.enabled], ['GA4_MEASUREMENT_ID', saved.id], ['PAYPACK_MERCHANT_CODE', saved.merchant]]) {
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }
   });

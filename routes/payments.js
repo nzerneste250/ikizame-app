@@ -10,6 +10,7 @@ const PAYPACK_BASE     = 'https://payments.paypack.rw/api';
 const PAYPACK_CLIENT   = process.env.PAYPACK_CLIENT_ID;
 const PAYPACK_SECRET   = process.env.PAYPACK_CLIENT_SECRET;
 const WEBHOOK_SECRET   = process.env.PAYPACK_WEBHOOK_SECRET;
+const PAYPACK_MERCHANT = (process.env.PAYPACK_MERCHANT_CODE || '').trim();
 const NOTIFY_EMAIL     = PROTECTED_REPORT_EMAIL;
 
 function sendPaymentNotification(transport, { phone, amount, planLabel, examCount, paypackRef, type }) {
@@ -108,9 +109,10 @@ function verifyPaypackSignature(rawBody, signature, secret) {
     return supplied.length === expected.length && supplied.toString('base64') === signature && crypto.timingSafeEqual(supplied, expected);
 }
 
-function confirmsExpectedPayment(transaction, reference, expectedAmount) {
+function confirmsExpectedPayment(transaction, reference, expectedAmount, expectedMerchant) {
     if (!transaction || transaction.ref !== reference || transaction.kind !== 'CASHIN' ||
         String(transaction.status || '').toLowerCase() !== 'successful') return false;
+    if (!expectedMerchant || String(transaction.merchant || '') !== expectedMerchant) return false;
     const amount = Number(transaction.amount);
     if (!Number.isFinite(amount) || amount <= 0 || amount !== Number(expectedAmount)) return false;
     const currency = transaction.currency || transaction.currency_code;
@@ -186,7 +188,7 @@ module.exports = (db) => {
             maxRedirects: 0
         });
         return data;
-    });
+    }, { expectedMerchant: PAYPACK_MERCHANT });
 
     // POST — initiate USSD push, do NOT write to DB yet
     router.post('/momo-push', async (req, res) => {
@@ -304,6 +306,7 @@ module.exports = (db) => {
     // POST — verify the signed event and confirm the transaction before granting access.
     router.post('/callback', async (req, res) => {
         if (!WEBHOOK_SECRET) return res.status(503).json({ ok: false });
+        if (!PAYPACK_MERCHANT) return res.status(503).json({ ok: false });
         if (!verifyPaypackSignature(req.rawBody, req.get('X-Paypack-Signature'), WEBHOOK_SECRET)) {
             console.warn('Invalid Paypack webhook signature — rejected');
             return res.status(401).json({ ok: false });
@@ -336,7 +339,7 @@ module.exports = (db) => {
                         `${PAYPACK_BASE}/transactions/find/${encodeURIComponent(paypackRef)}`,
                         { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }, timeout: 8000, maxRedirects: 0 }
                     );
-                    if (!confirmsExpectedPayment(confirmedTransaction, paypackRef, pending.amount) ||
+                    if (!confirmsExpectedPayment(confirmedTransaction, paypackRef, pending.amount, PAYPACK_MERCHANT) ||
                         !confirmsExpectedPayer(confirmedTransaction, pending)) {
                         console.warn(`Paypack webhook confirmation mismatch for ${paypackRef}`);
                         return res.status(409).json({ ok: false });
