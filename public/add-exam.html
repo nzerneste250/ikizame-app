@@ -295,8 +295,9 @@
         }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
+    <link rel="stylesheet" href="/assets/css/add-exam-builder.css?v=20261001">
 </head>
-<body>
+<body class="question-builder-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
 
 <!-- SESSION MODAL -->
@@ -341,11 +342,11 @@
         <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button>
             <div>
                 <h1>Add New Question</h1>
-                <p>Drag &amp; drop an image or click to browse. Switch mode for image-options questions.</p>
+                <p>Create and configure a new exam question.</p>
             </div>
-            <div class="mode-badge">
-                <span id="modeLabel">Text Options Mode</span>
-                <div class="toggle-btn" id="modeToggle"></div>
+            <div class="mode-badge" aria-label="Answer type selector">
+                <span class="mode-caption">Answer type</span><span class="mode-current" id="modeLabel">Text Options</span>
+                <button type="button" class="toggle-btn" id="modeToggle" role="switch" aria-checked="false" aria-label="Switch to image options mode"></button>
             </div>
         </header>
 
@@ -361,15 +362,15 @@
 
                 <!-- Main image drop zone -->
                 <div>
-                    <label style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.7px;display:block;margin-bottom:8px">Question Sign Image (optional)</label>
-                    <div class="drop-zone" id="mainDrop" title="Click or drag image here">
+                    <label style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.7px;display:block;margin-bottom:8px">Question Image <span class="optional-badge">Optional</span></label>
+                    <div class="drop-zone" id="mainDrop" title="Click or drag image here" role="button" tabindex="0" aria-label="Choose or drop an optional question image">
                         <div class="preview-box" id="mainPreviewBox">
                             <i class="ph fa-solid fa-image"></i>
                         </div>
                         <div class="drop-content">
                             <div class="drop-title"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--brand)"></i> Drag &amp; drop an image here</div>
-                            <div class="drop-sub">PNG, JPG, WEBP, max 10 MB</div>
-                            <button type="button" class="drop-btn" id="mainBrowseBtn"><i class="fa-solid fa-folder-open"></i> Browse File</button>
+                            <div class="drop-sub">or browse your device</div>
+                            <button type="button" class="drop-btn" id="mainBrowseBtn"><i class="fa-solid fa-folder-open"></i> Browse Image</button>
                             <div class="file-name-badge" id="mainFileBadge">
                                 <i class="fa-solid fa-file-image"></i>
                                 <span id="mainFileName"></span>
@@ -379,12 +380,15 @@
                     </div>
                     <!-- Hidden real file input -->
                     <input type="file" id="imageFile" name="imageFile" accept="image/*" class="hidden-file">
+                    <p class="upload-help">PNG, JPG or WEBP &middot; Maximum 10 MB</p>
 
                     <!-- Reuse existing asset by filename -->
-                    <div class="or-divider" style="margin-top:12px">OR reuse existing asset</div>
+                    <div class="or-divider" style="margin-top:12px">Or use an existing image</div>
+                    <label class="fallback-label" for="imageFileTextFallback"><i class="fa-regular fa-folder-open" aria-hidden="true"></i> Existing image filename</label>
                     <input type="text" id="imageFileTextFallback" name="imageFileTextFallback"
-                           placeholder="Type existing filename e.g. stop.png"
+                           placeholder="e.g. stop.png" aria-describedby="existingAssetHelp"
                            style="margin-top:10px;width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13.5px;font-weight:500;outline:none;font-family:'Inter',sans-serif;">
+                    <p class="field-help" id="existingAssetHelp">Use the filename of an image already stored with the question assets.</p>
                 </div>
 
                 <!-- Dynamic options area -->
@@ -393,6 +397,7 @@
                 <!-- Correct answer -->
                 <div class="field" style="max-width:300px">
                     <label for="correctOption">Correct Answer</label>
+                    <div class="answer-key-panel">
                     <select id="correctOption" name="correctOption" required>
                         <option value="">Select Correct Option</option>
                         <option value="A">A</option>
@@ -400,6 +405,7 @@
                         <option value="C">C</option>
                         <option value="D">D</option>
                     </select>
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn-save"><i class="fa-solid fa-square-plus"></i> Save Question</button>
@@ -488,6 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch(e) {}
     }
         mainBrowse.addEventListener('click', () => mainFileInp.click());
+    mainDrop.addEventListener('keydown', e => { if (e.target === mainDrop && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); mainFileInp.click(); } });
     mainDrop.addEventListener('click', e => { 
         if (e.target === mainDrop || e.target.closest('.preview-box') || e.target.closest('#mainBrowseBtn')) {
             mainFileInp.click(); 
@@ -551,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ${['A','B','C','D'].map(l=>`
             <div class="opt-card">
                 <div class="opt-label">Option ${l}</div>
-                <div class="opt-drop" id="optDrop_${l}" data-key="${l}">
+                <div class="opt-drop" id="optDrop_${l}" data-key="${l}" role="button" tabindex="0" aria-label="Choose option ${l} image">
                     <i class="opt-drop-icon fa-solid fa-image"></i>
                     <span class="opt-drop-text">Drag or click to upload</span>
                     <img class="opt-preview" id="optPrev_${l}" alt="option ${l}">
@@ -584,6 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             dropEl.addEventListener('click', () => fileInp.click());
+            dropEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInp.click(); } });
             fileInp.addEventListener('change', () => { if (fileInp.files[0]) applyOptFile(fileInp.files[0]); });
             dropEl.addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('dragover'); });
             dropEl.addEventListener('dragleave', () => dropEl.classList.remove('dragover'));
@@ -612,7 +620,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const isImg = modeInput.value === 'text';
         modeInput.value = isImg ? 'image' : 'text';
         modeToggle.classList.toggle('on', isImg);
-        modeLabel.textContent = isImg ? 'Image Options Mode' : 'Text Options Mode';
+        modeLabel.textContent = isImg ? 'Image Options' : 'Text Options';
+        modeToggle.setAttribute('aria-checked', String(isImg));
+        modeToggle.setAttribute('aria-label', isImg ? 'Switch to text options mode' : 'Switch to image options mode');
         isImg ? makeImageOptions() : makeTextOptions();
     });
 });
