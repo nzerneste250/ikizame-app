@@ -113,6 +113,15 @@
 .visitors-page .visitor-row-skeleton span { display: block; height: 12px; flex: 1; border-radius: 4px; background: linear-gradient(90deg,#E8EEF4 25%,#F7FAFC 50%,#E8EEF4 75%); background-size: 200% 100%; animation: visitor-shimmer 1.2s ease infinite; }
 .visitors-page .visitor-chart-skeleton { grid-column: 1 / -1; height: 190px; border-radius: 8px; background: #E8EEF4; animation: visitor-shimmer 1.2s ease infinite; }
 @keyframes visitor-shimmer { to { background-position: -200% 0; } }
+/* Keep the document as the desktop scroll container. Hidden overflow on body
+   creates an extra scroll ancestor and prevents the navigation from sticking. */
+@media (min-width: 1101px) {
+  html:has(body.visitors-page) { overflow-x: clip; }
+  body.visitors-page { overflow-x: clip; overflow-y: visible; }
+  .visitors-page .side { height: 100dvh; align-self: flex-start; }
+  .visitors-page .side-logo, .visitors-page .side-foot { flex-shrink: 0; }
+  .visitors-page .side-nav { min-height: 0; }
+}
 @media (max-width: 1400px) {
   .visitors-page .stats { grid-template-columns: repeat(3,minmax(0,1fr)); }
 }
