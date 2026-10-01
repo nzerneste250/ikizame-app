@@ -179,7 +179,7 @@
 .question-builder-page .file-name-badge { background: #ecfdf3; color: #15803d; }
 
 /* Keep the complete builder in the available desktop workspace. */
-@media (min-width: 1101px) and (min-height: 701px) {
+@media (min-width: 1101px) {
   .question-builder-page .workspace { height: 100%; min-height: 0; }
   .question-builder-page .form-scroll {
     flex: 1 1 0; min-height: 0; overflow: hidden;
@@ -256,11 +256,7 @@
   .question-builder-page .form-scroll { height: auto; min-height: 0; overflow: visible; flex: 0 0 auto; }
   .question-builder-page #addForm { height: auto; max-height: none; display: flex; overflow: visible; }
 }
-@media (min-width: 1101px) and (max-height: 700px) {
-  .question-builder-page .form-scroll { overflow-y: auto; }
-  .question-builder-page #addForm { height: auto; max-height: none; }
-}
-@media (min-width: 1101px) and (min-height: 701px) and (max-height: 760px) {
+@media (min-width: 1101px) and (max-height: 760px) {
   .question-builder-page .form-scroll { padding: 7px 14px; }
   .question-builder-page #addForm { padding: 8px 18px 0; }
   .question-builder-page #addForm::before { padding-bottom: 5px; }
@@ -277,6 +273,41 @@
   .question-builder-page .fallback-label { margin-top: 4px; }
   .question-builder-page #imageFileTextFallback { min-height: 34px !important; }
   .question-builder-page .form-actions { padding-top: 7px; padding-bottom: 8px; }
+}
+@media (min-width: 1101px) and (max-height: 700px) {
+  .question-builder-page .form-scroll { padding: 3px 8px; }
+  .question-builder-page #addForm { padding: 5px 12px 0; column-gap: 16px; }
+  .question-builder-page #addForm::before { padding: 2px 0 4px; font-size: 9px; }
+  .question-builder-page #addForm > .field:first-of-type,
+  .question-builder-page #addForm > div:has(#mainDrop),
+  .question-builder-page #optionsArea,
+  .question-builder-page #addForm > .field:has(#correctOption) { padding-top: 4px; padding-bottom: 4px; }
+  .question-builder-page #addForm > .field:first-of-type > label::after,
+  .question-builder-page #addForm > div:has(#mainDrop) > label::after,
+  .question-builder-page #addForm > .field:has(#correctOption) > label::after { display: none; }
+  .question-builder-page #addForm textarea#question { min-height: 44px; padding: 6px 8px; }
+  .question-builder-page #mainDrop { min-height: 50px; padding: 4px 8px; }
+  .question-builder-page .drop-sub,
+  .question-builder-page .upload-help,
+  .question-builder-page .field-help { display: none; }
+  .question-builder-page .or-divider { margin: 3px 0 !important; }
+  .question-builder-page .fallback-label { margin: 2px 0; font-size: 10px; }
+  .question-builder-page #imageFileTextFallback { min-height: 30px !important; margin: 0 !important; padding: 4px 8px !important; }
+  .question-builder-page .text-options-grid,
+  .question-builder-page .options-grid { gap: 5px; }
+  .question-builder-page .text-options-grid .field,
+  .question-builder-page .opt-card { padding: 5px; gap: 4px; }
+  .question-builder-page .text-options-grid .field label,
+  .question-builder-page .opt-label { gap: 5px; font-size: 10px; }
+  .question-builder-page .text-options-grid .field label::before,
+  .question-builder-page .opt-label::before { width: 19px; height: 19px; font-size: 10px; }
+  .question-builder-page .text-options-grid input[type="text"],
+  .question-builder-page .opt-card input[type="text"] { min-height: 30px; padding: 4px 6px; font-size: 10px; }
+  .question-builder-page .opt-drop { min-height: 42px; }
+  .question-builder-page .answer-key-panel { gap: 6px; padding: 5px 7px; }
+  .question-builder-page .answer-key-panel select { min-height: 30px; padding: 4px 7px; font-size: 10px; }
+  .question-builder-page .form-actions { padding: 4px 12px; }
+  .question-builder-page .btn-save, .question-builder-page .btn-cancel { min-height: 34px; }
 }
 @media (max-width: 700px) {
   .question-builder-page .topbar { align-items: center; padding: 12px 14px; }
