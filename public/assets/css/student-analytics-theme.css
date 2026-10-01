@@ -1,31 +1,31 @@
 /* Student Performance Analytics: compact education-data dashboard styles. */
-.dashboard-page #analyticsWorkspaceViewSection { min-width: 0; width: 100%; }
+.dashboard-page #analyticsWorkspaceViewSection { min-width: 0; width: 100%; padding-top: 24px; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-panel {
-  gap: 18px; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none;
+  gap: 24px; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none;
 }
-.dashboard-page #analyticsWorkspaceViewSection .analytics-kpis { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.dashboard-page #analyticsWorkspaceViewSection .analytics-kpis { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
 .dashboard-page #analyticsWorkspaceViewSection .perf-card {
-  min-width: 0; min-height: 104px; padding: 16px; gap: 13px; border: 1px solid #D8E1EA;
+  min-width: 0; min-height: 112px; padding: 20px; gap: 16px; border: 1px solid #D8E1EA;
   border-radius: 14px; background: #fff; box-shadow: 0 3px 12px rgba(31,60,90,.045);
 }
 .dashboard-page #analyticsWorkspaceViewSection .perf-card .icon { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 11px; font-size: 16px; }
 .dashboard-page #analyticsWorkspaceViewSection .perf-card.pass .icon { background: #DCFCE7; color: #15803D; }
 .dashboard-page #analyticsWorkspaceViewSection .perf-card.exams .icon { background: #E0F2FE; color: #0369A1; }
 .dashboard-page #analyticsWorkspaceViewSection .perf-card.avg .icon { background: #EDE9FE; color: #6D28D9; }
-.dashboard-page #analyticsWorkspaceViewSection .perf-card .label { margin-bottom: 5px; color: #64748B; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: none; }
-.dashboard-page #analyticsWorkspaceViewSection .perf-card .value { color: #1F2937; font-size: clamp(24px,2.2vw,30px); font-weight: 800; line-height: 1.05; }
+.dashboard-page #analyticsWorkspaceViewSection .perf-card .label { margin-bottom: 5px; color: #64748B; font-size: 12px; font-weight: 600; letter-spacing: .01em; text-transform: none; }
+.dashboard-page #analyticsWorkspaceViewSection .perf-card .value { color: #1F2937; font-size: clamp(28px,2.2vw,34px); font-weight: 800; line-height: 1.05; }
 .dashboard-page #analyticsWorkspaceViewSection .perf-card .analytics-kpi-value-loading {
   width: 82px; height: 28px; overflow: hidden; border-radius: 6px; background: linear-gradient(90deg,#F1F5F9 25%,#E5EBF0 38%,#F1F5F9 62%);
   background-size: 400% 100%; color: transparent; font-size: 0; animation: analytics-shimmer 1.3s ease infinite;
 }
-.dashboard-page #analyticsWorkspaceViewSection .perf-card .meta { margin-top: 4px; color: #64748B; font-size: 11px; line-height: 1.35; }
-.dashboard-page #analyticsWorkspaceViewSection .analytics-panel > div:nth-child(2) {
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
-  min-width: 0; padding: 3px 0 1px;
+.dashboard-page #analyticsWorkspaceViewSection .perf-card .meta { margin-top: 6px; color: #64748B; font-size: 12px; line-height: 1.35; }
+.dashboard-page #analyticsWorkspaceViewSection .analytics-toolbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  min-width: 0; padding: 16px 18px; border: 1px solid #D8E1EA; border-radius: 12px; background: #F7FAFC;
 }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-heading { flex: 1 1 auto; min-width: 0; gap: 3px; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-heading h3 { color: #1F2937; font-size: 18px; }
-.dashboard-page #analyticsWorkspaceViewSection .analytics-heading p { color: #64748B; font-size: 12px; line-height: 1.45; }
+.dashboard-page #analyticsWorkspaceViewSection .analytics-heading p { color: #64748B; font-size: 13px; line-height: 1.45; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-search-box {
   position: relative; flex: 0 1 360px; width: min(360px,42%); max-width: 360px; min-width: 220px; margin: 0;
 }
@@ -35,65 +35,65 @@
 }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-search-box input {
   min-height: 44px; padding: 10px 14px 10px 39px; border: 1px solid #D8E1EA;
-  border-radius: 10px; background: #fff; box-shadow: none; font-size: 12px;
+  border-radius: 9px; background: #fff; box-shadow: none; font-size: 14px;
 }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-search-box input:focus { border-color: #1565C0; box-shadow: 0 0 0 3px rgba(21,101,192,.12); }
 .dashboard-page #analyticsWorkspaceViewSection .performance-main-grid {
-  grid-template-columns: minmax(0,1.6fr) minmax(300px,.75fr); gap: 18px; align-items: start; min-width: 0;
+  grid-template-columns: minmax(0,1.6fr) minmax(320px,.75fr); gap: 24px; align-items: start; min-width: 0;
 }
 .dashboard-page #analyticsWorkspaceViewSection .leaderboard-panel,
 .dashboard-page #analyticsWorkspaceViewSection .tricky-panel {
   min-width: 0; overflow: hidden; border: 1px solid #D8E1EA; border-radius: 14px;
   background: #fff; box-shadow: 0 3px 12px rgba(31,60,90,.045);
 }
-.dashboard-page #analyticsWorkspaceViewSection .panel-header { align-items: center; padding: 16px 18px 13px; border-bottom: 1px solid #E8EEF4; }
+.dashboard-page #analyticsWorkspaceViewSection .panel-header { align-items: center; padding: 18px 20px 16px; border-bottom: 1px solid #E8EEF4; }
 .dashboard-page #analyticsWorkspaceViewSection .panel-title-group { min-width: 0; }
-.dashboard-page #analyticsWorkspaceViewSection .panel-title-group h4 { color: #1F2937; font-size: 14px; }
-.dashboard-page #analyticsWorkspaceViewSection .panel-title-group p { margin-top: 4px; color: #64748B; font-size: 11px; line-height: 1.4; }
+.dashboard-page #analyticsWorkspaceViewSection .panel-title-group h4 { color: #1F2937; font-size: 16px; }
+.dashboard-page #analyticsWorkspaceViewSection .panel-title-group p { margin-top: 5px; color: #64748B; font-size: 12px; line-height: 1.4; }
 .dashboard-page #analyticsWorkspaceViewSection .panel-header .badge:not(.badge-alert) {
   padding: 0; border-radius: 0; background: transparent; color: #64748B; font-size: 11px; font-weight: 500;
 }
 .dashboard-page #analyticsWorkspaceViewSection .panel-header .badge-alert {
-  flex: 0 0 auto; padding: 4px 8px; border: 1px solid #FDE7BD; border-radius: 999px;
-  background: #FFFBEB; color: #A16207; font-size: 9px; font-weight: 700;
+  flex: 0 0 auto; padding: 0; border: 0; border-radius: 0;
+  background: transparent; color: #A16207; font-size: 10px; font-weight: 600; text-transform: none; letter-spacing: 0;
 }
-.dashboard-page #analyticsWorkspaceViewSection .table-surface { min-width: 0; padding: 0 16px 10px; overflow-x: auto; }
-.dashboard-page #analyticsWorkspaceViewSection .leaderboard-table { width: 100%; min-width: 0; table-layout: auto; border-collapse: collapse; }
+.dashboard-page #analyticsWorkspaceViewSection .table-surface { min-width: 0; padding: 0 16px 10px; overflow: visible; }
+.dashboard-page #analyticsWorkspaceViewSection .leaderboard-table { width: 100%; min-width: 0; table-layout: fixed; border-collapse: collapse; }
 .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table thead th {
-  padding: 11px 10px; background: #F7FAFC !important; color: #64748B; font-size: 10px;
-  font-weight: 700; letter-spacing: .04em; text-transform: none; white-space: nowrap;
+  padding: 11px 10px; background: #F7FAFC !important; color: #64748B; font-size: 12px;
+  font-weight: 700; letter-spacing: 0; text-transform: none; white-space: nowrap;
 }
 .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table tbody tr { cursor: pointer; outline: none; }
 .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table tbody tr:hover { background: #F7FAFC; transform: none; }
 .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table tbody tr:focus-visible { outline: 3px solid rgba(21,101,192,.22); outline-offset: -3px; }
 .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table td {
-  padding: 12px 10px; border-bottom: 1px solid #E8EEF4; color: #334155; font-size: 12px; vertical-align: middle;
+  padding: 16px 10px; border-bottom: 1px solid #E8EEF4; color: #334155; font-size: 14px; vertical-align: middle;
 }
 .dashboard-page #analyticsWorkspaceViewSection .student-identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .dashboard-page #analyticsWorkspaceViewSection .student-avatar {
-  display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px;
+  display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px;
   border-radius: 10px; background: #E7F3F1; color: #0F766E; font-size: 12px; font-weight: 800;
 }
 .dashboard-page #analyticsWorkspaceViewSection .student-name-wrap { display: block; min-width: 0; }
-.dashboard-page #analyticsWorkspaceViewSection .student-name-wrap strong { display: block; overflow: hidden; color: #1F2937; font-size: 12px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-.dashboard-page #analyticsWorkspaceViewSection .student-name-wrap small { display: block; margin-top: 3px; color: #64748B; font-size: 10px; font-weight: 400; }
+.dashboard-page #analyticsWorkspaceViewSection .student-name-wrap strong { display: block; overflow: hidden; color: #1F2937; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.dashboard-page #analyticsWorkspaceViewSection .student-name-wrap small { display: block; margin-top: 4px; color: #64748B; font-size: 12px; font-weight: 400; }
 .dashboard-page #analyticsWorkspaceViewSection .student-exam-count { display: inline-grid; min-width: 28px; min-height: 26px; place-items: center; border-radius: 8px; background: #EEF5FA; color: #334155; font-weight: 700; }
-.dashboard-page #analyticsWorkspaceViewSection .score-pill { min-height: 25px; padding: 4px 8px; border-radius: 7px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.dashboard-page #analyticsWorkspaceViewSection .score-pill { min-height: 28px; padding: 5px 9px; border-radius: 7px; font-size: 12px; font-weight: 800; white-space: nowrap; }
 .dashboard-page #analyticsWorkspaceViewSection .score-pill.high { background: #DCFCE7; color: #15803D; }
 .dashboard-page #analyticsWorkspaceViewSection .score-pill.mid { background: #FEF3C7; color: #A16207; }
 .dashboard-page #analyticsWorkspaceViewSection .score-pill.low { background: #FEE2E2; color: #B91C1C; }
-.dashboard-page #analyticsWorkspaceViewSection .student-date-cell { color: #64748B; font-size: 11px; white-space: nowrap; }
+.dashboard-page #analyticsWorkspaceViewSection .student-date-cell { color: #64748B; font-size: 12px; white-space: nowrap; }
 .dashboard-page #analyticsWorkspaceViewSection .student-mobile-label { display: none; }
-.dashboard-page #analyticsWorkspaceViewSection .tricky-questions-grid { gap: 9px; padding: 12px 14px 14px; }
+.dashboard-page #analyticsWorkspaceViewSection .tricky-questions-grid { gap: 12px; padding: 16px; }
 .dashboard-page #analyticsWorkspaceViewSection .tricky-question-card {
-  gap: 8px; padding: 12px 13px; border: 1px solid #E5E7EB; border-left: 4px solid #DC2626;
+  gap: 10px; padding: 14px; border: 1px solid #E5E7EB; border-left: 4px solid #DC2626;
   border-radius: 10px; background: #fff; box-shadow: none;
 }
 .dashboard-page #analyticsWorkspaceViewSection .tricky-question-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.dashboard-page #analyticsWorkspaceViewSection .tricky-rank { padding: 4px 7px; border-radius: 6px; background: #FEF2F2; color: #B91C1C; font-size: 10px; font-weight: 800; white-space: nowrap; }
-.dashboard-page #analyticsWorkspaceViewSection .tricky-fail-count { color: #DC2626; font-size: 10px; font-weight: 700; white-space: nowrap; }
+.dashboard-page #analyticsWorkspaceViewSection .tricky-rank { padding: 4px 7px; border-radius: 6px; background: #FEF2F2; color: #B91C1C; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.dashboard-page #analyticsWorkspaceViewSection .tricky-fail-count { color: #DC2626; font-size: 11px; font-weight: 700; white-space: nowrap; }
 .dashboard-page #analyticsWorkspaceViewSection .tricky-fail-count i { margin-right: 4px; font-size: 9px; }
-.dashboard-page #analyticsWorkspaceViewSection .tricky-question-card p { display: -webkit-box; overflow: hidden; margin: 0; color: #334155; font-size: 12px; line-height: 1.45; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+.dashboard-page #analyticsWorkspaceViewSection .tricky-question-card p { display: -webkit-box; overflow: hidden; margin: 0; color: #334155; font-size: 14px; line-height: 1.45; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-empty-state {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
   min-height: 130px; padding: 20px; color: #64748B; text-align: center;
@@ -101,7 +101,7 @@
 .dashboard-page #analyticsWorkspaceViewSection .analytics-empty-state > i { margin-bottom: 3px; color: #0F766E; font-size: 20px; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-empty-state strong { color: #334155; font-size: 13px; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-empty-state span { font-size: 11px; line-height: 1.45; }
-.dashboard-page #analyticsWorkspaceViewSection .analytics-empty-state button { min-height: 36px; margin-top: 5px; padding: 0 12px; border: 1px solid #D8E1EA; border-radius: 8px; background: #fff; color: #0D47A1; font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+.dashboard-page #analyticsWorkspaceViewSection .analytics-empty-state button { min-height: 44px; margin-top: 5px; padding: 0 12px; border: 1px solid #D8E1EA; border-radius: 8px; background: #fff; color: #0D47A1; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-error-state > i { color: #DC2626; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-loading-row td { padding: 18px 10px; }
 .dashboard-page #analyticsWorkspaceViewSection .analytics-loading-card { display: grid; gap: 9px; padding: 13px; border: 1px solid #E8EEF4; border-radius: 10px; }
@@ -110,7 +110,7 @@
 .dashboard-page #analyticsWorkspaceViewSection .analytics-skeleton-line:nth-child(3) { width: 56%; }
 @keyframes analytics-shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
 
-@media (max-width: 1080px) {
+@media (max-width: 1200px) {
   .dashboard-page #analyticsWorkspaceViewSection .performance-main-grid { grid-template-columns: minmax(0,1fr); }
 }
 @media (max-width: 700px) {
@@ -119,14 +119,14 @@
   .dashboard-page #analyticsWorkspaceViewSection .perf-card { min-height: 82px; padding: 12px 14px; border-radius: 12px; }
   .dashboard-page #analyticsWorkspaceViewSection .perf-card .icon { width: 36px; height: 36px; flex-basis: 36px; }
   .dashboard-page #analyticsWorkspaceViewSection .perf-card .value { font-size: 24px; }
-  .dashboard-page #analyticsWorkspaceViewSection .analytics-panel > div:nth-child(2) { align-items: stretch; flex-direction: column; gap: 10px; }
-  .dashboard-page #analyticsWorkspaceViewSection .analytics-heading h3 { font-size: 16px; }
-  .dashboard-page #analyticsWorkspaceViewSection .analytics-heading p { font-size: 11px; }
+  .dashboard-page #analyticsWorkspaceViewSection .analytics-toolbar { align-items: stretch; flex-direction: column; gap: 10px; }
+  .dashboard-page #analyticsWorkspaceViewSection .analytics-heading h3 { font-size: 18px; }
+  .dashboard-page #analyticsWorkspaceViewSection .analytics-heading p { font-size: 13px; }
   .dashboard-page #analyticsWorkspaceViewSection .analytics-search-box { width: 100%; max-width: none; min-width: 0; flex-basis: auto; }
   .dashboard-page #analyticsWorkspaceViewSection .performance-main-grid { grid-template-columns: minmax(0,1fr); gap: 12px; }
   .dashboard-page #analyticsWorkspaceViewSection .panel-header { align-items: flex-start; padding: 14px 13px 11px; }
-  .dashboard-page #analyticsWorkspaceViewSection .panel-title-group h4 { font-size: 13px; }
-  .dashboard-page #analyticsWorkspaceViewSection .panel-title-group p { font-size: 10px; }
+  .dashboard-page #analyticsWorkspaceViewSection .panel-title-group h4 { font-size: 16px; }
+  .dashboard-page #analyticsWorkspaceViewSection .panel-title-group p { font-size: 12px; }
   .dashboard-page #analyticsWorkspaceViewSection .table-surface { padding: 10px 10px 12px; overflow: visible; }
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table,
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table tbody { display: block !important; width: 100% !important; min-width: 0 !important; }
@@ -134,7 +134,7 @@
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table tbody { display: grid !important; gap: 9px; }
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table tbody tr {
     display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 12px;
-    width: 100% !important; padding: 10px 12px !important; border: 1px solid #D8E1EA !important;
+    width: 100% !important; padding: 14px !important; margin: 0; border: 1px solid #D8E1EA !important;
     border-radius: 11px !important; background: #fff !important; box-shadow: 0 2px 8px rgba(31,60,90,.04) !important;
   }
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table tbody tr:hover { background: #F8FAFC !important; transform: none !important; }
@@ -147,17 +147,17 @@
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table td:nth-child(2) { grid-column: 1; }
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table td:nth-child(3) { grid-column: 2; }
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table td:nth-child(4) { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; border-bottom: 0 !important; }
-  .dashboard-page #analyticsWorkspaceViewSection .student-mobile-label { display: block; margin-bottom: 4px; color: #64748B; font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .dashboard-page #analyticsWorkspaceViewSection .student-mobile-label { display: block; margin-bottom: 4px; color: #64748B; font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; }
   .dashboard-page #analyticsWorkspaceViewSection .student-date-cell .student-mobile-label { margin: 0; }
   .dashboard-page #analyticsWorkspaceViewSection .student-identity { gap: 9px; }
   .dashboard-page #analyticsWorkspaceViewSection .student-avatar { width: 32px; height: 32px; flex-basis: 32px; }
-  .dashboard-page #analyticsWorkspaceViewSection .student-name-wrap strong { font-size: 12px; }
-  .dashboard-page #analyticsWorkspaceViewSection .student-date-cell time { font-size: 11px; }
+  .dashboard-page #analyticsWorkspaceViewSection .student-name-wrap strong { font-size: 14px; }
+  .dashboard-page #analyticsWorkspaceViewSection .student-date-cell time { font-size: 12px; }
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table td[colspan="4"] { display: block !important; grid-column: 1 / -1; border: 0 !important; }
   .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table td[colspan="4"] .analytics-empty-state { min-height: 110px; }
   .dashboard-page #analyticsWorkspaceViewSection .tricky-questions-grid { gap: 8px; padding: 10px 12px 12px; }
   .dashboard-page #analyticsWorkspaceViewSection .tricky-question-card { padding: 11px; }
-  .dashboard-page #analyticsWorkspaceViewSection .tricky-question-card p { font-size: 11px; }
+  .dashboard-page #analyticsWorkspaceViewSection .tricky-question-card p { font-size: 14px; }
 }
 @media (max-width: 370px) {
   .dashboard-page #analyticsWorkspaceViewSection .tricky-question-meta { align-items: flex-start; }
@@ -168,4 +168,53 @@
   .dashboard-page #analyticsWorkspaceViewSection *,
   .dashboard-page #analyticsWorkspaceViewSection *::before,
   .dashboard-page #analyticsWorkspaceViewSection *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Scoped overrides keep the global admin shell and other tables unchanged. */
+.dashboard-page #analyticsWorkspaceViewSection .analytics-heading h3 i { margin-right: 8px; color: #0F766E; font-size: 16px; }
+.dashboard-page #analyticsWorkspaceViewSection .perf-card > div:last-child { min-width: 0; }
+.dashboard-page #analyticsWorkspaceViewSection .leaderboard-table th:first-child { width: 46%; }
+.dashboard-page #analyticsWorkspaceViewSection .leaderboard-table th:nth-child(2) { width: 14%; }
+.dashboard-page #analyticsWorkspaceViewSection .leaderboard-table th:nth-child(3) { width: 20%; }
+.dashboard-page #analyticsWorkspaceViewSection .leaderboard-table th:nth-child(4) { width: 20%; }
+.dashboard-page #analyticsWorkspaceViewSection .student-exams-cell,
+.dashboard-page #analyticsWorkspaceViewSection .student-average-cell { text-align: center; }
+.dashboard-page #analyticsWorkspaceViewSection .student-date-cell { text-align: right; }
+.dashboard-page #analyticsWorkspaceViewSection .student-name-wrap { flex: 1; }
+.dashboard-page #analyticsWorkspaceViewSection .tricky-panel .panel-header { flex-wrap: wrap; gap: 8px; }
+.dashboard-page #analyticsWorkspaceViewSection .student-performance-row:hover .student-name-wrap strong { color: #0D47A1; }
+@media (max-width: 700px) {
+  .dashboard-page #analyticsWorkspaceViewSection { padding-top: 0; }
+  .dashboard-page #analyticsWorkspaceViewSection .analytics-toolbar { padding: 14px; }
+  .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table td::before { content: none; display: none; }
+  .dashboard-page #analyticsWorkspaceViewSection .leaderboard-table td > * { max-width: 100%; }
+  .dashboard-page #analyticsWorkspaceViewSection .student-name-wrap strong { white-space: normal; overflow-wrap: anywhere; }
+  .dashboard-page #analyticsWorkspaceViewSection .student-date-cell { flex-wrap: wrap; gap: 8px; }
+  .dashboard-page #analyticsWorkspaceViewSection .student-date-cell::after {
+    content: "View details \2192"; flex-basis: 100%; padding-top: 10px; border-top: 1px solid #E8EEF4;
+    color: #1565C0; font-size: 12px; font-weight: 600; text-align: left;
+  }
+}
+
+/* Analytics has no global search row: collapse its unused header space and
+   let the mobile document scroll through students, questions, then footer. */
+@media (max-width: 1100px) {
+  html:has(.dashboard-page #analyticsWorkspaceViewSection[style*="display: flex"]) {
+    height: auto; overflow-y: auto;
+  }
+  body.dashboard-page:has(#analyticsWorkspaceViewSection[style*="display: flex"]) {
+    height: auto; overflow-y: auto;
+  }
+  .dashboard-page .shell:has(#analyticsWorkspaceViewSection[style*="display: flex"]) {
+    height: auto; min-height: calc(100dvh - 48px);
+  }
+  .dashboard-page .workspace:has(#analyticsWorkspaceViewSection[style*="display: flex"]) {
+    flex: 0 0 auto; height: auto; min-height: 0; overflow: visible;
+  }
+  .dashboard-page .workspace:has(#analyticsWorkspaceViewSection[style*="display: flex"]) > .topbar {
+    grid-template-rows: auto;
+  }
+  .dashboard-page .workspace:has(#analyticsWorkspaceViewSection[style*="display: flex"]) > .form-scroll {
+    flex: 0 0 auto; height: auto !important; overflow: visible !important; scroll-padding-top: 100px;
+  }
 }

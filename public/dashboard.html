@@ -545,8 +545,8 @@
         }
     </style>
     <link rel="stylesheet" href="assets/css/dashboard-theme.css?v=desktop-scroll-header-20261001">
-    <link rel="stylesheet" href="/assets/css/student-analytics-theme.css?v=analytics-refresh-20261001">
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
+    <link rel="stylesheet" href="/assets/css/student-analytics-theme.css?v=analytics-refined-20261001">
 </head>
 <body class="dashboard-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -685,7 +685,7 @@
                             <div>
                                 <div class="label">Pass Rate</div>
                                 <div class="value analytics-kpi-value-loading" id="statPassRate" aria-label="Loading pass rate" aria-busy="true">--%</div>
-                                <div class="meta">Percentage of students passing exams</div>
+                                <div class="meta">Students passing exams</div>
                             </div>
                         </div>
                         <div class="perf-card exams">
@@ -693,7 +693,7 @@
                             <div>
                                 <div class="label">Total Exams</div>
                                 <div class="value analytics-kpi-value-loading" id="statTotalAttempts" aria-label="Loading total exams" aria-busy="true">--</div>
-                                <div class="meta">Exams attempted by all students</div>
+                                <div class="meta">Attempts across all students</div>
                             </div>
                         </div>
                         <div class="perf-card avg">
@@ -701,14 +701,14 @@
                             <div>
                                 <div class="label">Average Score</div>
                                 <div class="value analytics-kpi-value-loading" id="statAvgScore" aria-label="Loading average score" aria-busy="true">--/20</div>
-                                <div class="meta">Average score across all exams</div>
+                                <div class="meta">Across all exam attempts</div>
                             </div>
                         </div>
                     </div>
 
-                    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;">
+                    <div class="analytics-toolbar">
                         <div class="analytics-heading">
-                            <h3><i class="fa-solid fa-users" style="color: #0b698b; margin-right: 8px;"></i>Student Performance</h3>
+                            <h3><i class="fa-solid fa-users" aria-hidden="true"></i>Student Performance</h3>
                             <p>Search and review student exam history and scores.</p>
                         </div>
                         <div class="analytics-search-box">
@@ -722,13 +722,13 @@
                                 <div class="panel-title-group"><h4>Student Results</h4><p>Select a student to view details.</p></div>
                             </div>
                             <div class="table-surface">
-                                <table class="leaderboard-table">
+                                <table class="leaderboard-table" aria-label="Student results">
                                     <thead>
                                         <tr>
-                                            <th>Student</th>
-                                            <th style="text-align:center;">Exams</th>
-                                            <th style="text-align:center;">Average</th>
-                                            <th style="text-align:right;">Last Attempt</th>
+                                            <th scope="col">Student</th>
+                                            <th scope="col" style="text-align:center;">Exams</th>
+                                            <th scope="col" style="text-align:center;">Average</th>
+                                            <th scope="col" style="text-align:right;">Last Attempt</th>
                                         </tr>
                                     </thead>
                                     <tbody id="leaderboardTableBodyTarget"><tr class="analytics-loading-row"><td colspan="4"><span class="analytics-skeleton-line"></span><span class="analytics-skeleton-line"></span><span class="analytics-skeleton-line"></span></td></tr></tbody>
@@ -739,7 +739,7 @@
                         <div class="tricky-panel">
                             <div class="panel-header">
                                 <div class="panel-title-group"><h4>Most Difficult Questions</h4><p>Questions with the highest student failure rates.</p></div>
-                                <span class="badge badge-alert"><i class="fa-solid fa-triangle-exclamation"></i> Failure insights</span>
+                                <span class="badge badge-alert"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Failure insights</span>
                             </div>
                             <div class="tricky-questions-grid" id="trickyQuestionsListTarget"><div class="analytics-loading-card"><span class="analytics-skeleton-line"></span><span class="analytics-skeleton-line"></span></div><div class="analytics-loading-card"><span class="analytics-skeleton-line"></span><span class="analytics-skeleton-line"></span></div></div>
                         </div>
