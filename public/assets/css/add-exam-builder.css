@@ -51,13 +51,13 @@
   box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
 }
 .question-builder-page .builder-step {
-  position: relative; display: flex; align-items: center; justify-content: center;
-  gap: 8px; min-width: 0; color: #52657c; font-size: 11px; font-weight: 750;
-  line-height: 1.2; white-space: nowrap;
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  gap: 5px; min-width: 0; color: #52657c; font-size: 11px; font-weight: 750;
+  line-height: 1.2; text-align: center; white-space: normal;
 }
 .question-builder-page .builder-step:not(:last-child)::after {
-  content: ''; position: absolute; z-index: 0; left: calc(50% + 21px); right: calc(-50% + 21px);
-  top: 50%; height: 1px; background: #cbd9e7;
+  content: ''; position: absolute; z-index: 0; left: calc(50% + 17px); right: calc(-50% + 17px);
+  top: 14px; height: 1px; background: #cbd9e7;
 }
 .question-builder-page .builder-step-number {
   position: relative; z-index: 1; display: inline-grid; place-items: center; flex: 0 0 28px;
@@ -340,14 +340,14 @@
   .question-builder-page .form-scroll { padding: 12px; }
   .question-builder-page #addForm { padding: 18px 16px; border-radius: 13px; }
   .question-builder-page .builder-progress { padding: 8px 4px; }
-  .question-builder-page .builder-step { flex-direction: column; gap: 4px; white-space: normal; text-align: center; font-size: 9px; }
-  .question-builder-page .builder-step:not(:last-child)::after { left: calc(50% + 15px); right: calc(-50% + 15px); top: 14px; }
+  .question-builder-page .builder-step { gap: 4px; font-size: 9px; }
+  .question-builder-page .builder-step:not(:last-child)::after { left: calc(50% + 13px); right: calc(-50% + 13px); top: 12px; }
   .question-builder-page .builder-step-number { flex-basis: 24px; width: 24px; height: 24px; font-size: 9px; }
   .question-builder-page #addForm > .field,
   .question-builder-page #addForm > div:has(#mainDrop),
   .question-builder-page #optionsArea { padding: 17px 0; }
-  .question-builder-page .text-options-grid,
-  .question-builder-page .options-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .question-builder-page .text-options-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .question-builder-page .options-grid { grid-template-columns: minmax(0,1fr); gap: 8px; width: 100%; min-width: 0; }
   .question-builder-page .text-options-grid .field,
   .question-builder-page .opt-card { padding: 9px; gap: 7px; }
   .question-builder-page .text-options-grid .field label { font-size: 10px; }
@@ -355,6 +355,10 @@
   .question-builder-page .opt-label::before { width: 23px; height: 23px; }
   .question-builder-page .text-options-grid input[type="text"] { min-height: 42px; padding: 7px; font-size: 12px; }
   .question-builder-page .opt-drop { min-height: 76px; padding: 7px; }
+  .question-builder-page .opt-card,
+  .question-builder-page .opt-drop,
+  .question-builder-page .opt-card input[type="text"] { width: 100%; min-width: 0; box-sizing: border-box; }
+  .question-builder-page .opt-drop-text { max-width: 100%; overflow-wrap: anywhere; }
   .question-builder-page #mainDrop { grid-template-columns: 44px minmax(0,1fr); gap: 11px; min-height: 0; padding: 14px; }
   .question-builder-page .preview-box { width: 44px; height: 44px; }
   .question-builder-page .answer-key-panel { align-items: stretch; flex-direction: column; gap: 10px; padding: 14px; }
