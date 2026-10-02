@@ -69,6 +69,47 @@ async function main() {
       }
     }
 
+    for (const [width, height] of [[320, 568], [360, 640], [360, 800], [390, 844], [412, 915], [768, 1024], [1024, 768], [1366, 768], [1440, 900]]) {
+      const page = await browser.newPage({ viewport: { width, height } });
+      await page.goto(`${baseUrl}/ibiciro.html`, { waitUntil: 'domcontentloaded' });
+      await page.locator('.btn-pay-trigger').first().click();
+      await page.evaluate(() => window.showPaymentStatus('Internet yacitse. Niba waramaze kwemeza ubwishyu kuri telefone, ntukongere kwishyura; tegereza gato.', 'pending'));
+      const layout = await page.evaluate(() => {
+        const rect = selector => {
+          const { x, y, width, height } = document.querySelector(selector).getBoundingClientRect();
+          return { x, y, width, height };
+        };
+        const parentRect = selector => {
+          const { x, y, width, height } = document.querySelector(selector).parentElement.getBoundingClientRect();
+          return { x, y, width, height };
+        };
+        return {
+          documentWidth: document.documentElement.scrollWidth,
+          viewportWidth: window.innerWidth,
+          quantityField: parentRect('#examQuantityVolumeSelector'),
+          quantity: rect('#examQuantityVolumeSelector'),
+          phone: rect('.phone-input-wrap'),
+          summary: rect('.pay-summary-card'),
+          button: rect('#momoSubmitPaymentBtn'),
+        };
+      });
+      assert.ok(layout.documentWidth <= layout.viewportWidth, `checkout overflows at ${width}x${height}`);
+      if (width <= 680) {
+        for (const block of [layout.phone, layout.summary, layout.button]) {
+          assert.ok(Math.abs(block.x - layout.quantity.x) < 1 && Math.abs(block.width - layout.quantity.width) < 1, `mobile controls do not align at ${width}x${height}`);
+        }
+        assert.ok(layout.phone.y < layout.summary.y && layout.summary.y < layout.button.y, `mobile payment order is incorrect at ${width}x${height}`);
+      } else {
+        assert.ok(layout.summary.x > layout.quantity.x, `desktop summary is not in the right column at ${width}x${height}`);
+        assert.ok(Math.abs(layout.summary.y - layout.quantityField.y) < 2, `desktop top row is misaligned at ${width}x${height}`);
+        assert.ok(Math.abs(layout.button.x - layout.summary.x) < 2, `desktop action is not in the right column at ${width}x${height}`);
+        assert.ok(Math.abs(layout.button.y - layout.phone.y) < 28, `desktop payment button does not align with phone input at ${width}x${height}`);
+      }
+      if (width === 390) await page.screenshot({ path: path.join(docs, 'payment-modal-responsive-mobile.png'), fullPage: false });
+      if (width === 1440) await page.screenshot({ path: path.join(docs, 'payment-modal-responsive-desktop.png'), fullPage: false });
+      await page.close();
+    }
+
     const jump = await newPaymentPage(browser);
     await jump.page.getByRole('button', { name: 'Ishyura ikizamini' }).click();
     await expectFocused(jump.page, '#pricingOptions');

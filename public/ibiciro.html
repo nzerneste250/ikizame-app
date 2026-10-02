@@ -647,7 +647,77 @@
       }
     </style>
     <style>
-      /* Checkout modal: compact, full-width controls on phones without changing checkout behavior. */
+      /* Checkout modal: visual layout only; checkout behavior remains in the existing handlers below. */
+      .pay-modal-card,
+      .pay-modal-card *,
+      .payment-modal-overlay {
+        box-sizing: border-box;
+      }
+
+      .pay-modal-close {
+        border: 1px solid rgba(255, 255, 255, .3);
+        outline: none;
+      }
+      .pay-modal-close:focus-visible,
+      .payment-status-dismiss:focus-visible {
+        outline: 3px solid rgba(255, 255, 255, .72);
+        outline-offset: 2px;
+      }
+
+      @media (min-width: 681px) {
+        .payment-modal-overlay {
+          align-items: center;
+          padding: 24px;
+          overflow-y: auto;
+        }
+        .pay-modal-card {
+          width: min(94vw, 980px);
+          max-width: 980px;
+          max-height: calc(100dvh - 48px);
+          overflow: hidden;
+          border-radius: 20px;
+        }
+        .pay-modal-header { padding: 18px 24px 15px; }
+        .pay-modal-header-top { margin-bottom: 10px; }
+        .pay-modal-title { font-size: 1.42rem; gap: 10px; }
+        .pay-modal-title i { font-size: 1.2rem; }
+        .pay-modal-close { width: 48px; height: 48px; font-size: 19px; }
+        .pay-carrier-row { gap: 9px; }
+
+        .pay-modal-body {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          column-gap: 28px;
+          row-gap: 18px;
+          align-items: start;
+          padding: 22px 24px 20px;
+        }
+        .pay-modal-body > .payment-status-card,
+        .pay-modal-body > .ussd-hint-box,
+        .pay-modal-body > .pay-cancel-link { grid-column: 1 / -1; }
+        .pay-modal-body > .pay-field { grid-column: 1; min-width: 0; }
+        .pay-modal-body > .pay-summary-card { grid-column: 2; min-width: 0; }
+        .pay-modal-body > .pay-submit-btn {
+          grid-column: 2;
+          align-self: start;
+          min-height: 54px;
+          height: 54px;
+          margin-top: 24px;
+        }
+        .pay-modal-body > .pay-field + .pay-summary-card { align-self: stretch; }
+        .pay-summary-card { min-height: 100%; }
+        .pay-field input[type=number],
+        .pay-field input[type=tel] { min-height: 54px; }
+        .pay-summary-total strong { font-size: 1.85rem; white-space: nowrap; }
+        .pay-summary-total span { font-size: 1.16rem; }
+        .payment-status-card { font-size: .94rem; padding: 12px 14px; }
+      }
+
+      @media (min-width: 681px) and (max-height: 650px) {
+        .pay-modal-card { overflow-y: auto; }
+      }
+
+      /* Compact, full-width controls on phones without changing checkout behavior. */
       @media (max-width: 680px) {
         .payment-modal-overlay {
           align-items: center;
@@ -667,8 +737,8 @@
         .pay-modal-header-top { margin-bottom: 8px; }
         .pay-modal-title { font-size: 1.25rem; }
         .pay-modal-close { width: 40px; height: 40px; }
-        .pay-carrier-row { gap: 7px; }
-        .pay-carrier-badge { min-width: 0; padding: 4px 7px; }
+        .pay-carrier-row { width: 100%; gap: 7px; }
+        .pay-carrier-badge { flex: 1 1 0; justify-content: center; min-width: 0; min-height: 40px; padding: 4px 7px; }
         .pay-carrier-badge img { width: 24px; height: 24px; }
         .pay-carrier-badge span { font-size: .66rem; }
 
@@ -912,7 +982,7 @@
             <div class="pay-modal-header">
                 <div class="pay-modal-header-top">
                     <div class="pay-modal-title"><i class="fa-solid fa-mobile-screen-button"></i> Kwishyura ibizamini</div>
-                    <button class="pay-modal-close" onclick="closeTestPaymentModal()">&times;</button>
+                    <button class="pay-modal-close" type="button" aria-label="Funga" onclick="closeTestPaymentModal()"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
                 </div>
                 <div class="pay-carrier-row">
                     <div class="pay-carrier-badge">
