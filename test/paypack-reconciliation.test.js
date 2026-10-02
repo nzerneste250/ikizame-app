@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const { verifyReconciliationEvidence } = require('../helpers/paypackReconciliation');
 const { insertPaymentTransaction, isDuplicatePaymentError } = require('../helpers/paymentTransactions');
+const { reconcilePaymentAtomically } = require('../helpers/paymentReconciliationExecution');
 
 const reference = 'reconciliation-ref';
 const eventId = 'reconciliation-event';
@@ -46,6 +47,35 @@ test('normal payment recording remains duplicate-safe for reconciliation and lat
   await write();
   await assert.rejects(write(), error => isDuplicatePaymentError(error));
   assert.equal(references.size, 1);
+});
+
+test('reconciliation commits the credit and audit together, and safely retries', async () => {
+  const state = { payments: new Set(), audits: [], snapshot: null, failAudit: false };
+  const db = {
+    beginTransaction(callback) { state.snapshot = { payments: new Set(state.payments), audits: [...state.audits] }; callback(null); },
+    commit(callback) { state.snapshot = null; callback(null); },
+    rollback(callback) { if (state.snapshot) { state.payments = state.snapshot.payments; state.audits = state.snapshot.audits; } state.snapshot = null; callback(); },
+    query(sql, values, callback) {
+      if (typeof values === 'function') callback = values;
+      if (sql.includes('information_schema.columns')) return callback(null, [{ count: 1 }]);
+      if (sql.startsWith('SELECT id FROM payment_transactions')) return callback(null, state.payments.has(values[0]) ? [{ id: 1 }] : []);
+      if (sql.includes('FROM pending_payment_requests')) return callback(null, [{ ...pending }]);
+      if (sql.startsWith('INSERT INTO payment_transactions')) { state.payments.add(values[3]); return callback(null, { affectedRows: 1 }); }
+      if (sql.includes('INSERT INTO payment_reconciliation_audit')) { if (state.failAudit) return callback(new Error('audit unavailable')); state.audits.push(values[0]); return callback(null, { affectedRows: 1 }); }
+      throw new Error(`Unexpected SQL: ${sql}`);
+    }
+  };
+  const args = { db, reference, pending, eventId, operator: 'operator', reason: 'verified recovery', verificationSource: 'PAYPACK_EVENTS_API' };
+  assert.equal((await reconcilePaymentAtomically(args)).outcome, 'reconciled');
+  assert.deepEqual([...state.payments], [reference]);
+  assert.deepEqual(state.audits, [reference]);
+  assert.equal((await reconcilePaymentAtomically(args)).outcome, 'already_reconciled');
+  assert.equal(state.audits.length, 1);
+
+  state.payments.clear(); state.audits = []; state.failAudit = true;
+  await assert.rejects(reconcilePaymentAtomically(args), /audit unavailable/);
+  assert.equal(state.payments.size, 0);
+  assert.equal(state.audits.length, 0);
 });
 
 test('reconciliation command is explicit, audited, and has no direct payment insert', () => {
