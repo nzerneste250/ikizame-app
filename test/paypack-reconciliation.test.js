@@ -80,10 +80,12 @@ test('reconciliation commits the credit and audit together, and safely retries',
 
 test('reconciliation command is explicit, audited, and has no direct payment insert', () => {
   const script = fs.readFileSync(require.resolve('../scripts/reconcile-paypack-payment'), 'utf8');
+  const execution = fs.readFileSync(require.resolve('../helpers/paymentReconciliationExecution'), 'utf8');
   const migration = fs.readFileSync(require.resolve('../Database/2026-10-payment-reconciliation-audit.sql'), 'utf8');
   assert.match(script, /--execute/);
-  assert.match(script, /payment_reconciliation_audit/);
-  assert.match(script, /insertPaymentTransaction/);
+  assert.match(script, /reconcilePaymentAtomically/);
+  assert.match(execution, /payment_reconciliation_audit/);
+  assert.match(execution, /insertPaymentTransaction/);
   assert.doesNotMatch(script, /INSERT INTO payment_transactions/);
   assert.match(migration, /UNIQUE KEY uq_payment_reconciliation_reference/);
 });
