@@ -2,7 +2,7 @@
 <html lang="rw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- 🎯 BRANDING HEADER ICON BINDING -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>IKIZAME | Ibiciro</title>
@@ -360,6 +360,16 @@
         .pay-carrier-badge img { width: 28px; height: 28px; object-fit: contain; border-radius: 5px; background: #fff; padding: 2px; }
         .pay-carrier-badge span { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); }
         .pay-modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+        .payment-status-card { display: none; align-items: flex-start; gap: 10px; padding: 13px 14px; border: 1px solid #fecaca; border-radius: 12px; background: #fff7f7; color: #991b1b; font-size: .84rem; font-weight: 650; line-height: 1.5; }
+        .payment-status-card.is-visible { display: flex; }
+        .payment-status-card.pending { border-color: #fde68a; background: #fffbeb; color: #92400e; }
+        .payment-status-card.success { border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
+        .payment-status-card i { margin-top: 2px; font-size: 1rem; }
+        .payment-status-card p { flex: 1; margin: 0; color: inherit; }
+        .payment-status-dismiss { flex: 0 0 auto; min-width: 30px; min-height: 30px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: inherit; cursor: pointer; font: inherit; font-size: 1.1rem; }
+        .payment-status-dismiss:hover { background: rgba(15,23,42,.08); }
+        .pay-field.has-error input { border-color: #dc2626; background: #fffafa; }
+        .phone-hint.err { color: #b91c1c; font-weight: 700; }
         .pay-field { display: flex; flex-direction: column; gap: 5px; }
         .pay-field-label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: .4px; }
         .pay-field input[type=number], .pay-field input[type=tel] { width: 100%; padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; background: #f8fafc; font-family: 'Inter', sans-serif; transition: border-color .18s, box-shadow .18s; }
@@ -571,6 +581,11 @@
         .pay-summary-row strong { color: #0f172a; font-size: .9rem; }
         .pay-summary-total { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2px; padding-top: 11px; border-top: 1px solid #dcfce7; color: #166534; font-weight: 800; }
         .pay-summary-total strong { color: #166534; font-size: 1.5rem; }
+        .pricing-jump-button { display: inline-flex; align-items: center; gap: 8px; margin-top: 17px; min-height: 46px; padding: 11px 16px; border: 1px solid #15803d; border-radius: 11px; background: #15803d; color: #fff; font: inherit; font-size: .88rem; font-weight: 800; cursor: pointer; box-shadow: 0 8px 18px rgba(21,128,61,.17); }
+        .pricing-jump-button:hover { background: #166534; }
+        #pricingOptions { scroll-margin-top: calc(var(--navbar-h, 72px) + 20px); }
+        #pricingOptions.pricing-focus-highlight { animation: pricing-focus-highlight 1.8s ease-out; }
+        @keyframes pricing-focus-highlight { 0%, 35% { outline: 4px solid rgba(21,128,61,.22); outline-offset: 10px; } 100% { outline-color: transparent; outline-offset: 4px; } }
         @media (max-width: 1000px) {
             .pricing-page { gap: 56px; }
             body:has(.pricing-page) .workspace-scroll-container { padding-left: 12px; padding-right: 12px; }
@@ -619,6 +634,18 @@
     <link rel="stylesheet" href="/assets/css/public-site.css?v=footer-centered-20261001">
     <link rel="stylesheet" href="/assets/css/blue-public-pages-theme.css?v=20261001">
     <link rel="stylesheet" href="/assets/css/blue-navigation-responsive.css?v=two-row-20261001">
+    <style>
+      /* Final page-level mobile guardrails: do not let wide controls escape a 320px viewport. */
+      @media (max-width: 600px) {
+        .navbar.always-visible-nav .navbar-links { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+        .navbar.always-visible-nav .navbar-links a { min-width: 0 !important; white-space: normal !important; }
+        .pricing-page, .pricing-page > *, .balance-card, .balance-input-row, .pricing-hero-copy { min-width: 0 !important; max-width: 100%; }
+        .balance-input-row input { width: 100%; min-width: 0; }
+        .pricing-hero h1, .pricing-section-heading h2, .pricing-card-range { overflow-wrap: anywhere; }
+        .payment-modal-overlay { align-items: flex-start; overflow-y: auto; }
+        .pay-modal-card { width: min(100%, 420px); margin-block: 12px; }
+      }
+    </style>
     <script defer src="/assets/js/public-navigation.js?v=two-row-20261001"></script>
 </head>
 <body>
@@ -674,10 +701,11 @@
                         </span>
                         <span><i class="fa-solid fa-circle-check"></i> Ibizamini bifunguka nyuma yo kwishyura</span>
                     </div>
+                    <button class="pricing-jump-button" type="button" onclick="focusPricingOptions()"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i> Ishyura ikizamini</button>
                 </div>
             </section>
 
-            <section aria-labelledby="pricingOptionsTitle">
+            <section id="pricingOptions" aria-labelledby="pricingOptionsTitle" tabindex="-1">
                 <div class="pricing-section-heading">
                     <span class="pricing-section-eyebrow">Ibiciro</span>
                     <h2 id="pricingOptionsTitle">Hitamo ibijyanye n&#8217;uko ushaka kwitoza</h2>
@@ -799,6 +827,11 @@
                 </div>
             </div>
             <div class="pay-modal-body">
+                <div id="paymentStatusCard" class="payment-status-card" role="status" aria-live="polite" aria-atomic="true" tabindex="-1">
+                    <i id="paymentStatusIcon" class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    <p id="paymentStatusMessage"></p>
+                    <button class="payment-status-dismiss" type="button" aria-label="Funga ubutumwa" onclick="dismissPaymentStatus()">&times;</button>
+                </div>
                 <div class="pay-field">
                     <label class="pay-field-label" for="examQuantityVolumeSelector">Umubare w&#8217;ibizamini</label>
                     <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
@@ -818,7 +851,7 @@
                         </div>
                         <input type="tel" id="momoPhoneNumberInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" autocomplete="tel-national" oninput="sanitizeMomoPhone()">
                     </div>
-                    <span class="phone-hint" id="momoPhoneHint">Injiza imibare 10: MTN (078/079) cyangwa Airtel (072/073)</span>
+                    <span class="phone-hint" id="momoPhoneHint" aria-live="polite">Injiza imibare 10: MTN (078/079) cyangwa Airtel (072/073)</span>
                     <span id="momoCarrierChip" style="display:none;"></span>
                 </div>
                 <button class="pay-submit-btn" id="momoSubmitPaymentBtn" onclick="dispatchAdaptivePaymentQueryPacket()">
@@ -880,6 +913,7 @@
             const hint = document.getElementById('momoPhoneHint');
             const chip = document.getElementById('momoCarrierChip');
             const btn = document.getElementById('momoSubmitPaymentBtn');
+            const field = inp.closest('.pay-field');
             // Strip non-digits, enforce leading 0
             let v = inp.value.replace(/\D/g, '').slice(0, 10);
             inp.value = v;
@@ -917,12 +951,42 @@
                 chip.style.display = 'none';
             }
 
+            if (field) field.classList.toggle('has-error', v.length > 0 && !isValid);
+
             // Enable/disable submit button
             btn.disabled = !isValid;
         };
 
         let activeReferenceId = null;
         let activePollTimer = null;
+
+        function showPaymentStatus(message, type, shouldFocus) {
+            const card = document.getElementById('paymentStatusCard');
+            const text = document.getElementById('paymentStatusMessage');
+            const icon = document.getElementById('paymentStatusIcon');
+            if (!card || !text || !icon) return;
+            card.className = `payment-status-card is-visible ${type || 'error'}`;
+            text.textContent = message;
+            icon.className = type === 'pending' ? 'fa-solid fa-clock' : type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-exclamation';
+            if (shouldFocus) {
+                card.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+                card.focus({ preventScroll: true });
+            }
+        }
+
+        window.dismissPaymentStatus = function() {
+            const card = document.getElementById('paymentStatusCard');
+            if (card) card.className = 'payment-status-card';
+        };
+
+        window.focusPricingOptions = function() {
+            const options = document.getElementById('pricingOptions');
+            if (!options) return;
+            options.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+            options.focus({ preventScroll: true });
+            options.classList.remove('pricing-focus-highlight');
+            requestAnimationFrame(() => options.classList.add('pricing-focus-highlight'));
+        };
 
         window.launchAdaptiveCheckoutModal = function(defaultQty) {
             // Reset form fully before opening
@@ -932,22 +996,22 @@
             document.getElementById('momoCarrierChip').style.display = 'none';
             document.getElementById('examQuantityVolumeSelector').value = defaultQty;
             document.getElementById('ussdHintBox').style.display = 'none';
+            dismissPaymentStatus();
             const payBtn = document.getElementById('momoSubmitPaymentBtn');
             document.getElementById('momoBtnTextLabel').textContent = 'Ishyura Ubu';
             document.getElementById('momoBtnIcon').className = 'fa-solid fa-arrow-right';
             if (payBtn) { payBtn.disabled = true; } // disabled until valid phone
             recalculateLiveDynamicBillingAmount();
             document.getElementById('sandboxPaymentModal').style.display = 'flex';
+            document.getElementById('momoPhoneNumberInput').focus();
         };
 
         window.closeTestPaymentModal = function() {
             document.getElementById('sandboxPaymentModal').style.display = 'none';
             document.getElementById('ussdHintBox').style.display = 'none';
             if (activePollTimer) { clearInterval(activePollTimer); activePollTimer = null; }
-            if (activeReferenceId) {
-                fetch(`/api/payments/cancel/${activeReferenceId}`, { method: 'POST' });
-                activeReferenceId = null;
-            }
+            // Closing a browser dialog must not cancel a payment request that may already be on the phone.
+            // The server keeps the durable pending order and authoritative webhook can still complete it.
             const payBtn = document.getElementById('momoSubmitPaymentBtn');
             document.getElementById('momoBtnTextLabel').textContent = 'Ishyura Ubu';
             document.getElementById('momoBtnIcon').className = 'fa-solid fa-arrow-right';
@@ -1008,7 +1072,11 @@
             const qty = Number(qtyInput.value) || 1;
             const unitPrice = pricePerExamForPurchaseQuantity(qty);
 
-            if (!phoneVal || phoneVal.length < 10) return;
+            if (!phoneVal || phoneVal.length < 10) {
+                showPaymentStatus('Andika nimero ya telefone yuzuye ya MTN cyangwa Airtel mbere yo gukomeza.', 'error', true);
+                phoneField.focus();
+                return;
+            }
 
             // Detect carrier and set USSD code
             const clean = phoneVal.replace(/[\s\-\+]/g, '');
@@ -1057,6 +1125,7 @@
                     }
 
                     activeReferenceId = data.referenceId;
+                    showPaymentStatus('Ubusabe bwo kwishyura bwoherejwe. Emeza kuri telefone yawe; ntukohereze ubundi busabe niba wari umaze kwemeza.', 'pending', false);
                     let elapsed = 0;
                     const maxWait = 120;
                     activePollTimer = setInterval(() => {
@@ -1076,28 +1145,27 @@
                                 } else if (d.status === 'FAILED') {
                                     clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
-                                    ikToast('Kwishyura byanze. Ongera ugerageze.', 'error');
+                                    showPaymentStatus('Kwishyura ntabwo kwemejwe. Ushobora kongera kugerageza niba nta kwishyura wemeje kuri telefone.', 'error', true);
                                     payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
                                 } else if (elapsed >= maxWait) {
                                     clearInterval(activePollTimer); activePollTimer = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
-                                    fetch(`/api/payments/cancel/${data.referenceId}`, { method: 'POST' });
                                     activeReferenceId = null;
-                                    ikToast('Igihe cyarangiye (iminuta 2). Ongera ugerageze.', 'warning');
+                                    showPaymentStatus('Kwamamaza kwa browser kwarangiye, ariko ubwishyu bushobora kuba bugikomeje. Niba wemeje kuri telefone, tegereza gato kandi reba ibisigaye mbere yo kongera kwishyura.', 'pending', true);
                                     payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
                                 }
                             });
                     }, 2000);
                 } else {
-                    ikToast(data.error || 'Uburyo bwanze. Ongera ugerageze.', 'error'); payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
+                    showPaymentStatus(data.error || 'Uburyo bwo kohereza ubusabe bwanze. Reba nimero yawe cyangwa gerageza nyuma.', 'error', true); payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
                 }
             })
             .catch(err => {
                 clearTimeout(fetchTimeout); clearInterval(progressTimer);
                 const msg = err.name === 'AbortError'
-                    ? 'Igihe cyarangiye. Reba internet yawe hanyuma ongera ugerageze.'
-                    : 'Ikibazo cya internet. Reba connexion yawe hanyuma ongera ugerageze.';
-                ikToast(msg, 'warning'); payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
+                    ? 'Kwamamaza kwa browser kwarangiye. Niba watahuye ubutumwa kuri telefone cyangwa wari umaze kwemeza, ntukongere kwishyura; tegereza gato kandi reba ibisigaye.'
+                    : 'Kwamamaza kwa internet byacitse. Niba wari umaze kwemeza kuri telefone, ntukongere kwishyura; tegereza gato kandi reba ibisigaye.';
+                showPaymentStatus(msg, 'pending', true); payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
             });
         };
         window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };
