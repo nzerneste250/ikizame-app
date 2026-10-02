@@ -5,6 +5,7 @@ const { normalizeAndValidatePaymentPhone } = require('../helpers/paymentPhone');
 const { PROTECTED_REPORT_EMAIL } = require('../helpers/adminSettings');
 const { analyticsConfig, excludeAdmin } = require('../helpers/siteAnalytics');
 const { createPurchaseVerifier } = require('../helpers/verifiedAnalyticsPurchase');
+const { insertPaymentTransaction, isDuplicatePaymentError } = require('../helpers/paymentTransactions');
 
 const PAYPACK_BASE     = 'https://payments.paypack.rw/api';
 const PAYPACK_CLIENT   = process.env.PAYPACK_CLIENT_ID;
@@ -134,55 +135,8 @@ function confirmsExpectedPayer(transaction, pending) {
     }
 }
 
-function isDuplicatePaymentError(error) {
-    return error && error.code === 'ER_DUP_ENTRY';
-}
-
 // In-memory map: paypackRef -> pending tx data (cleared on webhook)
 const pendingMap = new Map();
-
-function insertPaymentTransaction(db, pending, paypackRef, done) {
-    const serviceType = pending.serviceType || 'EXAMS';
-    const resourceIdValue = pending.resourceId || null;
-    const resourceTitleValue = pending.resourceTitle || null;
-    const baseValues = [pending.phone, pending.amount, pending.planLabel, paypackRef, paypackRef,
-        pending.examCount, pending.examCount, pending.priceToStore, pending.school_id || null];
-
-    db.query(`SELECT COUNT(*) AS count FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'payment_transactions' AND column_name = 'service_type'`, (colErr, colRows) => {
-        if (colErr) return done(colErr);
-        const hasServiceColumns = Number(colRows?.[0]?.count || 0) > 0;
-        if (!hasServiceColumns) {
-            db.query(
-                `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id)
-                 VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?)`,
-                baseValues,
-                (err) => done(err)
-            );
-            return;
-        }
-
-        db.query(`SELECT COUNT(*) AS count FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'payment_transactions' AND column_name = 'resource_id'`, (resourceErr, resourceRows) => {
-            if (resourceErr) return done(resourceErr);
-            const hasResourceColumns = Number(resourceRows?.[0]?.count || 0) > 0;
-            if (!hasResourceColumns) {
-                db.query(
-                    `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id, service_type)
-                     VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?, ?)`,
-                    [...baseValues, serviceType],
-                    (err) => done(err)
-                );
-                return;
-            }
-
-            db.query(
-                `INSERT INTO payment_transactions (phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id, service_type, resource_id, resource_title)
-                 VALUES (?, ?, ?, ?, ?, 'SUCCESS', ?, ?, ?, ?, ?, ?, ?)`,
-                [...baseValues, serviceType, resourceIdValue, resourceTitleValue],
-                (err) => done(err)
-            );
-        });
-    });
-}
 
 module.exports = (db) => {
     const router = express.Router();
