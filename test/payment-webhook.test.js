@@ -25,6 +25,9 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
     ['payment-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
     ['amount-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
     ['race-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
+    ['lookup-status-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
+    ['lookup-success-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
+    ['lookup-failed-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
     ['currency-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }],
     ['merchant-ref', { phone: '0781234567', amount: 100, planLabel: 'Test pass', examCount: 1, priceToStore: 100, serviceType: 'EXAMS' }]
   ]);
@@ -32,6 +35,9 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
     ['payment-ref', { ref: 'payment-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'test-merchant' }],
     ['amount-ref', { ref: 'amount-ref', kind: 'CASHIN', status: 'successful', amount: 99, client: '0781234567', merchant: 'test-merchant' }],
     ['race-ref', { ref: 'race-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'test-merchant' }],
+    ['lookup-status-ref', { ref: 'lookup-status-ref', kind: 'CASHIN', amount: 100, client: '0781234567', merchant: 'test-merchant' }],
+    ['lookup-success-ref', { ref: 'lookup-success-ref', kind: 'CASHIN', status: 'success', amount: 100, client: '0781234567', merchant: 'test-merchant' }],
+    ['lookup-failed-ref', { ref: 'lookup-failed-ref', kind: 'CASHIN', status: 'failed', amount: 100, client: '0781234567', merchant: 'test-merchant' }],
     ['currency-ref', { ref: 'currency-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'test-merchant', currency: 'USD' }],
     ['merchant-ref', { ref: 'merchant-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'another-merchant' }],
     ['school-ref', { ref: 'school-ref', kind: 'CASHIN', status: 'successful', amount: 10000, client: '0781234567', merchant: 'test-merchant' }]
@@ -91,7 +97,7 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
   const send = async (reference, options = {}) => {
     const payload = {
       kind: 'transaction:processed',
-      data: { ref: reference, kind: 'CASHIN', status: 'successful', amount: 1 }
+      data: { ref: reference, kind: 'CASHIN', status: options.status || 'successful', amount: 1 }
     };
     const body = JSON.stringify(payload, null, options.pretty ? 2 : undefined);
     const signature = options.signature === false
@@ -121,6 +127,23 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
   assert.equal(merchantMismatch.status, 409);
   assert.equal(rows.has('merchant-ref'), false);
 
+  const missingLookupStatus = await send('lookup-status-ref');
+  assert.equal(missingLookupStatus.status, 200);
+  assert.equal(rows.has('lookup-status-ref'), true);
+
+  const successLookupStatus = await send('lookup-success-ref', { status: 'success' });
+  assert.equal(successLookupStatus.status, 200);
+  assert.equal(rows.has('lookup-success-ref'), true);
+
+  const failedLookupStatus = await send('lookup-failed-ref');
+  assert.equal(failedLookupStatus.status, 409);
+  assert.equal(rows.has('lookup-failed-ref'), false);
+
+  const lookupsBeforeFailedEvent = providerLookups;
+  const failedEvent = await send('unknown-failed-ref', { status: 'failed' });
+  assert.equal(failedEvent.status, 200);
+  assert.equal(providerLookups, lookupsBeforeFailedEvent);
+
   const successful = await send('payment-ref', { pretty: true });
   assert.equal(successful.status, 200);
   assert.equal(rows.has('payment-ref'), true);
@@ -137,5 +160,5 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
   assert.equal(schoolPayment.status, 200);
   assert.equal(rows.has('school-ref'), true);
   assert.equal(schoolPendingMap.has('school-ref'), false);
-  assert.equal(rows.size, 3);
+  assert.equal(rows.size, 5);
 });

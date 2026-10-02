@@ -110,9 +110,15 @@ function verifyPaypackSignature(rawBody, signature, secret) {
     return supplied.length === expected.length && supplied.toString('base64') === signature && crypto.timingSafeEqual(supplied, expected);
 }
 
-function confirmsExpectedPayment(transaction, reference, expectedAmount, expectedMerchant) {
+function isSuccessfulPaypackStatus(status) {
+    const normalized = String(status || '').toLowerCase();
+    return normalized === 'successful' || normalized === 'success';
+}
+
+function confirmsExpectedPayment(transaction, reference, expectedAmount, expectedMerchant, webhookStatus) {
+    const status = transaction?.status == null ? webhookStatus : transaction.status;
     if (!transaction || transaction.ref !== reference || transaction.kind !== 'CASHIN' ||
-        String(transaction.status || '').toLowerCase() !== 'successful') return false;
+        !isSuccessfulPaypackStatus(status)) return false;
     if (!expectedMerchant || String(transaction.merchant || '') !== expectedMerchant) return false;
     const amount = Number(transaction.amount);
     if (!Number.isFinite(amount) || amount <= 0 || amount !== Number(expectedAmount)) return false;
@@ -321,7 +327,7 @@ module.exports = (db) => {
 
         const txData = body.data;
         const paypackRef = txData.ref;
-        if (String(txData.status || '').toLowerCase() !== 'successful') {
+        if (!isSuccessfulPaypackStatus(txData.status)) {
             pendingMap.delete(paypackRef);
             return res.json({ ok: true });
         }
@@ -341,7 +347,7 @@ module.exports = (db) => {
                         `${PAYPACK_BASE}/transactions/find/${encodeURIComponent(paypackRef)}`,
                         { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }, timeout: 8000, maxRedirects: 0 }
                     );
-                    if (!confirmsExpectedPayment(confirmedTransaction, paypackRef, pending.amount, PAYPACK_MERCHANT) ||
+                    if (!confirmsExpectedPayment(confirmedTransaction, paypackRef, pending.amount, PAYPACK_MERCHANT, txData.status) ||
                         !confirmsExpectedPayer(confirmedTransaction, pending)) {
                         console.warn(`Paypack webhook confirmation mismatch for ${paypackRef}`);
                         return res.status(409).json({ ok: false });
