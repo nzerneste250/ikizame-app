@@ -12,17 +12,17 @@
   <link rel="stylesheet" href="assets/css/design-system.css">
   <style>
     :root {
-      --brand: #0b698b;
-      --brand-dark: #08536e;
-      --brand-light: #e0f2fe;
-      --cyan: #38bdf8;
-      --primary: #0066FF;
-      --primary-soft: #ebf3ff;
-      --bg: linear-gradient(135deg, #f5fbff 0%, #edf7ff 48%, #f9fcff 100%);
-      --surface: rgba(255,255,255,0.96);
-      --text: #0f172a;
-      --muted: #475569;
-      --border: #e2e8f0;
+      --brand: var(--ik-blue);
+      --brand-dark: var(--ik-blue-dark);
+      --brand-light: var(--ik-soft-blue);
+      --cyan: var(--ik-blue-accent);
+      --primary: var(--ik-blue);
+      --primary-soft: var(--ik-soft-blue);
+      --bg: linear-gradient(180deg, #EAF1F7 0%, #F3F7FA 52%, #E8EFF5 100%);
+      --surface: var(--ik-card);
+      --text: var(--ik-text);
+      --muted: var(--ik-muted);
+      --border: var(--ik-border);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
@@ -85,9 +85,9 @@
             nav { width: 100%; }
             .navbar-links { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 6px !important; width: 100% !important; padding: 6px 0 2px !important; margin: 0 !important; }
             .navbar-links li { list-style: none; }
-            .navbar-links a { display: flex !important; align-items: center !important; gap: 5px !important; font-size: 0.7rem !important; padding: 8px 10px !important; border-radius: 12px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; justify-content: center !important; background: rgba(11,105,139,0.04) !important; border: 1px solid rgba(11,105,139,0.08) !important; }
+            .navbar-links a { display: flex !important; align-items: center !important; gap: 5px !important; font-size: 0.7rem !important; padding: 8px 10px !important; border-radius: 12px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; justify-content: center !important; background: rgba(255,255,255,0.08) !important; border: 1px solid rgba(255,255,255,0.16) !important; }
             .navbar-links a i { font-size: 0.78rem !important; flex-shrink: 0; }
-            .navbar-links a.active { background: linear-gradient(135deg, #0b698b 0%, #0ea5e9 100%) !important; color: #fff !important; border-color: rgba(11,105,139,0.25) !important; font-weight: 700 !important; }
+            .navbar-links a.active { background: #1976D2 !important; color: #fff !important; border-color: rgba(255,255,255,0.5) !important; font-weight: 700 !important; }
             main { margin-top: 110px !important; }
         }
         @media (max-width: 420px) {
@@ -321,11 +321,13 @@
   </style>
   <link rel="stylesheet" href="assets/css/public-navigation.css">
     <link rel="stylesheet" href="/assets/css/public-site.css?v=footer-centered-20261001">
+    <link rel="stylesheet" href="/assets/css/blue-public-pages-theme.css?v=legal-home-theme-20261002">
+    <link rel="stylesheet" href="/assets/css/blue-navigation-responsive.css?v=legal-home-theme-20261002">
     <script defer src="/assets/js/public-navigation.js"></script>
 </head>
 <body class="public-legal-page">
 
-  <header class="navbar">
+  <header class="navbar always-visible-nav">
     <a href="/" class="navbar-brand-wrap">
       <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
       <div class="navbar-brand">IKIZAME</div>
