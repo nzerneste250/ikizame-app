@@ -16,11 +16,12 @@ This change is presentation-only. It does not alter PayPack endpoints, prices, r
 - [x] About and Terms use the shared public navigation, footer, light surface cards, spacing, and responsive width.
 - [x] Checkout errors stay in the form, announce through an ARIA live region, can be dismissed, and move focus without trapping it.
 - [x] Browser timeout and network ambiguity say to wait/check the balance rather than to pay again.
+- [x] A mocked pending reference survives checkout close/reopen, retains the entered values, and makes no second provider request.
 - [x] The payment jump scrolls and focuses the existing price section without selecting a tier or starting checkout.
 
 ## Automated checks
 
-`npm test` — 45 passing tests.
+`npm test` — 46 passing tests.
 
 `npm audit --omit=dev --audit-level=high` — zero vulnerabilities.
 

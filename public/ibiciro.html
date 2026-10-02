@@ -989,6 +989,20 @@
         };
 
         window.launchAdaptiveCheckoutModal = function(defaultQty) {
+            const payBtn = document.getElementById('momoSubmitPaymentBtn');
+            const modal = document.getElementById('sandboxPaymentModal');
+
+            // A closed dialog is not proof that the provider request stopped. Keep the same
+            // durable pending reference visible when the customer returns to checkout.
+            if (activeReferenceId) {
+                modal.style.display = 'flex';
+                showPaymentStatus('Hari ubusabe bwo kwishyura bukiri gutegerejwe. Emeza kuri telefone yawe niba ubutumwa buhari, cyangwa tegereza gato mbere yo kongera kwishyura.', 'pending', true);
+                document.getElementById('momoBtnTextLabel').textContent = 'Ubusabe burategerejwe';
+                document.getElementById('momoBtnIcon').className = 'fa-solid fa-clock';
+                if (payBtn) payBtn.disabled = true;
+                return;
+            }
+
             // Reset form fully before opening
             document.getElementById('momoPhoneNumberInput').value = '';
             document.getElementById('momoPhoneHint').textContent = 'Injiza imibare 10: MTN (078/079) cyangwa Airtel (072/073)';
@@ -997,12 +1011,11 @@
             document.getElementById('examQuantityVolumeSelector').value = defaultQty;
             document.getElementById('ussdHintBox').style.display = 'none';
             dismissPaymentStatus();
-            const payBtn = document.getElementById('momoSubmitPaymentBtn');
             document.getElementById('momoBtnTextLabel').textContent = 'Ishyura Ubu';
             document.getElementById('momoBtnIcon').className = 'fa-solid fa-arrow-right';
             if (payBtn) { payBtn.disabled = true; } // disabled until valid phone
             recalculateLiveDynamicBillingAmount();
-            document.getElementById('sandboxPaymentModal').style.display = 'flex';
+            modal.style.display = 'flex';
             document.getElementById('momoPhoneNumberInput').focus();
         };
 
@@ -1151,7 +1164,7 @@
                                     clearInterval(activePollTimer); activePollTimer = null;
                                     document.getElementById('ussdHintBox').style.display = 'none';
                                     activeReferenceId = null;
-                                    showPaymentStatus('Kwamamaza kwa browser kwarangiye, ariko ubwishyu bushobora kuba bugikomeje. Niba wemeje kuri telefone, tegereza gato kandi reba ibisigaye mbere yo kongera kwishyura.', 'pending', true);
+                                    showPaymentStatus('Igihe urubuga rwategereje cyarangiye, ariko ubwishyu bushobora kuba bugikomeje. Niba warabwemeje kuri telefone, tegereza gato maze urebe ibizamini bisigaye mbere yo kongera kwishyura.', 'pending', true);
                                     payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
                                 }
                             });
@@ -1163,11 +1176,17 @@
             .catch(err => {
                 clearTimeout(fetchTimeout); clearInterval(progressTimer);
                 const msg = err.name === 'AbortError'
-                    ? 'Kwamamaza kwa browser kwarangiye. Niba watahuye ubutumwa kuri telefone cyangwa wari umaze kwemeza, ntukongere kwishyura; tegereza gato kandi reba ibisigaye.'
-                    : 'Kwamamaza kwa internet byacitse. Niba wari umaze kwemeza kuri telefone, ntukongere kwishyura; tegereza gato kandi reba ibisigaye.';
+                    ? 'Igihe urubuga rwategereje cyarangiye. Niba warabonye ubutumwa kuri telefone cyangwa waramaze kwemeza, ntukongere kwishyura; tegereza gato maze urebe ibizamini bisigaye.'
+                    : 'Internet yacitse. Niba waramaze kwemeza ubwishyu kuri telefone, ntukongere kwishyura; tegereza gato maze urebe ibizamini bisigaye.';
                 showPaymentStatus(msg, 'pending', true); payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
             });
         };
+        if (window.__IKIZAME_CHECKOUT_TEST__) {
+            window.__ikizameCheckoutTestHooks = {
+                getActiveReference: () => activeReferenceId,
+                setActiveReference: reference => { activeReferenceId = reference; }
+            };
+        }
         window.handleCustomAlertBoxConfirmationRedirect = function() { window.location.href = '/'; };
 
         window.sanitizeBalancePhoneInput = function() {
