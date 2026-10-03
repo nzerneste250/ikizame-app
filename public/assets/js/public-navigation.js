@@ -42,7 +42,7 @@
     toggle.innerHTML = '<span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>';
     brand.insertAdjacentElement('afterend', toggle);
 
-    const mobile = window.matchMedia('(max-width: 1050px)');
+    const mobile = window.matchMedia(header.classList.contains('home-premium-nav') ? '(max-width: 900px)' : '(max-width: 1050px)');
     const closeMenu = () => {
       header.classList.remove('menu-open');
       nav.hidden = mobile.matches;
