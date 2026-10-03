@@ -283,12 +283,22 @@ body:has(.workspace) .site-footer a { color: #C9D9EA; }
 body:has(.workspace) .site-footer a:hover { color: #FFFFFF; }
 body:has(.workspace) .site-footer-bottom { border-top-color: rgba(214,228,242,.22); color: #C9D9EA; }
 
-/* Align the transient brand curtain with the same blue; no timing or behavior changes. */
-#fullScreenAppLauncherSplashCurtain { background: #0D47A1 !important; }
-#fullScreenAppLauncherSplashCurtain > div:first-child > div:first-child {
-  background: radial-gradient(circle, rgba(187,222,251,.28) 0%, transparent 70%) !important;
+/* Align the transient premium brand curtain with the IKIZAME technology palette. */
+#fullScreenAppLauncherSplashCurtain {
+  background:
+    radial-gradient(circle at 50% 30%, rgba(125, 211, 252, 0.22), transparent 30%),
+    linear-gradient(135deg, #0b57b7 0%, #07366f 32%, #061f45 68%, #020b18 100%) !important;
 }
-#fullScreenAppLauncherSplashCurtain > div:nth-child(3) { border-top-color: #BBDEFB !important; }
+#fullScreenAppLauncherSplashCurtain .ikizame-loader__wordmark {
+  color: #F8FBFF !important;
+  text-shadow: 0 0 24px rgba(125, 211, 252, 0.22) !important;
+}
+#fullScreenAppLauncherSplashCurtain .ikizame-loader__status {
+  color: rgba(224, 242, 254, 0.9) !important;
+}
+#fullScreenAppLauncherSplashCurtain .ikizame-loader__progress-fill {
+  background: linear-gradient(90deg, #7dd3fc 0%, #38bdf8 32%, #e0f2fe 100%) !important;
+}
 
 @media (max-width: 1050px) {
   body:has(.workspace) .navbar.home-visible-nav { grid-template-columns: minmax(0,1fr); }
