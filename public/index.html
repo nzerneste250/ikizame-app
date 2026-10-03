@@ -2370,49 +2370,74 @@
 
                 sessionStorage.setItem('ikizame_splash_shown', '1');
 
-                const minVisibleMs = 550;
-                const maxVisibleMs = 1100;
+                const MIN_LOADER_TIME = 1800;
+                const MAX_LOADER_TIME = 3200;
                 const startedAt = performance.now();
                 let hasExited = false;
+                let hideTimer = null;
+                let safetyTimer = null;
 
-                const updateProgress = (ratio) => {
-                    const clamped = Math.min(1, Math.max(0, ratio));
-                    const width = (clamped * 100).toFixed(2);
-                    progressFill.style.width = `${width}%`;
+                const getProgressRatio = (elapsed) => {
+                    if (elapsed < 500) {
+                        return (elapsed / 500) * 0.35;
+                    }
+                    if (elapsed < 1100) {
+                        return 0.35 + ((elapsed - 500) / 600) * 0.35;
+                    }
+                    if (elapsed < 1600) {
+                        return 0.7 + ((elapsed - 1100) / 500) * 0.22;
+                    }
+                    if (elapsed < 1850) {
+                        return 0.92 + ((elapsed - 1600) / 250) * 0.08;
+                    }
+                    return 1;
+                };
 
-                    if (clamped < 0.35) {
+                const updateStatus = (elapsed) => {
+                    if (elapsed < 700) {
                         statusEl.textContent = 'Connecting';
-                    } else if (clamped < 0.75) {
+                    } else if (elapsed < 1400) {
                         statusEl.textContent = 'Preparing';
                     } else {
                         statusEl.textContent = 'Ready';
                     }
                 };
 
+                const updateProgress = (elapsed) => {
+                    const ratio = getProgressRatio(elapsed);
+                    const width = (Math.min(1, Math.max(0, ratio)) * 100).toFixed(2);
+                    progressFill.style.width = `${width}%`;
+                    updateStatus(elapsed);
+                };
+
                 const finishSplash = () => {
                     if (hasExited) return;
                     hasExited = true;
-                    updateProgress(1);
+                    if (hideTimer) clearTimeout(hideTimer);
+                    if (safetyTimer) clearTimeout(safetyTimer);
+                    progressFill.style.width = '100%';
                     statusEl.textContent = 'Ready';
                     splashCurtain.classList.add('is-hiding');
-                    setTimeout(() => splashCurtain.remove(), 320);
+                    window.setTimeout(() => splashCurtain.remove(), 320);
                 };
 
                 const tick = () => {
                     if (hasExited) return;
                     const elapsed = performance.now() - startedAt;
-                    const ratio = Math.min(1, elapsed / maxVisibleMs);
-                    updateProgress(ratio);
-                    if (elapsed < maxVisibleMs) window.requestAnimationFrame(tick);
+                    updateProgress(elapsed);
+                    if (elapsed < MAX_LOADER_TIME) {
+                        window.requestAnimationFrame(tick);
+                    }
                 };
-
-                window.requestAnimationFrame(tick);
 
                 const onReady = () => {
                     const elapsed = performance.now() - startedAt;
-                    const waitForMinimum = Math.max(0, minVisibleMs - elapsed);
-                    setTimeout(finishSplash, waitForMinimum);
+                    const remaining = Math.max(0, MIN_LOADER_TIME - elapsed);
+                    hideTimer = window.setTimeout(finishSplash, remaining);
+                    safetyTimer = window.setTimeout(finishSplash, MAX_LOADER_TIME);
                 };
+
+                window.requestAnimationFrame(tick);
 
                 if (document.readyState === 'complete') {
                     onReady();
