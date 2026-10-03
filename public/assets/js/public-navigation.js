@@ -27,7 +27,7 @@
     }
 
     // Selected public pages keep all navigation links visible on mobile.
-    if (header.classList.contains('home-visible-nav') || header.classList.contains('always-visible-nav')) {
+    if (header.classList.contains('home-visible-nav') || header.classList.contains('always-visible-nav') || header.classList.contains('home-direct-nav')) {
       nav.hidden = false;
       return;
     }
