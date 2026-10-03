@@ -149,6 +149,239 @@
   .navbar .lang-badge { display: none !important; }
 }
 
+/* Shared premium public-page nav: matches the homepage header without relying on
+   the home-page body state. */
+.navbar.home-premium-nav.home-direct-nav {
+  --home-nav-blue: #0d47a1;
+  position: fixed !important;
+  inset: 0 0 auto 0;
+  z-index: 5000;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-height: 72px;
+  height: 72px;
+  gap: clamp(10px, 1.5vw, 24px);
+  overflow: hidden;
+  isolation: isolate;
+  padding: 0 max(20px, calc((100vw - 1360px) / 2));
+  border-bottom: 1px solid rgba(255, 255, 255, .14);
+  background:
+    radial-gradient(circle at 18% -120%, rgba(82, 180, 255, .28), transparent 42%),
+    linear-gradient(110deg, var(--home-nav-blue) 0%, #0b3c78 42%, #071d3a 74%, #041226 100%);
+  box-shadow: 0 7px 24px rgba(3, 18, 43, .24);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.navbar.home-premium-nav.home-direct-nav::before,
+.navbar.home-premium-nav.home-direct-nav::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.navbar.home-premium-nav.home-direct-nav::before {
+  width: 250px;
+  height: 250px;
+  top: -176px;
+  right: 6%;
+  border: 1px solid rgba(183, 223, 255, .18);
+  background: radial-gradient(circle, rgba(109, 191, 255, .16), rgba(109, 191, 255, 0) 69%);
+}
+
+.navbar.home-premium-nav.home-direct-nav::after {
+  width: 170px;
+  height: 170px;
+  top: -84px;
+  left: 34%;
+  border: 1px solid rgba(255, 255, 255, .1);
+  box-shadow: 0 0 60px rgba(59, 150, 235, .16);
+}
+
+.navbar.home-premium-nav.home-direct-nav > :not(nav) {
+  position: relative;
+  z-index: 1;
+}
+
+.navbar.home-premium-nav.home-direct-nav nav {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-brand-wrap {
+  gap: 10px;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-brand-wrap img {
+  width: 38px;
+  height: 38px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .22));
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-brand {
+  color: #fff;
+  font-size: 1.25rem;
+  letter-spacing: -.02em;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-links {
+  display: flex !important;
+  flex-wrap: nowrap;
+  gap: 3px;
+  justify-content: flex-end;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-links a {
+  min-height: 40px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, .92) !important;
+  background: transparent;
+  box-shadow: none;
+  font-size: .78rem;
+  font-weight: 700;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .12);
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-links a i {
+  color: rgba(214, 235, 255, .9) !important;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-links a:hover:not(.active):not(.navbar-cta) {
+  border-color: rgba(255, 255, 255, .13);
+  background: rgba(255, 255, 255, .12);
+  color: #fff !important;
+  transform: translateY(-1px);
+  box-shadow: none;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-links a:hover:not(.active):not(.navbar-cta) i {
+  color: #fff !important;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-links a.active {
+  border-color: rgba(193, 226, 255, .26);
+  background: rgba(122, 191, 255, .2);
+  color: #fff !important;
+  box-shadow: inset 0 -2px 0 #a9dcff;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-links a.active i {
+  color: #fff !important;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-links a:focus-visible {
+  outline: 3px solid #b9e3ff;
+  outline-offset: 3px;
+}
+
+.navbar.home-premium-nav.home-direct-nav .navbar-links a.navbar-cta,
+.navbar.home-premium-nav.home-direct-nav .navbar-links a.navbar-cta:hover {
+  border-color: rgba(255, 255, 255, .88);
+  background: #fff;
+  color: #0b3c78 !important;
+  box-shadow: none;
+}
+
+.navbar.home-premium-nav.home-direct-nav .lang-badge {
+  flex-shrink: 0;
+  border-color: rgba(255, 255, 255, .2);
+  background: rgba(255, 255, 255, .1);
+  color: #e2f1ff;
+}
+
+.navbar.home-premium-nav.home-direct-nav + * {
+  margin-top: 72px !important;
+}
+
+@media (max-width: 900px) {
+  .navbar.home-premium-nav.home-direct-nav {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 52px minmax(0, 1fr);
+    min-height: 124px;
+    height: 124px;
+    padding: 4px 12px 5px;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav .navbar-brand-wrap {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav .navbar-brand-wrap img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav .navbar-brand {
+    font-size: 1.45rem;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav nav,
+  .navbar.home-premium-nav.home-direct-nav nav[hidden] {
+    display: block !important;
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    padding-top: 0;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav .nav-cta-item {
+    display: none;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav .navbar-links {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 2px 4px !important;
+    padding: 0 !important;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav .navbar-links li { border: 0; }
+
+  .navbar.home-premium-nav.home-direct-nav .navbar-links a {
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+    min-height: 32px;
+    padding: 5px 2px;
+    border: 0 !important;
+    border-radius: 5px;
+    background: transparent !important;
+    box-shadow: none;
+    color: rgba(255, 255, 255, .94) !important;
+    font-size: clamp(.65rem, 2.9vw, .78rem);
+    line-height: 1.1;
+    white-space: nowrap !important;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav .navbar-links a i { display: none; }
+  .navbar.home-premium-nav.home-direct-nav .navbar-links a:hover,
+  .navbar.home-premium-nav.home-direct-nav .navbar-links a:focus-visible,
+  .navbar.home-premium-nav.home-direct-nav .navbar-links a.active {
+    background: rgba(255, 255, 255, .1);
+    color: #fff !important;
+    box-shadow: none;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav .navbar-links a.active {
+    box-shadow: inset 0 -2px 0 #a9dcff;
+  }
+
+  .navbar.home-premium-nav.home-direct-nav + * {
+    margin-top: 124px !important;
+  }
+}
+
 /* Home header: a compact, fixed brand surface that does not alter navigation
    destinations or the shared mobile-menu behaviour. */
 body:has(.workspace) .navbar.home-premium-nav {
