@@ -329,3 +329,87 @@ body:has(.workspace) .site-footer-bottom { border-top-color: rgba(214,228,242,.2
     mask-image: linear-gradient(90deg, #000 0%, transparent 82%);
   }
 }
+
+/* Home introduction: stronger editorial hierarchy on the existing light surface. */
+body:has(.workspace) .hero-copy .hero-copy-panel {
+  background: rgba(255, 255, 255, .96);
+  border-color: #dce7f2;
+  box-shadow: 0 16px 40px rgba(24, 57, 92, .08);
+}
+body:has(.workspace) .hero-copy-panel .hero-h1 {
+  max-width: 16ch;
+  margin: 0;
+  color: #12263f !important;
+  font-family: Inter, Aptos, "Segoe UI", system-ui, sans-serif;
+  font-size: clamp(1.9rem, 4vw, 3.65rem);
+  font-weight: 850;
+  line-height: 1.08;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+body:has(.workspace) .hero-copy-panel .hero-desc {
+  max-width: 59ch;
+  margin: 0;
+  color: #45576c !important;
+  font-family: Inter, Aptos, "Segoe UI", system-ui, sans-serif;
+  font-size: clamp(.94rem, 1.15vw, 1.06rem);
+  font-weight: 450;
+  line-height: 1.65;
+  letter-spacing: -.008em;
+}
+body:has(.workspace) .hero-copy-panel .hero-support-row { gap: 9px; }
+body:has(.workspace) .hero-copy-panel .hero-support-pill {
+  min-height: 38px;
+  padding: 7px 11px;
+  border: 1px solid #d9e8f7;
+  border-radius: 10px;
+  background: #f4f8fd;
+  color: #24496f;
+  font-size: .82rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+body:has(.workspace) .hero-copy-panel .hero-support-pill i { color: #1767b7; }
+
+/* Contact action: quiet depth and a real keyboard-operable control. */
+body:has(.workspace) .wa-float {
+  right: 24px;
+  bottom: 24px;
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .75);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #31da70, #128c49);
+  box-shadow: 0 10px 26px rgba(4, 87, 46, .26), 0 3px 8px rgba(5, 42, 45, .16);
+  color: #fff;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+body:has(.workspace) .wa-float::before { display: none; }
+body:has(.workspace) .wa-float svg { width: 29px; height: 29px; }
+body:has(.workspace) .wa-float:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 14px 30px rgba(4, 87, 46, .31), 0 3px 8px rgba(5, 42, 45, .16);
+}
+body:has(.workspace) .wa-float:active { transform: translateY(0) scale(.97); }
+body:has(.workspace) .wa-float:focus-visible { outline: 3px solid #0d47a1; outline-offset: 4px; }
+
+@media (max-width: 900px) {
+  body:has(.workspace) .wa-float {
+    display: flex !important;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    width: 54px;
+    height: 54px;
+  }
+  body:has(.workspace) .wa-inline { display: none !important; }
+  body:has(.workspace) .wa-popup {
+    right: 12px;
+    bottom: calc(82px + env(safe-area-inset-bottom));
+  }
+  body:has(.workspace) .hero-copy-panel .hero-h1 { max-width: 22ch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:has(.workspace) .wa-float { transition: none; }
+}
