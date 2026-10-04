@@ -335,41 +335,75 @@ body:has(.workspace) .hero-copy .hero-copy-panel {
   background: rgba(255, 255, 255, .96);
   border-color: #dce7f2;
   box-shadow: 0 16px 40px rgba(24, 57, 92, .08);
+  gap: 0;
 }
 body:has(.workspace) .hero-copy-panel .hero-h1 {
-  max-width: 16ch;
-  margin: 0;
-  color: #12263f !important;
-  font-family: Inter, Aptos, "Segoe UI", system-ui, sans-serif;
-  font-size: clamp(1.9rem, 4vw, 3.65rem);
-  font-weight: 850;
-  line-height: 1.08;
-  letter-spacing: -.045em;
-  text-wrap: balance;
+  max-width: 100%;
+  margin: 0 0 26px;
+  color: #10253f !important;
+  font-family: "Plus Jakarta Sans", Inter, Aptos, "Segoe UI", system-ui, sans-serif;
+  font-size: clamp(48px, 4.35vw, 64px);
+  font-weight: 800;
+  line-height: 1.025;
+  letter-spacing: -.042em;
 }
+body:has(.workspace) .hero-copy-panel .hero-headline-line { display: block; }
+body:has(.workspace) .hero-copy-panel .hero-headline-accent { color: #1557ae; }
 body:has(.workspace) .hero-copy-panel .hero-desc {
-  max-width: 59ch;
-  margin: 0;
-  color: #45576c !important;
-  font-family: Inter, Aptos, "Segoe UI", system-ui, sans-serif;
-  font-size: clamp(.94rem, 1.15vw, 1.06rem);
-  font-weight: 450;
-  line-height: 1.65;
-  letter-spacing: -.008em;
+  max-width: 70ch;
+  margin: 0 0 24px;
+  color: #40546b !important;
+  font-family: "Plus Jakarta Sans", Inter, Aptos, "Segoe UI", system-ui, sans-serif;
+  font-size: clamp(17px, 1.28vw, 20px);
+  font-weight: 500;
+  line-height: 1.62;
+  letter-spacing: -.01em;
 }
-body:has(.workspace) .hero-copy-panel .hero-support-row { gap: 9px; }
+body:has(.workspace) .hero-copy-panel .hero-support-row { gap: 14px 24px; }
 body:has(.workspace) .hero-copy-panel .hero-support-pill {
-  min-height: 38px;
-  padding: 7px 11px;
-  border: 1px solid #d9e8f7;
-  border-radius: 10px;
-  background: #f4f8fd;
-  color: #24496f;
-  font-size: .82rem;
+  min-height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #203e62;
+  font-family: "Plus Jakarta Sans", Inter, Aptos, "Segoe UI", system-ui, sans-serif;
+  font-size: 15px;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.35;
 }
-body:has(.workspace) .hero-copy-panel .hero-support-pill i { color: #1767b7; }
+body:has(.workspace) .hero-copy-panel .hero-support-pill i {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e8f2ff;
+  color: #1767b7;
+  font-size: 16px;
+}
+
+@media (max-width: 900px) {
+  body:has(.workspace) .hero-copy-panel .hero-h1 {
+    margin-bottom: 22px;
+    font-size: clamp(32px, 10vw, 48px);
+    line-height: 1.055;
+    letter-spacing: -.038em;
+    text-wrap: balance;
+  }
+  body:has(.workspace) .hero-copy-panel .hero-headline-line { display: inline; }
+  body:has(.workspace) .hero-copy-panel .hero-desc {
+    margin-bottom: 22px;
+    font-size: clamp(16px, 2.1vw, 17px);
+    line-height: 1.6;
+  }
+  body:has(.workspace) .hero-copy-panel .hero-support-row { gap: 12px 20px; }
+}
+
+@media (max-width: 420px) {
+  body:has(.workspace) .hero-copy-panel .hero-support-row { flex-direction: column; align-items: flex-start; }
+  body:has(.workspace) .hero-copy-panel .hero-support-pill { font-size: 14px; }
+}
 
 /* Contact action: quiet depth and a real keyboard-operable control. */
 body:has(.workspace) .wa-float {
@@ -407,7 +441,6 @@ body:has(.workspace) .wa-float:focus-visible { outline: 3px solid #0d47a1; outli
     right: 12px;
     bottom: calc(82px + env(safe-area-inset-bottom));
   }
-  body:has(.workspace) .hero-copy-panel .hero-h1 { max-width: 22ch; }
 }
 
 @media (prefers-reduced-motion: reduce) {
