@@ -7,6 +7,34 @@
     compactViewport.addEventListener?.('change', syncToc);
   }
 
+  const normalizeRoute = (route = '/') => {
+    let normalized = String(route || '/');
+    normalized = normalized.replace(/\\/g, '/');
+    normalized = normalized.replace(/index\.html?$/i, '/');
+    normalized = normalized.replace(/\.html$/i, '');
+    normalized = normalized.replace(/\/+$/, '') || '/';
+    return normalized || '/';
+  };
+
+  const setActiveRouteState = () => {
+    const currentPath = normalizeRoute(window.location.pathname);
+    const navLinks = document.querySelectorAll('.navbar-links a[href]');
+
+    navLinks.forEach((link) => {
+      const targetPath = normalizeRoute(new URL(link.href, window.location.origin).pathname);
+      const isActive = targetPath === currentPath;
+
+      link.classList.toggle('active', isActive);
+      if (isActive) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  };
+
+  setActiveRouteState();
+
   const headers = document.querySelectorAll('.navbar');
   headers.forEach((header, index) => {
     const nav = header.querySelector('nav');
