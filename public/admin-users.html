@@ -185,6 +185,7 @@
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
     <link rel="stylesheet" href="/assets/css/admin-mobile-cards.css?v=20261004">
+    <link rel="stylesheet" href="/assets/css/admin-users-design.css?v=20261004">
 </head>
 <body class="admin-mobile-cards admin-users-page">
 <div class="mobile-sidebar-overlay" onclick="closeAdminSidebar()"></div>
@@ -319,26 +320,26 @@
     </aside>
 
     <div class="workspace">
-        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button>
-            <div>
+        <header class="topbar admin-page-header"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button>
+            <div class="admin-page-heading">
                 <h1>Manage Admin Users</h1>
                 <p>Create viewer accounts and manage admin access levels</p>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button class="tab-btn active" id="tabAdmins" onclick="switchTab('admins')"><i class="fa-solid fa-users-gear"></i> Admin Users</button>
-                <button class="tab-btn" id="tabSchools" onclick="switchTab('schools')"><i class="fa-solid fa-school"></i> Schools</button>
-                <button class="tab-btn" id="tabSettings" onclick="switchTab('settings')"><i class="fa-solid fa-envelope-circle-check"></i> Alerts & Access</button>
+            <div class="admin-tabs" aria-label="Admin sections">
+                <button class="tab-btn active" id="tabAdmins" type="button" onclick="switchTab('admins')"><i class="fa-solid fa-users-gear" aria-hidden="true"></i> Admin Users</button>
+                <button class="tab-btn" id="tabSchools" type="button" onclick="switchTab('schools')"><i class="fa-solid fa-school" aria-hidden="true"></i> Schools</button>
+                <button class="tab-btn" id="tabSettings" type="button" onclick="switchTab('settings')"><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i> Alerts &amp; Access</button>
             </div>
         </header>
 
-        <div class="content" id="panelAdmins">
-            <div class="table-card">
+        <div class="content admin-layout" id="panelAdmins">
+            <section class="table-card admin-users-card" aria-labelledby="usersHeading">
                 <div class="table-card-header">
-                    <h3><i class="fa-solid fa-users" style="color:var(--brand);margin-right:8px;"></i> All Admin Users</h3>
-                    <span id="userCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                    <h3 id="usersHeading"><span class="admin-card-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span> All Admin Users</h3>
+                    <span id="userCount" class="admin-count" aria-live="polite"></span>
                 </div>
                 <div class="table-wrap">
-                    <table>
+                    <table class="admin-users-table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -350,45 +351,45 @@
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
-                            <tr><td colspan="6" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                            <tr><td colspan="6" class="admin-table-message"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Loading users...</td></tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
 
-            <div class="form-card">
-                <div>
-                    <h3><i class="fa-solid fa-user-plus" style="color:var(--brand);margin-right:8px;"></i> Add New User</h3>
+            <section class="form-card admin-form-card" aria-labelledby="addUserHeading">
+                <div class="admin-form-heading">
+                    <h3 id="addUserHeading"><span class="admin-card-icon"><i class="fa-solid fa-user-plus" aria-hidden="true"></i></span> Add New User</h3>
                     <p>Create a new admin or viewer account</p>
                 </div>
-                <div class="alert error" id="formAlert"><i class="fa-solid fa-circle-xmark"></i><span id="formAlertMsg"></span></div>
-                <div class="alert success" id="formSuccess"><i class="fa-solid fa-circle-check"></i><span id="formSuccessMsg"></span></div>
+                <div class="alert error" id="formAlert" role="alert"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i><span id="formAlertMsg"></span></div>
+                <div class="alert success" id="formSuccess" role="status"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span id="formSuccessMsg"></span></div>
                 <div class="field">
-                    <label>Email Address</label>
+                    <label for="newEmail">Email Address</label>
                     <div class="field-wrap">
-                        <i class="fa-solid fa-envelope ico"></i>
-                        <input type="email" id="newEmail" placeholder="user@email.com">
+                        <i class="fa-solid fa-envelope ico" aria-hidden="true"></i>
+                        <input type="email" id="newEmail" placeholder="user@email.com" autocomplete="email">
                     </div>
                 </div>
                 <div class="field">
-                    <label>Role</label>
+                    <label for="newRole">Role</label>
                     <div class="field-wrap">
-                        <i class="fa-solid fa-shield-halved ico"></i>
-                        <select id="newRole">
+                        <i class="fa-solid fa-shield-halved ico" aria-hidden="true"></i>
+                        <select id="newRole" aria-describedby="rolePermissions">
                             <option value="viewer">Viewer, Read-only</option>
                             <option value="superadmin">Super Admin, Full Access</option>
                         </select>
                     </div>
                 </div>
-                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--muted);">
-                    <strong style="color:var(--text);">Role permissions:</strong><br>
-                    <span style="color:#0369a1;">● Viewer</span>, View payments & schools only.<br>
-                    <span style="color:#166534;">● Super Admin</span>, Full access to all features.
+                <div class="admin-permissions" id="rolePermissions">
+                    <strong>Role permissions</strong>
+                    <div><i class="fa-solid fa-eye" aria-hidden="true"></i><span><b>Viewer</b><small>View payments &amp; schools only</small></span></div>
+                    <div><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span><b>Super Admin</b><small>Full access to all features</small></span></div>
                 </div>
                 <button class="btn-add" id="addBtn" onclick="addUser()">
                     <span id="addLabel"><i class="fa-solid fa-user-plus"></i> Create Account</span>
                 </button>
-            </div>
+            </section>
         </div>
 
         <!-- SCHOOLS PANEL -->
@@ -592,28 +593,28 @@ function loadUsers() {
         const users = Array.isArray(data) ? data : [];
         document.getElementById('userCount').textContent = users.length + ' user(s)';
         const tb = document.getElementById('usersTableBody');
-        if (!users.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#64748b;">No users found.</td></tr>'; return; }
+        if (!users.length) { tb.innerHTML = '<tr><td colspan="6" class="admin-table-message admin-empty-state"><i class="fa-solid fa-users" aria-hidden="true"></i><strong>No admin users found</strong><span>Create an account using the form.</span></td></tr>'; return; }
         tb.innerHTML = users.map((u, i) => {
             const isActive = u.is_active !== 0;
             const isSelf = i === 0;
             const actions = isSelf
-                ? '<span style="font-size:11px;color:#94a3b8;">Protected</span>'
+                ? '<span class="admin-protected"><i class="fa-solid fa-lock" aria-hidden="true"></i> Protected</span>'
                 : `<div class="actions">
                     <button class="btn-sm btn-edit" onclick="openEdit(${u.id},'${(u.email||u.username).replace(/'/g,"\\'")}','${u.role}')"><i class="fa-solid fa-pen"></i> Edit</button>
                     <button class="btn-sm ${isActive ? 'btn-disable' : 'btn-enable'}" onclick="toggleStatus(${u.id},${isActive ? 0 : 1})">${isActive ? '<i class="fa-solid fa-ban"></i> Disable' : '<i class="fa-solid fa-check"></i> Enable'}</button>
                     <button class="btn-sm btn-del" aria-label="Delete user" onclick="deleteUser(${u.id},'${(u.email||u.username).replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>
                    </div>`;
             return `<tr>
-                <td style="font-weight:700;color:var(--brand);">${i+1}</td>
-                <td style="font-weight:600;${!isActive ? 'opacity:.5;text-decoration:line-through;' : ''}">${u.email||u.username}</td>
+                <td class="admin-user-number">${i+1}</td>
+                <td class="admin-user-email ${!isActive ? 'is-disabled' : ''}">${u.email||u.username}</td>
                 <td><span class="badge ${u.role==='superadmin'?'badge-super':'badge-viewer'}">${u.role==='superadmin'?'Super Admin':'Viewer'}</span></td>
                 <td><span class="badge ${isActive?'badge-super':'badge-disabled'}">${isActive?'Active':'Disabled'}</span></td>
-                <td style="color:#64748b;font-size:12px;">${u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
-                <td>${actions}</td>
+                <td class="admin-user-created">${u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
+                <td class="admin-user-access ${isSelf ? 'is-protected' : ''}">${actions}</td>
             </tr>`;
         }).join('');
     }).catch(() => {
-        document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#ef4444;">Failed to load users.</td></tr>';
+        document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="6" class="admin-table-message admin-load-error">Failed to load users.</td></tr>';
     });
 }
 
