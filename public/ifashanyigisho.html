@@ -520,7 +520,7 @@
     <link rel="stylesheet" href="assets/css/public-pages-theme.css">
     <link rel="stylesheet" href="assets/css/public-navigation.css">
     <link rel="stylesheet" href="/assets/css/public-site.css?v=footer-centered-20261001">
-    <link rel="stylesheet" href="/assets/css/ifashanyigisho-theme.css?v=20261001">
+    <link rel="stylesheet" href="/assets/css/ifashanyigisho-theme.css?v=20261005-study-plan-road-signs">
     <link rel="stylesheet" href="/assets/css/blue-navigation-responsive.css?v=public-layout-20261004">
     <script defer src="/assets/js/public-navigation.js?v=public-nav-refine-20261004"></script>
 </head>
@@ -602,6 +602,41 @@
         </form>
 
         <div id="studyPlanResult" class="study-plan-result" hidden></div>
+    </section>
+
+    <section class="road-sign-explainer" id="road-signs" aria-labelledby="roadSignsTitle">
+        <div class="road-sign-heading">
+            <div>
+                <p class="road-sign-eyebrow">IKIZAME · IMYIGIRE Y’UMUHANDA</p>
+                <h2 id="roadSignsTitle">Menya Ibyapa by’Umuhanda</h2>
+                <p>Ibyapa byo mu muhanda bifasha abawukoresha gusobanukirwa n’imbuzi, amategeko, icyerekezo n’imiterere y’umuhanda.</p>
+            </div>
+            <button class="road-sign-share" id="roadSignShare" type="button" aria-describedby="roadSignShareStatus">
+                <i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Share
+            </button>
+        </div>
+        <p class="road-sign-share-status" id="roadSignShareStatus" role="status" aria-live="polite"></p>
+        <div class="road-sign-categories">
+            <article class="road-sign-category">
+                <span class="road-sign-category-icon" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                <div><h3>Warning Signs</h3><p>Bitanga umuburo ku kaga cyangwa ku mpinduka zishobora kuba imbere mu muhanda.</p></div>
+            </article>
+            <article class="road-sign-category">
+                <span class="road-sign-category-icon" aria-hidden="true"><i class="fa-solid fa-ban"></i></span>
+                <div><h3>Regulatory Signs</h3><p>Zigaragaza amabwiriza agenga uko abawukoresha bagomba kwitwara.</p></div>
+            </article>
+            <article class="road-sign-category">
+                <span class="road-sign-category-icon" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+                <div><h3>Mandatory Signs</h3><p>Zerekana igikorwa umushoferi asabwa gukurikiza.</p></div>
+            </article>
+            <article class="road-sign-category">
+                <span class="road-sign-category-icon" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></span>
+                <div><h3>Information Signs</h3><p>Zitanga amakuru cyangwa icyerekezo gifasha umushoferi mu rugendo.</p></div>
+            </article>
+        </div>
+        <a class="road-sign-practice" id="roadSignPractice" href="/exam">
+            Gerageza imyitozo y’ibyapa <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </a>
     </section>
 
     <div class="section-head">
@@ -946,6 +981,72 @@ function openViewer(docOrIdx) {
     if (doc.is_paid === 1) { openResourcePayment(allDocs.indexOf(doc)); return; }
     window.open(window.location.origin + '/' + doc.file_path, '_blank', 'noopener');
 }
+
+(function() {
+    const campaignKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_content', 'utm_term'];
+
+    function applyRoadSignCampaign(destination) {
+        const sourceParams = new URLSearchParams(window.location.search);
+        campaignKeys.forEach(function(key) {
+            const value = sourceParams.get(key);
+            if (value) destination.searchParams.set(key, value);
+        });
+    }
+
+    function preserveRoadSignCampaign() {
+        const destination = new URL('/exam', window.location.origin);
+        applyRoadSignCampaign(destination);
+        const practiceLink = document.getElementById('roadSignPractice');
+        if (practiceLink) practiceLink.href = destination.pathname + destination.search;
+    }
+
+    function copyRoadSignLink(status) {
+        const shareUrl = new URL(window.location.pathname, window.location.origin);
+        applyRoadSignCampaign(shareUrl);
+        shareUrl.hash = 'road-signs';
+        const currentUrl = shareUrl.href;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(currentUrl).then(function() {
+                status.textContent = 'Link copied';
+            }).catch(function() {
+                status.textContent = 'Unable to copy link. Copy the address from your browser.';
+            });
+            return;
+        }
+
+        const temporaryInput = document.createElement('textarea');
+        temporaryInput.value = currentUrl;
+        temporaryInput.setAttribute('readonly', '');
+        temporaryInput.style.position = 'fixed';
+        temporaryInput.style.opacity = '0';
+        document.body.appendChild(temporaryInput);
+        temporaryInput.select();
+        const copied = document.execCommand('copy');
+        document.body.removeChild(temporaryInput);
+        status.textContent = copied ? 'Link copied' : 'Unable to copy link. Copy the address from your browser.';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        preserveRoadSignCampaign();
+        const shareButton = document.getElementById('roadSignShare');
+        const status = document.getElementById('roadSignShareStatus');
+        if (!shareButton || !status) return;
+
+        shareButton.addEventListener('click', function() {
+            if (navigator.share) {
+                const shareUrl = new URL(window.location.pathname, window.location.origin);
+                applyRoadSignCampaign(shareUrl);
+                shareUrl.hash = 'road-signs';
+                navigator.share({ title: 'Menya Ibyapa by’Umuhanda | IKIZAME', url: shareUrl.href })
+                    .catch(function(error) {
+                        if (error.name !== 'AbortError') copyRoadSignLink(status);
+                    });
+                return;
+            }
+            copyRoadSignLink(status);
+        });
+    });
+})();
 
 (function() {
     const STUDY_PLAN_TOPICS = [

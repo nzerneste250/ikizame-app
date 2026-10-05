@@ -248,6 +248,81 @@ footer a:hover { color: #FFFFFF; }
 .study-plan-print:hover { background: #DCEAF7; }
 .study-plan-exam-date { margin: 0 0 14px; color: #334155; font-size: .9rem; font-weight: 700; }
 
+.road-sign-explainer {
+  width: min(100%, 980px);
+  margin: 0 0 28px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid #D7E1EA;
+  border-radius: 8px;
+  background: #F8FAFC;
+  box-shadow: 0 8px 24px rgba(31,60,90,.06);
+  scroll-margin-top: 20px;
+}
+.road-sign-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.road-sign-eyebrow { margin: 0 0 6px; color: #0D47A1; font-size: .7rem; font-weight: 800; }
+.road-sign-heading h2 { margin: 0 0 8px; color: #1F2937; font-size: clamp(1.2rem, 2vw, 1.55rem); }
+.road-sign-heading p:not(.road-sign-eyebrow) { max-width: 650px; margin: 0; color: #64748B; font-size: .92rem; line-height: 1.6; }
+.road-sign-share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid #B7D0E8;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #0D47A1;
+  font: inherit;
+  font-size: .86rem;
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.road-sign-share:hover { background: #E3EFFA; }
+.road-sign-share-status { min-height: 1.25em; margin: 6px 0 10px; color: #166534; font-size: .82rem; font-weight: 700; }
+.road-sign-categories { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.road-sign-category { display: flex; align-items: flex-start; gap: 12px; min-width: 0; padding: 14px; border: 1px solid #D7E1EA; border-radius: 6px; background: #FFFFFF; }
+.road-sign-category-icon { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border-radius: 6px; background: #E3EFFA; color: #0D47A1; }
+.road-sign-category h3 { margin: 0 0 5px; color: #1F2937; font-size: .94rem; }
+.road-sign-category p { margin: 0; color: #64748B; font-size: .85rem; line-height: 1.55; }
+.road-sign-practice {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  margin-top: 16px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: #166534;
+  color: #FFFFFF;
+  font-size: .9rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+.road-sign-practice:hover { background: #14532D; }
+
+@media (max-width: 600px) {
+  .road-sign-explainer { padding: 18px 14px; }
+  .road-sign-heading { flex-direction: column; }
+  .road-sign-share { align-self: flex-start; }
+  .road-sign-categories { grid-template-columns: minmax(0, 1fr); }
+  .road-sign-practice { width: 100%; text-align: center; }
+}
+
+@media (max-width: 360px) {
+  .road-sign-explainer { padding: 12px; }
+  .road-sign-heading h2 { font-size: 1.12rem; }
+  .road-sign-heading p:not(.road-sign-eyebrow) { font-size: .82rem; line-height: 1.45; }
+  .road-sign-share-status { margin: 2px 0 6px; }
+  .road-sign-categories { gap: 8px; }
+  .road-sign-category { gap: 8px; padding: 10px; }
+  .road-sign-category-icon { width: 30px; height: 30px; flex-basis: 30px; }
+  .road-sign-category p { font-size: .8rem; line-height: 1.45; }
+  .road-sign-practice { min-height: 44px; margin-top: 12px; padding: 0 10px; }
+}
+
 @media print {
   @page { size: A4; margin: 14mm; }
 
@@ -262,6 +337,12 @@ footer a:hover { color: #FFFFFF; }
 
   body { display: block !important; }
   body > * { display: none !important; }
+  body .navbar,
+  body .navbar.always-visible-nav,
+  body .navbar.home-premium-nav.home-direct-nav,
+  .hero,
+  .pay-modal-overlay,
+  footer { display: none !important; }
   body > main.main {
     display: block !important;
     width: auto !important;
