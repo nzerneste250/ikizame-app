@@ -863,7 +863,7 @@
 
     <!-- Timer -->
     <div class="timer-card">
-        <div class="timer-label">IGIHE MUSIGARANYE:</div>
+        <div class="timer-label">Igihe gisigaye</div>
         <div class="timer-val" id="examCountdown">20:00</div>
     </div>
 
@@ -894,7 +894,7 @@
 
         <!-- Nav -->
         <div class="nav-bar">
-            <div class="q-counter" id="qCounter">&lt; 1 / 20 &gt;</div>
+            <div class="q-counter" id="qCounter">Ikibazo 1 kuri 20</div>
             <div class="nav-btns">
                 <button class="btn btn-back" id="prevBtn">&#8592; Inyuma</button>
                 <button class="btn btn-next" id="nextBtn">Komeza &#8594;</button>
@@ -1038,7 +1038,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function render() {
         const q = questions[idx];
-        qCounterEl.textContent = `< ${idx+1} / ${questions.length} >`;
+        qCounterEl.textContent = `Ikibazo ${idx + 1} kuri ${questions.length}`;
 
         const txt = q.question.replace(/\r?\n|\r/g, ' ');
         qTextEl.textContent = txt;
@@ -1056,7 +1056,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (normalizedMainImage) {
             imgFrameEl.style.display = 'flex';
             qBodyEl.classList.remove('no-image');
-            imgFrameEl.innerHTML = `<img src="${normalizedMainImage}" alt="Ikimenyetso" decoding="async" fetchpriority="high" loading="eager">`;
+            imgFrameEl.innerHTML = `<img src="${normalizedMainImage}" alt="Ishusho ijyanye n’ikibazo" decoding="async" fetchpriority="high" loading="eager">`;
         } else {
             imgFrameEl.style.display = 'none';
             imgFrameEl.replaceChildren();
@@ -1087,7 +1087,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <strong>${o.key.toLowerCase()})</strong>
                     </div>
                     <div class="img-opt-box">
-                        <img src="${normalizedValue}" alt="Option ${o.key}" decoding="async">
+                        <img src="${normalizedValue}" alt="Ishusho y’ihitamo ${o.key}" decoding="async">
                     </div>
                 </label>`;
             }).join('');
