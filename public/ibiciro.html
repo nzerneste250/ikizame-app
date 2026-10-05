@@ -1201,6 +1201,78 @@
         let activeReferenceId = null;
         let activePollTimer = null;
 
+        function stopPendingPaymentPolling() {
+            if (activePollTimer) {
+                clearInterval(activePollTimer);
+                activePollTimer = null;
+            }
+        }
+
+        function startPendingPaymentPolling(reference) {
+            if (!reference) return;
+            const payBtn = document.getElementById('momoSubmitPaymentBtn');
+            const btnText = document.getElementById('momoBtnTextLabel');
+            const btnIcon = document.getElementById('momoBtnIcon');
+            if (!payBtn || !btnText || !btnIcon) return;
+
+            stopPendingPaymentPolling();
+            activeReferenceId = reference;
+            payBtn.disabled = true;
+            btnText.textContent = 'Tegereza...';
+            btnIcon.className = 'fa-solid fa-clock';
+
+            let elapsed = 0;
+            const maxWait = 120;
+            const pollOnce = () => {
+                fetch(`/api/payments/verify/${encodeURIComponent(reference)}`)
+                    .then(r => r.json())
+                    .then(d => {
+                        const status = String(d && d.status || '').toUpperCase();
+                        if (status === 'SUCCESS' || status === 'SUCCESSFUL' || status === 'COMPLETED') {
+                            stopPendingPaymentPolling();
+                            activeReferenceId = null;
+                            document.getElementById('ussdHintBox').style.display = 'none';
+                            closeTestPaymentModal();
+                            document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishyura byagenze neza! Ibizamini byawe bifunguwe. Ubu ushobora gutangira ikizamini ukoresheje nimero yawe ya telefone.';
+                            document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
+                            return;
+                        }
+                        if (status === 'FAILED' || status === 'FAILURE' || status === 'CANCELLED' || status === 'CANCELED') {
+                            stopPendingPaymentPolling();
+                            activeReferenceId = null;
+                            document.getElementById('ussdHintBox').style.display = 'none';
+                            showPaymentStatus('Kwishyura ntabwo kwemejwe. Ushobora kongera kugerageza niba nta kwishyura wemeje kuri telefone.', 'error', true);
+                            payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
+                            return;
+                        }
+                        if (elapsed >= maxWait) {
+                            stopPendingPaymentPolling();
+                            document.getElementById('ussdHintBox').style.display = 'none';
+                            activeReferenceId = null;
+                            showPaymentStatus('Igihe urubuga rwategereje cyarangiye, ariko ubwishyu bushobora kuba bugikomeje. Niba warabwemeje kuri telefone, tegereza gato maze urebe ibizamini bisigaye mbere yo kongera kwishyura.', 'pending', true);
+                            payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
+                            return;
+                        }
+                        const remaining = Math.max(0, maxWait - elapsed);
+                        btnText.textContent = `Tegereza... (${remaining}s)`;
+                    })
+                    .catch(() => {
+                        if (elapsed >= maxWait) {
+                            stopPendingPaymentPolling();
+                            activeReferenceId = null;
+                            showPaymentStatus('Igihe urubuga rwategereje cyarangiye. Niba waramaze kwemeza ubwishyu kuri telefone, ntukongere kwishyura; tegereza gato maze urebe ibizamini bisigaye.', 'pending', true);
+                            payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
+                        }
+                    });
+            };
+
+            activePollTimer = setInterval(() => {
+                elapsed += 2;
+                pollOnce();
+            }, 2000);
+            pollOnce();
+        }
+
         function showPaymentStatus(message, type, shouldFocus) {
             const card = document.getElementById('paymentStatusCard');
             const text = document.getElementById('paymentStatusMessage');
@@ -1233,14 +1305,13 @@
             const payBtn = document.getElementById('momoSubmitPaymentBtn');
             const modal = document.getElementById('sandboxPaymentModal');
 
-            // A closed dialog is not proof that the provider request stopped. Keep the same
-            // durable pending reference visible when the customer returns to checkout.
             if (activeReferenceId) {
                 modal.style.display = 'flex';
                 showPaymentStatus('Hari ubusabe bwo kwishyura bukiri gutegerejwe. Emeza kuri telefone yawe niba ubutumwa buhari, cyangwa tegereza gato mbere yo kongera kwishyura.', 'pending', true);
                 document.getElementById('momoBtnTextLabel').textContent = 'Ubusabe burategerejwe';
                 document.getElementById('momoBtnIcon').className = 'fa-solid fa-clock';
                 if (payBtn) payBtn.disabled = true;
+                startPendingPaymentPolling(activeReferenceId);
                 return;
             }
 
@@ -1263,13 +1334,12 @@
         window.closeTestPaymentModal = function() {
             document.getElementById('sandboxPaymentModal').style.display = 'none';
             document.getElementById('ussdHintBox').style.display = 'none';
-            if (activePollTimer) { clearInterval(activePollTimer); activePollTimer = null; }
-            // Closing a browser dialog must not cancel a payment request that may already be on the phone.
-            // The server keeps the durable pending order and authoritative webhook can still complete it.
+            stopPendingPaymentPolling();
             const payBtn = document.getElementById('momoSubmitPaymentBtn');
             document.getElementById('momoBtnTextLabel').textContent = 'Ishyura Ubu';
             document.getElementById('momoBtnIcon').className = 'fa-solid fa-arrow-right';
-            if (payBtn) payBtn.disabled = false;
+            if (payBtn && !activeReferenceId) payBtn.disabled = false;
+            if (activeReferenceId) payBtn.disabled = true;
         };
 
         function pricePerExamForPurchaseQuantity(qty) {
@@ -1380,36 +1450,7 @@
 
                     activeReferenceId = data.referenceId;
                     showPaymentStatus('Ubusabe bwo kwishyura bwoherejwe. Emeza kuri telefone yawe; ntukohereze ubundi busabe niba wari umaze kwemeza.', 'pending', false);
-                    let elapsed = 0;
-                    const maxWait = 120;
-                    activePollTimer = setInterval(() => {
-                        elapsed += 2;
-                        const remaining = maxWait - elapsed;
-                        btnText.textContent = `Tegereza... (${remaining}s)`;
-                        fetch(`/api/payments/verify/${data.referenceId}`)
-                            .then(r => r.json())
-                            .then(d => {
-                                if (d.status === 'SUCCESS') {
-                                    window.IkizameAnalytics?.purchase(d.analyticsPurchase).catch(() => {});
-                                    clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
-                                    document.getElementById('ussdHintBox').style.display = 'none';
-                                    closeTestPaymentModal();
-                                    document.getElementById('customAlertBoxTextContentMessage').textContent = 'Kwishyura byagenze neza! Ibizamini byawe bifunguwe. Ubu ushobora gutangira ikizamini ukoresheje nimero yawe ya telefone.';
-                                    document.getElementById('customBrandedSuccessAlertBoxModal').style.display = 'flex';
-                                } else if (d.status === 'FAILED') {
-                                    clearInterval(activePollTimer); activePollTimer = null; activeReferenceId = null;
-                                    document.getElementById('ussdHintBox').style.display = 'none';
-                                    showPaymentStatus('Kwishyura ntabwo kwemejwe. Ushobora kongera kugerageza niba nta kwishyura wemeje kuri telefone.', 'error', true);
-                                    payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
-                                } else if (elapsed >= maxWait) {
-                                    clearInterval(activePollTimer); activePollTimer = null;
-                                    document.getElementById('ussdHintBox').style.display = 'none';
-                                    activeReferenceId = null;
-                                    showPaymentStatus('Igihe urubuga rwategereje cyarangiye, ariko ubwishyu bushobora kuba bugikomeje. Niba warabwemeje kuri telefone, tegereza gato maze urebe ibizamini bisigaye mbere yo kongera kwishyura.', 'pending', true);
-                                    payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
-                                }
-                            });
-                    }, 2000);
+                    startPendingPaymentPolling(data.referenceId);
                 } else {
                     showPaymentStatus(data.error || 'Uburyo bwo kohereza ubusabe bwanze. Reba nimero yawe cyangwa gerageza nyuma.', 'error', true); payBtn.disabled = false; restoreAdaptivePayButtonLabel(); btnIcon.className = 'fa-solid fa-arrow-right';
                 }
