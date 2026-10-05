@@ -799,6 +799,49 @@
             .q-body { min-height: 330px; flex: none; }
         }
 
+        /* Let long questions and answers extend the page instead of creating a nested scrollbox. */
+        html, body { height: auto; min-height: 100dvh; overflow-x: hidden; overflow-y: auto; }
+        .page { min-height: 100dvh; overflow: visible; }
+        .question-card { flex: 1 0 auto; min-height: 0; overflow: visible; }
+        .q-body { flex: 0 0 auto; min-height: 0; overflow: visible; align-items: start; }
+        .q-body.no-image { grid-template-columns: minmax(0, 1fr); }
+        .img-frame { width: 100%; min-height: 0; aspect-ratio: 4 / 3; max-height: 420px; padding: 6px; overflow: hidden; }
+        .img-frame img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
+        .options-list { height: auto; overflow: visible; gap: 9px; padding: 0; }
+        .opt-row { min-height: 44px; margin-bottom: 0; padding: 11px 13px; gap: 11px; }
+        .opt-label { line-height: 1.45; overflow-wrap: anywhere; }
+        .options-list.img-grid { height: auto; grid-template-rows: repeat(2, minmax(150px, 18vw)); overflow: visible; }
+        .options-list.img-grid .opt-row { height: auto; min-height: 0; overflow: hidden; }
+        .q-text { padding: 12px 15px; line-height: 1.5; overflow-wrap: anywhere; }
+        .timer-card { padding: 10px 20px; }
+        .nav-bar { gap: 10px; }
+        .nav-btns { margin-left: auto; }
+        .btn:disabled { cursor: wait; opacity: .78; transform: none; }
+        .prog-dot.current { outline: 2px solid rgba(11,105,139,.32); outline-offset: 2px; }
+        #ik-confirm-overlay .ik-confirm-card { max-width: 390px; }
+        #ik-confirm-overlay .ik-confirm-msg { white-space: pre-line; color: #42576a; }
+        #ik-confirm-overlay .ik-confirm-icon.success::before { content: '\2713'; font-size: 1.75rem; font-weight: 800; }
+        #ik-confirm-overlay .ik-confirm-icon.success i { display: none; }
+        #ik-confirm-overlay .ik-confirm-btn { min-height: 44px; }
+
+        @media (max-width: 900px) {
+            .page { min-height: 100svh; }
+            .question-card { flex: none; }
+            .q-body { display: grid; grid-template-columns: minmax(0, 1fr); }
+            .img-frame { aspect-ratio: auto; height: auto !important; min-height: 0 !important; max-height: none !important; }
+            .img-frame img { width: 100% !important; height: auto !important; max-height: min(45svh, 360px) !important; }
+            .options-list.img-grid { grid-template-rows: repeat(2, minmax(125px, 34vw)) !important; }
+        }
+        @media (max-width: 600px) {
+            .options-list.img-grid { grid-template-rows: repeat(2, minmax(105px, 34vw)) !important; }
+            .opt-row { padding: 11px 12px; }
+            .nav-btns { flex-wrap: wrap; justify-content: flex-end; }
+            #ik-confirm-overlay { padding: 12px; }
+            #ik-confirm-overlay .ik-confirm-header { padding: 22px 18px 0; }
+            #ik-confirm-overlay .ik-confirm-msg { padding: 10px 18px 0; }
+            #ik-confirm-overlay .ik-confirm-footer { padding: 18px; gap: 8px; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
         }
@@ -904,6 +947,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let questions = [], idx = 0;
     const answers = {};
+    const prefetchedImages = new Set();
+    let submitInFlight = false;
+    let submitDialogOpen = false;
 
     const countdownEl    = document.getElementById('examCountdown');
     const qTextEl        = document.getElementById('qText');
@@ -964,6 +1010,22 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLine(progFillM, total);
     }
 
+    function prefetchNearbyImages() {
+        [idx, idx + 1].forEach(i => {
+            const q = questions[i];
+            if (!q) return;
+            const sources = [q.image_path || q.image_url || '', q.option_a, q.option_b, q.option_c, q.option_d];
+            sources.forEach((value, optionIndex) => {
+                if (optionIndex > 0 && !(/\.(png|jpg|jpeg|gif|webp)$/i.test(value || '') || /^option[A-D]_File-/i.test(value || ''))) return;
+                const src = normalizeQuestionImageAssetPath(value || '');
+                if (!src || prefetchedImages.has(src)) return;
+                prefetchedImages.add(src);
+                const image = new Image();
+                image.src = src;
+            });
+        });
+    }
+
     function render() {
         const q = questions[idx];
         qCounterEl.textContent = `< ${idx+1} / ${questions.length} >`;
@@ -975,8 +1037,8 @@ document.addEventListener('DOMContentLoaded', () => {
         buildProgress();
 
         // Scroll to top on mobile when navigating
-        if (window.innerWidth <= 640) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.innerWidth <= 900) {
+            window.scrollTo({ top: 0, behavior: 'auto' });
         }
 
         // Image
@@ -987,6 +1049,7 @@ document.addEventListener('DOMContentLoaded', () => {
             imgFrameEl.innerHTML = `<img src="${normalizedMainImage}" alt="Ikimenyetso" decoding="async" fetchpriority="high" loading="eager">`;
         } else {
             imgFrameEl.style.display = 'none';
+            imgFrameEl.replaceChildren();
             qBodyEl.classList.add('no-image');
         }
 
@@ -1036,6 +1099,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nextBtn.innerHTML = 'Komeza &#8594;';
             nextBtn.className = 'btn btn-next';
         }
+        prefetchNearbyImages();
     }
 
     window.pick = function(key, id, el) {
@@ -1046,15 +1110,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function showSubmitModal() {
+        if (submitInFlight || submitDialogOpen) return;
+        submitDialogOpen = true;
         const answered = Object.keys(answers).length;
         const total = questions.length;
         const unanswered = total - answered;
         const msg = unanswered > 0
-            ? `Wasubije ibibazo ${answered} kuri ${total}. Ibibazo ${unanswered} ntibisuzumwe. Ese koko urashaka gusoza ikizamini?`
-            : `Wasubije ibibazo byose ${total}. Ese koko urashaka gusoza ikizamini?`;
-        ikConfirm(msg, 'success', 'Soza Ikizamini?', 'Yego, Soza Ubu', 'Oya, Subira').then(confirmed => {
+            ? `Wasubije ibibazo ${answered} kuri ${total}.\nHasigaye ibibazo ${unanswered} bitarasubizwa.\nUrashaka gusoza ikizamini ubu?`
+            : 'Wasubije ibibazo byose.\nUrashaka gusoza ikizamini ubu?';
+        ikConfirm(msg, 'success', 'Soza ikizamini?', 'Soza Ikizamini', 'Subira').then(confirmed => {
+            submitDialogOpen = false;
             if (!confirmed) return;
-            sessionStorage.removeItem('isExamAlreadyStarted');
             submit();
         });
     }
@@ -1066,6 +1132,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function submit() {
+        if (submitInFlight) return;
+        submitInFlight = true;
+        nextBtn.disabled = true;
+        nextBtn.textContent = 'Turimo gusoza...';
         let analyticsSubmitSucceeded = false;
         const payload = {};
         for (const id in answers) payload[`question_${id}`] = answers[id];
@@ -1074,7 +1144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
-        .then(r => { analyticsSubmitSucceeded = r.ok; return r.json(); })
+        .then(r => { analyticsSubmitSucceeded = r.ok; if (!r.ok) throw new Error('Exam submission failed'); return r.json(); })
         .then(res => {
             if (analyticsSubmitSucceeded && typeof res.score === 'number' && Number.isFinite(res.score) && Number(res.total) > 0) {
                 window.IkizameAnalytics?.examCompleted(Number(res.total));
@@ -1084,9 +1154,16 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('studentAnswerMapping', JSON.stringify(answers));
             sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(questions));
             questions = [];
+            sessionStorage.removeItem('isExamAlreadyStarted');
             window.location.replace('/exam-score');
         })
-        .catch(e => console.error('Submit error:', e));
+        .catch(e => {
+            console.error('Submit error:', e);
+            submitInFlight = false;
+            nextBtn.disabled = false;
+            nextBtn.innerHTML = idx === questions.length - 1 ? 'Soza Ikizamini &#10003;' : 'Komeza &#8594;';
+            ikToast('Ikizamini nticyabashije koherezwa. Ongera ugerageze.', 'error');
+        });
     }
 
     let analyticsQuestionsSucceeded = false;
@@ -1096,22 +1173,11 @@ document.addEventListener('DOMContentLoaded', () => {
             questions = data;
             if (!questions.length) {
                 document.querySelector('.question-card').innerHTML = '<p style="text-align:center;padding:40px;font-weight:700;">Nta bibazo biri mu bubiko.</p>';
-                clearInterval(timer); return;
+                return;
             }
-            // Render first question immediately, then preload all images in background
+            // Render first question immediately; render() prefetches only the current and next images.
             if (analyticsQuestionsSucceeded) window.IkizameAnalytics?.examStarted(questions.length);
             render();
-            setTimeout(() => {
-                questions.forEach(q => {
-                    const mainSrc = normalizeQuestionImageAssetPath(q.image_path || q.image_url || '');
-                    if (mainSrc) { const i = new Image(); i.src = mainSrc; }
-                    ['option_a','option_b','option_c','option_d'].forEach(k => {
-                        const optValue = q[k];
-                        const normalizedOpt = normalizeQuestionImageAssetPath(optValue || '');
-                        if (optValue && /\.(png|jpg|jpeg|gif|webp)$/i.test(optValue)) { const i = new Image(); i.src = normalizedOpt; }
-                    });
-                });
-            }, 100);
         });
 });
 </script>

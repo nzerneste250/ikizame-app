@@ -255,15 +255,20 @@
                 okBtn.removeEventListener('click', onOk);
                 cancelBtn.removeEventListener('click', onCancel);
                 document.removeEventListener('keydown', onKeydown);
-                if (ADMIN_INTERFACE && trigger && trigger.isConnected && typeof trigger.focus === 'function') trigger.focus();
+                if (trigger && trigger.isConnected && typeof trigger.focus === 'function') trigger.focus();
                 resolve(result);
             }
             function onOk()     { done(true);  }
             function onCancel() { done(false); }
-            function onKeydown(event) { if (ADMIN_INTERFACE && event.key === 'Escape') { event.preventDefault(); done(false); } }
+            function onKeydown(event) {
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    done(false);
+                }
+            }
             okBtn.addEventListener('click', onOk);
             cancelBtn.addEventListener('click', onCancel);
-            if (ADMIN_INTERFACE) document.addEventListener('keydown', onKeydown);
+            document.addEventListener('keydown', onKeydown);
             setTimeout(() => cancelBtn.focus(), 50);
         });
     };
