@@ -229,6 +229,85 @@ footer a { color: #C9D9EA; }
 footer a:hover { color: #FFFFFF; }
 .site-footer-bottom { border-top-color: rgba(214,228,242,.22); color: #C9D9EA; }
 
+.study-plan-print {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 16px;
+  padding: 0 16px;
+  border: 1px solid #B7D0E8;
+  border-radius: 8px;
+  background: #E3EFFA;
+  color: #0D47A1;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.study-plan-print:hover { background: #DCEAF7; }
+.study-plan-exam-date { margin: 0 0 14px; color: #334155; font-size: .9rem; font-weight: 700; }
+
+@media print {
+  @page { size: A4; margin: 14mm; }
+
+  html,
+  body {
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: #FFFFFF !important;
+    color: #111827 !important;
+  }
+
+  body { display: block !important; }
+  body > * { display: none !important; }
+  body > main.main {
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .main > * { display: none !important; }
+  .main > .study-plan-panel {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+  }
+  .study-plan-header,
+  .study-plan-form,
+  .study-plan-summary,
+  .study-plan-print { display: none !important; }
+  .study-plan-result,
+  .study-plan-result[hidden] {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: #FFFFFF !important;
+    color: #111827 !important;
+  }
+  .study-plan-result h3,
+  .study-plan-exam-date,
+  .study-plan-day-date,
+  .study-plan-day-title,
+  .study-plan-day p { color: #111827 !important; }
+  .study-plan-days { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; }
+  .study-plan-day {
+    break-inside: avoid;
+    border-color: #CBD5E1 !important;
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+  }
+  .study-plan-day-meta span { background: #FFFFFF !important; color: #111827 !important; }
+}
+
 :where(a, button, input, select, textarea, summary):focus-visible {
   outline: 3px solid rgba(21,101,192,.38);
   outline-offset: 3px;

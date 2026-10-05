@@ -4,8 +4,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const pageHtml = fs.readFileSync(path.join(__dirname, '..', 'public', 'ifashanyigisho.html'), 'utf8');
+const themeCss = fs.readFileSync(path.join(__dirname, '..', 'public', 'assets', 'css', 'ifashanyigisho-theme.css'), 'utf8');
 
-test('study plan section is present with privacy-safe inputs only', () => {
+test('STUDY_PLAN_NO_IDENTITY_DATA=PASS', () => {
   assert.match(pageHtml, /Tegura gahunda yo kwiga/);
   assert.match(pageHtml, /Hitamo itariki y’ikizamini cyawe, ubone gahunda yoroheje yo kwiga buri munsi\./);
   assert.match(pageHtml, /id="studyPlanExamDate"/);
@@ -15,7 +16,7 @@ test('study plan section is present with privacy-safe inputs only', () => {
   assert.doesNotMatch(pageHtml, /id=\"studyPlanName\"|id=\"studyPlanPhone\"|id=\"studyPlanEmail\"/i);
 });
 
-test('study plan generation creates a local deterministic schedule and ICS export', () => {
+test('STUDY_PLAN_GENERATION=PASS', () => {
   const scriptStart = pageHtml.indexOf('function buildStudyPlan');
   const scriptEnd = pageHtml.indexOf('document.addEventListener(\'DOMContentLoaded\'', scriptStart);
   assert.notEqual(scriptStart, -1, 'study plan generation script exists');
@@ -23,8 +24,21 @@ test('study plan generation creates a local deterministic schedule and ICS expor
 
   const script = pageHtml.slice(scriptStart, scriptEnd);
   assert.match(script, /function buildStudyPlan|const buildStudyPlan|window\.generateStudyPlan/);
-  assert.match(script, /BEGIN:VCALENDAR|downloadStudyPlanIcs|Blob\(|createObjectURL/);
   assert.match(script, /selectedExamDate|dailyMinutes|daysRemaining/);
   assert.match(pageHtml, /@media\s*\(max-width:\s*768px\)|@media\s*\(max-width:\s*430px\)|@media\s*\(max-width:\s*360px\)/);
   assert.match(pageHtml, /overflow-x:\s*hidden/);
+});
+
+test('STUDY_PLAN_ICS_REMOVED=PASS', () => {
+  assert.doesNotMatch(pageHtml + themeCss, /BEGIN:VCALENDAR|VEVENT|formatIcsDate|downloadStudyPlanIcs|\.ics|text\/calendar|createObjectURL|revokeObjectURL/i);
+  assert.doesNotMatch(pageHtml, /study-plan-download|Download \.ics/i);
+});
+
+test('STUDY_PLAN_PRINT_AVAILABLE=PASS', () => {
+  assert.match(pageHtml, /Your Study Plan/);
+  assert.match(pageHtml, /Print \/ Save Plan/);
+  assert.match(pageHtml, /window\.print\(\)/);
+  assert.match(themeCss, /@media print/);
+  assert.match(themeCss, /@page\s*\{\s*size:\s*A4/i);
+  assert.match(themeCss, /body > \*\s*\{\s*display:\s*none/i);
 });
