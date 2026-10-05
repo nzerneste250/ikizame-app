@@ -1,8 +1,4 @@
 (function () {
-  // add-exam.html contains legacy non-UTF-8 markup; keep its admin tab title English at runtime.
-  if (/^\/add-exam(?:\.html)?\/?$/.test(window.location.pathname)) {
-    document.title = 'IKIZAMINI | Add Question - Admin';
-  }
   function getSidebar() {
     return document.querySelector('.sidebar, .side');
   }

@@ -75,7 +75,9 @@ app.use(express.urlencoded({ extended: true }));
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 15,
-    message: { success: false, error: "Gerageza nyuma y'iminota 15." },
+    message: (req) => ({ success: false, error: req.baseUrl === '/api/admin'
+        ? 'Too many requests. Please try again in 15 minutes.'
+        : "Gerageza nyuma y'iminota 15." }),
     standardHeaders: true,
     legacyHeaders: false
 });

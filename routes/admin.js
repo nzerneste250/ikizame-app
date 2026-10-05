@@ -72,18 +72,20 @@ module.exports = (db, loginLimiter) => {
     // POST forgot password — send OTP to admin email
     router.post('/forgot-password', loginLimiter, (req, res) => {
         const { email } = req.body;
-        if (!email) return res.json({ ok: false, error: 'Email irakenewe.' });
+        if (!email) return res.json({ ok: false, error: 'Email address is required.' });
 
         const adminEmail = PROTECTED_REPORT_EMAIL;
         if (email.toLowerCase() !== adminEmail.toLowerCase())
-            return res.json({ ok: false, error: 'Iyi email ntabwo izwi nk\'iy\'umunyamabanga.' });
+            return res.json({ ok: false, error: 'This email address is not registered for admin password recovery.' });
 
         const issueCheck = canIssueOtp(adminOtpState, email.toLowerCase(), {
             windowMs: 60 * 1000,
             maxRequests: 3,
             cooldownMs: 30 * 1000
         });
-        if (!issueCheck.ok) return res.json({ ok: false, error: issueCheck.error });
+        if (!issueCheck.ok) return res.json({ ok: false, error: issueCheck.retryAfterMs
+            ? `Please wait ${Math.max(1, Math.ceil(issueCheck.retryAfterMs / 1000))} seconds before requesting another OTP.`
+            : 'Could not issue an OTP. Please try again.' });
 
         const otp     = Math.floor(100000 + Math.random() * 900000).toString();
         const expires = Date.now() + 10 * 60 * 1000; // 10 min
@@ -93,23 +95,23 @@ module.exports = (db, loginLimiter) => {
         });
 
         const transport = req.app.get('emailTransport');
-        if (!transport) return res.json({ ok: false, error: 'Email service ntabwo itangiye.' });
+        if (!transport) return res.json({ ok: false, error: 'Email service is unavailable.' });
 
         transport.sendMail({
             from: `"IKIZAME Security" <${process.env.SMTP_USER}>`,
             to:   adminEmail,
-            subject: '🔐 IKIZAME Admin — OTP Code yo Guhindura Password',
+            subject: '🔐 IKIZAME Admin — Password Reset OTP',
             html: `<div style="font-family:Inter,sans-serif;max-width:420px;margin:0 auto;background:#f8fafc;padding:24px;border-radius:12px;">
                 <div style="background:#0b698b;padding:16px 20px;border-radius:8px;margin-bottom:20px;text-align:center;">
                     <h2 style="color:#fff;margin:0;font-size:20px;">🔐 IKIZAME Admin</h2>
                     <p style="color:#bae6fd;margin:4px 0 0;font-size:13px;">Password Reset OTP</p>
                 </div>
-                <p style="color:#475569;font-size:14px;margin-bottom:16px;">Warasabye guhindura password. Koresha OTP ikurikira:</p>
+                <p style="color:#475569;font-size:14px;margin-bottom:16px;">You requested a password reset. Use the OTP code below:</p>
                 <div style="background:#0f172a;color:#38bdf8;font-size:36px;font-weight:900;letter-spacing:10px;text-align:center;padding:20px;border-radius:8px;margin-bottom:16px;font-family:monospace;">${otp}</div>
-                <p style="color:#94a3b8;font-size:12px;">Iyi code izarangira mu minota 10. Niba utayisabye, irengageze.</p>
+                <p style="color:#94a3b8;font-size:12px;">This code expires in 10 minutes. If you did not request a reset, ignore this email.</p>
             </div>`
         }, (err) => {
-            if (err) return res.json({ ok: false, error: 'Kohereza email byanze. Gerageza nanone.' });
+            if (err) return res.json({ ok: false, error: 'Could not send the reset email. Please try again.' });
             res.json({ ok: true });
         });
     });
@@ -118,23 +120,25 @@ module.exports = (db, loginLimiter) => {
     router.post('/reset-password', loginLimiter, (req, res) => {
         const { email, otp, newPassword } = req.body;
         if (!email || !otp || !newPassword)
-            return res.json({ ok: false, error: 'Amakuru yose arakenewe.' });
+            return res.json({ ok: false, error: 'Email, OTP, and new password are required.' });
         if (newPassword.length < 8)
-            return res.json({ ok: false, error: 'Password igomba kuba nibura inyuguti 8.' });
+            return res.json({ ok: false, error: 'Password must be at least 8 characters.' });
 
         const otpVerification = verifyOtpCode(adminOtpState, email, otp, {
             maxAttempts: 5,
             lockMs: 60 * 1000
         });
         if (!otpVerification.ok) {
-            return res.json({ ok: false, error: otpVerification.error });
+            return res.json({ ok: false, error: otpVerification.retryAfterMs
+                ? `Too many invalid OTP attempts. Try again in ${Math.max(1, Math.ceil(otpVerification.retryAfterMs / 1000))} seconds.`
+                : 'Invalid or expired OTP. Request a new code if needed.' });
         }
 
         const record = otpStore.get(email.toLowerCase());
         if (record) otpStore.delete(email.toLowerCase());
 
         bcrypt.hash(newPassword, BCRYPT_ROUNDS, (hashErr, hash) => {
-            if (hashErr) return res.json({ ok: false, error: 'Hashage yabuze.' });
+            if (hashErr) return res.json({ ok: false, error: 'Could not secure the new password.' });
             const adminEmail = PROTECTED_REPORT_EMAIL;
             db.query('UPDATE portal_admins SET password = ? WHERE email = ? OR username = ?',
                 [hash, adminEmail, adminEmail],
@@ -151,9 +155,9 @@ module.exports = (db, loginLimiter) => {
         if (!getAdminSessionState(req)) return res.status(401).json({ ok: false, error: 'Unauthorized' });
         const { newPassword } = req.body;
         if (!newPassword || newPassword.length < 8)
-            return res.json({ ok: false, error: 'Password igomba kuba nibura inyuguti 8.' });
+            return res.json({ ok: false, error: 'Password must be at least 8 characters.' });
         bcrypt.hash(newPassword, BCRYPT_ROUNDS, (hashErr, hash) => {
-            if (hashErr) return res.json({ ok: false, error: 'Hash yabuze.' });
+            if (hashErr) return res.json({ ok: false, error: 'Could not secure the new password.' });
             db.query('UPDATE portal_admins SET password=?, must_change_password=0 WHERE id=?',
                 [hash, req.session.adminId],
                 (err) => {
@@ -200,18 +204,18 @@ module.exports = (db, loginLimiter) => {
     // POST create new admin user — generates temp password, sends welcome email
     router.post('/users', requireSuperAdmin, (req, res) => {
         const { email, role } = req.body;
-        if (!email) return res.json({ ok: false, error: 'Email irakenewe.' });
+        if (!email) return res.json({ ok: false, error: 'Email address is required.' });
         const userRole = role === 'viewer' ? 'viewer' : 'superadmin';
 
         db.query('SELECT id FROM portal_admins WHERE email = ?', [email], (err, rows) => {
             if (err) return res.json({ ok: false, error: err.message });
-            if (rows.length > 0) return res.json({ ok: false, error: 'Iyi email isanzwe ikoreshwa.' });
+            if (rows.length > 0) return res.json({ ok: false, error: 'This email address is already in use.' });
 
             // Generate random temp password
             const tempPass = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-4).toUpperCase() + '!';
 
             bcrypt.hash(tempPass, BCRYPT_ROUNDS, (hashErr, hash) => {
-                if (hashErr) return res.json({ ok: false, error: 'Hash yabuze.' });
+                if (hashErr) return res.json({ ok: false, error: 'Could not secure the temporary password.' });
                 db.query(
                     'INSERT INTO portal_admins (username, email, password, role, must_change_password) VALUES (?, ?, ?, ?, 1)',
                     [email.split('@')[0], email, hash, userRole],
@@ -254,9 +258,9 @@ module.exports = (db, loginLimiter) => {
     router.patch('/users/:id', requireSuperAdmin, (req, res) => {
         const id = Number(req.params.id);
         const { email, role } = req.body;
-        if (!email && !role) return res.json({ ok: false, error: 'Nta makuru yoherejwe.' });
+        if (!email && !role) return res.json({ ok: false, error: 'No account changes were provided.' });
         db.query('SELECT email FROM portal_admins WHERE id = ?', [id], (err, rows) => {
-            if (err || !rows.length) return res.json({ ok: false, error: 'User ntabwo abonetse.' });
+            if (err || !rows.length) return res.json({ ok: false, error: 'Admin user not found.' });
             const updates = [];
             const vals = [];
             if (email) { updates.push('email=?'); vals.push(email); }
@@ -274,8 +278,8 @@ module.exports = (db, loginLimiter) => {
         const id = Number(req.params.id);
         const { active } = req.body;
         db.query('SELECT email FROM portal_admins WHERE id = ?', [id], (err, rows) => {
-            if (err || !rows.length) return res.json({ ok: false, error: 'User ntabwo abonetse.' });
-            if (rows[0].email === req.session.adminEmail) return res.json({ ok: false, error: 'Ntushobora guhindura konti yawe.' });
+            if (err || !rows.length) return res.json({ ok: false, error: 'Admin user not found.' });
+            if (rows[0].email === req.session.adminEmail) return res.json({ ok: false, error: 'You cannot change the status of your own account.' });
             db.query('UPDATE portal_admins SET is_active=? WHERE id=?', [active ? 1 : 0, id], (err2) => {
                 if (err2) return res.json({ ok: false, error: err2.message });
                 res.json({ ok: true });
@@ -287,8 +291,8 @@ module.exports = (db, loginLimiter) => {
     router.delete('/users/:id', requireSuperAdmin, (req, res) => {
         const id = Number(req.params.id);
         db.query('SELECT email FROM portal_admins WHERE id = ?', [id], (err, rows) => {
-            if (err || !rows.length) return res.json({ ok: false, error: 'User ntabwo abonetse.' });
-            if (rows[0].email === req.session.adminEmail) return res.json({ ok: false, error: 'Ntushobora gusiba konti yawe.' });
+            if (err || !rows.length) return res.json({ ok: false, error: 'Admin user not found.' });
+            if (rows[0].email === req.session.adminEmail) return res.json({ ok: false, error: 'You cannot delete your own account.' });
             db.query('DELETE FROM portal_admins WHERE id = ?', [id], (err2) => {
                 if (err2) return res.json({ ok: false, error: err2.message });
                 res.json({ ok: true });
@@ -309,12 +313,12 @@ module.exports = (db, loginLimiter) => {
 
     router.post('/settings/report-emails', requireSuperAdmin, (req, res) => {
         const email = String(req.body.email || '').trim().toLowerCase();
-        if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email irakenewe.' });
-        if (LEGACY_REPORT_EMAILS.includes(email)) return res.status(400).json({ ok: false, error: 'Iyi email ntiyemewe.' });
+        if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'A valid email address is required.' });
+        if (LEGACY_REPORT_EMAILS.includes(email)) return res.status(400).json({ ok: false, error: 'This email address is not allowed.' });
 
         db.query('SELECT id FROM report_notification_emails WHERE email = ?', [email], (err, rows) => {
             if (err) return res.status(500).json({ ok: false, error: err.message });
-            if (rows.length) return res.status(409).json({ ok: false, error: 'Iyi email isanzwe yanditse.' });
+            if (rows.length) return res.status(409).json({ ok: false, error: 'This report email is already configured.' });
 
             db.query('INSERT INTO report_notification_emails (email, is_active) VALUES (?, 1)', [email], (insErr) => {
                 if (insErr) return res.status(500).json({ ok: false, error: insErr.message });
@@ -326,13 +330,13 @@ module.exports = (db, loginLimiter) => {
     router.patch('/settings/report-emails/:id', requireSuperAdmin, (req, res) => {
         const id = Number(req.params.id);
         const email = String(req.body.email || '').trim().toLowerCase();
-        if (!id || !email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email irakenewe.' });
+        if (!id || !email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'A valid email address is required.' });
 
-        if (LEGACY_REPORT_EMAILS.includes(email)) return res.status(400).json({ ok: false, error: 'Iyi email ntiyemewe.' });
+        if (LEGACY_REPORT_EMAILS.includes(email)) return res.status(400).json({ ok: false, error: 'This email address is not allowed.' });
         db.query('SELECT email FROM report_notification_emails WHERE id = ?', [id], (findErr, rows) => {
             if (findErr) return res.status(500).json({ ok: false, error: findErr.message });
-            if (!rows.length) return res.status(404).json({ ok: false, error: 'Email ntiyabonetse.' });
-            if (String(rows[0].email).toLowerCase() === PROTECTED_REPORT_EMAIL) return res.status(403).json({ ok: false, error: 'Iyi email irinzwe kandi ntishobora guhindurwa.' });
+            if (!rows.length) return res.status(404).json({ ok: false, error: 'Report email not found.' });
+            if (String(rows[0].email).toLowerCase() === PROTECTED_REPORT_EMAIL) return res.status(403).json({ ok: false, error: 'This protected report email cannot be edited.' });
             db.query('UPDATE report_notification_emails SET email = ? WHERE id = ?', [email, id], (err) => {
                 if (err) return res.status(500).json({ ok: false, error: err.message });
                 res.json({ ok: true });
@@ -344,8 +348,8 @@ module.exports = (db, loginLimiter) => {
         const id = Number(req.params.id);
         db.query('SELECT email FROM report_notification_emails WHERE id = ?', [id], (findErr, rows) => {
             if (findErr) return res.status(500).json({ ok: false, error: findErr.message });
-            if (!rows.length) return res.status(404).json({ ok: false, error: 'Email ntiyabonetse.' });
-            if (String(rows[0].email).toLowerCase() === PROTECTED_REPORT_EMAIL) return res.status(403).json({ ok: false, error: 'Iyi email irinzwe kandi ntishobora gusibwa.' });
+            if (!rows.length) return res.status(404).json({ ok: false, error: 'Report email not found.' });
+            if (String(rows[0].email).toLowerCase() === PROTECTED_REPORT_EMAIL) return res.status(403).json({ ok: false, error: 'This protected report email cannot be deleted.' });
             db.query('DELETE FROM report_notification_emails WHERE id = ?', [id], (err) => {
                 if (err) return res.status(500).json({ ok: false, error: err.message });
                 res.json({ ok: true });
@@ -372,19 +376,19 @@ module.exports = (db, loginLimiter) => {
         let phoneNumber;
         try {
             phoneNumber = normalizeRwandaPhone(req.body.phone_number || req.body.phone || '');
-        } catch (error) {
-            return res.status(400).json({ ok: false, error: error.message });
+        } catch (_) {
+            return res.status(400).json({ ok: false, error: 'Enter a valid 10-digit Rwanda phone number starting with 078, 079, 072, or 073.' });
         }
         const email = String(req.body.email || '').trim().toLowerCase();
         const otpEmail = String(req.body.otp_email || req.body.otpEmail || '').trim().toLowerCase();
 
-        if (!phoneNumber) return res.status(400).json({ ok: false, error: 'Telephone irakenewe.' });
-        if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email ya contact irakenewe.' });
-        if (!otpEmail || !otpEmail.includes('@')) return res.status(400).json({ ok: false, error: 'Email ya OTP irakenewe.' });
+        if (!phoneNumber) return res.status(400).json({ ok: false, error: 'Phone number is required.' });
+        if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'A valid contact email is required.' });
+        if (!otpEmail || !otpEmail.includes('@')) return res.status(400).json({ ok: false, error: 'A valid OTP email is required.' });
 
         db.query('SELECT id FROM exam_access_contacts WHERE phone_number = ?', [phoneNumber], (existErr, rows) => {
             if (existErr) return res.status(500).json({ ok: false, error: existErr.message });
-            if (rows.length) return res.status(409).json({ ok: false, error: 'Iyi nomero isanzwe yanditswe.' });
+            if (rows.length) return res.status(409).json({ ok: false, error: 'This phone number is already registered.' });
 
             db.query(
                 'INSERT INTO exam_access_contacts (phone_number, email, otp_email, is_active) VALUES (?, ?, ?, 1)',
@@ -402,16 +406,16 @@ module.exports = (db, loginLimiter) => {
         let phoneNumber;
         try {
             phoneNumber = normalizeRwandaPhone(req.body.phone_number || req.body.phone || '');
-        } catch (error) {
-            return res.status(400).json({ ok: false, error: error.message });
+        } catch (_) {
+            return res.status(400).json({ ok: false, error: 'Enter a valid 10-digit Rwanda phone number starting with 078, 079, 072, or 073.' });
         }
         const email = String(req.body.email || '').trim().toLowerCase();
         const otpEmail = String(req.body.otp_email || req.body.otpEmail || '').trim().toLowerCase();
 
         if (!id) return res.status(400).json({ ok: false, error: 'Invalid ID.' });
-        if (!phoneNumber) return res.status(400).json({ ok: false, error: 'Telephone irakenewe.' });
-        if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'Email ya contact irakenewe.' });
-        if (!otpEmail || !otpEmail.includes('@')) return res.status(400).json({ ok: false, error: 'Email ya OTP irakenewe.' });
+        if (!phoneNumber) return res.status(400).json({ ok: false, error: 'Phone number is required.' });
+        if (!email || !email.includes('@')) return res.status(400).json({ ok: false, error: 'A valid contact email is required.' });
+        if (!otpEmail || !otpEmail.includes('@')) return res.status(400).json({ ok: false, error: 'A valid OTP email is required.' });
 
         db.query('UPDATE exam_access_contacts SET phone_number = ?, email = ?, otp_email = ? WHERE id = ?', [phoneNumber, email, otpEmail, id], (err) => {
             if (err) return res.status(500).json({ ok: false, error: err.message });
