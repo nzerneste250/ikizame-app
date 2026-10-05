@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>IKIZAMINI | Admin Login - Ikizamini cya Provisoire mu Rwanda | Practice Driving Theory Exam</title>
+    <title>IKIZAMINI | Admin Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1425,7 +1425,7 @@
                     showAlert('OTP has been sent to your email. Check your inbox.', 'success');
                     setTimeout(() => showPanel('panelReset'), 1500);
                 } else {
-                    showAlert(d.error || 'Sending failed.');
+                    showAlert('Could not send the OTP. Check the admin email or try again later.');
                 }
             })
             .catch(() => {
@@ -1466,7 +1466,7 @@
                     showAlert('Password changed successfully! Log in with your new password.', 'success');
                     setTimeout(() => showPanel('panelLogin'), 2000);
                 } else {
-                    showAlert(d.error || 'Password reset failed.');
+                    showAlert('Could not reset the password. Check the OTP and try again.');
                 }
             })
             .catch(() => {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKIZAMINI | Payments - Ikizamini cya Provisoire mu Rwanda | Practice Driving Theory Exam</title>
+    <title>IKIZAMINI | Payments - Admin</title>
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -707,15 +707,15 @@ function applyDateFilter(dateStr) {
         const total_exams = Number(document.getElementById('editPaymentTotalExams').value);
         const remaining_exams = Number(document.getElementById('editPaymentRemainingExams').value);
         if (isNaN(id) || isNaN(total_exams) || isNaN(remaining_exams) || total_exams < 0) {
-            ikToast('Injiza imibare yuzuye kuri total na remaining exams.', 'warning');
+            ikToast('Enter whole numbers for total and remaining exams.', 'warning');
             return;
         }
         if (remaining_exams < 0) {
-            ikAlert('Remaining exams ntishobora kuba munsi ya zero.\n\nUyu munyeshuri yarangije ibizamini byose. Shyiraho payment nshya.', 'warning', 'Ibizamini Byarangiye');
+            ikAlert('Remaining exams cannot be below zero. This student has used all assigned exams; create a new payment if more are needed.', 'warning', 'No Exams Remaining');
             return;
         }
         if (remaining_exams > total_exams) {
-            ikToast('Remaining exams ntishobora kuruta total exams zaguzwe.', 'warning');
+            ikToast('Remaining exams cannot exceed the total exams purchased.', 'warning');
             return;
         }
         fetch(`/api/admin/payment-transaction/${id}`, {

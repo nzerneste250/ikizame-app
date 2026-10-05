@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>IKIZAMINI | Upload Resources - Ikizamini cya Provisoire mu Rwanda | Practice Driving Theory Exam</title>
+    <title>IKIZAMINI | Upload Resources - Admin</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -425,11 +425,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.deleteResource = function(id) {
-        ikConfirm('Urareba neza ko ushaka gusiba ubu butumwa burundu? Igikorwa ntishobora gusubizwaho.', 'danger', 'Emeza Gusiba', 'Yego, Siba', 'Oya').then(confirmed => {
+        ikConfirm('Are you sure you want to permanently delete this resource? This action cannot be undone.', 'danger', 'Delete Resource?', 'Delete Resource', 'Cancel').then(confirmed => {
             if (!confirmed) return;
             fetch(`/api/resources/delete/${id}`, { method: 'DELETE' })
                 .then(r => r.json())
-                .then(res => { if (res.success) { loadResources(); ikToast('Butumwa basibwe neza.', 'success'); } else ikToast('Delete failed.', 'error'); })
+                .then(res => { if (res.success) { loadResources(); ikToast('Resource deleted successfully.', 'success'); } else ikToast('Delete failed.', 'error'); })
                 .catch(() => ikToast('Network error.', 'error'));
         });
     };

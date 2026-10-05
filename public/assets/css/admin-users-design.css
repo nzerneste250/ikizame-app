@@ -247,3 +247,216 @@ body.admin-users-page .btn-add { min-height: 46px; border-radius: 9px; backgroun
   body.admin-users-page #usersTableBody .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   body.admin-users-page #usersTableBody .btn-del { grid-column: 1 / -1; }
 }
+
+/* Schools and Alerts & Access share the same management-card language. */
+body.admin-users-page .admin-secondary-panel {
+  flex: 0 0 auto;
+  min-width: 0;
+  width: 100%;
+  padding: 28px clamp(18px, 2.4vw, 36px) 40px;
+  overflow: visible;
+}
+body.admin-users-page .admin-management-card {
+  align-self: start;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  border: 1px solid var(--users-border);
+  border-radius: 14px;
+  box-shadow: var(--admin-shadow);
+}
+body.admin-users-page .admin-management-card .table-card-header {
+  min-height: 76px;
+  gap: 12px;
+  padding: 17px 20px;
+}
+body.admin-users-page .admin-management-card h3 { display: flex; align-items: center; gap: 10px; min-width: 0; color: #1f2937; font-size: 15px; line-height: 1.35; }
+body.admin-users-page .admin-management-card .table-wrap { flex: 0 0 auto; min-width: 0; overflow-x: auto; overflow-y: visible; }
+body.admin-users-page .admin-management-table { width: 100%; font-size: 13px; }
+body.admin-users-page .admin-management-table th {
+  position: static;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--users-border);
+  background: #f7fafc;
+  color: #53677c;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-align: left;
+  text-transform: uppercase;
+}
+body.admin-users-page .admin-management-table td { padding: 15px 14px; border-bottom: 1px solid #edf2f7; line-height: 1.45; vertical-align: middle; }
+body.admin-users-page .admin-management-table tbody tr:last-child td { border-bottom: 0; }
+body.admin-users-page .admin-management-table tbody tr:hover { background: #f7fbff; }
+body.admin-users-page .admin-record-primary { color: #20364d; font-weight: 800; }
+body.admin-users-page .admin-record-email { color: #52677d; font-size: 12px; overflow-wrap: anywhere; word-break: break-word; }
+body.admin-users-page .admin-record-phone { color: #315574; font-weight: 700; white-space: nowrap; }
+body.admin-users-page .admin-record-date { color: #62768b; font-size: 12px; white-space: nowrap; }
+body.admin-users-page .admin-management-table .badge,
+body.admin-users-page .admin-management-table .admin-protected,
+body.admin-users-page .admin-status-neutral {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: max-content;
+  max-width: 100%;
+  padding: 5px 8px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .025em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+body.admin-users-page .admin-management-table .badge-active { background: #e9f6f0; color: #267052; }
+body.admin-users-page .admin-management-table .badge-blocked { background: #fff3e5; color: #9a5a0f; }
+body.admin-users-page .admin-management-table .admin-protected { background: #eaf3fd; color: #1559a1; }
+body.admin-users-page .admin-status-neutral { background: #edf2f7; color: #52677b; }
+body.admin-users-page .admin-record-note { display: block; margin-top: 5px; color: #61778d; font-size: 11px; line-height: 1.4; }
+body.admin-users-page .admin-protected-action { color: #90a0af; }
+body.admin-users-page .admin-management-table .actions { display: flex; flex-wrap: nowrap; gap: 7px; }
+body.admin-users-page .admin-management-table .btn-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: 700 11px/1.2 'Inter', sans-serif;
+  white-space: nowrap;
+}
+body.admin-users-page .admin-management-table .btn-edit,
+body.admin-users-page .admin-management-table .btn-enable { background: #eaf3fd; border-color: #d6e8fa; color: #1559a1; }
+body.admin-users-page .admin-management-table .btn-disable { background: #fff4e5; border-color: #fae7ca; color: #9a5a0f; }
+body.admin-users-page .admin-management-table .btn-del { background: #fff0f0; border-color: #f8dede; color: #ab3b43; }
+body.admin-users-page .admin-management-table .btn-sm:hover { filter: brightness(.96); }
+body.admin-users-page .admin-management-table .btn-sm:focus-visible,
+body.admin-users-page .settings-add-toggle:focus-visible { outline: 3px solid rgba(21,101,192,.3); outline-offset: 2px; }
+body.admin-users-page #panelSchools .admin-management-table { min-width: 690px; }
+body.admin-users-page #panelSchools .admin-management-table th:first-child { width: 24%; }
+body.admin-users-page #panelSchools .admin-management-table th:last-child { width: 155px; }
+
+body.admin-users-page .settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; align-items: start; width: 100%; min-width: 0; }
+body.admin-users-page .settings-card .table-card-header { align-items: flex-start; flex-wrap: wrap; }
+body.admin-users-page .settings-header-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; margin-left: auto; }
+body.admin-users-page .settings-add-toggle { min-height: 40px; padding: 8px 11px; border-radius: 8px; font-size: 11px; }
+body.admin-users-page .settings-card .table-wrap { overflow: visible; padding: 12px; }
+body.admin-users-page .settings-card .admin-management-table,
+body.admin-users-page .settings-card .admin-management-table tbody { display: block; width: 100%; min-width: 0; }
+body.admin-users-page .settings-card .admin-management-table thead { display: none; }
+body.admin-users-page .settings-card .admin-management-table tbody tr {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 15px;
+  border: 1px solid #dce7f1;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: none;
+}
+body.admin-users-page .settings-card .admin-management-table tbody tr:last-child { margin-bottom: 0; }
+body.admin-users-page .settings-card .admin-management-table td { display: block; width: auto; min-width: 0; padding: 0; border: 0; text-align: left; overflow-wrap: anywhere; }
+body.admin-users-page .settings-card .admin-management-table td::before { display: block; margin-bottom: 5px; color: #61758a; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-align: left; text-transform: uppercase; }
+body.admin-users-page #reportEmailsTableBody td:first-child,
+body.admin-users-page #accessContactsTableBody td:first-child { grid-column: 1 / -1; }
+body.admin-users-page #reportEmailsTableBody td:first-child::before { content: "Report email"; }
+body.admin-users-page #reportEmailsTableBody td:nth-child(2)::before { content: "Protection"; }
+body.admin-users-page #reportEmailsTableBody td:nth-child(3)::before { content: "Created"; }
+body.admin-users-page #reportEmailsTableBody td:nth-child(4)::before,
+body.admin-users-page #accessContactsTableBody td:nth-child(4)::before { content: "Actions"; }
+body.admin-users-page #accessContactsTableBody td:first-child::before { content: "Phone"; }
+body.admin-users-page #accessContactsTableBody td:nth-child(2)::before { content: "Contact email"; }
+body.admin-users-page #accessContactsTableBody td:nth-child(3)::before { content: "OTP email"; }
+body.admin-users-page .settings-card .admin-management-table .actions { flex-wrap: wrap; }
+body.admin-users-page #reportEmailsTableBody td.admin-no-action { display: none; }
+body.admin-users-page #reportEmailsTableBody .admin-protected,
+body.admin-users-page #reportEmailsTableBody .admin-status-neutral { width: max-content; justify-self: start; }
+body.admin-users-page .settings-card .admin-management-table .btn-sm { min-height: 40px; }
+body.admin-users-page .settings-card .admin-management-table td[colspan] { grid-column: 1 / -1; padding: 20px 10px; text-align: center; }
+body.admin-users-page .settings-card .admin-management-table td[colspan]::before { content: none; }
+body.admin-users-page .settings-add-form { margin: 0; border: 0; border-radius: 12px; }
+body.admin-users-page .settings-add-form.open { display: flex; }
+
+@media (max-width: 1180px) {
+  body.admin-users-page .settings-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 900px) {
+  body.admin-users-page #panelSchools .admin-management-table,
+  body.admin-users-page #panelSchools .admin-management-table tbody { display: block; width: 100%; min-width: 0; }
+  body.admin-users-page #panelSchools .admin-management-table thead { display: none; }
+  body.admin-users-page #panelSchools .admin-management-table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 14px;
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 15px;
+    border: 1px solid #dce7f1;
+    border-radius: 11px;
+    background: #fff;
+  }
+  body.admin-users-page #panelSchools .admin-management-table td { display: block; width: auto; min-width: 0; padding: 0; border: 0; text-align: left; }
+  body.admin-users-page #panelSchools .admin-management-table td::before { display: block; margin-bottom: 5px; color: #61758a; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-align: left; text-transform: uppercase; }
+  body.admin-users-page #schoolsTableBody td:first-child { grid-column: 1 / -1; font-size: 15px; }
+  body.admin-users-page #schoolsTableBody td:first-child::before { content: none; }
+  body.admin-users-page #schoolsTableBody td:nth-child(2)::before { content: "Email"; }
+  body.admin-users-page #schoolsTableBody td:nth-child(3)::before { content: "Phone"; }
+  body.admin-users-page #schoolsTableBody td:nth-child(4)::before { content: "Status"; }
+  body.admin-users-page #schoolsTableBody td:nth-child(5)::before { content: "Registered"; }
+  body.admin-users-page #schoolsTableBody td:nth-child(6)::before { content: "Actions"; }
+  body.admin-users-page #schoolsTableBody td:nth-child(2),
+  body.admin-users-page #schoolsTableBody td:nth-child(6) { grid-column: 1 / -1; }
+  body.admin-users-page #panelSchools .admin-management-table td[colspan] { grid-column: 1 / -1; padding: 20px 10px; text-align: center; }
+  body.admin-users-page #panelSchools .admin-management-table td[colspan]::before { content: none; }
+}
+@media (max-width: 700px) {
+  body.admin-users-page .admin-secondary-panel { padding: 16px 12px 28px; }
+  body.admin-users-page .admin-management-card .table-card-header { min-height: 0; padding: 14px; }
+  body.admin-users-page .admin-management-card h3 { font-size: 14px; }
+  body.admin-users-page .admin-management-card .table-wrap { overflow: visible; padding: 12px; }
+  body.admin-users-page .admin-management-table .btn-sm { min-height: 44px; }
+  body.admin-users-page #panelSchools .admin-management-table .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  body.admin-users-page #panelSchools .admin-management-table .actions > * { width: 100%; min-height: 44px; }
+  body.admin-users-page .settings-card .table-card-header { display: flex; }
+  body.admin-users-page .settings-header-actions { width: 100%; margin-left: 0; justify-content: space-between; }
+  body.admin-users-page .settings-add-toggle { min-height: 44px; }
+  body.admin-users-page .settings-card .admin-management-table tbody tr { grid-template-columns: minmax(0, 1fr); }
+  body.admin-users-page .settings-card .admin-management-table td { grid-column: 1 / -1; }
+  body.admin-users-page .settings-card .admin-management-table .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  body.admin-users-page .settings-card .admin-management-table .actions > * { width: 100%; min-height: 44px; }
+  body.admin-users-page #reportEmailsTableBody .btn-del::after,
+  body.admin-users-page #accessContactsTableBody .btn-del::after { content: none; }
+  body.admin-users-page .settings-add-form.open { width: min(680px, calc(100vw - 24px)); padding: 18px; }
+}
+
+body.admin-users-page .admin-action-dialog {
+  width: min(440px, calc(100vw - 28px));
+  max-width: none;
+  margin: auto;
+  padding: 26px;
+  border: 1px solid var(--users-border);
+  border-radius: 16px;
+  background: #fff;
+  color: #23374c;
+  box-shadow: 0 24px 70px rgba(15,27,45,.25);
+}
+body.admin-users-page .admin-action-dialog::backdrop { background: rgba(15,27,45,.58); }
+body.admin-users-page .admin-action-icon { width: 46px; height: 46px; display: grid; place-items: center; margin-bottom: 16px; border-radius: 12px; background: #fff0f0; color: #b93b45; font-size: 20px; }
+body.admin-users-page .admin-action-dialog.is-warning .admin-action-icon { background: #fff1e8; color: #a95322; }
+body.admin-users-page .admin-action-dialog h2 { margin: 0 0 9px; font-size: 19px; line-height: 1.3; }
+body.admin-users-page .admin-action-dialog p { margin: 0; color: #5f7184; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+body.admin-users-page .admin-action-dialog .admin-action-error { margin-top: 14px; color: #a63841; font-weight: 700; }
+body.admin-users-page .admin-action-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+body.admin-users-page .admin-action-buttons button { min-height: 44px; padding: 9px 14px; border-radius: 8px; font-family: 'Inter', sans-serif; }
+body.admin-users-page .admin-action-buttons .is-danger { background: #b93b45; }
+body.admin-users-page .admin-action-buttons .is-warning { background: #a96512; }
+body.admin-users-page .admin-action-buttons button:disabled { opacity: .65; cursor: wait; }
+body.admin-users-page .admin-action-buttons button:focus-visible { outline: 3px solid rgba(21,101,192,.3); outline-offset: 2px; }
+@media (max-width: 380px) {
+  body.admin-users-page .admin-action-buttons { flex-direction: column-reverse; }
+  body.admin-users-page .admin-action-buttons button { width: 100%; }
+}

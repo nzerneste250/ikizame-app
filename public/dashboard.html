@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- 🎯 BRANDING HEADER: LINKS DIRECTLY TO YOUR LOGO IN THE UPLOADS FOLDER -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>IKIZAMINI | Dashboard - Ikizamini cya Provisoire mu Rwanda | Practice Driving Theory Exam</title>
+    <title>IKIZAMINI | Dashboard - Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -1151,12 +1151,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (res.success) {
                         allQuestionsCachedArray = allQuestionsCachedArray.filter(q => q.id !== targetId);
                         loadRepositoryQuestionsPool();
-                        ikToast('Ikibazo casibwe neza.', 'success');
+                        ikToast('Question deleted successfully.', 'success');
                     } else {
-                        ikToast('Gusiba byanze, biba sisitemu ihagaze.', 'error');
+                        ikToast('Could not delete the question. Please try again.', 'error');
                     }
                 })
-                .catch(() => ikToast('Gusiba byanze, biba internet ihagaze.', 'error'));
+                .catch(() => ikToast('Network error while deleting the question.', 'error'));
         });
     };
 
@@ -1309,7 +1309,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(err => {
                 console.error(err);
-                attemptsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:24px; color:#ef4444;">Habayeho ikosa mu gushakisha ibizamini. Ongera ugerageze.</td></tr>`;
+                attemptsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:24px; color:#ef4444;">Could not load exam attempts. Please try again.</td></tr>`;
             });
     };
 
@@ -1442,7 +1442,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return `
                         <div class="review-question-card">
                             <div class="review-question-header">
-                                <div class="review-question-title">Ikibazo ${index + 1}: ${question.question || '...'} </div>
+                                <div class="review-question-title">Question ${index + 1}: ${question.question || '...'} </div>
                                 <div class="review-question-status ${cardClass}">
                                     ${statusText}
                                 </div>

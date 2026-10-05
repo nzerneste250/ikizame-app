@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- 🎯 BRANDING HEADER: LINKS DIRECTLY TO YOUR LOGO IN THE UPLOADS FOLDER -->
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
-    <title>IKIZAMINI | Hindura - Ikizamini cya Provisoire mu Rwanda | Practice Driving Theory Exam</title>
+    <title>IKIZAMINI | Edit Question - Admin</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -244,7 +244,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const qId = params.get('id');
-    if (!qId) { ikAlert('Missing question ID parameter.', 'error', 'Ikibazo Ntabwo Kibonetse').then(() => window.location.replace('dashboard')); return; }
+    if (!qId) { ikAlert('Missing question ID parameter.', 'error', 'Question Not Found').then(() => window.location.replace('dashboard')); return; }
 
     const formScroll = document.getElementById('formScroll');
     const layoutBadge = document.getElementById('layoutBadge');
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!data) return;
             
             let exam = Array.isArray(data) ? data[0] : data;
-            if (!exam) { ikAlert('Question not found. It may have been deleted.', 'error', 'Ikibazo Ntabwo Kibonetse').then(() => window.location.replace('dashboard')); return; }
+            if (!exam) { ikAlert('Question not found. It may have been deleted.', 'error', 'Question Not Found').then(() => window.location.replace('dashboard')); return; }
 
             const questionStatement = exam.question || '';
             const correctOptionKey = exam.correct_option || exam.correctOption || '';

@@ -98,7 +98,10 @@
         warning: '<i class="fa-solid fa-triangle-exclamation"></i>',
         info:    '<i class="fa-solid fa-circle-info"></i>'
     };
-    const TITLES = { success: 'Byakunze! ✓', error: 'Habaye Ikosa!', warning: 'Menya!', info: 'Amakuru' };
+    const ADMIN_INTERFACE = /^\/(?:dashboard|admin-users|admin-payments|admin-paypack|add-exam|edit-exam|upload-resource|visitors|system-performance|admin-login)(?:\.html)?\/?$/.test(window.location.pathname);
+    const TITLES = ADMIN_INTERFACE
+        ? { success: 'Success', error: 'Error', warning: 'Warning', info: 'Information' }
+        : { success: 'Byakunze! ✓', error: 'Habaye Ikosa!', warning: 'Menya!', info: 'Amakuru' };
 
     /**
      * Show a toast notification.
@@ -115,10 +118,10 @@
         toast.innerHTML = `
             <div class="ik-toast-icon">${ICONS[type] || ICONS.info}</div>
             <div class="ik-toast-body">
-                <div class="ik-toast-title">${TITLES[type] || 'Amakuru'}</div>
+                <div class="ik-toast-title">${TITLES[type] || TITLES.info}</div>
                 <div class="ik-toast-msg">${message}</div>
             </div>
-            <button class="ik-toast-close" aria-label="Funga">&times;</button>
+            <button class="ik-toast-close" aria-label="${ADMIN_INTERFACE ? 'Close notification' : 'Funga'}">&times;</button>
             <div class="ik-toast-progress" style="width:100%;"></div>`;
         container.appendChild(toast);
 
@@ -146,7 +149,7 @@
             o = document.createElement('div');
             o.id = 'ik-alert-overlay';
             o.innerHTML = `
-                <div class="ik-alert-card">
+                <div class="ik-alert-card" role="alertdialog" aria-modal="true" aria-labelledby="ik-alert-title-el" aria-describedby="ik-alert-msg-el">
                     <div class="ik-alert-header">
                         <div class="ik-alert-icon" id="ik-alert-icon-el"></div>
                         <h3 class="ik-alert-title" id="ik-alert-title-el"></h3>
@@ -179,10 +182,10 @@
 
             iconEl.className = 'ik-alert-icon ' + type;
             iconEl.innerHTML = ICONS[type] || ICONS.info;
-            titleEl.textContent = title || TITLES[type] || 'Amakuru';
+            titleEl.textContent = title || TITLES[type] || TITLES.info;
             msgEl.textContent = message;
             btn.className = 'ik-alert-ok' + (type !== 'info' ? ' ' + type : '');
-            btn.textContent = type === 'success' ? 'Byakunze, Komeza!' : type === 'error' ? 'Nkurikiye, Funga' : type === 'warning' ? 'Nkurikiye' : 'OK';
+            btn.textContent = ADMIN_INTERFACE ? 'Close' : type === 'success' ? 'Byakunze, Komeza!' : type === 'error' ? 'Nkurikiye, Funga' : type === 'warning' ? 'Nkurikiye' : 'OK';
 
             overlay.classList.add('open');
             function done() { overlay.classList.remove('open'); btn.removeEventListener('click', done); resolve(); }
@@ -198,15 +201,15 @@
             o = document.createElement('div');
             o.id = 'ik-confirm-overlay';
             o.innerHTML = `
-                <div class="ik-confirm-card">
+                <div class="ik-confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="ik-confirm-title-el" aria-describedby="ik-confirm-msg-el">
                     <div class="ik-confirm-header">
                         <div class="ik-confirm-icon" id="ik-confirm-icon-el"></div>
                         <h3 class="ik-confirm-title" id="ik-confirm-title-el"></h3>
                     </div>
                     <div class="ik-confirm-msg" id="ik-confirm-msg-el"></div>
                     <div class="ik-confirm-footer">
-                        <button class="ik-confirm-btn ik-confirm-cancel" id="ik-confirm-cancel-btn">Oya, Hagarika</button>
-                        <button class="ik-confirm-btn ik-confirm-ok" id="ik-confirm-ok-btn">Yego, Emeza</button>
+                        <button class="ik-confirm-btn ik-confirm-cancel" id="ik-confirm-cancel-btn">Cancel</button>
+                        <button class="ik-confirm-btn ik-confirm-ok" id="ik-confirm-ok-btn">Confirm</button>
                     </div>
                 </div>`;
             document.body.appendChild(o);
@@ -226,6 +229,7 @@
     window.ikConfirm = function (message, type, title, okLabel, cancelLabel) {
         type = type || 'danger';
         return new Promise(function (resolve) {
+            const trigger = document.activeElement;
             const overlay   = ensureConfirmOverlay();
             const iconEl    = document.getElementById('ik-confirm-icon-el');
             const titleEl   = document.getElementById('ik-confirm-title-el');
@@ -238,11 +242,11 @@
                              : type === 'warning' ? '<i class="fa-solid fa-triangle-exclamation"></i>'
                              : type === 'success' ? '<i class="fa-solid fa-circle-check"></i>'
                              : '<i class="fa-solid fa-circle-question"></i>';
-            titleEl.textContent = title || (type === 'danger' ? 'Emeza Gusiba' : type === 'warning' ? 'Emeza Igikorwa' : type === 'success' ? 'Emeza' : 'Emeza');
+            titleEl.textContent = title || (ADMIN_INTERFACE ? (type === 'danger' ? 'Confirm Deletion' : 'Confirm Action') : (type === 'danger' ? 'Emeza Gusiba' : type === 'warning' ? 'Emeza Igikorwa' : 'Emeza'));
             msgEl.textContent = message;
             okBtn.className = 'ik-confirm-btn ik-confirm-ok ' + type;
-            okBtn.textContent = okLabel || 'Yego, Emeza';
-            cancelBtn.textContent = cancelLabel || 'Oya, Hagarika';
+            okBtn.textContent = okLabel || (ADMIN_INTERFACE ? 'Confirm' : 'Yego, Emeza');
+            cancelBtn.textContent = cancelLabel || (ADMIN_INTERFACE ? 'Cancel' : 'Oya, Hagarika');
 
             overlay.classList.add('open');
 
@@ -250,12 +254,16 @@
                 overlay.classList.remove('open');
                 okBtn.removeEventListener('click', onOk);
                 cancelBtn.removeEventListener('click', onCancel);
+                document.removeEventListener('keydown', onKeydown);
+                if (ADMIN_INTERFACE && trigger && trigger.isConnected && typeof trigger.focus === 'function') trigger.focus();
                 resolve(result);
             }
             function onOk()     { done(true);  }
             function onCancel() { done(false); }
+            function onKeydown(event) { if (ADMIN_INTERFACE && event.key === 'Escape') { event.preventDefault(); done(false); } }
             okBtn.addEventListener('click', onOk);
             cancelBtn.addEventListener('click', onCancel);
+            if (ADMIN_INTERFACE) document.addEventListener('keydown', onKeydown);
             setTimeout(() => cancelBtn.focus(), 50);
         });
     };

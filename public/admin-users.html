@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKIZAMINI | Manage Users - Ikizamini cya Provisoire mu Rwanda | Practice Driving Theory Exam</title>
+    <title>IKIZAMINI | Manage Users - Admin</title>
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -140,20 +140,10 @@
 
         /* ── Alerts and access settings ── */
         #panelSettings { min-width:0; }
-        .settings-grid { width:100%; min-width:0; grid-template-columns:repeat(2, minmax(0, 1fr)) !important; }
-        .settings-card { min-width:0; width:100%; }
-        .settings-card .table-wrap { min-width:0; overflow-x:auto; }
-        .settings-card table { table-layout:fixed; }
-        .settings-card th, .settings-card td { white-space:normal; overflow-wrap:anywhere; }
-        .settings-card th:first-child, .settings-card td:first-child { width:42px; }
-        .settings-card th:last-child, .settings-card td:last-child { width:86px; }
-        .settings-card .form-card { margin:16px; min-width:0; }
 
         @media (max-width: 900px) {
             .content { padding:20px; }
             #panelAdmins { grid-template-columns:1fr; gap:16px; overflow:visible; }
-            #panelSettings { padding:20px !important; }
-            .settings-grid { grid-template-columns:1fr !important; }
         }
 
         @media (max-width: 700px) {
@@ -168,19 +158,6 @@
             #panelAdmins .table-wrap { overflow-x:auto; }
             #panelAdmins table { min-width:620px; }
             #panelAdmins > .form-card { padding:18px; }
-            #panelSettings { padding:12px !important; }
-            .settings-card .table-card-header { padding:14px; gap:10px; align-items:flex-start; }
-            .settings-card .table-card-header h3 { line-height:1.35; }
-            .settings-header-actions { width:100%; justify-content:space-between; flex-wrap:wrap; }
-            .settings-card .table-card-header span { flex-shrink:0; }
-            .settings-add-toggle { flex:1; min-width:180px; }
-            .settings-card .form-card { margin:12px; padding:16px; }
-            .settings-card table { font-size:12px; }
-            .settings-card thead th, .settings-card tbody td { padding:10px 8px; }
-            .settings-card th:first-child, .settings-card td:first-child { width:30px; }
-            .settings-card th:last-child, .settings-card td:last-child { width:72px; }
-            .settings-card .actions { gap:4px; }
-            .settings-card .btn-sm { padding:6px 8px; }
         }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
@@ -210,16 +187,16 @@
     <div class="modal-card">
         <div class="modal-header">
             <h3><i class="fa-solid fa-user-pen" style="color:var(--brand);margin-right:8px;"></i>Edit User</h3>
-            <button class="btn-cancel" onclick="closeEdit()">✕</button>
+            <button class="btn-cancel" type="button" onclick="closeEdit()" aria-label="Close edit user">✕</button>
         </div>
         <div class="modal-body">
             <input type="hidden" id="editId">
             <div>
-                <label>Email Address</label>
+                <label for="editEmail">Email Address</label>
                 <input type="email" id="editEmail" placeholder="user@email.com">
             </div>
             <div>
-                <label>Role</label>
+                <label for="editRole">Role</label>
                     <select id="editRole">
                     <option value="viewer">Viewer, Read-only</option>
                     <option value="superadmin">Super Admin, Full Access</option>
@@ -296,6 +273,17 @@
         </div>
     </div>
 </div>
+
+<dialog class="admin-action-dialog" id="adminActionDialog" aria-labelledby="adminActionTitle" aria-describedby="adminActionMessage">
+    <div class="admin-action-icon" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <h2 id="adminActionTitle"></h2>
+    <p id="adminActionMessage"></p>
+    <p class="admin-action-error" id="adminActionError" role="alert" hidden></p>
+    <div class="admin-action-buttons">
+        <button class="btn-cancel" id="adminActionCancel" type="button">Cancel</button>
+        <button class="btn-save" id="adminActionConfirm" type="button"></button>
+    </div>
+</dialog>
 
 <div class="shell">
     <aside class="sidebar">
@@ -393,50 +381,50 @@
         </div>
 
         <!-- SCHOOLS PANEL -->
-        <div id="panelSchools" style="display:none;flex:1;padding:24px 32px;overflow:hidden;">
-            <div class="table-card" style="height:100%;">
+        <div id="panelSchools" class="admin-secondary-panel" style="display:none;">
+            <section class="table-card admin-management-card admin-schools-card" aria-labelledby="schoolsHeading">
                 <div class="table-card-header">
-                    <h3><i class="fa-solid fa-school" style="color:var(--brand);margin-right:8px;"></i> Registered Schools</h3>
-                    <span id="schoolCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                    <h3 id="schoolsHeading"><span class="admin-card-icon"><i class="fa-solid fa-school" aria-hidden="true"></i></span> Registered Schools</h3>
+                    <span id="schoolCount" class="admin-count" aria-live="polite"></span>
                 </div>
                 <div class="table-wrap">
-                    <table>
+                    <table class="admin-management-table">
                         <thead>
-                            <tr><th>#</th><th>School Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Registered</th><th>Actions</th></tr>
+                            <tr><th>School</th><th>Email</th><th>Phone</th><th>Status</th><th>Registered</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="schoolsTableBody">
-                            <tr><td colspan="7" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                            <tr><td colspan="6" class="admin-table-message"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Loading schools...</td></tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
         </div>
 
         <!-- SETTINGS PANEL -->
-        <div id="panelSettings" style="display:none;flex:1;padding:24px 32px;overflow:auto;">
-            <div class="settings-grid" style="display:grid;gap:24px;">
-                <div class="table-card settings-card" style="min-height:320px;">
+        <div id="panelSettings" class="admin-secondary-panel" style="display:none;">
+            <div class="settings-grid">
+                <section class="table-card settings-card admin-management-card" aria-labelledby="reportEmailsHeading">
                     <div class="table-card-header">
-                        <h3><i class="fa-solid fa-bell" style="color:var(--brand);margin-right:8px;"></i> Report Notification Emails</h3>
+                        <h3 id="reportEmailsHeading"><span class="admin-card-icon"><i class="fa-solid fa-bell" aria-hidden="true"></i></span> Report Notification Emails</h3>
                         <div class="settings-header-actions">
-                            <span id="reportEmailCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                            <span id="reportEmailCount" class="admin-count" aria-live="polite"></span>
                             <button class="settings-add-toggle" id="reportEmailAddButton" type="button" onclick="toggleSettingsForm('reportEmailForm', this)"><i class="fa-solid fa-plus"></i> Add Report Email</button>
                         </div>
                     </div>
                     <div class="table-wrap">
-                        <table>
+                        <table class="admin-management-table">
                             <thead>
-                                <tr><th>#</th><th>Email</th><th>Created</th><th>Actions</th></tr>
+                                <tr><th>Email</th><th>Protection</th><th>Created</th><th>Actions</th></tr>
                             </thead>
                             <tbody id="reportEmailsTableBody">
-                                <tr><td colspan="4" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                                <tr><td colspan="4" class="admin-table-message"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Loading report emails...</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="form-card settings-add-form" id="reportEmailForm" style="margin:16px;border-radius:12px;">
+                    <div class="form-card settings-add-form" id="reportEmailForm">
                         <h3><i class="fa-solid fa-plus" style="color:var(--brand);margin-right:8px;"></i> Add Report Email</h3>
                         <div class="field">
-                            <label>Email Address</label>
+                            <label for="reportEmailInput">Email Address</label>
                             <div class="field-wrap">
                                 <i class="fa-solid fa-envelope ico"></i>
                                 <input type="email" id="reportEmailInput" placeholder="alerts@ikizame.rw">
@@ -447,44 +435,44 @@
                             <button class="btn-add" type="button" onclick="addReportEmail()"><i class="fa-solid fa-paper-plane"></i> Save Email</button>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="table-card settings-card" style="min-height:320px;">
+                <section class="table-card settings-card admin-management-card" aria-labelledby="accessContactsHeading">
                     <div class="table-card-header">
-                        <h3><i class="fa-solid fa-user-shield" style="color:var(--brand);margin-right:8px;"></i> Exam Access Contacts</h3>
+                        <h3 id="accessContactsHeading"><span class="admin-card-icon"><i class="fa-solid fa-user-shield" aria-hidden="true"></i></span> Exam Access Contacts</h3>
                         <div class="settings-header-actions">
-                            <span id="accessContactCount" style="font-size:12px;color:var(--muted);font-weight:600;"></span>
+                            <span id="accessContactCount" class="admin-count" aria-live="polite"></span>
                             <button class="settings-add-toggle" id="accessContactAddButton" type="button" onclick="toggleSettingsForm('accessContactForm', this)"><i class="fa-solid fa-plus"></i> Add Exam Access Contact</button>
                         </div>
                     </div>
                     <div class="table-wrap">
-                        <table>
+                        <table class="admin-management-table">
                             <thead>
-                                <tr><th>#</th><th>Phone</th><th>Contact Email</th><th>OTP Email</th><th>Actions</th></tr>
+                                <tr><th>Phone</th><th>Contact Email</th><th>OTP Email</th><th>Actions</th></tr>
                             </thead>
                             <tbody id="accessContactsTableBody">
-                                <tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                                <tr><td colspan="4" class="admin-table-message"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Loading access contacts...</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="form-card settings-add-form" id="accessContactForm" style="margin:16px;border-radius:12px;">
+                    <div class="form-card settings-add-form" id="accessContactForm">
                         <h3><i class="fa-solid fa-user-plus" style="color:var(--brand);margin-right:8px;"></i> Add Exam Access Contact</h3>
                         <div class="field">
-                            <label>Phone Number</label>
+                            <label for="accessPhoneInput">Phone Number</label>
                             <div class="field-wrap">
                                 <i class="fa-solid fa-phone ico"></i>
                                 <input type="tel" id="accessPhoneInput" placeholder="0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric">
                             </div>
                         </div>
                         <div class="field">
-                            <label>Contact Email</label>
+                            <label for="accessEmailInput">Contact Email</label>
                             <div class="field-wrap">
                                 <i class="fa-solid fa-envelope ico"></i>
                                 <input type="email" id="accessEmailInput" placeholder="owner@company.com">
                             </div>
                         </div>
                         <div class="field">
-                            <label>OTP Email</label>
+                            <label for="accessOtpEmailInput">OTP Email</label>
                             <div class="field-wrap">
                                 <i class="fa-solid fa-key ico"></i>
                                 <input type="email" id="accessOtpEmailInput" placeholder="otp@company.com">
@@ -495,7 +483,7 @@
                             <button class="btn-add" type="button" onclick="addExamAccessContact()"><i class="fa-solid fa-shield-check"></i> Save Contact</button>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
         </div>
 
@@ -515,41 +503,102 @@ function switchTab(tab) {
     if (tab==='settings') { loadReportEmails(); loadAccessContacts(); }
 }
 
+function confirmAdminMutation({ title, message, confirmLabel, pendingLabel, url, method, body, successMessage, failureMessage, onSuccess, tone = 'danger' }) {
+    const dialog = document.getElementById('adminActionDialog');
+    const confirmButton = document.getElementById('adminActionConfirm');
+    const cancelButton = document.getElementById('adminActionCancel');
+    const error = document.getElementById('adminActionError');
+    const trigger = document.activeElement;
+    let busy = false;
+    dialog.classList.toggle('is-warning', tone === 'warning');
+    dialog.querySelector('.admin-action-icon i').className = tone === 'warning' ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-trash';
+    document.getElementById('adminActionTitle').textContent = title;
+    document.getElementById('adminActionMessage').textContent = message;
+    confirmButton.textContent = confirmLabel;
+    confirmButton.className = 'btn-save ' + (tone === 'warning' ? 'is-warning' : 'is-danger');
+    confirmButton.disabled = false;
+    cancelButton.disabled = false;
+    error.hidden = true;
+    function restoreFocus() { if (trigger && trigger.isConnected && typeof trigger.focus === 'function') trigger.focus(); }
+    function close() { dialog.close(); }
+    function onCancel(event) { if (busy) event.preventDefault(); }
+    dialog.addEventListener('cancel', onCancel);
+    dialog.addEventListener('close', () => { dialog.removeEventListener('cancel', onCancel); restoreFocus(); }, { once: true });
+    cancelButton.onclick = close;
+    confirmButton.onclick = async () => {
+        if (busy) return;
+        busy = true;
+        error.hidden = true;
+        confirmButton.disabled = true;
+        cancelButton.disabled = true;
+        confirmButton.textContent = pendingLabel;
+        try {
+            const response = await fetch(url, { method, ...(body ? { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {}) });
+            const result = await response.json();
+            if (!result.ok) throw new Error(failureMessage);
+            close();
+            onSuccess();
+            ikToast(successMessage, 'success');
+        } catch (_) {
+            error.textContent = failureMessage;
+            error.hidden = false;
+            confirmButton.disabled = false;
+            cancelButton.disabled = false;
+            confirmButton.textContent = confirmLabel;
+            busy = false;
+            confirmButton.focus();
+        }
+    };
+    dialog.showModal();
+    cancelButton.focus();
+}
+
 function loadSchools() {
     fetch('/api/admin/schools').then(r=>r.json()).then(data=>{
         const schools = Array.isArray(data) ? data : [];
         document.getElementById('schoolCount').textContent = schools.length+' school(s)';
         const tb = document.getElementById('schoolsTableBody');
-        if (!schools.length) { tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:24px;color:#64748b;">No schools registered yet.</td></tr>'; return; }
+        if (!schools.length) { tb.innerHTML='<tr><td colspan="6" class="admin-table-message admin-empty-state"><i class="fa-solid fa-school" aria-hidden="true"></i><strong>No schools registered yet</strong><span>Approved schools will appear here.</span></td></tr>'; return; }
         tb.innerHTML = schools.map((s,i)=>{
             const isActive = s.is_active !== 0;
             const date = s.created_at ? new Date(s.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--';
             return `<tr>
-                <td style="font-weight:700;color:var(--brand);">${i+1}</td>
-                <td style="font-weight:700;">${s.school_name}</td>
-                <td style="color:#64748b;font-size:12px;">${s.email}</td>
-                <td style="color:#64748b;font-size:12px;">${s.phone_number||'--'}</td>
+                <td class="admin-record-primary">${s.school_name}</td>
+                <td class="admin-record-email">${s.email}</td>
+                <td class="admin-record-phone">${s.phone_number||'--'}</td>
                 <td><span class="badge ${isActive?'badge-active':'badge-blocked'}">${isActive?'Active':'Blocked'}</span></td>
-                <td style="color:#64748b;font-size:12px;">${date}</td>
+                <td class="admin-record-date">${date}</td>
                 <td><div class="actions">
-                    <button class="btn-sm ${isActive?'btn-disable':'btn-enable'}" onclick="toggleSchool(${s.id},${isActive?0:1})">${isActive?'<i class="fa-solid fa-ban"></i> Block':'<i class="fa-solid fa-check"></i> Unblock'}</button>
+                    <button class="btn-sm ${isActive?'btn-disable':'btn-enable'}" onclick="toggleSchool(${s.id},${isActive?0:1})">${isActive?'<i class="fa-solid fa-ban"></i> Block':'<i class="fa-solid fa-check"></i> Restore'}</button>
                     <button class="btn-sm btn-del" aria-label="Delete school" onclick="deleteSchool(${s.id},'${s.school_name.replace(/'/g,"\\'")}')" ><i class="fa-solid fa-trash"></i></button>
                 </div></td>
             </tr>`;
         }).join('');
-    }).catch(()=>{ document.getElementById('schoolsTableBody').innerHTML='<tr><td colspan="7" style="text-align:center;padding:24px;color:#ef4444;">Failed to load schools.</td></tr>'; });
+    }).catch(()=>{ document.getElementById('schoolsTableBody').innerHTML='<tr><td colspan="6" class="admin-table-message admin-load-error">Failed to load schools.</td></tr>'; });
 }
 
 function toggleSchool(id, active) {
-    fetch(`/api/admin/schools/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({active})})
-        .then(r=>r.json()).then(d=>{ if(d.ok){ loadSchools(); ikToast(active ? 'Ishuri ryafunguwe.' : 'Ishuri ryahagaritswe.','success'); } else ikToast(d.error||'Failed.','error'); });
+    confirmAdminMutation({
+        title: active ? 'Restore School Access?' : 'Block School?',
+        message: active ? 'Restore this school\'s access to IKIZAME?' : 'Block this school from accessing IKIZAME until its access is restored?',
+        confirmLabel: active ? 'Restore Access' : 'Block School',
+        pendingLabel: active ? 'Restoring...' : 'Blocking...',
+        url: `/api/admin/schools/${id}/status`, method: 'PATCH', body: { active },
+        successMessage: active ? 'School access restored.' : 'School blocked.',
+        failureMessage: active ? 'Could not restore school access. Please try again.' : 'Could not block school. Please try again.',
+        onSuccess: loadSchools, tone: 'warning'
+    });
 }
 
 function deleteSchool(id, name) {
-    ikConfirm(`Urareba neza ko ushaka gusiba ishuri "${name}"? Igikorwa ntishobora gusubizwaho.`, 'danger', 'Emeza Gusiba Ishuri', 'Yego, Siba', 'Oya').then(confirmed => {
-        if (!confirmed) return;
-        fetch(`/api/admin/schools/${id}`,{method:'DELETE'})
-            .then(r=>r.json()).then(d=>{ if(d.ok){ loadSchools(); ikToast('Ishuri rasibwe neza.','success'); } else ikToast(d.error||'Delete failed.','error'); });
+    confirmAdminMutation({
+        title: 'Delete School?',
+        message: `Are you sure you want to permanently delete "${name}"? This action cannot be undone.`,
+        confirmLabel: 'Delete School', pendingLabel: 'Deleting...',
+        url: `/api/admin/schools/${id}`, method: 'DELETE',
+        successMessage: 'School deleted successfully.',
+        failureMessage: 'Could not delete the school. Please try again.',
+        onSuccess: loadSchools
     });
 }
 
@@ -630,7 +679,7 @@ function addUser() {
             btn.disabled = false;
             document.getElementById('addLabel').innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
             if (d.ok) { showAlert('Account created successfully!','success'); document.getElementById('newEmail').value=''; loadUsers(); }
-            else showAlert(d.error||'Creation failed.','error');
+            else showAlert('Could not create the account. Check the email address and try again.','error');
         }).catch(() => { btn.disabled=false; document.getElementById('addLabel').innerHTML='<i class="fa-solid fa-user-plus"></i> Create Account'; showAlert('Network error.','error'); });
 }
 
@@ -646,11 +695,11 @@ function saveEdit() {
     const id    = document.getElementById('editId').value;
     const email = document.getElementById('editEmail').value.trim();
     const role  = document.getElementById('editRole').value;
-    if (!email) { ikToast('Email irakenewe.', 'warning'); return; }
+    if (!email) { ikToast('Email address is required.', 'warning'); return; }
     fetch(`/api/admin/users/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,role}) })
         .then(r => r.json()).then(d => {
             if (d.ok) { closeEdit(); showAlert('Updated successfully!','success'); loadUsers(); }
-            else ikToast(d.error||'Update failed.','error');
+            else ikToast('Could not update the account. Please try again.','error');
         }).catch(() => ikToast('Network error.','error'));
 }
 
@@ -658,18 +707,19 @@ function toggleStatus(id, active) {
     fetch(`/api/admin/users/${id}/status`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({active}) })
         .then(r => r.json()).then(d => {
             if (d.ok) { showAlert(active ? 'Account enabled.' : 'Account disabled.','success'); loadUsers(); }
-            else ikToast(d.error||'Failed.','error');
+            else ikToast('Could not change account status. Please try again.','error');
         }).catch(() => ikToast('Network error.','error'));
 }
 
 function deleteUser(id, email) {
-    ikConfirm(`Urareba neza ko ushaka gusiba konti "${email}"? Igikorwa ntishobora gusubizwaho.`, 'danger', 'Emeza Gusiba Konti', 'Yego, Siba', 'Oya').then(confirmed => {
-        if (!confirmed) return;
-        fetch(`/api/admin/users/${id}`, { method:'DELETE' })
-            .then(r => r.json()).then(d => {
-                if (d.ok) { showAlert('Account deleted successfully.','success'); loadUsers(); }
-                else ikToast(d.error||'Delete failed.','error');
-            }).catch(() => ikToast('Network error.','error'));
+    confirmAdminMutation({
+        title: 'Delete Account?',
+        message: `Are you sure you want to permanently delete "${email}"? This action cannot be undone.`,
+        confirmLabel: 'Delete Account', pendingLabel: 'Deleting...',
+        url: `/api/admin/users/${id}`, method: 'DELETE',
+        successMessage: 'Account deleted successfully.',
+        failureMessage: 'Could not delete the account. Please try again.',
+        onSuccess: loadUsers
     });
 }
 
@@ -681,25 +731,24 @@ function loadReportEmails() {
         document.getElementById('reportEmailCount').textContent = rows.length + ' email(s)';
         const tb = document.getElementById('reportEmailsTableBody');
         if (!rows.length) {
-            tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:#64748b;">No report emails configured yet.</td></tr>';
+            tb.innerHTML = '<tr><td colspan="4" class="admin-table-message admin-empty-state"><i class="fa-solid fa-bell" aria-hidden="true"></i><strong>No report emails configured</strong><span>Add an address to receive scheduled reports.</span></td></tr>';
             return;
         }
-        tb.innerHTML = rows.map((item, index) => `
+        tb.innerHTML = rows.map(item => `
             <tr>
-                <td style="font-weight:700;color:var(--brand);">${index + 1}</td>
-                <td><span>${item.email}</span>${item.is_protected ? ' <span class="badge badge-active"><i class="fa-solid fa-lock"></i> Protected</span>' : ''}</td>
-                <td style="color:#64748b;font-size:12px;">${item.created_at ? new Date(item.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
-                <td>
-                    <div class="actions">
-                        ${item.is_protected ? '<span style="font-size:11px;color:#64748b;"><i class="fa-solid fa-shield-halved"></i> Always receives reports</span>' : `
-                        <button class="btn-sm btn-edit" onclick="openReportEmailEdit(${item.id}, '${String(item.email).replace(/'/g, "\\'")}' )"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-sm btn-del" aria-label="Delete report email" onclick="deleteReportEmail(${item.id})"><i class="fa-solid fa-trash"></i></button>`}
-                    </div>
+                <td class="admin-record-email admin-record-primary">${item.email}</td>
+                <td>${item.is_protected ? '<span class="admin-protected"><i class="fa-solid fa-lock" aria-hidden="true"></i> Protected</span><small class="admin-record-note">Always receives reports</small>' : '<span class="admin-status-neutral">Editable</span>'}</td>
+                <td class="admin-record-date">${item.created_at ? new Date(item.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '--'}</td>
+                <td class="admin-record-actions ${item.is_protected ? 'admin-no-action' : ''}">
+                    ${item.is_protected ? '' : `<div class="actions">
+                        <button class="btn-sm btn-edit" aria-label="Edit report email" onclick="openReportEmailEdit(${item.id}, '${String(item.email).replace(/'/g, "\\'")}' )"><i class="fa-solid fa-pen"></i><span>Edit</span></button>
+                        <button class="btn-sm btn-del" aria-label="Delete report email" onclick="deleteReportEmail(${item.id})"><i class="fa-solid fa-trash"></i><span>Delete</span></button>
+                    </div>`}
                 </td>
             </tr>
         `).join('');
       }).catch(() => {
-          document.getElementById('reportEmailsTableBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:#ef4444;">Failed to load report emails.</td></tr>';
+          document.getElementById('reportEmailsTableBody').innerHTML = '<tr><td colspan="4" class="admin-table-message admin-load-error">Failed to load report emails.</td></tr>';
       });
 }
 
@@ -718,7 +767,7 @@ function addReportEmail() {
             if (form.classList.contains('open')) closeSettingsForm('reportEmailForm', 'reportEmailAddButton');
             ikToast('Report email saved.', 'success');
         } else {
-            ikToast(d.error || 'Failed to save.', 'error');
+            ikToast('Could not save the report email. Check the address and try again.', 'error');
         }
     }).catch(() => ikToast('Network error.', 'error'));
 }
@@ -755,20 +804,21 @@ function saveReportEmailEdit() {
             loadReportEmails();
             ikToast('Report email updated.', 'success');
         } else {
-            ikToast(d.error || 'Update failed.', 'error');
+            ikToast('Could not update the report email. Please try again.', 'error');
         }
     }).catch(() => ikToast('Network error.', 'error'));
 }
 
 function deleteReportEmail(id) {
-        ikConfirm('Delete this report email? This address will stop receiving scheduled reports.', 'danger', 'Delete Report Email', 'Delete Email', 'Keep Email').then(confirmed => {
-            if (!confirmed) return;
-            fetch(`/api/admin/settings/report-emails/${id}`, { method: 'DELETE' })
-                .then(r => r.json()).then(d => {
-                    if (d.ok) { loadReportEmails(); ikToast('Report email deleted.', 'success'); }
-                    else ikToast(d.error || 'Delete failed.', 'error');
-                }).catch(() => ikToast('Network error.', 'error'));
-        });
+    confirmAdminMutation({
+        title: 'Delete Report Email?',
+        message: 'This address will stop receiving scheduled reports. This action cannot be undone.',
+        confirmLabel: 'Delete Email', pendingLabel: 'Deleting...',
+        url: `/api/admin/settings/report-emails/${id}`, method: 'DELETE',
+        successMessage: 'Report email deleted.',
+        failureMessage: 'Could not delete the report email. Please try again.',
+        onSuccess: loadReportEmails
+    });
 }
 
 function loadAccessContacts() {
@@ -779,25 +829,24 @@ function loadAccessContacts() {
         document.getElementById('accessContactCount').textContent = rows.length + ' contact(s)';
         const tb = document.getElementById('accessContactsTableBody');
         if (!rows.length) {
-          tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#64748b;">No exam access contact configured yet.</td></tr>';
+          tb.innerHTML = '<tr><td colspan="4" class="admin-table-message admin-empty-state"><i class="fa-solid fa-user-shield" aria-hidden="true"></i><strong>No exam access contacts</strong><span>Add a contact to manage exam access.</span></td></tr>';
           return;
         }
-        tb.innerHTML = rows.map((item, index) => `
+        tb.innerHTML = rows.map(item => `
             <tr>
-                <td style="font-weight:700;color:var(--brand);">${index + 1}</td>
-                <td>${item.phone_number}</td>
-                <td>${item.email}</td>
-                <td>${item.otp_email}</td>
+                <td class="admin-record-primary admin-record-phone">${item.phone_number}</td>
+                <td class="admin-record-email">${item.email}</td>
+                <td class="admin-record-email">${item.otp_email}</td>
                 <td>
                     <div class="actions">
-                        <button class="btn-sm btn-edit" onclick="openAccessContactEdit(${item.id}, '${String(item.phone_number).replace(/'/g, "\\'")}', '${String(item.email).replace(/'/g, "\\'")}', '${String(item.otp_email).replace(/'/g, "\\'")}')"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-sm btn-del" aria-label="Delete access contact" onclick="deleteAccessContact(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                        <button class="btn-sm btn-edit" aria-label="Edit access contact" onclick="openAccessContactEdit(${item.id}, '${String(item.phone_number).replace(/'/g, "\\'")}', '${String(item.email).replace(/'/g, "\\'")}', '${String(item.otp_email).replace(/'/g, "\\'")}')"><i class="fa-solid fa-pen"></i><span>Edit</span></button>
+                        <button class="btn-sm btn-del" aria-label="Delete access contact" onclick="deleteAccessContact(${item.id})"><i class="fa-solid fa-trash"></i><span>Delete</span></button>
                     </div>
                 </td>
             </tr>
         `).join('');
       }).catch(() => {
-          document.getElementById('accessContactsTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#ef4444;">Failed to load exam contacts.</td></tr>';
+          document.getElementById('accessContactsTableBody').innerHTML = '<tr><td colspan="4" class="admin-table-message admin-load-error">Failed to load exam contacts.</td></tr>';
       });
 }
 
@@ -821,7 +870,7 @@ function addExamAccessContact() {
         if (form.classList.contains('open')) closeSettingsForm('accessContactForm', 'accessContactAddButton');
         ikToast('Exam access contact saved.', 'success');
       } else {
-        ikToast(d.error || 'Failed to save contact.', 'error');
+        ikToast('Could not save the contact. Check the details and try again.', 'error');
       }
     }).catch(() => ikToast('Network error.', 'error'));
 }
@@ -862,20 +911,21 @@ function saveAccessContactEdit() {
         loadAccessContacts();
         ikToast('Contact updated.', 'success');
       } else {
-        ikToast(d.error || 'Update failed.', 'error');
+        ikToast('Could not update the contact. Please try again.', 'error');
       }
     }).catch(() => ikToast('Network error.', 'error'));
 }
 
 function deleteAccessContact(id) {
-        ikConfirm('Delete this exam access contact? Its phone will no longer receive exam access.', 'danger', 'Delete Exam Access Contact', 'Delete Contact', 'Keep Contact').then(confirmed => {
-            if (!confirmed) return;
-            fetch(`/api/admin/settings/exam-access/${id}`, { method: 'DELETE' })
-                .then(r => r.json()).then(d => {
-                    if (d.ok) { loadAccessContacts(); ikToast('Contact deleted.', 'success'); }
-                    else ikToast(d.error || 'Delete failed.', 'error');
-                }).catch(() => ikToast('Network error.', 'error'));
-        });
+    confirmAdminMutation({
+        title: 'Delete Exam Access Contact?',
+        message: 'This phone will no longer receive exam access. This action cannot be undone.',
+        confirmLabel: 'Delete Contact', pendingLabel: 'Deleting...',
+        url: `/api/admin/settings/exam-access/${id}`, method: 'DELETE',
+        successMessage: 'Exam access contact deleted.',
+        failureMessage: 'Could not delete the contact. Please try again.',
+        onSuccess: loadAccessContacts
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
