@@ -10,30 +10,32 @@ const uploadsPath = path.join(__dirname, '..', 'public', 'assets', 'uploads');
 const signAssetMappings = [
   ['12.jpg', 'Umuhanda umanuka cyane'],
   ['SA_road_sign_-_Road_narrows_on_the_right.svg.png', 'Ifungana ry’umuhanda'],
-  ['6.jpg', 'Inkomane izengurukwa'],
   ['13.png', 'Amabuye ahanuka'],
+  ['otherdangerahead.jpg', 'Ikindi cyago kiri imbere'],
   ['11.jpg', 'Icyapa cyo gutanga inzira'],
-  ['P07_CZ.svg.png', 'Gutambuka mbere y’ibinyabiziga bihura'],
-  ['Portugal_road_sign_B6.svg.png', 'Icyapa cy’uburenganzira bwo gutambuka mbere'],
+  ['P07_CZ.svg.png', 'Tanga inzira ku binyabiziga bihura'],
+  ['priority-road.png', 'Umuhanda ufite uburenganzira bwo gutambuka mbere'],
+  ['priority-road-end.png', 'Iherezo ry’umuhanda ufite uburenganzira bwo gutambuka mbere'],
   ['road-sign-of-50-speed-limit-on-white-background-free-vector.jpg', 'Umuvuduko ntarengwa wa km 50/h'],
   ['IE_road_sign_RUS-012_(1).svg', 'Birabujijwe gukatira iburyo'],
-  ['Vorschriftszeichen_13a.svg', 'Birabujijwe guhagarika ikinyabiziga'],
-  ['66.png', 'Birabujijwe kunyuranaho'],
+  ['Vorschriftszeichen_13a.svg', 'Birabujijwe guhagarara umwanya munini'],
   ['Bild_14_-_Verkehrsverbot_fÃ¼r_KraftrÃ¤der,_StVO_1937.svg', 'Ntihanyurwa n’amapikipiki'],
   ['Mauritius_Road_Signs_-_Mandatory_Sign_-_Left_turn_only.svg.png', 'Gukatira ibumoso bitegetswe'],
   ['Mauritius_Road_Signs_-_Mandatory_Sign_-_Right_turn_only.svg.png', 'Gukatira iburyo bitegetswe'],
   ['mandatory-straight-ahead.svg', 'Gukomeza imbere bitegetswe'],
+  ['mandatory-roundabout.png', 'Gukikira bitegetswe'],
   ['7.png', 'Inzira idakomeza'],
   ['Screenshot_2026-06-09_165909.png', 'Icyerekezo kimwe'],
-  ['guidance-bus-stop.svg', 'Aho za otobisi zihagarara']
+  ['Portugal_road_sign_B6.svg.png', 'Icyerekezo cyo gukomeza imbere'],
+  ['guidance-parking.png', 'Parikingi']
 ];
 
 const categoryAssetMappings = [
-  ['roadSignWarningTitle', ['12.jpg', 'SA_road_sign_-_Road_narrows_on_the_right.svg.png', '6.jpg', '13.png']],
-  ['roadSignPriorityTitle', ['11.jpg', 'P07_CZ.svg.png', 'Portugal_road_sign_B6.svg.png']],
-  ['roadSignProhibitionTitle', ['road-sign-of-50-speed-limit-on-white-background-free-vector.jpg', 'IE_road_sign_RUS-012_(1).svg', 'Vorschriftszeichen_13a.svg', '66.png', 'Bild_14_-_Verkehrsverbot_fÃ¼r_KraftrÃ¤der,_StVO_1937.svg']],
-  ['roadSignMandatoryTitle', ['Mauritius_Road_Signs_-_Mandatory_Sign_-_Left_turn_only.svg.png', 'Mauritius_Road_Signs_-_Mandatory_Sign_-_Right_turn_only.svg.png', 'mandatory-straight-ahead.svg']],
-  ['roadSignGuidanceTitle', ['7.png', 'Screenshot_2026-06-09_165909.png', 'guidance-bus-stop.svg']]
+  ['roadSignWarningTitle', ['12.jpg', 'SA_road_sign_-_Road_narrows_on_the_right.svg.png', '13.png', 'otherdangerahead.jpg']],
+  ['roadSignPriorityTitle', ['11.jpg', 'P07_CZ.svg.png', 'priority-road.png', 'priority-road-end.png']],
+  ['roadSignProhibitionTitle', ['road-sign-of-50-speed-limit-on-white-background-free-vector.jpg', 'IE_road_sign_RUS-012_(1).svg', 'Vorschriftszeichen_13a.svg', 'Bild_14_-_Verkehrsverbot_fÃ¼r_KraftrÃ¤der,_StVO_1937.svg']],
+  ['roadSignMandatoryTitle', ['Mauritius_Road_Signs_-_Mandatory_Sign_-_Left_turn_only.svg.png', 'Mauritius_Road_Signs_-_Mandatory_Sign_-_Right_turn_only.svg.png', 'mandatory-straight-ahead.svg', 'mandatory-roundabout.png']],
+  ['roadSignGuidanceTitle', ['7.png', 'Screenshot_2026-06-09_165909.png', 'Portugal_road_sign_B6.svg.png', 'guidance-parking.png']]
 ];
 
 test('ROAD_SIGN_EXPLAINER_RENDER=PASS', () => {
@@ -54,18 +56,19 @@ test('ROAD_SIGN_CATEGORY_EXAMPLE_COUNTS=PASS', () => {
     const sectionEnd = pageHtml.indexOf('</section>', sectionStart);
     const section = pageHtml.slice(sectionStart, sectionEnd);
     const cards = section.match(/class="road-sign-example"/g) || [];
-    assert.equal(cards.length, assets.length, 'example count matches verified assets: ' + headingId);
+    assert.equal(cards.length, 4, 'exactly four sign examples: ' + headingId);
+    assert.equal(assets.length, 4, 'four verified asset mappings: ' + headingId);
   }
 });
 
-test('ROAD_SIGN_MANDATORY_MIN_3=PASS', () => {
+test('ROAD_SIGN_MANDATORY_FOUR=PASS', () => {
   const mandatory = categoryAssetMappings.find(([headingId]) => headingId === 'roadSignMandatoryTitle');
-  assert.ok(mandatory[1].length >= 3);
+  assert.equal(mandatory[1].length, 4);
 });
 
-test('ROAD_SIGN_GUIDANCE_MIN_3=PASS', () => {
+test('ROAD_SIGN_GUIDANCE_FOUR=PASS', () => {
   const guidance = categoryAssetMappings.find(([headingId]) => headingId === 'roadSignGuidanceTitle');
-  assert.ok(guidance[1].length >= 3);
+  assert.equal(guidance[1].length, 4);
 });
 
 test('ROAD_SIGN_NO_ENGLISH_LABELS=PASS', () => {
