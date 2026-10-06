@@ -607,36 +607,142 @@
     <section class="road-sign-explainer" id="road-signs" aria-labelledby="roadSignsTitle">
         <div class="road-sign-heading">
             <div>
-                <p class="road-sign-eyebrow">IKIZAME · IMYIGIRE Y’UMUHANDA</p>
-                <h2 id="roadSignsTitle">Menya Ibyapa by’Umuhanda</h2>
-                <p>Ibyapa byo mu muhanda bifasha abawukoresha gusobanukirwa n’imbuzi, amategeko, icyerekezo n’imiterere y’umuhanda.</p>
+                <p class="road-sign-eyebrow">IKIZAME · KWIGA IBYAPA</p>
+                <h2 id="roadSignsTitle">Menya ibyapa byo ku muhanda</h2>
+                <p>Ibyapa byo ku muhanda bifasha abagenzi kumenya ibyago, amabwiriza, uburenganzira bwo gutambuka mbere n’icyerekezo.</p>
             </div>
             <button class="road-sign-share" id="roadSignShare" type="button" aria-describedby="roadSignShareStatus">
-                <i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Share
+                <i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Sangiza abandi
             </button>
         </div>
         <p class="road-sign-share-status" id="roadSignShareStatus" role="status" aria-live="polite"></p>
         <div class="road-sign-categories">
-            <article class="road-sign-category">
-                <span class="road-sign-category-icon" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></span>
-                <div><h3>Warning Signs</h3><p>Bitanga umuburo ku kaga cyangwa ku mpinduka zishobora kuba imbere mu muhanda.</p></div>
-            </article>
-            <article class="road-sign-category">
-                <span class="road-sign-category-icon" aria-hidden="true"><i class="fa-solid fa-ban"></i></span>
-                <div><h3>Regulatory Signs</h3><p>Zigaragaza amabwiriza agenga uko abawukoresha bagomba kwitwara.</p></div>
-            </article>
-            <article class="road-sign-category">
-                <span class="road-sign-category-icon" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
-                <div><h3>Mandatory Signs</h3><p>Zerekana igikorwa umushoferi asabwa gukurikiza.</p></div>
-            </article>
-            <article class="road-sign-category">
-                <span class="road-sign-category-icon" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></span>
-                <div><h3>Information Signs</h3><p>Zitanga amakuru cyangwa icyerekezo gifasha umushoferi mu rugendo.</p></div>
-            </article>
+            <section class="road-sign-category" aria-labelledby="roadSignWarningTitle">
+                <h3 id="roadSignWarningTitle">IBYAPA BIBURIRA</h3>
+                <p class="road-sign-category-description">Ibyapa biburira bimenyesha umugenzi ko imbere hari icyago cyangwa ahantu hakenera ubwitonzi bwihariye.</p>
+                <div class="road-sign-examples">
+                    <article class="road-sign-example" data-sign-asset="12.jpg">
+                        <img src="/assets/uploads/12.jpg" alt="Icyapa kiburira umuhanda umanuka cyane" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Umuhanda umanuka cyane</h4>
+                        <p>Iki cyapa kiburira umuyobozi ko imbere hari umuhanda umanuka cyane.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="SA_road_sign_-_Road_narrows_on_the_right.svg.png">
+                        <img src="/assets/uploads/SA_road_sign_-_Road_narrows_on_the_right.svg.png" alt="Icyapa kiburira ko umuhanda ugiye gufungana iburyo" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Ifungana ry’umuhanda</h4>
+                        <p>Iki cyapa kiburira ko umuhanda ugenda ugabanuka mu bugari.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="6.jpg">
+                        <img src="/assets/uploads/6.jpg" alt="Icyapa kiburira ko imbere hari inkomane izengurukwa" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Inkomane izengurukwa</h4>
+                        <p>Iki cyapa kiburira ko imbere hari inkomane bazengurukamo.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="13.png">
+                        <img src="/assets/uploads/13.png" alt="Icyapa kiburira amabuye ashobora guhanuka" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Amabuye ahanuka</h4>
+                        <p>Iki cyapa kiburira ko amabuye ashobora guhanuka akagera mu muhanda.</p>
+                    </article>
+                </div>
+            </section>
+            <section class="road-sign-category" aria-labelledby="roadSignPriorityTitle">
+                <h3 id="roadSignPriorityTitle">IBYAPA BY’UBURENGANZIRA CYANGWA GUTAMBUKA MBERE</h3>
+                <p class="road-sign-category-description">Ibi byapa bigena uko gutambuka mbere bikorwa, cyane cyane mu masangano no mu nkomane.</p>
+                <div class="road-sign-examples">
+                    <article class="road-sign-example" data-sign-asset="11.jpg">
+                        <img src="/assets/uploads/11.jpg" alt="Icyapa gisaba gutanga inzira mbere yo gukomeza" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Icyapa cyo gutanga inzira</h4>
+                        <p>Icyapa cyerekana ko ugomba gutanga inzira mbere yo gukomeza.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="P07_CZ.svg.png">
+                        <img src="/assets/uploads/P07_CZ.svg.png" alt="Icyapa cyerekana ko ibinyabiziga biturutse imbere bifite uburenganzira bwo gutambuka mbere" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Gutambuka mbere y’ibinyabiziga bihura</h4>
+                        <p>Icyapa cyerekana uwemerewe gutambuka mbere mu muhanda ugenderwamo n’ibinyabiziga bihura.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="Portugal_road_sign_B6.svg.png">
+                        <img src="/assets/uploads/Portugal_road_sign_B6.svg.png" alt="Icyapa cyerekana uburenganzira bwo gutambuka mbere y’ibinyabiziga bihura" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Icyapa cy’uburenganzira bwo gutambuka mbere</h4>
+                        <p>Icyapa cyerekana ko ufite uburenganzira bwo gutambuka mbere y’ibinyabiziga bihura.</p>
+                    </article>
+                </div>
+            </section>
+            <section class="road-sign-category" aria-labelledby="roadSignProhibitionTitle">
+                <h3 id="roadSignProhibitionTitle">IBYAPA BIBUZA</h3>
+                <p class="road-sign-category-description">Ibyapa bibuza byereka abagendera mu nzira nyabagendwa ibyo batemerewe gukora.</p>
+                <div class="road-sign-examples">
+                    <article class="road-sign-example" data-sign-asset="road-sign-of-50-speed-limit-on-white-background-free-vector.jpg">
+                        <img src="/assets/uploads/road-sign-of-50-speed-limit-on-white-background-free-vector.jpg" alt="Icyapa gishyiraho umuvuduko ntarengwa wa kilometero 50 mu isaha" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Umuvuduko ntarengwa wa km 50/h</h4>
+                        <p>Iki cyapa kibuza kurenza umuvuduko wa kilometero 50 mu isaha.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="IE_road_sign_RUS-012_(1).svg">
+                        <img src="/assets/uploads/IE_road_sign_RUS-012_(1).svg" alt="Icyapa kibuza gukatira iburyo" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Birabujijwe gukatira iburyo</h4>
+                        <p>Iki cyapa kibuza umuyobozi gukatira iburyo.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="Vorschriftszeichen_13a.svg">
+                        <img src="/assets/uploads/Vorschriftszeichen_13a.svg" alt="Icyapa kibuza guhagarika ikinyabiziga" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Birabujijwe guhagarika ikinyabiziga</h4>
+                        <p>Iki cyapa kibuza guhagarika ikinyabiziga ahashyizwe icyo kimenyetso.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="66.png">
+                        <img src="/assets/uploads/66.png" alt="Icyapa kibuza kunyuranaho" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Birabujijwe kunyuranaho</h4>
+                        <p>Iki cyapa kibuza kunyura ku kindi kinyabiziga mu gice cy’umuhanda kirimo icyo kimenyetso.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="Bild_14_-_Verkehrsverbot_fÃ¼r_KraftrÃ¤der,_StVO_1937.svg">
+                        <img src="/assets/uploads/Bild_14_-_Verkehrsverbot_fÃ¼r_KraftrÃ¤der,_StVO_1937.svg" alt="Icyapa kibuza amapikipiki kunyura" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Ntihanyurwa n’amapikipiki</h4>
+                        <p>Iki cyapa kibuza amapikipiki kunyura mu muhanda kirimo icyo kimenyetso.</p>
+                    </article>
+                </div>
+            </section>
+            <section class="road-sign-category" aria-labelledby="roadSignMandatoryTitle">
+                <h3 id="roadSignMandatoryTitle">IBYAPA BITEGEKA</h3>
+                <p class="road-sign-category-description">Ibyapa bitegeka byerekana icyo umugenzi cyangwa umuyobozi w’ikinyabiziga agomba gukora.</p>
+                <div class="road-sign-examples">
+                    <article class="road-sign-example" data-sign-asset="Mauritius_Road_Signs_-_Mandatory_Sign_-_Left_turn_only.svg.png">
+                        <img src="/assets/uploads/Mauritius_Road_Signs_-_Mandatory_Sign_-_Left_turn_only.svg.png" alt="Icyapa cy’ubururu kizengurutse gitegeka gukatira ibumoso" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Gukatira ibumoso bitegetswe</h4>
+                        <p>Iki cyapa cy’ubururu gitegeka umuyobozi gukatira ibumoso.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="Mauritius_Road_Signs_-_Mandatory_Sign_-_Right_turn_only.svg.png">
+                        <img src="/assets/uploads/Mauritius_Road_Signs_-_Mandatory_Sign_-_Right_turn_only.svg.png" alt="Icyapa cy’ubururu kizengurutse gitegeka gukatira iburyo" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Gukatira iburyo bitegetswe</h4>
+                        <p>Iki cyapa cy’ubururu gitegeka umuyobozi gukatira iburyo.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="mandatory-straight-ahead.svg">
+                        <img src="/assets/uploads/mandatory-straight-ahead.svg" alt="Icyapa cy’ubururu kizengurutse gitegeka gukomeza imbere" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Gukomeza imbere bitegetswe</h4>
+                        <p>Iki cyapa cy’ubururu gitegeka umuyobozi gukomeza imbere.</p>
+                    </article>
+                </div>
+            </section>
+            <section class="road-sign-category" aria-labelledby="roadSignGuidanceTitle">
+                <h3 id="roadSignGuidanceTitle">IBYAPA NDANGA CYANGWA BIYOBORA</h3>
+                <p class="road-sign-category-description">Ibyapa ndanga cyangwa biyobora bifasha abagenzi kumenya aho bari, aho berekeza cyangwa serivisi n’ahantu by’ingenzi biri hafi.</p>
+                <div class="road-sign-examples">
+                    <article class="road-sign-example" data-sign-asset="7.png">
+                        <img src="/assets/uploads/7.png" alt="Icyapa cy’ubururu kiranga inzira idakomeza" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Inzira idakomeza</h4>
+                        <p>Iki cyapa kigaragaza ko umuhanda urangirira aho kandi nta yindi nzira ikomeza.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="Screenshot_2026-06-09_165909.png">
+                        <img src="/assets/uploads/Screenshot_2026-06-09_165909.png" alt="Icyapa cy’ubururu cyerekana icyerekezo kimwe" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Icyerekezo kimwe</h4>
+                        <p>Iki cyapa kiyobora abagenzi mu muhanda ugenderwamo mu cyerekezo kimwe.</p>
+                    </article>
+                    <article class="road-sign-example" data-sign-asset="guidance-bus-stop.svg">
+                        <img src="/assets/uploads/guidance-bus-stop.svg" alt="Icyapa kiranga aho bisi zihagarara" width="120" height="120" loading="lazy" decoding="async">
+                        <h4>Aho za otobisi zihagarara</h4>
+                        <p>Iki cyapa kiranga ahantu hagenewe guhagararamo za otobisi.</p>
+                    </article>
+                </div>
+            </section>
         </div>
+        <p class="road-sign-learning-note">Ibisobanuro biri kuri uru rupapuro bigenewe gufasha mu kwiga. Witoze kandi usome amategeko n’imfashanyigisho zibisobanura mu buryo burambuye.</p>
         <a class="road-sign-practice" id="roadSignPractice" href="/exam">
             Gerageza imyitozo y’ibyapa <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
         </a>
+        <p class="road-sign-cta-copy">Nyuma yo gusoma, gerageza ibibazo bijyanye n’ibyapa kugira ngo urebe ibyo umaze kumenya.</p>
     </section>
 
     <div class="section-head">
