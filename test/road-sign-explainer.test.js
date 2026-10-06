@@ -45,6 +45,17 @@ test('ROAD_SIGN_EXPLAINER_RENDER=PASS', () => {
   assert.match(pageHtml, /Gerageza imyitozo y’ibyapa/);
 });
 
+test('ROAD_SIGN_FIVE_KINYARWANDA_CATEGORIES=PASS', () => {
+  for (const heading of ['IBYAPA BIBURIRA', 'IBYAPA BY’UBURENGANZIRA CYANGWA GUTAMBUKA MBERE', 'IBYAPA BIBUZA', 'IBYAPA BITEGEKA', 'IBYAPA NDANGA CYANGWA BIYOBORA']) {
+    assert.ok(pageHtml.includes(heading), 'category heading present: ' + heading);
+  }
+});
+
+test('ROAD_SIGN_ENGLISH_CATEGORIES_REMOVED=PASS', () => {
+  const removedLabels = ['Warning', 'Regulatory', 'Mandatory', 'Information'].map((label) => label + ' ' + 'Signs');
+  for (const label of removedLabels) assert.equal(pageHtml.includes(label), false, 'removed label absent: ' + label);
+});
+
 test('ROAD_SIGN_FIVE_CATEGORIES=PASS', () => {
   const categories = pageHtml.match(/class="road-sign-category"/g) || [];
   assert.equal(categories.length, 5);
@@ -76,7 +87,7 @@ test('ROAD_SIGN_NO_ENGLISH_LABELS=PASS', () => {
   const sectionEnd = pageHtml.indexOf('</section>', pageHtml.indexOf('class="road-sign-learning-note"', sectionStart));
   const explainer = pageHtml.slice(sectionStart, sectionEnd);
   const visibleText = explainer.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
-  assert.doesNotMatch(visibleText, /Warning Signs|Regulatory Signs|Mandatory Signs|Information Signs|road sign|warning|regulatory|mandatory|information/i);
+  assert.doesNotMatch(visibleText, /road\s+sign|warning|regulatory|mandatory|information/i);
 });
 
 test('ROAD_SIGN_REAL_IMAGES_ONLY=PASS', () => {
@@ -84,6 +95,13 @@ test('ROAD_SIGN_REAL_IMAGES_ONLY=PASS', () => {
     assert.ok(fs.existsSync(path.join(uploadsPath, asset)), 'sign asset exists: ' + asset);
     assert.match(pageHtml, new RegExp('data-sign-asset="' + asset.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '"'));
   }
+});
+
+test('ROAD_SIGN_NO_GENERIC_PLACEHOLDER_ICONS=PASS', () => {
+  const categoryStart = pageHtml.indexOf('<div class="road-sign-categories">');
+  const categoryEnd = pageHtml.indexOf('class="road-sign-learning-note"', categoryStart);
+  const explainer = pageHtml.slice(categoryStart, categoryEnd);
+  assert.doesNotMatch(explainer, /road-sign-category-icon|fa-(?:triangle-exclamation|ban|arrow-right|circle-info)/);
 });
 
 test('ROAD_SIGN_IMAGE_LABEL_MATCH=PASS', () => {

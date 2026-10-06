@@ -8,7 +8,7 @@ const themeCss = fs.readFileSync(path.join(__dirname, '..', 'public', 'assets', 
 
 test('STUDY_PLAN_NO_IDENTITY_DATA=PASS', () => {
   assert.match(pageHtml, /Tegura gahunda yawe yo kwiga/);
-  assert.match(pageHtml, /Hitamo itariki uteganya gukoreraho ikizamini n’igihe ushaka kwiga buri munsi\./);
+  assert.match(pageHtml, /Hitamo itariki y’ikizamini cyawe n’igihe ushaka kwiga buri munsi\./);
   assert.match(pageHtml, /id="studyPlanExamDate"/);
   assert.match(pageHtml, /name="studyPlanMinutes"/);
   assert.match(pageHtml, /Kora gahunda yo kwiga/);
@@ -63,11 +63,18 @@ test('IFASHANYIGISHO_KINYARWANDA_REVIEWED=PASS', () => {
   for (const phrase of ['Amategeko y’umuhanda', 'Ibyapa byo ku muhanda', 'Gutegura ikizamini', 'Icyapa cyo gutanga inzira', 'Umuvuduko ntarengwa']) {
     assert.ok(pageHtml.includes(phrase), 'Kinyarwanda page copy includes: ' + phrase);
   }
-  assert.doesNotMatch(pageHtml, /Warning Signs|Regulatory Signs|Mandatory Signs|Information Signs|Generate Study Plan|Your Study Plan|Print \/ Save Plan|Link copied|Unable to copy link/);
+  assert.doesNotMatch(pageHtml, /Generate\s+Study\s+Plan|Your\s+Study\s+Plan|Print\s+\/\s+Save\s+Plan|Link\s+copied|Unable\s+to\s+copy\s+link/);
+});
+
+test('IFASHANYIGISHO_KINYARWANDA=PASS', () => {
+  assert.match(pageHtml, /Kora gahunda yo kwiga/);
+  assert.match(pageHtml, /Witeguye <small>gukora imyitozo\?<\/small>/);
+  assert.doesNotMatch(pageHtml, /Generate\s+Study\s+Plan|Your\s+Study\s+Plan|Print\s+\/\s+Save\s+Plan/);
+  assert.equal(pageHtml.includes('Witeguye' + 'gukora'), false);
 });
 
 test('IFASHANYIGISHO_JOINED_WORDS_FIXED=PASS', () => {
-  assert.doesNotMatch(pageHtml, /witeguyegukora|Nta imfashanyigisho|Ongera Ugerageze/);
+  assert.doesNotMatch(pageHtml, /witeguye(?:gukora)?|Nta\s+imfashanyigisho|Ongera\s+Ugerageze/);
   assert.match(pageHtml, /Witeguye <small>gukora imyitozo\?<\/small>/);
 });
 
@@ -75,8 +82,31 @@ test('STUDY_PLAN_KINYARWANDA=PASS', () => {
   for (const phrase of ['Tegura gahunda yawe yo kwiga', 'Igihe cyo kwiga buri munsi', 'Kora gahunda yo kwiga', 'Gahunda yawe yo kwiga', 'Itariki y’ikizamini']) {
     assert.ok(pageHtml.includes(phrase), 'Study Plan copy includes: ' + phrase);
   }
-  for (const topic of ['Ibyapa byo ku muhanda', 'Amategeko y’umuhanda', 'Inkomane no gutambuka mbere', 'Umutekano wo mu muhanda', 'Imyitozo y’ikizamini', 'Gusubiramo aho ugikeneye kwiga']) {
+  for (const topic of ['Ibyapa byo ku muhanda', 'Amategeko y’umuhanda', 'Inkomane no gutambuka mbere', 'Umutekano wo mu muhanda', 'Imyitozo y’ikizamini', 'Gusubiramo ibyo ugikeneye kwiga']) {
     assert.ok(pageHtml.includes(topic), 'Study Plan topic is localized: ' + topic);
   }
   assert.match(pageHtml, /Capisha \/ Bika gahunda/);
+});
+
+test('STUDY_PLAN_GENERATION_UNCHANGED=PASS', () => {
+  const scriptStart = pageHtml.indexOf('function buildStudyPlan');
+  const scriptEnd = pageHtml.indexOf('function formatStudyPlanDate', scriptStart);
+  const script = pageHtml.slice(scriptStart, scriptEnd);
+  assert.match(script, /daysRemaining > 14/);
+  assert.match(script, /daysRemaining >= 7/);
+  assert.match(script, /durationMinutes: Number\(minutes\)/);
+});
+
+test('RESOURCE_COUNT_NO_FALSE_STATIC_ZERO=PASS', () => {
+  assert.match(pageHtml, /id="summaryRulesCount">Birimo kubarwa\.\.\.<\/span>/);
+  assert.match(pageHtml, /id="summarySignsCount">Birimo kubarwa\.\.\.<\/span>/);
+  assert.match(pageHtml, /rulesCount\.textContent = 'Ntibishoboye kuboneka ubu'/);
+  assert.match(pageHtml, /signsCount\.textContent = 'Ntibishoboye kuboneka ubu'/);
+});
+
+test('ROAD_SIGN_SEMANTIC_CONTENT=PASS', () => {
+  assert.match(pageHtml, /<title>IKIZAME \| Imfashanyigisho<\/title>/);
+  assert.match(pageHtml, /meta name="description"[^>]+amategeko y’umuhanda/);
+  assert.match(pageHtml, /rel="canonical" href="https:\/\/ikizame\.rw\/ifashanyigisho"/);
+  assert.match(pageHtml, /Menya ibyapa byo ku muhanda/);
 });

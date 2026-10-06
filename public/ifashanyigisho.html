@@ -8,6 +8,8 @@
     <meta http-equiv="Expires" content="0">
     <link rel="icon" type="image/png" href="assets/uploads/logo.png">
     <title>IKIZAME | Imfashanyigisho</title>
+    <meta name="description" content="Imfashanyigisho za IKIZAME zigufasha kwiga amategeko y’umuhanda, ibyapa byo ku muhanda no kwitegura ikizamini cy’uruhushya rw’agateganyo mu Rwanda.">
+    <link rel="canonical" href="https://ikizame.rw/ifashanyigisho">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -560,11 +562,11 @@
     <div class="summary-strip">
         <div class="summary-stat">
             <span class="label">Amategeko y’umuhanda</span>
-            <div class="value"><span id="summaryRulesCount">0</span><small>ibyiciro</small></div>
+            <div class="value"><span id="summaryRulesCount">Birimo kubarwa...</span><small>ibyiciro</small></div>
         </div>
         <div class="summary-stat">
             <span class="label">Ibimenyetso byo mu muhanda</span>
-            <div class="value"><span id="summarySignsCount">0</span><small>ibyiciro</small></div>
+            <div class="value"><span id="summarySignsCount">Birimo kubarwa...</span><small>ibyiciro</small></div>
         </div>
         <div class="summary-stat">
             <span class="label">Iby’ingenzi byo kwiga</span>
@@ -577,7 +579,7 @@
             <div class="study-plan-icon"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></div>
             <div>
                 <h2 id="studyPlanTitle">Tegura gahunda yawe yo kwiga</h2>
-                <p>Hitamo itariki uteganya gukoreraho ikizamini n’igihe ushaka kwiga buri munsi. IKIZAME iragufasha gukora gahunda y’imyitozo kugeza ku munsi w’ikizamini.</p>
+                <p>Hitamo itariki y’ikizamini cyawe n’igihe ushaka kwiga buri munsi. IKIZAME iragufasha gutegura gahunda yo kwiga kugeza ku munsi w’ikizamini.</p>
             </div>
         </div>
 
@@ -645,7 +647,7 @@
             </section>
             <section class="road-sign-category" aria-labelledby="roadSignPriorityTitle">
                 <h3 id="roadSignPriorityTitle">IBYAPA BY’UBURENGANZIRA CYANGWA GUTAMBUKA MBERE</h3>
-                <p class="road-sign-category-description">Ibi byapa bigena uko gutambuka mbere bikorwa, cyane cyane mu masangano no mu nkomane.</p>
+                <p class="road-sign-category-description">Ibi byapa bigena amategeko yo gutambuka mbere, cyane cyane mu masangano no mu nkomane.</p>
                 <div class="road-sign-examples">
                     <article class="road-sign-example" data-sign-asset="11.jpg">
                         <img src="/assets/uploads/11.jpg" alt="Icyapa gisaba gutanga inzira mbere yo gukomeza" width="120" height="120" loading="lazy" decoding="async">
@@ -875,7 +877,11 @@ function loadDocs() {
         .then(function(docs) {
             var grid = document.getElementById('cardsGrid');
             var badge = document.getElementById('docCountBadge');
+            var rulesCount = document.getElementById('summaryRulesCount');
+            var signsCount = document.getElementById('summarySignsCount');
             if (!docs || docs.length === 0) {
+                if (rulesCount) rulesCount.textContent = '0';
+                if (signsCount) signsCount.textContent = '0';
                 grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta mfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwa kuri uru rupapuro vuba. Ongera uze nyuma.</p></div>';
                 badge.textContent = 'Nta zihari ubu';
                 return;
@@ -888,6 +894,10 @@ function loadDocs() {
             console.error('loadDocs error:', err);
             var grid = document.getElementById('cardsGrid');
             var badge = document.getElementById('docCountBadge');
+            var rulesCount = document.getElementById('summaryRulesCount');
+            var signsCount = document.getElementById('summarySignsCount');
+            if (rulesCount) rulesCount.textContent = 'Ntibishoboye kuboneka ubu';
+            if (signsCount) signsCount.textContent = 'Ntibishoboye kuboneka ubu';
             grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habaye ikibazo</h3><p>Gushaka imfashanyigisho ntibyashobotse. Ongera ugerageze.</p><button type="button" onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera ugerageze</button></div>';
             badge.textContent = 'Habaye ikibazo';
         });
@@ -1171,7 +1181,7 @@ function openViewer(docOrIdx) {
         'Umutekano wo mu muhanda',
         'Amategeko n’ibihano byo mu muhanda',
         'Imyitozo y’ikizamini',
-        'Gusubiramo aho ugikeneye kwiga'
+        'Gusubiramo ibyo ugikeneye kwiga'
     ];
 
     function toDateOnly(date) {
@@ -1213,7 +1223,7 @@ function openViewer(docOrIdx) {
 
             if (daysRemaining > 14) {
                 if (remaining <= 2) {
-                    topic = 'Gusubiramo aho ugikeneye kwiga';
+                    topic = 'Gusubiramo ibyo ugikeneye kwiga';
                 } else if ((dayIndex + 1) % 5 === 0) {
                     topic = 'Imyitozo y’ikizamini';
                 } else if ((dayIndex + 1) % 3 === 0) {
@@ -1223,7 +1233,7 @@ function openViewer(docOrIdx) {
                 }
             } else if (daysRemaining >= 7) {
                 if (remaining <= 2) {
-                    topic = 'Gusubiramo aho ugikeneye kwiga';
+                    topic = 'Gusubiramo ibyo ugikeneye kwiga';
                 } else if ((dayIndex + 1) % 2 === 0) {
                     topic = 'Imyitozo y’ikizamini';
                 } else {
@@ -1231,7 +1241,7 @@ function openViewer(docOrIdx) {
                 }
             } else {
                 if (remaining <= 2) {
-                    topic = 'Gusubiramo aho ugikeneye kwiga';
+                    topic = 'Gusubiramo ibyo ugikeneye kwiga';
                 } else if ((dayIndex + 1) % 2 === 0) {
                     topic = 'Imyitozo y’ikizamini';
                 } else {
@@ -1242,7 +1252,7 @@ function openViewer(docOrIdx) {
             const title = topic;
             const description = topic === 'Imyitozo y’ikizamini'
                 ? 'Kora imyitozo y’ikizamini mu gihe cyagenewe.'
-                : topic === 'Gusubiramo aho ugikeneye kwiga'
+                : topic === 'Gusubiramo ibyo ugikeneye kwiga'
                     ? 'Subira ku bibazo bikugora maze wongere wige ingingo zabyo.'
                     : 'Soma ingingo z’ingenzi zijyanye n’iki cyiciro.';
 
