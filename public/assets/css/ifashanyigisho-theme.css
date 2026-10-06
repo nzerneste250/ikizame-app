@@ -281,11 +281,19 @@ footer a:hover { color: #FFFFFF; }
 }
 .road-sign-share:hover { background: #E3EFFA; }
 .road-sign-share-status { min-height: 1.25em; margin: 6px 0 10px; color: #166534; font-size: .82rem; font-weight: 700; }
-.road-sign-categories { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.road-sign-category { display: flex; align-items: flex-start; gap: 12px; min-width: 0; padding: 14px; border: 1px solid #D7E1EA; border-radius: 6px; background: #FFFFFF; }
-.road-sign-category-icon { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border-radius: 6px; background: #E3EFFA; color: #0D47A1; }
-.road-sign-category h3 { margin: 0 0 5px; color: #1F2937; font-size: .94rem; }
-.road-sign-category p { margin: 0; color: #64748B; font-size: .85rem; line-height: 1.55; }
+.road-sign-categories { display: grid; gap: 14px; }
+.road-sign-category { min-width: 0; padding: 16px; border: 1px solid #D7E1EA; border-radius: 6px; background: #FFFFFF; }
+.road-sign-category h3 { margin: 0 0 6px; color: #1F2937; font-size: 1rem; }
+.road-sign-category-description,
+.road-sign-form,
+.road-sign-asset-note { margin: 0 0 8px; color: #64748B; font-size: .87rem; line-height: 1.55; }
+.road-sign-form { color: #475569; }
+.road-sign-asset-note { margin: 10px 0 0; font-size: .8rem; }
+.road-sign-examples { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.road-sign-example { min-width: 0; padding: 10px; border: 1px solid #D7E1EA; border-radius: 6px; background: #F8FAFC; }
+.road-sign-example img { display: block; width: 100%; height: 112px; object-fit: contain; object-position: center; margin: 0 auto 8px; background: #FFFFFF; }
+.road-sign-example h4 { margin: 0 0 5px; color: #1F2937; font-size: .85rem; line-height: 1.35; }
+.road-sign-example p { margin: 0; color: #64748B; font-size: .78rem; line-height: 1.45; }
 .road-sign-practice {
   display: inline-flex;
   align-items: center;
@@ -307,8 +315,18 @@ footer a:hover { color: #FFFFFF; }
   .road-sign-explainer { padding: 18px 14px; }
   .road-sign-heading { flex-direction: column; }
   .road-sign-share { align-self: flex-start; }
-  .road-sign-categories { grid-template-columns: minmax(0, 1fr); }
+  .road-sign-examples { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .road-sign-practice { width: 100%; text-align: center; }
+}
+
+@media (max-width: 1024px) {
+  .road-sign-examples { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 390px) {
+  .road-sign-examples { grid-template-columns: minmax(0, 1fr); }
+  .road-sign-example { display: grid; grid-template-columns: 96px minmax(0, 1fr); column-gap: 10px; align-items: start; }
+  .road-sign-example img { grid-row: span 2; height: 88px; margin: 0; }
 }
 
 @media (max-width: 360px) {
@@ -316,10 +334,13 @@ footer a:hover { color: #FFFFFF; }
   .road-sign-heading h2 { font-size: 1.12rem; }
   .road-sign-heading p:not(.road-sign-eyebrow) { font-size: .82rem; line-height: 1.45; }
   .road-sign-share-status { margin: 2px 0 6px; }
-  .road-sign-categories { gap: 8px; }
-  .road-sign-category { gap: 8px; padding: 10px; }
-  .road-sign-category-icon { width: 30px; height: 30px; flex-basis: 30px; }
-  .road-sign-category p { font-size: .8rem; line-height: 1.45; }
+  .road-sign-category { padding: 10px; }
+  .road-sign-category-description,
+  .road-sign-form { font-size: .8rem; line-height: 1.45; }
+  .road-sign-example { grid-template-columns: 76px minmax(0, 1fr); padding: 8px; column-gap: 8px; }
+  .road-sign-example img { height: 76px; }
+  .road-sign-example h4 { font-size: .8rem; }
+  .road-sign-example p { font-size: .74rem; }
   .road-sign-practice { min-height: 44px; margin-top: 12px; padding: 0 10px; }
 }
 

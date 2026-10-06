@@ -528,7 +528,7 @@
 
 <header class="navbar home-premium-nav home-direct-nav always-visible-nav public-direct-nav">
     <a href="/" class="navbar-brand-wrap">
-        <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
+        <img src="assets/uploads/logo.png" alt="Ikirango cya IKIZAME">
         <div class="navbar-brand">IKIZAME</div>
     </a>
     <nav>
@@ -552,7 +552,7 @@
     <div class="hero-copy-glass">
         <div class="hero-icon"><i class="fa-solid fa-book-open"></i></div>
         <h1>Imfashanyigisho</h1>
-        <p>Aha ushobora gusoma no gukura imfashanyigisho zitandukanye ku mategeko y’umuhanda kugira ngo witegure ikizamini neza.</p>
+        <p>Soma imfashanyigisho z’amategeko n’ibimenyetso byo mu muhanda, wige ingingo z’ingenzi kandi witegure neza ikizamini cy’uruhushya rw’agateganyo.</p>
     </div>
 </section>
 
@@ -560,15 +560,15 @@
     <div class="summary-strip">
         <div class="summary-stat">
             <span class="label">Amategeko y’umuhanda</span>
-            <div class="value"><span id="summaryRulesCount">0</span><small>topics</small></div>
+            <div class="value"><span id="summaryRulesCount">0</span><small>ibyiciro</small></div>
         </div>
         <div class="summary-stat">
             <span class="label">Ibimenyetso byo mu muhanda</span>
-            <div class="value"><span id="summarySignsCount">0</span><small>topics</small></div>
+            <div class="value"><span id="summarySignsCount">0</span><small>ibyiciro</small></div>
         </div>
         <div class="summary-stat">
             <span class="label">Iby’ingenzi byo kwiga</span>
-            <div class="value">Witeguye<small>gukora imyitozo</small></div>
+            <div class="value">Witeguye <small>gukora imyitozo?</small></div>
         </div>
     </div>
 
@@ -576,8 +576,8 @@
         <div class="study-plan-header">
             <div class="study-plan-icon"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></div>
             <div>
-                <h2 id="studyPlanTitle">Tegura gahunda yo kwiga</h2>
-                <p>Hitamo itariki y’ikizamini cyawe, ubone gahunda yoroheje yo kwiga buri munsi.</p>
+                <h2 id="studyPlanTitle">Tegura gahunda yawe yo kwiga</h2>
+                <p>Hitamo itariki uteganya gukoreraho ikizamini n’igihe ushaka kwiga buri munsi. IKIZAME iragufasha gukora gahunda y’imyitozo kugeza ku munsi w’ikizamini.</p>
             </div>
         </div>
 
@@ -588,16 +588,16 @@
             </div>
 
             <fieldset class="study-plan-field" style="border:0; padding:0; margin:0; min-inline-size: 0;">
-                <legend>Umwanya wo kwiga ku munsi</legend>
-                <div class="study-plan-options" role="radiogroup" aria-label="Daily study duration">
-                    <label class="study-plan-option"><input type="radio" name="studyPlanMinutes" value="15" checked><span>15 min</span></label>
-                    <label class="study-plan-option"><input type="radio" name="studyPlanMinutes" value="20"><span>20 min</span></label>
-                    <label class="study-plan-option"><input type="radio" name="studyPlanMinutes" value="30"><span>30 min</span></label>
-                    <label class="study-plan-option"><input type="radio" name="studyPlanMinutes" value="45"><span>45 min</span></label>
+                <legend>Igihe cyo kwiga buri munsi</legend>
+                <div class="study-plan-options" role="radiogroup" aria-label="Igihe cyo kwiga buri munsi">
+                    <label class="study-plan-option"><input type="radio" name="studyPlanMinutes" value="15" checked><span>Iminota 15</span></label>
+                    <label class="study-plan-option"><input type="radio" name="studyPlanMinutes" value="20"><span>Iminota 20</span></label>
+                    <label class="study-plan-option"><input type="radio" name="studyPlanMinutes" value="30"><span>Iminota 30</span></label>
+                    <label class="study-plan-option"><input type="radio" name="studyPlanMinutes" value="45"><span>Iminota 45</span></label>
                 </div>
             </fieldset>
 
-            <button type="submit" class="study-plan-submit" id="generateStudyPlanBtn">Generate Study Plan</button>
+            <button type="submit" class="study-plan-submit" id="generateStudyPlanBtn">Kora gahunda yo kwiga</button>
             <p id="studyPlanValidation" class="study-plan-validation" role="alert" aria-live="polite"></p>
         </form>
 
@@ -756,20 +756,19 @@
     </section>
 
     <div class="section-head">
-        <h2><i class="fa-solid fa-folder-open"></i> Imfashanyigisho Zihari</h2>
-        <span class="doc-count-badge" id="docCountBadge">Irimo gushaka...</span>
+        <h2><i class="fa-solid fa-folder-open"></i> Imfashanyigisho zihari</h2>
+        <span class="doc-count-badge" id="docCountBadge">Turimo gushaka imfashanyigisho...</span>
     </div>
     <div class="filter-row" id="docFilterPills">
         <button class="filter-pill active" data-filter="all" type="button">Byose</button>
-        <button class="filter-pill" data-filter="road-rules" type="button">Amategeko y'umuhanda</button>
-        <button class="filter-pill" data-filter="road-signs" type="button">Ibimenyetso</button>
-        <button class="filter-pill" data-filter="traffic-regulations" type="button">Itegeko ry'umuhanda</button>
+        <button class="filter-pill" data-filter="road-rules" type="button">Amategeko y’umuhanda</button>
+        <button class="filter-pill" data-filter="road-signs" type="button">Ibyapa byo ku muhanda</button>
         <button class="filter-pill" data-filter="exam-prep" type="button">Gutegura ikizamini</button>
     </div>
     <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass s-icon"></i>
         <input type="text" class="search-input" id="searchInput" aria-label="Shakisha imfashanyigisho" placeholder="Shakisha imfashanyigisho..." oninput="filterDocs(this.value)" autocomplete="off">
-        <button class="search-clear" id="searchClear" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></button>
+        <button class="search-clear" id="searchClear" type="button" aria-label="Siba ibyo wanditse" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="cards-grid" id="cardsGrid">
         <div class="skeleton-card">
@@ -800,9 +799,9 @@
 <!-- Payment modal -->
 <div class="pay-modal-overlay" id="payModalOverlay">
     <div class="pay-modal-box">
-        <div class="pay-modal-title"><i class="fa-solid fa-lock"></i> <span id="payModalTitle">Ishyura kugira ngo ugure</span></div>
+        <div class="pay-modal-title"><i class="fa-solid fa-lock"></i> <span id="payModalTitle">Ishyura kugira ngo ubone iyi mfashanyigisho</span></div>
         <div class="pay-modal-price" id="payModalPrice"></div>
-        <div class="pay-form-label">Nimero ya telefone (MTN / Airtel)</div>
+        <div class="pay-form-label">Nimero ya telefoni (MTN cyangwa Airtel)</div>
         <input type="tel" id="payModalPhone" placeholder="0788000000" autocomplete="tel" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric">
         <div class="pay-modal-actions">
             <button class="btn-pay" onclick="submitModalPayment()"><i class="fa-solid fa-credit-card"></i> Ishyura</button>
@@ -831,8 +830,8 @@ function slugifyText(value) {
 
 function getDocCategory(doc) {
     const text = slugifyText((doc.title || '') + ' ' + (doc.description || '') + ' ' + (doc.file_type || ''));
-    if (/sign|traffic sign|ibimenyetso|road sign/.test(text)) return 'road-signs';
-    if (/rule|law|regulation|amategeko|itegeko|traffic/.test(text)) return 'traffic-regulations';
+    if (/sign|traffic sign|ibyapa|ibimenyetso|road sign/.test(text)) return 'road-signs';
+    if (/rule|law|regulation|amategeko|itegeko|traffic/.test(text)) return 'road-rules';
     if (/exam|practice|mock|ikizamini|gutegura|preparation/.test(text)) return 'exam-prep';
     if (/rule|law|road/.test(text)) return 'road-rules';
     return 'road-rules';
@@ -877,8 +876,8 @@ function loadDocs() {
             var grid = document.getElementById('cardsGrid');
             var badge = document.getElementById('docCountBadge');
             if (!docs || docs.length === 0) {
-                grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta imfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwaho vuba. Subira nyuma.</p></div>';
-                badge.textContent = 'Nta bihari ubu';
+                grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta mfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwa kuri uru rupapuro vuba. Ongera uze nyuma.</p></div>';
+                badge.textContent = 'Nta zihari ubu';
                 return;
             }
             allDocs = docs;
@@ -889,8 +888,8 @@ function loadDocs() {
             console.error('loadDocs error:', err);
             var grid = document.getElementById('cardsGrid');
             var badge = document.getElementById('docCountBadge');
-            grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habayeho ikosa</h3><p>Gushaka imfashanyigisho byanze. Gerageza wongere.</p><button onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera Ugerageze</button></div>';
-            badge.textContent = 'Ikosa';
+            grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habaye ikibazo</h3><p>Gushaka imfashanyigisho ntibyashobotse. Ongera ugerageze.</p><button type="button" onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera ugerageze</button></div>';
+            badge.textContent = 'Habaye ikibazo';
         });
 }
 
@@ -900,8 +899,8 @@ function renderDocs() {
     var input = document.getElementById('searchInput');
     var term = (input ? input.value : '').trim().toLowerCase();
     if (!allDocs || allDocs.length === 0) {
-        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta imfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwaho vuba. Subira nyuma.</p></div>';
-        badge.textContent = 'Nta bihari ubu';
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta mfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwa kuri uru rupapuro vuba. Ongera uze nyuma.</p></div>';
+        badge.textContent = 'Nta zihari ubu';
         return;
     }
     var filtered = allDocs.filter(function(doc) {
@@ -914,7 +913,7 @@ function renderDocs() {
     document.getElementById('summarySignsCount').textContent = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-signs'; }).length;
     grid.innerHTML = filtered.length
         ? filtered.map(function(doc) { return buildCard(doc, allDocs.indexOf(doc)); }).join('')
-        : '<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zibonetse kuri iyi kategori.</p></div>';
+        : '<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zihuye n’icyo washakishije muri iki cyiciro.</p></div>';
 }
 
 function filterDocs(q) {
@@ -953,7 +952,7 @@ function buildCard(doc, idx) {
     var ext = fileRef.split('.').pop().toLowerCase();
     if (!ext || ext === 'null' || ext === fileRef) ext = doc.file_type || 'pdf';
     var isPdf  = ext === 'pdf';
-    var isWord = ext === 'doc' || ext === 'docx';
+                var isWord = ext === 'doc' || ext === 'docx';
     var iconClass = isPdf ? 'icon-pdf' : isWord ? 'icon-word' : 'icon-img';
     var iconFA    = isPdf ? 'fa-file-pdf' : isWord ? 'fa-file-word' : 'fa-file-image';
     var tagClass  = isPdf ? 'tag-pdf' : 'tag-word';
@@ -961,12 +960,12 @@ function buildCard(doc, idx) {
     var desc = doc.description ? '<p>' + doc.description + '</p>' : '';
     var actionBtn = isLocked
         ? '<button class="btn-read btn-pay" onclick="event.stopPropagation(); openResourcePayment(' + idx + ')"><i class="fa-solid fa-credit-card"></i> Ishyura ' + formatAmount(doc.price) + '</button>'
-        : '<button class="btn-read" onclick="event.stopPropagation(); openViewer(' + idx + ')"><i class="fa-solid fa-book-open"></i> Soma Hano</button>';
+        : '<button class="btn-read" onclick="event.stopPropagation(); openViewer(' + idx + ')"><i class="fa-solid fa-book-open"></i> Soma hano</button>';
     var dlBtn = isLocked
         ? ''
         : (doc.allow_download === 1
             ? '<a href="/' + doc.file_path + '" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-download"></i> Gukura</a>'
-            : '<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Locked</button>');
+            : '<button class="btn-download locked" disabled><i class="fa-solid fa-lock"></i> Ifunze</button>');
     var paymentPanel = '';
     return '<div class="doc-card' + (isLocked ? ' paid' : '') + '" onclick="handleResourceAction(' + idx + ')">'
         + (isLocked ? '<span class="paid-badge"><i class="fa-solid fa-lock" style="font-size:.6rem;margin-right:4px;"></i> Byishyuwe</span>' : '')
@@ -1041,7 +1040,7 @@ function submitModalPayment() {
     .then(function(r) { return r.json(); })
     .then(function(data) {
         if (!data.success) { status.textContent = data.error || 'Kwishyura byanze.'; return; }
-        status.textContent = 'Emeza kuri telephone yawe...';
+        status.textContent = 'Emeza kuri telefoni yawe...';
         var referenceId = data.referenceId;
         var attempts = 0;
         var timer = setInterval(function() {
@@ -1052,7 +1051,7 @@ function submitModalPayment() {
                     if (sd.status === 'SUCCESS') {
                         window.IkizameAnalytics?.purchase(sd.analyticsPurchase).catch(() => {});
                         clearInterval(timer);
-                        status.textContent = 'Byakunze! Gutegura gukura...';
+                        status.textContent = 'Kwishyura byakunze. Turimo gutegura dosiye...';
                         fetch('/api/public/documents/request-download', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -1065,17 +1064,17 @@ function submitModalPayment() {
                                 closePayModal();
                                 window.location.href = '/resource-download?token=' + encodeURIComponent(td.token)
                                     + '&title=' + encodeURIComponent(doc.title);
-                            } else { status.textContent = td.error || 'Gukura byanze. Ongera ugerageze.'; }
+                            } else { status.textContent = td.error || 'Gukuramo ntibyashobotse. Ongera ugerageze.'; }
                         })
-                        .catch(function() { status.textContent = 'Ikibazo cya internet mu gutegura gukura.'; });
+                        .catch(function() { status.textContent = 'Habaye ikibazo cya interineti mu gihe cyo gutegura gukuramo.'; });
                     } else if (attempts >= 20) {
                         clearInterval(timer);
-                        status.textContent = 'Igihe cyarangiye. Ongera ugerageze.';
+                        status.textContent = 'Igihe cyo gutegereza cyarangiye. Ongera ugerageze.';
                     }
                 });
         }, 2000);
     })
-    .catch(function() { status.textContent = 'Ikibazo cya internet. Ongera ugerageze.'; });
+    .catch(function() { status.textContent = 'Habaye ikibazo cya interineti. Ongera ugerageze.'; });
 }
 
 function getFingerprint() {
@@ -1123,9 +1122,9 @@ function openViewer(docOrIdx) {
         const currentUrl = shareUrl.href;
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(currentUrl).then(function() {
-                status.textContent = 'Link copied';
+                status.textContent = 'Ihuza ryakoporowe.';
             }).catch(function() {
-                status.textContent = 'Unable to copy link. Copy the address from your browser.';
+                status.textContent = 'Ntibyakunze gukoporora ihuza. Rikoporore mu murongo wa aderesi ya mushakisha.';
             });
             return;
         }
@@ -1139,7 +1138,7 @@ function openViewer(docOrIdx) {
         temporaryInput.select();
         const copied = document.execCommand('copy');
         document.body.removeChild(temporaryInput);
-        status.textContent = copied ? 'Link copied' : 'Unable to copy link. Copy the address from your browser.';
+        status.textContent = copied ? 'Ihuza ryakoporowe.' : 'Ntibyakunze gukoporora ihuza. Rikoporore mu murongo wa aderesi ya mushakisha.';
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -1153,7 +1152,7 @@ function openViewer(docOrIdx) {
                 const shareUrl = new URL(window.location.pathname, window.location.origin);
                 applyRoadSignCampaign(shareUrl);
                 shareUrl.hash = 'road-signs';
-                navigator.share({ title: 'Menya Ibyapa by’Umuhanda | IKIZAME', url: shareUrl.href })
+                navigator.share({ title: 'Menya ibyapa byo ku muhanda | IKIZAME', url: shareUrl.href })
                     .catch(function(error) {
                         if (error.name !== 'AbortError') copyRoadSignLink(status);
                     });
@@ -1166,13 +1165,13 @@ function openViewer(docOrIdx) {
 
 (function() {
     const STUDY_PLAN_TOPICS = [
-        'Road signs',
-        'Traffic rules',
-        'Priority and intersections',
-        'Road safety',
-        'Penalties / regulations',
-        'Timed practice exam',
-        'Review weak areas'
+        'Ibyapa byo ku muhanda',
+        'Amategeko y’umuhanda',
+        'Inkomane no gutambuka mbere',
+        'Umutekano wo mu muhanda',
+        'Amategeko n’ibihano byo mu muhanda',
+        'Imyitozo y’ikizamini',
+        'Gusubiramo aho ugikeneye kwiga'
     ];
 
     function toDateOnly(date) {
@@ -1190,7 +1189,7 @@ function openViewer(docOrIdx) {
 
     function buildStudyPlan(examDateString, minutes) {
         if (!examDateString) {
-            return { valid: false, message: 'Hitamo itariki y’ikizamini kugira ngo utange gahunda.' };
+            return { valid: false, message: 'Hitamo itariki y’ikizamini kugira ngo utegure gahunda.' };
         }
 
         const examDate = new Date(examDateString + 'T00:00:00');
@@ -1198,7 +1197,7 @@ function openViewer(docOrIdx) {
         today.setHours(0, 0, 0, 0);
 
         if (Number.isNaN(examDate.getTime()) || examDate <= today) {
-            return { valid: false, message: 'Hitamo itariki iri imbere y’ ikizamini. Itariki ya none cyangwa iyahise ntigukora gahunda.' };
+            return { valid: false, message: 'Hitamo itariki iri imbere y’uyu munsi kugira ngo utegure gahunda.' };
         }
 
         const daysRemaining = Math.ceil((examDate.getTime() - today.getTime()) / 86400000);
@@ -1214,38 +1213,38 @@ function openViewer(docOrIdx) {
 
             if (daysRemaining > 14) {
                 if (remaining <= 2) {
-                    topic = 'Review weak areas';
+                    topic = 'Gusubiramo aho ugikeneye kwiga';
                 } else if ((dayIndex + 1) % 5 === 0) {
-                    topic = 'Timed practice exam';
+                    topic = 'Imyitozo y’ikizamini';
                 } else if ((dayIndex + 1) % 3 === 0) {
-                    topic = 'Priority and intersections';
+                    topic = 'Inkomane no gutambuka mbere';
                 } else if (dayIndex < topicCycle.length) {
                     topic = topicCycle[dayIndex % topicCycle.length];
                 }
             } else if (daysRemaining >= 7) {
                 if (remaining <= 2) {
-                    topic = 'Review weak areas';
+                    topic = 'Gusubiramo aho ugikeneye kwiga';
                 } else if ((dayIndex + 1) % 2 === 0) {
-                    topic = 'Timed practice exam';
+                    topic = 'Imyitozo y’ikizamini';
                 } else {
                     topic = topicCycle[(dayIndex + 1) % topicCycle.length];
                 }
             } else {
                 if (remaining <= 2) {
-                    topic = 'Review weak areas';
+                    topic = 'Gusubiramo aho ugikeneye kwiga';
                 } else if ((dayIndex + 1) % 2 === 0) {
-                    topic = 'Timed practice exam';
+                    topic = 'Imyitozo y’ikizamini';
                 } else {
                     topic = topicCycle[(dayIndex + 2) % topicCycle.length];
                 }
             }
 
             const title = topic;
-            const description = topic === 'Timed practice exam'
-                ? 'Kora imyitozo y’igihe gito ugasuzuma ibimenyetso n’amategeko.'
-                : topic === 'Review weak areas'
-                    ? 'Sura ibibazo byagutunguye maze usubire ku byatsibwe.'
-                    : 'Reba ibice byihutirwa, usubire ku mategeko no ku bimenyetso.';
+            const description = topic === 'Imyitozo y’ikizamini'
+                ? 'Kora imyitozo y’ikizamini mu gihe cyagenewe.'
+                : topic === 'Gusubiramo aho ugikeneye kwiga'
+                    ? 'Subira ku bibazo bikugora maze wongere wige ingingo zabyo.'
+                    : 'Soma ingingo z’ingenzi zijyanye n’iki cyiciro.';
 
             items.push({
                 date: toDateOnly(currentDate),
@@ -1253,7 +1252,7 @@ function openViewer(docOrIdx) {
                 title,
                 description,
                 durationMinutes: Number(minutes),
-                summary: title + ' · ' + minutes + ' min'
+                summary: title + ' · Iminota ' + minutes
             });
         }
 
@@ -1263,13 +1262,14 @@ function openViewer(docOrIdx) {
             examDate: examDateString,
             daysRemaining,
             days: items,
-            message: 'Gahunda yateguwe neza. Byo kandi byoroshye ku buryo bworoheje.'
+            message: 'Gahunda yawe yateguwe neza.'
         };
     }
 
     function formatStudyPlanDate(dateString) {
-        return new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short' })
-            .format(new Date(dateString + 'T00:00:00'));
+        const months = ['Mutarama', 'Gashyantare', 'Werurwe', 'Mata', 'Gicurasi', 'Kamena', 'Nyakanga', 'Kanama', 'Nzeri', 'Ukwakira', 'Ugushyingo', 'Ukuboza'];
+        const date = new Date(dateString + 'T00:00:00');
+        return date.getDate() + ' ' + months[date.getMonth()];
     }
 
     function renderStudyPlan(plan) {
@@ -1278,7 +1278,7 @@ function openViewer(docOrIdx) {
 
         const summary = document.createElement('div');
         summary.className = 'study-plan-summary';
-        summary.innerHTML = '<span><i class="fa-solid fa-calendar-check"></i> ' + plan.daysRemaining + ' days left</span><span><i class="fa-solid fa-clock"></i> ' + plan.minutes + ' min / day</span>';
+        summary.innerHTML = '<span><i class="fa-solid fa-calendar-check"></i> Hasigaye iminsi ' + plan.daysRemaining + '</span><span><i class="fa-solid fa-clock"></i> Iminota ' + plan.minutes + ' ku munsi</span>';
 
         const daysWrap = document.createElement('div');
         daysWrap.className = 'study-plan-days';
@@ -1288,14 +1288,14 @@ function openViewer(docOrIdx) {
             card.className = 'study-plan-day';
             card.innerHTML = '<div class="study-plan-day-date">' + formatStudyPlanDate(day.date) + '</div>'
                 + '<div class="study-plan-day-title">' + day.title + '</div>'
-                + '<div class="study-plan-day-meta"><span><i class="fa-solid fa-clock"></i> ' + day.durationMinutes + ' minutes</span></div>'
+                + '<div class="study-plan-day-meta"><span><i class="fa-solid fa-clock"></i> Iminota ' + day.durationMinutes + '</span></div>'
                 + '<p>' + day.description + '</p>';
             daysWrap.appendChild(card);
         });
 
-        result.innerHTML = '<h3>Your Study Plan</h3><p class="study-plan-exam-date">Exam date: ' + formatStudyPlanDate(plan.examDate) + '</p>'
+        result.innerHTML = '<h3>Gahunda yawe yo kwiga</h3><p class="study-plan-exam-date">Itariki y’ikizamini: ' + formatStudyPlanDate(plan.examDate) + '</p>'
             + summary.outerHTML + daysWrap.outerHTML
-            + '<button class="study-plan-print" type="button"><i class="fa-solid fa-print" aria-hidden="true"></i> Print / Save Plan</button>';
+            + '<button class="study-plan-print" type="button"><i class="fa-solid fa-print" aria-hidden="true"></i> Capisha / Bika gahunda</button>';
         result.querySelector('.study-plan-print').addEventListener('click', function() {
             window.print();
         });
