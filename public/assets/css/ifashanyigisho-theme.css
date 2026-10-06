@@ -410,6 +410,17 @@ footer a:hover { color: #FFFFFF; }
   .study-plan-day-meta span { background: #FFFFFF !important; color: #111827 !important; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
 :where(a, button, input, select, textarea, summary):focus-visible {
   outline: 3px solid rgba(21,101,192,.38);
   outline-offset: 3px;

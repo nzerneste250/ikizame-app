@@ -110,3 +110,16 @@ test('ROAD_SIGN_SEMANTIC_CONTENT=PASS', () => {
   assert.match(pageHtml, /rel="canonical" href="https:\/\/ikizame\.rw\/ifashanyigisho"/);
   assert.match(pageHtml, /Menya ibyapa byo ku muhanda/);
 });
+
+test('IFASHANYIGISHO_SOCIAL_METADATA_AND_REDUCED_MOTION=PASS', () => {
+  assert.equal((pageHtml.match(/rel="canonical"/g) || []).length, 1);
+  for (const tag of [
+    /property="og:title"[^>]+IKIZAME \| Imfashanyigisho/,
+    /property="og:description"[^>]+amategeko y’umuhanda/,
+    /property="og:url"[^>]+https:\/\/ikizame\.rw\/ifashanyigisho/,
+    /property="og:type"[^>]+website/
+  ]) {
+    assert.match(pageHtml, tag);
+  }
+  assert.match(themeCss, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
+});
