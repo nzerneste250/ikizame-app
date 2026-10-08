@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="L5qjMDyaAezWE7cphPgTUBzcnpEGaB_PHli2ANASgas" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="IKIZAME | Ahabanza">
+    <meta property="og:description" content="IKIZAME igufasha kwiga amategeko y’umuhanda no kwitegura ikizamini cy’uruhushya rw’agateganyo mu Rwanda.">
+    <meta property="og:url" content="https://ikizame.rw/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://ikizame.rw/assets/uploads/logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="IKIZAME | Ahabanza">
+    <meta name="twitter:description" content="IKIZAME igufasha kwiga amategeko y’umuhanda no kwitegura ikizamini cy’uruhushya rw’agateganyo mu Rwanda.">
+    <meta name="twitter:image" content="https://ikizame.rw/assets/uploads/logo.png">
     <meta name="description" content="IKIZAME helps learners prepare for the Rwanda driving theory test with road rules practice, mock exams, learning materials, scores, payment options, and school support.">
     <meta name="keywords" content="Rwanda driving test, driving theory test Rwanda, provisional driving test Rwanda, road signs Rwanda, learner licence Rwanda, practice driving exam Rwanda">
     <meta name="theme-color" content="#0D47A1">
@@ -1893,7 +1902,7 @@
     <script defer src="/assets/js/public-navigation.js?v=public-nav-refine-20261004"></script>
 </head>
 <body>
-    <div id="fullScreenAppLauncherSplashCurtain" class="ikizame-loader" aria-live="polite" aria-busy="true" aria-label="IKIZAME loading">
+    <div id="fullScreenAppLauncherSplashCurtain" class="ikizame-loader" aria-live="polite" aria-busy="true" aria-label="IKIZAME iri gutangira">
         <div class="ikizame-loader__scene">
             <div class="ikizame-loader__orbit" aria-hidden="true">
                 <div class="ikizame-loader__glow"></div>
@@ -1909,7 +1918,7 @@
                 <img src="assets/uploads/logo.png" alt="IKIZAME logo">
                 <h2 class="ikizame-loader__wordmark">IKIZAME</h2>
             </div>
-            <div class="ikizame-loader__status" id="ikizameLoaderStatus">Connecting</div>
+            <div class="ikizame-loader__status" id="ikizameLoaderStatus">Biratangira...</div>
             <div class="ikizame-loader__progress" aria-hidden="true">
                 <span class="ikizame-loader__progress-fill" id="ikizameLoaderProgressFill"></span>
             </div>
@@ -2402,11 +2411,11 @@
 
                 const updateStatus = (elapsed) => {
                     if (elapsed < 700) {
-                        statusEl.textContent = 'Connecting';
+                        statusEl.textContent = 'Biratangira...';
                     } else if (elapsed < 1400) {
-                        statusEl.textContent = 'Preparing';
+                        statusEl.textContent = 'Birategurwa...';
                     } else {
-                        statusEl.textContent = 'Ready';
+                        statusEl.textContent = 'Byiteguye';
                     }
                 };
 
@@ -2423,7 +2432,7 @@
                     if (hideTimer) clearTimeout(hideTimer);
                     if (safetyTimer) clearTimeout(safetyTimer);
                     progressFill.style.width = '100%';
-                    statusEl.textContent = 'Ready';
+                    statusEl.textContent = 'Byiteguye';
                     splashCurtain.classList.add('is-hiding');
                     window.setTimeout(() => splashCurtain.remove(), 320);
                 };
