@@ -311,7 +311,42 @@ footer a:hover { color: #FFFFFF; }
 }
 .road-sign-practice:hover { background: #14532D; }
 
+.daily-sign-challenge { width: min(100%, 980px); margin: 0 0 28px; padding: clamp(18px, 3vw, 28px); border: 1px solid #B7D0E8; border-radius: 8px; background: linear-gradient(145deg, #EFF7FF, #FFFFFF); box-shadow: 0 8px 24px rgba(31,60,90,.06); scroll-margin-top: 20px; }
+.daily-challenge-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.daily-challenge-eyebrow { margin: 0 0 6px; color: #0D47A1; font-size: .7rem; font-weight: 800; }
+.daily-challenge-heading h2 { margin: 0 0 8px; color: #1F2937; font-size: clamp(1.2rem, 2vw, 1.55rem); }
+.daily-challenge-heading p:not(.daily-challenge-eyebrow) { max-width: 650px; margin: 0; color: #64748B; font-size: .92rem; line-height: 1.6; }
+.daily-challenge-date { flex-shrink: 0; padding: 8px 10px; border-radius: 999px; background: #E3EFFA; color: #0D47A1; font-size: .78rem; font-weight: 800; }
+.daily-challenge-progress { margin: 16px 0 10px; color: #475569; font-size: .84rem; font-weight: 800; }
+.daily-challenge-card { display: grid; grid-template-columns: minmax(150px, 190px) minmax(0, 1fr); gap: 18px; align-items: center; padding: 14px; border: 1px solid #D7E1EA; border-radius: 8px; background: #FFFFFF; }
+.daily-challenge-image { display: block; width: 100%; height: 180px; object-fit: contain; background: #FFFFFF; }
+.daily-challenge-question-wrap { min-width: 0; }
+.daily-challenge-question-wrap h3 { margin: 0 0 12px; color: #1F2937; font-size: 1rem; line-height: 1.45; }
+.daily-challenge-answers { display: grid; gap: 8px; }
+.daily-challenge-answer, .daily-challenge-next, .daily-challenge-share { min-height: 42px; padding: 9px 12px; border: 1px solid #B7D0E8; border-radius: 8px; background: #FFFFFF; color: #0D47A1; font: inherit; font-size: .86rem; font-weight: 700; text-align: left; cursor: pointer; }
+.daily-challenge-answer:hover, .daily-challenge-answer:focus-visible, .daily-challenge-next:hover, .daily-challenge-next:focus-visible, .daily-challenge-share:hover, .daily-challenge-share:focus-visible { background: #E3EFFA; }
+.daily-challenge-answer:disabled { cursor: default; opacity: 1; }
+.daily-challenge-answer.is-correct { border-color: #15803D; background: #DCFCE7; color: #166534; }
+.daily-challenge-answer.is-incorrect { border-color: #B91C1C; background: #FEE2E2; color: #991B1B; }
+.daily-challenge-feedback { min-height: 2.5em; margin: 12px 0 0; color: #475569; font-size: .84rem; line-height: 1.5; }
+.daily-challenge-feedback.is-correct { color: #166534; font-weight: 700; }
+.daily-challenge-feedback.is-incorrect { color: #991B1B; font-weight: 700; }
+.daily-challenge-next { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; text-align: center; }
+.daily-challenge-result { margin-top: 14px; padding: 18px; border: 1px solid #B7D0E8; border-radius: 8px; background: #FFFFFF; text-align: center; }
+.daily-challenge-result h3 { margin: 0 0 6px; color: #0D47A1; font-size: 1.2rem; }
+.daily-challenge-result p { margin: 0 0 12px; color: #475569; }
+.daily-challenge-share { display: inline-flex; align-items: center; gap: 8px; text-align: center; }
+.daily-challenge-share-status { min-height: 1.25em; margin: 8px 0 0 !important; color: #166534 !important; font-size: .82rem; font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .daily-sign-challenge *, .daily-sign-challenge *::before, .daily-sign-challenge *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
 @media (max-width: 600px) {
+  .daily-challenge-heading { flex-direction: column; }
+  .daily-challenge-card { grid-template-columns: 1fr; }
+  .daily-challenge-image { height: 150px; }
+  .daily-challenge-answer, .daily-challenge-next, .daily-challenge-share { width: 100%; }
   .road-sign-explainer { padding: 18px 14px; }
   .road-sign-heading { flex-direction: column; }
   .road-sign-share { align-self: flex-start; }
@@ -330,6 +365,11 @@ footer a:hover { color: #FFFFFF; }
 }
 
 @media (max-width: 360px) {
+  .daily-sign-challenge { padding: 12px; }
+  .daily-challenge-heading h2 { font-size: 1.12rem; }
+  .daily-challenge-heading p:not(.daily-challenge-eyebrow) { font-size: .82rem; line-height: 1.45; }
+  .daily-challenge-card { padding: 10px; }
+  .daily-challenge-image { height: 120px; }
   .road-sign-explainer { padding: 12px; }
   .road-sign-heading h2 { font-size: 1.12rem; }
   .road-sign-heading p:not(.road-sign-eyebrow) { font-size: .82rem; line-height: 1.45; }
