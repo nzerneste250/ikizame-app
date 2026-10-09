@@ -1,0 +1,18 @@
+{
+  "verifiedProductionSha": "cf01accc1ce09b85e2834cee9bed2fa6ffde50b5",
+  "verifiedAt": "2026-10-09",
+  "verification": {
+    "fastForwardPull": true,
+    "npmCi": true,
+    "pm2IkizameOnline": true,
+    "pm2IzoReportOnline": true,
+    "applicationStartup": true,
+    "mysqlSessionStoreReady": true,
+    "databasePoolReady": true,
+    "smtpReady": true,
+    "npmAudit": true,
+    "nginx": true,
+    "workingTreeClean": true
+  },
+  "source": "Direct production deployment verification record; update only after a deployment is directly verified."
+}
