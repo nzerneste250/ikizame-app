@@ -43,9 +43,9 @@
         .net i { background:#e0f2fe; color:#0369a1; }
         .summary-card strong { display:block; font-size:1.45rem; line-height:1.2; }
         .summary-card span { display:block; margin-top:5px; color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
-        .contact-search { background:#fff; border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:0 8px 22px rgba(15,23,42,.04); }
+        .contact-search { width:min(100%, 900px); background:#fff; border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:0 8px 22px rgba(15,23,42,.04); }
         .contact-search-row { display:flex; align-items:center; gap:12px; }
-        .contact-search-input { flex:1; min-width:200px; border:1px solid var(--border); border-radius:9px; padding:11px 13px 11px 38px; font:inherit; font-size:13px; color:var(--text); }
+        .contact-search-input { width:100%; min-width:0; border:1px solid var(--border); border-radius:9px; padding:11px 13px 11px 38px; font:inherit; font-size:13px; color:var(--text); }
         .contact-search-input:focus { outline:none; border-color:#0b698b; box-shadow:0 0 0 3px rgba(11,105,139,.12); }
         .contact-search-field { position:relative; flex:1; }
         .contact-search-field i { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--muted); }
@@ -69,7 +69,9 @@
         .amount-out { color:#b91c1c; font-weight:800; }
         .empty, .error { padding:34px 20px; text-align:center; color:var(--muted); }
         .error { color:#b91c1c; }
-        .copy-ref { border:0; background:#eff6ff; color:#0369a1; border-radius:6px; padding:4px 7px; cursor:pointer; margin-left:6px; }
+        .copy-ref { display:inline-flex; align-items:center; gap:5px; border:0; background:#eff6ff; color:#0369a1; border-radius:6px; padding:4px 7px; cursor:pointer; margin-left:6px; font:inherit; font-size:11px; font-weight:700; }
+        .copy-ref.copied { background:#dcfce7; color:#166534; }
+        .copy-ref.failed { background:#fee2e2; color:#991b1b; }
         .reference-cell { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; }
         .status.pending { background:#fef3c7; color:#92400e; }
         .status.failed { background:#fee2e2; color:#991b1b; }
@@ -173,11 +175,58 @@ function renderLedgerRows(rows) {
         const status = String(row.status || '').trim();
         const statusLabel = status || 'Unknown';
         const statusClass = status.toLowerCase() === 'successful' || status.toLowerCase() === 'success' || status.toLowerCase() === 'completed' ? 'success' : status.toLowerCase() === 'pending' ? 'pending' : status.toLowerCase() === 'failed' ? 'failed' : 'other';
-        const copy = reference ? `<button class="copy-ref" type="button" title="Copy reference" aria-label="Copy reference" onclick="copyReference('${esc(reference)}')"><i class="fa-regular fa-copy"></i></button>` : '';
-        return `<tr><td class="reference-cell" title="${esc(reference)}">${esc(reference || 'Not provided')}${copy}</td><td><span class="status other">${esc(kind)}</span></td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td><span class="status ${statusClass}">${esc(statusLabel)}</span></td><td>${esc(row.number || row.phone || 'Not provided')}</td><td>${esc(row.created_at || row.createdAt || 'Not provided')}</td></tr>`;
+        const copy = reference ? `<button class="copy-ref" type="button" title="Copy reference" aria-label="Copy reference" aria-live="polite" onclick="copyReference(this, '${esc(reference)}')"><i class="fa-regular fa-copy" aria-hidden="true"></i><span class="copy-label">Copy reference</span></button>` : '';
+        const phone = String(row.client || '').trim() || 'Not provided';
+        const timestamp = String(row.timestamp || '').trim();
+        const date = timestamp ? formatPaypackTimestamp(timestamp) : 'Not provided';
+        return `<tr><td class="reference-cell" title="${esc(reference)}">${esc(reference || 'Not provided')}${copy}</td><td><span class="status other">${esc(kind)}</span></td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td title="${status ? '' : 'Not supplied by PayPack'}"><span class="status ${statusClass}">${esc(statusLabel)}</span></td><td title="${phone === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(phone)}</td><td title="${date === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(date)}</td></tr>`;
     }).join('');
 }
-function copyReference(value) { if (navigator.clipboard) navigator.clipboard.writeText(value); }
+function formatPaypackTimestamp(value) {
+    const date = new Date(String(value || '').trim());
+    if (!String(value || '').trim() || !Number.isFinite(date.getTime())) return 'Not provided';
+    return new Intl.DateTimeFormat('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:false }).format(date);
+}
+async function copyReference(button, value) {
+    const setFeedback = (label, className, icon) => {
+        button.classList.remove('copied', 'failed');
+        if (className) button.classList.add(className);
+        button.setAttribute('aria-label', label);
+        button.title = label;
+        button.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i><span class="copy-label">${label}</span>`;
+    };
+    const fallbackCopy = () => {
+        const textarea = document.createElement('textarea');
+        textarea.value = value;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        const copied = document.execCommand('copy');
+        textarea.remove();
+        if (!copied) throw new Error('Copy failed');
+    };
+    try {
+        if (navigator.clipboard && window.isSecureContext !== false) await navigator.clipboard.writeText(value);
+        else fallbackCopy();
+        setFeedback('Copied', 'copied', 'fa-check');
+    } catch (_) {
+        try {
+            fallbackCopy();
+            setFeedback('Copied', 'copied', 'fa-check');
+        } catch (_) {
+            setFeedback('Copy failed', 'failed', 'fa-xmark');
+        }
+    }
+    clearTimeout(button._copyFeedbackTimer);
+    button._copyFeedbackTimer = setTimeout(() => {
+        button.classList.remove('copied', 'failed');
+        button.setAttribute('aria-label', 'Copy reference');
+        button.title = 'Copy reference';
+        button.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i><span class="copy-label">Copy reference</span>';
+    }, 1800);
+}
 function loadLedger() {
     ledgerState = 'loading';
     document.getElementById('liveStatus').hidden = true;
