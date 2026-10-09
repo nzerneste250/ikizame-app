@@ -99,7 +99,8 @@
                 <div class="contact-search-row">
                     <div class="contact-search-field">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input class="contact-search-input" id="contactSearch" type="text" inputmode="tel" placeholder="Search contact to check payment..." oninput="searchContactPayment(this.value)">
+                        <label class="sr-only" for="contactSearch">Search by reference only</label>
+                        <input class="contact-search-input" id="contactSearch" type="search" inputmode="text" autocomplete="off" placeholder="Search by Ref only, e.g. d5ea25da...7c58c" aria-label="Search by reference only" oninput="searchReference(this.value)" onkeydown="if(event.key === 'Enter') searchReference(this.value)">
                     </div>
                     <span id="contactSearchCount" style="font-size:11px;color:var(--muted);white-space:nowrap;"></span>
                 </div>
@@ -120,13 +121,25 @@
 const money = value => 'RWF ' + Number(value || 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
 const esc = value => String(value ?? '—').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 let ledgerRows = [];
-function normalizedPhone(value) { return String(value || '').replace(/\D/g, ''); }
 function isSuccessfulPayment(row) {
     const status = String(row.status || '').toUpperCase();
     return (status === 'SUCCESS' || status === 'SUCCESSFUL' || status === 'COMPLETED') && String(row.kind || '').toUpperCase() === 'CASHIN';
 }
-function searchContactPayment(value) {
-    const term = normalizedPhone(value);
+function normalizeReference(value) { return String(value ?? '').trim().replace(/^ref\s*:\s*/i, '').trim(); }
+function referenceValue(row) { return String(row?.ref ?? row?.reference ?? '').trim(); }
+function matchesReference(row, value) {
+    const term = normalizeReference(value).toLowerCase();
+    const reference = referenceValue(row).toLowerCase();
+    if (!term || !reference) return false;
+    if (reference === term) return true;
+    if (term.includes('...')) {
+        const [prefix, suffix] = term.split('...');
+        return Boolean(prefix && suffix) && reference.startsWith(prefix) && reference.endsWith(suffix);
+    }
+    return reference.includes(term);
+}
+function searchReference(value) {
+    const term = normalizeReference(value);
     const result = document.getElementById('contactSearchResult');
     const count = document.getElementById('contactSearchCount');
     if (!term) {
@@ -136,7 +149,7 @@ function searchContactPayment(value) {
         renderLedgerRows(ledgerRows);
         return;
     }
-    const matches = ledgerRows.filter(row => normalizedPhone(row.number || row.phone).includes(term));
+    const matches = ledgerRows.filter(row => matchesReference(row, term));
     const payments = matches.filter(isSuccessfulPayment);
     const totalPaid = payments.reduce((total, row) => total + (Number(row.amount) || 0), 0);
     count.textContent = `${matches.length} match${matches.length === 1 ? '' : 'es'}`;
@@ -145,7 +158,7 @@ function searchContactPayment(value) {
         result.innerHTML = `<strong>Payment done</strong> ${payments.length} successful payment${payments.length === 1 ? '' : 's'} · Total paid: ${money(totalPaid)}`;
     } else {
         result.className = 'contact-search-result show not-found';
-        result.innerHTML = '<strong>No payment found</strong> No successful PayPack payment is recorded for this contact.';
+        result.innerHTML = '<strong>No transaction found</strong> No transaction found for this reference.';
     }
     renderLedgerRows(matches);
 }
@@ -170,7 +183,7 @@ function loadLedger() {
         ledgerRows = rows;
         renderLedgerRows(rows);
         const search = document.getElementById('contactSearch');
-        if (search.value) searchContactPayment(search.value);
+        if (search.value) searchReference(search.value);
     }).catch(error => { document.getElementById('transactionMeta').textContent = 'PayPack data unavailable'; document.getElementById('ledgerBody').innerHTML = `<tr><td colspan="7" class="error">${esc(error.message || 'Unable to load PayPack data.')}</td></tr>`; });
 }
 loadLedger();
