@@ -36,7 +36,7 @@ test('OWNER_OTP_LOG_NO_FULL_EMAIL=PASS', () => {
 
 test('PRODUCTION_STATE_MATCHES_VERIFIED_DEPLOYMENT=PASS', () => {
   const state = JSON.parse(read('docs/production-state.json'));
-  assert.equal(state.verifiedProductionSha, 'b70d5fcc2be19fed1bb54cc5723371749d5621eb');
+  assert.equal(state.verifiedProductionSha, 'b9b40086414700b7c23d8bdeba580ab5cdf9d45e');
 });
 
 test('AMANOTA_NEUTRAL_INITIAL_STATE=PASS', () => {
