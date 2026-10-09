@@ -613,7 +613,7 @@
                     <label for="loginPasswordInput">Ijambo ry’ibanga</label>
                     <div class="pw-wrap">
                         <input type="password" id="loginPasswordInput" placeholder="••••••••">
-                        <button type="button" class="pw-eye" onclick="togglePw('loginPasswordInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                        <button type="button" class="pw-eye" aria-label="Erekana ijambo ry’ibanga" aria-pressed="false" onclick="togglePw('loginPasswordInput', this)"><i class="fa-regular fa-eye" aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <button class="btn-auth-submit" id="loginSubmitBtn" onclick="handleSchoolPortalLoginRequest()">
@@ -679,7 +679,7 @@
                     <label for="newPasswordInput">Ijambo ry’ibanga rishya</label>
                     <div class="pw-wrap">
                         <input type="password" id="newPasswordInput" placeholder="••••••••" oninput="updatePasswordStrength('newPasswordInput','newPasswordStrengthInfo')">
-                        <button type="button" class="pw-eye" onclick="togglePw('newPasswordInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                        <button type="button" class="pw-eye" aria-label="Erekana ijambo ry’ibanga" aria-pressed="false" onclick="togglePw('newPasswordInput', this)"><i class="fa-regular fa-eye" aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <div class="password-strength-meter">
@@ -690,7 +690,7 @@
                     <label for="newPasswordConfirmInput">Subiramo ijambo ry’ibanga</label>
                     <div class="pw-wrap">
                         <input type="password" id="newPasswordConfirmInput" placeholder="••••••••">
-                        <button type="button" class="pw-eye" onclick="togglePw('newPasswordConfirmInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                        <button type="button" class="pw-eye" aria-label="Erekana ijambo ry’ibanga" aria-pressed="false" onclick="togglePw('newPasswordConfirmInput', this)"><i class="fa-regular fa-eye" aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <button class="btn-auth-submit" id="passwordSubmitBtn" onclick="handlePasswordSetupFinalize()">
@@ -757,7 +757,7 @@
                     <label for="resetPasswordInput">Ijambo ry’ibanga rishya</label>
                     <div class="pw-wrap">
                         <input type="password" id="resetPasswordInput" placeholder="••••••••" oninput="updatePasswordStrength('resetPasswordInput','resetPasswordStrengthInfo')">
-                        <button type="button" class="pw-eye" onclick="togglePw('resetPasswordInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                        <button type="button" class="pw-eye" aria-label="Erekana ijambo ry’ibanga" aria-pressed="false" onclick="togglePw('resetPasswordInput', this)"><i class="fa-regular fa-eye" aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <div class="password-strength-meter">
@@ -768,7 +768,7 @@
                     <label for="resetPasswordConfirmInput">Subiramo ijambo ry’ibanga</label>
                     <div class="pw-wrap">
                         <input type="password" id="resetPasswordConfirmInput" placeholder="••••••••">
-                        <button type="button" class="pw-eye" onclick="togglePw('resetPasswordConfirmInput', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                        <button type="button" class="pw-eye" aria-label="Erekana ijambo ry’ibanga" aria-pressed="false" onclick="togglePw('resetPasswordConfirmInput', this)"><i class="fa-regular fa-eye" aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <div class="auth-help-text">Koresha ijambo ry’ibanga rikomeye kandi ntukarisangize abandi kugira ngo urinde konti yawe.</div>
@@ -818,9 +818,13 @@
             if (inp.type === 'password') {
                 inp.type = 'text';
                 icon.className = 'fa-regular fa-eye-slash';
+                btn.setAttribute('aria-label', 'Hisha ijambo ry’ibanga');
+                btn.setAttribute('aria-pressed', 'true');
             } else {
                 inp.type = 'password';
                 icon.className = 'fa-regular fa-eye';
+                btn.setAttribute('aria-label', 'Erekana ijambo ry’ibanga');
+                btn.setAttribute('aria-pressed', 'false');
             }
         }
 

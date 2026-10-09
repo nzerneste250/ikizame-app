@@ -8,15 +8,15 @@ function injectFooterLinks(html, fileName) {
     const marker = '</footer>';
     if (html.includes(marker)) {
       return html.replace(marker, `
-        <a href="/about" style="color:#38bdf8; text-decoration:none; font-weight:700;">About</a>
-        <a href="/terms" style="color:#38bdf8; text-decoration:none; font-weight:700;">Terms &amp; Conditions</a>
+        <a href="/about" style="color:#38bdf8; text-decoration:none; font-weight:700;">Ibyerekeye IKIZAME</a>
+        <a href="/terms" style="color:#38bdf8; text-decoration:none; font-weight:700;">Amategeko n’amabwiriza</a>
       </footer>`);
     }
 
     const fallback = `
       <footer class="footer" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:24px 16px;font-size:0.95rem;color:#64748b;">
-        <a href="/about" style="color:#38bdf8; text-decoration:none; font-weight:700;">About</a>
-        <a href="/terms" style="color:#38bdf8; text-decoration:none; font-weight:700;">Terms &amp; Conditions</a>
+        <a href="/about" style="color:#38bdf8; text-decoration:none; font-weight:700;">Ibyerekeye IKIZAME</a>
+        <a href="/terms" style="color:#38bdf8; text-decoration:none; font-weight:700;">Amategeko n’amabwiriza</a>
       </footer>`;
     return html.includes('</body>') ? html.replace('</body>', `${fallback}</body>`) : `${html}${fallback}`;
   }
