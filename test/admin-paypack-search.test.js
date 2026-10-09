@@ -97,7 +97,7 @@ test('PAYPACK_LEDGER_AUTH_PRESERVED=PASS', () => {
 
 test('PAYPACK_LEDGER_NO_PAYMENT_MUTATION=PASS', () => {
   const ledgerScript = page.slice(page.indexOf('<script src="assets/js/admin-responsive.js">'));
-  assert.doesNotMatch(ledgerScript, /fetch\([^)]*,\s*\{\s*method\s*:\s*['"](?:POST|PUT|PATCH|DELETE)/i);
+  assert.doesNotMatch(ledgerScript, /fetch\([^)]*payment-transaction/i);
   assert.doesNotMatch(ledgerScript, /payment-transaction\//);
 });
 
@@ -108,9 +108,57 @@ test('PAYPACK_LEDGER_RESPONSIVE=PASS', () => {
 });
 
 test('PAYPACK_LEDGER_UNKNOWN_STATUS_NOT_INFERRED=PASS', () => {
-  assert.match(page, /const statusLabel = status \|\| 'Unknown'/);
-  assert.match(page, /const statusClass =/);
+  assert.match(page, /return \[status \? String\(status\)\.trim\(\) : 'Not checked'/);
+  assert.match(page, /function statusPresentation/);
   assert.doesNotMatch(page, /statusLabel.*SUCCESS|status.*CASHIN.*SUCCESS/i);
+});
+
+test('PAYPACK_STATUS_NOT_CHECKED_INITIAL=PASS', () => {
+  assert.match(page, /Not checked/);
+  assert.match(page, /Check status/);
+});
+
+test('PAYPACK_STATUS_LOOKUP_AUTHORITATIVE=PASS', () => {
+  assert.match(adminRoutes, /router\.get\('\/paypack-transaction-status', requireAdminLogin/);
+  assert.match(adminRoutes, /transactions\/find/);
+  assert.match(adminRoutes, /events\/transactions/);
+  assert.match(page, /paypack-transaction-status\?ref=/);
+});
+
+test('PAYPACK_STATUS_LOOKUP_NO_MUTATION=PASS', () => {
+  assert.match(adminRoutes, /paypackStatusCache/);
+  assert.doesNotMatch(adminRoutes, /UPDATE payment_transactions.*paypack-transaction-status/);
+  assert.doesNotMatch(adminRoutes, /INSERT INTO payment_transactions.*paypack-transaction-status/);
+});
+
+test('PAYPACK_STATUS_NO_BULK_LOOKUPS=PASS', () => {
+  assert.match(page, /matches\.length === 1/);
+  assert.match(page, /checkTransactionStatus\(referenceValue\(matches\[0\]\)/);
+  assert.doesNotMatch(page, /rows\.forEach\(.*checkTransactionStatus/s);
+});
+
+test('PAYPACK_STATUS_LOOKUP_FAILURE_SAFE=PASS', () => {
+  assert.match(adminRoutes, /status: 'Status unavailable'/);
+  assert.match(page, /row\.status = 'Status unavailable'/);
+});
+
+test('ADMIN_PAYPACK_PAGE_GUARD_AND_SAFE_RETURN=PASS', () => {
+  const server = fs.readFileSync(path.join(__dirname, '..', 'server.js'), 'utf8');
+  const auth = fs.readFileSync(path.join(__dirname, '..', 'middleware', 'auth.js'), 'utf8');
+  assert.match(server, /app\.get\(\['\/admin-paypack', '\/admin-paypack\/'\]/);
+  assert.match(server, /redirectToAdminLogin\(req, res\)/);
+  assert.match(auth, /getSafeAdminPath/);
+  assert.match(auth, /startsWith\('\/\/'\)/);
+  assert.match(auth, /includes\('\:\/\/'\)/);
+  assert.match(auth, /replace\(\/\\\/\$\//);
+});
+
+test('ADMIN_PAYPACK_IDLE_TIMEOUT_120_SECONDS=PASS', () => {
+  assert.match(page, /const IDLE_MS = 120 \* 1000/);
+  assert.match(page, /fetch\('\/api\/admin\/logout'/);
+  assert.match(page, /visibilitychange/);
+  assert.match(page, /localStorage\.setItem\('ikizame-admin-paypack-logout'/);
+  assert.match(page, /event\.key === 'ikizame-admin-paypack-logout'/);
 });
 
 test('PAYPACK_REFERENCE_EXTRACTION_USES_OBSERVED_FIELDS=PASS', () => {
@@ -160,7 +208,7 @@ test('PAYPACK_STATUS_REAL_FIELD_USED_IF_PRESENT=PASS', () => {
 
 test('PAYPACK_STATUS_NOT_INFERRED=PASS', () => {
   assert.equal(getPaypackStatus({ kind: 'CASHIN', amount: 200, fee: 7 }), '');
-  assert.match(page, /const statusLabel = status \|\| 'Unknown'/);
+  assert.match(page, /return \[status \? String\(status\)\.trim\(\) : 'Not checked'/);
   assert.doesNotMatch(page, /kind === 'CASHIN'.*status/);
 });
 
@@ -191,7 +239,7 @@ test('PAYPACK_MISSING_PROVIDER_FIELDS_SAFE_FALLBACK=PASS', () => {
   assert.equal(getPaypackStatus(providerRow), 'PENDING');
   assert.equal(getPaypackPhone({ ref: reference }), '');
   assert.equal(getPaypackTimestamp({ ref: reference }), '');
-  assert.match(page, /Unknown/);
+  assert.match(page, /Not checked/);
   assert.match(page, /Not provided/);
   assert.match(page, /Not supplied by PayPack/);
 });

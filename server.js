@@ -284,6 +284,12 @@ function sendSchoolAwarePage(req, res, fileName) {
 
 // ── PAGE ROUTES ───────────────────────────────────────────────────────────
 let retrySchoolStudentsAfter = 0;
+app.use((req, res, next) => {
+    if (['/dashboard', '/viewer-dashboard', '/admin-users', '/admin-payments', '/admin-paypack', '/change-password', '/add-exam', '/edit-exam', '/system-performance', '/visitors', '/upload-resource'].includes(req.path)) {
+        res.set('Cache-Control', 'no-store, private');
+    }
+    next();
+});
 
 function loadPublicStats(includeSchoolStudents, callback) {
     const schoolStudentSource = includeSchoolStudents ? `
@@ -340,7 +346,7 @@ app.get('/api/public-stats', (req, res) => {
 
 app.get('/',               (req, res) => renderPublicPage('index.html', res));
 app.get('/index',          (req, res) => renderPublicPage('index.html', res));
-app.get('/admin-login',    (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin-login.html')));
+app.get('/admin-login',    (req, res) => { res.set('Cache-Control', 'no-store'); res.sendFile(path.join(__dirname, 'public', 'admin-login.html')); });
 app.get('/ifashanyigisho', (req, res) => renderPublicPage('ifashanyigisho.html', res));
 app.get('/ibiciro',        (req, res) => renderPublicPage('ibiciro.html', res));
 app.get('/ubufasha',       (req, res) => renderPublicPage('ubufasha.html', res));
@@ -407,7 +413,7 @@ app.get('/exam-score', (req, res) => {
 });
 
 app.get('/dashboard', (req, res) => {
-    if (getAdminSessionState(req)) return res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+    if (getAdminSessionState(req)) { res.set('Cache-Control', 'no-store'); return res.sendFile(path.join(__dirname, 'public', 'dashboard.html')); }
     redirectToAdminLogin(req, res);
 });
 
@@ -454,7 +460,7 @@ app.get(['/admin-payments', '/admin-payments/'], (req, res) => {
 });
 
 app.get(['/admin-paypack', '/admin-paypack/'], (req, res) => {
-    if (getAdminSessionState(req)) return res.sendFile(path.join(__dirname, 'public', 'admin-paypack.html'));
+    if (getAdminSessionState(req)) { res.set('Cache-Control', 'no-store'); return res.sendFile(path.join(__dirname, 'public', 'admin-paypack.html')); }
     redirectToAdminLogin(req, res);
 });
 

@@ -18,8 +18,24 @@ function destroyAdminSession(req, res, callback) {
     }
 }
 
+const SAFE_ADMIN_PATHS = new Set([
+    '/dashboard', '/viewer-dashboard', '/admin-users', '/admin-payments',
+    '/admin-paypack', '/change-password', '/add-exam', '/edit-exam',
+    '/system-performance', '/visitors', '/upload-resource'
+]);
+
+function getSafeAdminPath(value) {
+    const raw = String(value || '').trim();
+    if (!raw || !raw.startsWith('/') || raw.startsWith('//') || raw.includes('://')) return '';
+    const pathname = raw.split(/[?#]/, 1)[0].replace(/\/$/, '') || '/';
+    return SAFE_ADMIN_PATHS.has(pathname) ? pathname : '';
+}
+
 function redirectToAdminLogin(req, res) {
-    destroyAdminSession(req, () => res.redirect('/admin-login'));
+    const nextPath = getSafeAdminPath(req.path);
+    const loginPath = nextPath ? `/admin-login?next=${encodeURIComponent(nextPath)}` : '/admin-login';
+    res.set('Cache-Control', 'no-store, private');
+    destroyAdminSession(req, () => res.redirect(loginPath));
 }
 
 function requireAdminLogin(req, res, next) {
@@ -62,5 +78,6 @@ module.exports = {
     destroyAdminSession,
     redirectToAdminLogin,
     requireAdminLogin,
-    restrictAccessToAuthorizedUsers
+    restrictAccessToAuthorizedUsers,
+    getSafeAdminPath
 };

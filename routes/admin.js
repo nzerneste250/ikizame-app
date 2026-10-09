@@ -5,12 +5,13 @@ const BCRYPT_ROUNDS = 10;
 const { PROTECTED_REPORT_EMAIL, LEGACY_REPORT_EMAILS, normalizePhoneNumber, normalizeEmailList, getConfiguredReportEmails } = require('../helpers/adminSettings');
 const { normalizeRwandaPhone } = require('../helpers/rwandaPhone');
 const { createOtpState, canIssueOtp, registerOtpCode, verifyOtpCode } = require('../helpers/otp');
-const { requireAdminLogin, getAdminSessionState } = require('../middleware/auth');
+const { requireAdminLogin, getAdminSessionState, getSafeAdminPath } = require('../middleware/auth');
 
 const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
 const PAYPACK_CLIENT = process.env.PAYPACK_CLIENT_ID;
 const PAYPACK_SECRET = process.env.PAYPACK_CLIENT_SECRET;
 let _cachedToken = null, _tokenExpires = 0;
+const paypackStatusCache = new Map();
 async function getAdminToken() {
     if (_cachedToken && Date.now() < _tokenExpires - 30000) return _cachedToken;
     const { data } = await axios.post(`${PAYPACK_BASE}/auth/agents/authorize`,
@@ -23,6 +24,10 @@ async function getAdminToken() {
 
 module.exports = (db, loginLimiter) => {
     const router = express.Router();
+    router.use((req, res, next) => {
+        res.set('Cache-Control', 'no-store');
+        next();
+    });
 
     // In-memory OTP store: email -> { otp, expires }
     const otpStore = new Map();
@@ -53,15 +58,19 @@ module.exports = (db, loginLimiter) => {
                         if (!hashErr) db.query('UPDATE portal_admins SET password = ? WHERE id = ?', [hash, admin.id], () => {});
                     });
                 }
-                req.session.isAdminAuthenticated = true;
-                req.session.adminRole            = admin.role || 'superadmin';
-                req.session.adminEmail           = admin.email || admin.username;
-                req.session.adminId              = admin.id;
-                req.session.mustChangePassword   = !!admin.must_change_password;
-                req.session.lastAdminActivity    = Date.now();
-                if (req.session.mustChangePassword) return res.redirect('/change-password');
-                if (req.session.adminRole === 'viewer') return res.redirect('/viewer-dashboard');
-                res.redirect('/dashboard');
+                const nextPath = getSafeAdminPath(req.body.next);
+                req.session.regenerate((regenerateErr) => {
+                    if (regenerateErr) return res.redirect('/admin-login?error=invalid');
+                    req.session.isAdminAuthenticated = true;
+                    req.session.adminRole            = admin.role || 'superadmin';
+                    req.session.adminEmail           = admin.email || admin.username;
+                    req.session.adminId              = admin.id;
+                    req.session.mustChangePassword   = !!admin.must_change_password;
+                    req.session.lastAdminActivity    = Date.now();
+                    if (req.session.mustChangePassword) return res.redirect('/change-password');
+                    if (req.session.adminRole === 'viewer') return res.redirect('/viewer-dashboard');
+                    res.redirect(nextPath || '/dashboard');
+                });
             };
 
             if (isHashed) bcrypt.compare(password, storedPassword, (cmpErr, match) => handleMatch(!cmpErr && match));
@@ -171,12 +180,20 @@ module.exports = (db, loginLimiter) => {
 
     // POST logout
     router.post('/logout', (req, res) => {
-        req.session.destroy(() => res.json({ success: true }));
+        req.session.destroy(() => {
+            res.clearCookie('connect.sid', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' });
+            res.set('Cache-Control', 'no-store');
+            res.json({ success: true });
+        });
     });
 
     // GET logout
     router.get('/logout', (req, res) => {
-        req.session.destroy(() => res.redirect('/admin-login'));
+        req.session.destroy(() => {
+            res.clearCookie('connect.sid', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' });
+            res.set('Cache-Control', 'no-store');
+            res.redirect('/admin-login');
+        });
     });
 
     // GET check session liveness
@@ -187,7 +204,7 @@ module.exports = (db, loginLimiter) => {
 
     // ── USER MANAGEMENT (superadmin only) ────────────────────────────────
     function requireSuperAdmin(req, res, next) {
-        if (!req.session || !req.session.isAdminAuthenticated) return res.status(401).json({ error: 'Unauthorized' });
+        if (!getAdminSessionState(req)) return res.status(401).json({ error: 'Unauthorized' });
         if ((req.session.adminRole || 'superadmin') !== 'superadmin') return res.status(403).json({ error: 'Superadmin only.' });
         req.session.lastAdminActivity = Date.now();
         next();
@@ -869,6 +886,44 @@ module.exports = (db, loginLimiter) => {
         } catch (err) {
             const msg = err.response?.data?.message || err.message || 'Paypack API error';
             res.status(502).json({ error: msg });
+        }
+    });
+
+    // GET one authoritative PayPack status for an explicitly selected reference.
+    // This is read-only and deliberately never runs for the full ledger list.
+    router.get('/paypack-transaction-status', requireAdminLogin, async (req, res) => {
+        const reference = String(req.query.ref || '').trim();
+        if (!reference || reference.length > 128 || !/^[A-Za-z0-9._:-]+$/.test(reference)) {
+            return res.status(400).json({ ok: false, status: 'Status unavailable' });
+        }
+        const cached = paypackStatusCache.get(reference);
+        if (cached && cached.expiresAt > Date.now()) return res.json(cached.value);
+        paypackStatusCache.delete(reference);
+        try {
+            const token = await getAdminToken();
+            const headers = { Authorization: `Bearer ${token}`, Accept: 'application/json' };
+            const { data: transaction } = await axios.get(
+                `${PAYPACK_BASE}/transactions/find/${encodeURIComponent(reference)}`,
+                { headers, timeout: 8000, maxRedirects: 0 }
+            );
+            let rawStatus = transaction?.ref === reference ? transaction.status : '';
+            let source = rawStatus ? 'PAYPACK_TRANSACTION_LOOKUP' : '';
+            if (!rawStatus) {
+                const { data: eventsResponse } = await axios.get(`${PAYPACK_BASE}/events/transactions`, {
+                    headers, params: { ref: reference, kind: 'CASHIN' }, timeout: 8000, maxRedirects: 0
+                });
+                const event = (Array.isArray(eventsResponse?.transactions) ? eventsResponse.transactions : [])
+                    .find(item => item?.data?.ref === reference && item?.data?.status);
+                rawStatus = event?.data?.status || '';
+                source = rawStatus ? 'PAYPACK_EVENTS_API' : '';
+            }
+            const normalized = String(rawStatus || '').trim().toLowerCase();
+            const labels = { successful: 'Successful', success: 'Successful', completed: 'Successful', pending: 'Pending', failed: 'Failed', failure: 'Failed' };
+            const value = { ok: true, status: labels[normalized] || (rawStatus ? String(rawStatus).trim() : 'Status unavailable'), source };
+            paypackStatusCache.set(reference, { value, expiresAt: Date.now() + 45 * 1000 });
+            return res.json(value);
+        } catch (err) {
+            return res.status(502).json({ ok: false, status: 'Status unavailable' });
         }
     });
 

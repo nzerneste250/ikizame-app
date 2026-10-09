@@ -75,6 +75,10 @@
         .reference-cell { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; }
         .status.pending { background:#fef3c7; color:#92400e; }
         .status.failed { background:#fee2e2; color:#991b1b; }
+        .status.checking { background:#e0f2fe; color:#075985; }
+        .status.unavailable { background:#f1f5f9; color:#475569; }
+        .status-action { margin-left:7px; border:1px solid #cbd5e1; background:#fff; color:#334155; border-radius:6px; padding:4px 7px; cursor:pointer; font:inherit; font-size:10px; font-weight:700; }
+        .status-action:disabled { opacity:.65; cursor:wait; }
         @media (max-width:900px) { .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .content { padding:22px 20px; } }
         @media (max-width:560px) { .topbar { align-items:flex-start; padding:14px; } .topbar h1 { font-size:19px; } .topbar p { line-height:1.4; } .topbar .btn-outline { width:100%; justify-content:center; } .content { padding:16px 12px 24px; } .summary-grid { grid-template-columns:1fr; gap:12px; } .summary-card { padding:16px; } .panel-head { align-items:flex-start; flex-direction:column; } .contact-search-row { align-items:stretch; flex-direction:column; } .contact-search-input { width:100%; } }
     </style>
@@ -164,6 +168,28 @@ function searchReference(value) {
         result.innerHTML = '<strong>No transaction found</strong> Try a full or partial PayPack reference.';
     }
     renderLedgerRows(matches);
+    if (matches.length === 1 && normalizeReference(term).toLowerCase() === referenceValue(matches[0]).toLowerCase()) {
+        checkTransactionStatus(referenceValue(matches[0]));
+    }
+}
+function statusPresentation(status) {
+    const normalized = String(status || '').trim().toLowerCase();
+    if (normalized === 'successful' || normalized === 'success' || normalized === 'completed') return ['Successful', 'success'];
+    if (normalized === 'pending') return ['Pending', 'pending'];
+    if (normalized === 'failed' || normalized === 'failure') return ['Failed', 'failed'];
+    if (normalized === 'checking') return ['Checking…', 'checking'];
+    if (normalized === 'status unavailable') return ['Status unavailable', 'unavailable'];
+    return [status ? String(status).trim() : 'Not checked', status ? 'other' : 'unavailable'];
+}
+function checkTransactionStatus(reference, button) {
+    const row = ledgerRows.find(item => referenceValue(item) === reference);
+    if (!row) return Promise.resolve();
+    row.status = 'checking';
+    renderLedgerRows(document.getElementById('contactSearch').value ? ledgerRows.filter(item => matchesReference(item, document.getElementById('contactSearch').value)) : ledgerRows);
+    return fetch(`/api/admin/paypack-transaction-status?ref=${encodeURIComponent(reference)}`)
+        .then(response => response.json().then(data => ({ ok: response.ok, data })))
+        .then(({ ok, data }) => { row.status = ok && data.status ? data.status : 'Status unavailable'; renderLedgerRows(document.getElementById('contactSearch').value ? ledgerRows.filter(item => matchesReference(item, document.getElementById('contactSearch').value)) : ledgerRows); })
+        .catch(() => { row.status = 'Status unavailable'; renderLedgerRows(document.getElementById('contactSearch').value ? ledgerRows.filter(item => matchesReference(item, document.getElementById('contactSearch').value)) : ledgerRows); });
 }
 function renderLedgerRows(rows) {
     const body = document.getElementById('ledgerBody');
@@ -173,13 +199,13 @@ function renderLedgerRows(rows) {
         const amount = Number(row.amount) || 0;
         const reference = referenceValue(row);
         const status = String(row.status || '').trim();
-        const statusLabel = status || 'Unknown';
-        const statusClass = status.toLowerCase() === 'successful' || status.toLowerCase() === 'success' || status.toLowerCase() === 'completed' ? 'success' : status.toLowerCase() === 'pending' ? 'pending' : status.toLowerCase() === 'failed' ? 'failed' : 'other';
+        const [statusLabel, statusClass] = statusPresentation(status);
         const copy = reference ? `<button class="copy-ref" type="button" title="Copy reference" aria-label="Copy reference" aria-live="polite" onclick="copyReference(this, '${esc(reference)}')"><i class="fa-regular fa-copy" aria-hidden="true"></i><span class="copy-label">Copy reference</span></button>` : '';
+        const statusAction = reference && !status ? `<button class="status-action" type="button" onclick="checkTransactionStatus('${esc(reference)}', this)">Check status</button>` : '';
         const phone = String(row.client || '').trim() || 'Not provided';
         const timestamp = String(row.timestamp || '').trim();
         const date = timestamp ? formatPaypackTimestamp(timestamp) : 'Not provided';
-        return `<tr><td class="reference-cell" title="${esc(reference)}">${esc(reference || 'Not provided')}${copy}</td><td><span class="status other">${esc(kind)}</span></td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td title="${status ? '' : 'Not supplied by PayPack'}"><span class="status ${statusClass}">${esc(statusLabel)}</span></td><td title="${phone === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(phone)}</td><td title="${date === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(date)}</td></tr>`;
+        return `<tr><td class="reference-cell" title="${esc(reference)}">${esc(reference || 'Not provided')}${copy}</td><td><span class="status other">${esc(kind)}</span></td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td title="${status ? '' : 'Status was not included in the PayPack list response'}"><span class="status ${statusClass}">${esc(statusLabel)}</span>${statusAction}</td><td title="${phone === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(phone)}</td><td title="${date === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(date)}</td></tr>`;
     }).join('');
 }
 function formatPaypackTimestamp(value) {
@@ -251,6 +277,32 @@ function loadLedger() {
     }).catch(error => { ledgerState = 'error'; document.getElementById('transactionMeta').textContent = 'Unable to load PayPack transactions.'; document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="7" class="error">Unable to load PayPack transactions. Try again.</td></tr>'; });
 }
 loadLedger();
+</script>
+<script>
+(function () {
+    const IDLE_MS = 120 * 1000;
+    const LOGIN_URL = '/admin-login?reason=inactive';
+    let lastActivity = Date.now();
+    let timer = null;
+    let logoutStarted = false;
+    function broadcastLogout() { try { localStorage.setItem('ikizame-admin-paypack-logout', String(Date.now())); } catch (_) {} }
+    function logout() {
+        if (logoutStarted) return;
+        logoutStarted = true;
+        broadcastLogout();
+        fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' }).finally(() => window.location.replace(LOGIN_URL));
+    }
+    function checkIdle() { if (Date.now() - lastActivity >= IDLE_MS) logout(); }
+    function activity() { lastActivity = Date.now(); clearTimeout(timer); timer = setTimeout(checkIdle, IDLE_MS + 50); }
+    ['click', 'keydown', 'touchstart', 'pointerdown'].forEach(type => document.addEventListener(type, activity, { passive: true }));
+    let lastEventActivity = 0;
+    function throttledActivity() { const now = Date.now(); if (now - lastEventActivity < 1000) return; lastEventActivity = now; activity(); }
+    document.addEventListener('mousemove', throttledActivity, { passive: true });
+    document.addEventListener('scroll', throttledActivity, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkIdle(); });
+    window.addEventListener('storage', event => { if (event.key === 'ikizame-admin-paypack-logout') window.location.replace(LOGIN_URL); });
+    activity();
+})();
 </script>
 </body>
 </html>

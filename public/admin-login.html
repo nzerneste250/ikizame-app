@@ -1129,6 +1129,7 @@
         <div class="panel active" id="panelLogin">
             <h2 class="login-card-header"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Admin Login</h2>
             <form action="/api/admin/auth" method="POST" class="form" id="loginForm" novalidate>
+                <input type="hidden" name="next" id="loginNext">
                 <div class="field">
                     <label>Admin Email</label>
                     <div class="field-wrap">
@@ -1390,6 +1391,9 @@
         // Show error from redirect
         const params = new URLSearchParams(window.location.search);
         if (params.get('error')) showAlert('Invalid email or password. Please try again.');
+        if (params.get('reason') === 'inactive') showAlert('Your admin session ended after 2 minutes of inactivity.');
+        const nextParam = params.get('next');
+        if (nextParam && /^\/(?!\/)[A-Za-z0-9/_-]+$/.test(nextParam)) document.getElementById('loginNext').value = nextParam;
 
         // Login form loading state
         document.getElementById('loginForm').addEventListener('submit', (e) => {
