@@ -118,6 +118,7 @@
   }
   window.IkizameAnalytics = Object.freeze({
     setConsent, showConsent, checkout, purchase,
+    track: (name, params = {}) => event(name, params),
     examStarted: questionCount => pagePath === '/exam' && count(questionCount) ? event('exam_started', { question_count: count(questionCount) }) : false,
     examCompleted: questionCount => pagePath === '/exam' && count(questionCount) ? event('exam_completed', { question_count: count(questionCount) }) : false
   });
@@ -127,4 +128,20 @@
   });
   consentUi();
   start();
+
+  if (typeof document.addEventListener === 'function') document.addEventListener('click', function (clickEvent) {
+    const link = clickEvent.target.closest?.('a');
+    const packageButton = clickEvent.target.closest?.('.price-card .btn-pay-trigger');
+    if (!link && !packageButton) return;
+    const href = link ? (link.getAttribute('href') || '') : '';
+    if (pagePath === '/' && href === '/ibiciro') event('home_pricing_clicked');
+    if (pagePath === '/' && (href === '/exam' || href.includes('candidateRegistrationInteractiveForm'))) event('home_exam_cta_clicked');
+    if (pagePath === '/ifashanyigisho' && href === '/ibiciro') event('resource_pricing_clicked');
+    if (pagePath === '/ifashanyigisho' && href === '/exam') event('resource_exam_cta_clicked');
+    if (pagePath === '/ibiciro' && (link?.closest('.price-card') || packageButton)) {
+      const card = link?.closest('.price-card') || packageButton.closest('.price-card');
+      const range = card?.querySelector('.pricing-card-range')?.textContent?.trim();
+      event('pricing_package_selected', range ? { package_range: range } : {});
+    }
+  });
 })();

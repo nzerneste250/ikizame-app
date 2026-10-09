@@ -974,15 +974,15 @@
                         <p class="pricing-card-description">Igiciro cyiza kurushaho ukoze ibizamini byinshi.</p>
                         <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(10)">Hitamo</button>
                     </article>
-                    <article class="price-card">
+                    <article class="price-card is-best">
                         <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></div>
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 15&#8211;20</h3><span class="pricing-card-badge">Gabanyirizwa 30%</span></div>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 15&#8211;20</h3><span class="pricing-card-badge">Ihitamo rikunzwe</span></div>
                         <div class="pricing-card-price"><strong>70</strong><span>RWF</span></div>
                         <p class="pricing-card-unit">kuri buri kizamini</p>
                         <p class="pricing-card-description">Hitamo iyi niba ushaka kwitoza kenshi.</p>
                         <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)">Hitamo</button>
                     </article>
-                    <article class="price-card is-best">
+                    <article class="price-card">
                         <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-award"></i></div>
                         <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 21+</h3><span class="pricing-card-badge">Igiciro cyiza</span></div>
                         <div class="pricing-card-price"><strong>50</strong><span>RWF</span></div>
@@ -1422,7 +1422,7 @@
             document.getElementById('ussdHintBox').style.display = 'none';
 
             // Show progress messages so user knows it's working
-            const progressMsgs = ['Gutegura...', 'Connecting...', 'Ohereza ibisabwa...', 'Tegereza gato...'];
+            const progressMsgs = ['Gutegura...', 'Turimo kohereza ubusabe...', 'Ohereza ibisabwa...', 'Tegereza gato...'];
             let pIdx = 0;
             const progressTimer = setInterval(() => {
                 pIdx = (pIdx + 1) % progressMsgs.length;

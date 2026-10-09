@@ -98,10 +98,11 @@ test('STUDY_PLAN_GENERATION_UNCHANGED=PASS', () => {
 });
 
 test('RESOURCE_COUNT_NO_FALSE_STATIC_ZERO=PASS', () => {
-  assert.match(pageHtml, /id="summaryRulesCount"[^>]*>Birimo kubarwa\.\.\.<\/span>/);
-  assert.match(pageHtml, /id="summarySignsCount"[^>]*>Birimo kubarwa\.\.\.<\/span>/);
+  assert.match(pageHtml, /id="summaryRulesCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*>Birimo kubarwa\.\.\.<\/span>/);
+  assert.match(pageHtml, /id="summarySignsCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*>Birimo kubarwa\.\.\.<\/span>/);
   assert.match(pageHtml, /rulesCount\.textContent = 'Ntibishoboye kuboneka ubu'/);
   assert.match(pageHtml, /signsCount\.textContent = 'Ntibishoboye kuboneka ubu'/);
+  assert.match(pageHtml, /summaryRulesCount \+ small/);
 });
 
 test('ROAD_SIGN_SEMANTIC_CONTENT=PASS', () => {

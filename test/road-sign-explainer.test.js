@@ -42,7 +42,8 @@ test('ROAD_SIGN_EXPLAINER_RENDER=PASS', () => {
   assert.match(pageHtml, /id="road-signs"/);
   assert.match(pageHtml, /Menya ibyapa byo ku muhanda/);
   assert.match(pageHtml, /IBYAPA BIBURIRA[\s\S]*IBYAPA BY’UBURENGANZIRA CYANGWA GUTAMBUKA MBERE[\s\S]*IBYAPA BIBUZA[\s\S]*IBYAPA BITEGEKA[\s\S]*IBYAPA NDANGA CYANGWA BIYOBORA/);
-  assert.match(pageHtml, /Gerageza imyitozo y’ibyapa/);
+  assert.doesNotMatch(pageHtml, /Gerageza imyitozo y’ibyapa/);
+  assert.match(pageHtml, /Witeguye kugerageza ibyo wize\?/);
 });
 
 test('ROAD_SIGN_FIVE_KINYARWANDA_CATEGORIES=PASS', () => {

@@ -83,6 +83,7 @@ test('public initial states are neutral and accessible', () => {
   assert.match(scores, /id="statAvg">—\/20<\/div>/);
   assert.match(studyGuide, /id="summaryRulesCount"[^>]*role="status"[^>]*aria-live="polite"/);
   assert.match(studyGuide, /id="summarySignsCount"[^>]*role="status"[^>]*aria-live="polite"/);
+  assert.doesNotMatch(studyGuide, /Gerageza imyitozo y’ibyapa/);
   assert.doesNotMatch(schoolAuth, /<button[^>]*class="pw-eye"(?![^>]*aria-label=)/);
 });
 

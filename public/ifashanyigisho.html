@@ -571,11 +571,11 @@
     <div class="summary-strip">
         <div class="summary-stat">
             <span class="label">Amategeko y’umuhanda</span>
-            <span id="summaryRulesCount" role="status" aria-live="polite" aria-atomic="true">Birimo kubarwa...</span><small>ibyiciro</small>
+            <span id="summaryRulesCount" role="status" aria-live="polite" aria-atomic="true">Birimo kubarwa...</span><small hidden>ibyiciro</small>
         </div>
         <div class="summary-stat">
             <span class="label">Ibimenyetso byo mu muhanda</span>
-            <span id="summarySignsCount" role="status" aria-live="polite" aria-atomic="true">Birimo kubarwa...</span><small>ibyiciro</small>
+            <span id="summarySignsCount" role="status" aria-live="polite" aria-atomic="true">Birimo kubarwa...</span><small hidden>ibyiciro</small>
         </div>
         <div class="summary-stat">
             <span class="label">Iby’ingenzi byo kwiga</span>
@@ -760,10 +760,7 @@
             </section>
         </div>
         <p class="road-sign-learning-note">Ibisobanuro biri kuri uru rupapuro bigenewe gufasha mu kwiga. Witoze kandi usome amategeko n’imfashanyigisho zibisobanura mu buryo burambuye.</p>
-        <a class="road-sign-practice" id="roadSignPractice" href="/exam">
-            Gerageza imyitozo y’ibyapa <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-        </a>
-        <p class="road-sign-cta-copy">Nyuma yo gusoma, gerageza ibibazo bijyanye n’ibyapa kugira ngo urebe ibyo umaze kumenya.</p>
+        <p class="road-sign-cta-copy">Nyuma yo gusoma, ushobora gukomeza kwitegura ukoresheje imfashanyigisho za IKIZAME.</p>
     </section>
 
     <section class="paid-exam-cta" aria-labelledby="paidExamCtaTitle">
@@ -901,8 +898,8 @@ function loadDocs() {
             var rulesCount = document.getElementById('summaryRulesCount');
             var signsCount = document.getElementById('summarySignsCount');
             if (!docs || docs.length === 0) {
-                if (rulesCount) rulesCount.textContent = '0';
-                if (signsCount) signsCount.textContent = '0';
+                if (rulesCount) rulesCount.textContent = 'Nta makuru ahari ubu';
+                if (signsCount) signsCount.textContent = 'Nta makuru ahari ubu';
                 grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta mfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwa kuri uru rupapuro vuba. Ongera uze nyuma.</p></div>';
                 badge.textContent = 'Nta zihari ubu';
                 return;
@@ -940,8 +937,12 @@ function renderDocs() {
         return matchesTerm && matchesCat;
     });
     badge.textContent = filtered.length ? filtered.length + (term ? ' ibisubizo' : ' inyandiko') : 'Nta bisubizo';
-    document.getElementById('summaryRulesCount').textContent = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-rules'; }).length;
-    document.getElementById('summarySignsCount').textContent = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-signs'; }).length;
+    var rulesTotal = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-rules'; }).length;
+    var signsTotal = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-signs'; }).length;
+    document.getElementById('summaryRulesCount').textContent = rulesTotal;
+    document.getElementById('summarySignsCount').textContent = signsTotal;
+    document.querySelector('#summaryRulesCount + small').hidden = false;
+    document.querySelector('#summarySignsCount + small').hidden = false;
     grid.innerHTML = filtered.length
         ? filtered.map(function(doc) { return buildCard(doc, allDocs.indexOf(doc)); }).join('')
         : '<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zihuye n’icyo washakishije muri iki cyiciro.</p></div>';
