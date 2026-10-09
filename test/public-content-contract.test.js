@@ -52,36 +52,26 @@ test('requested public pages expose complete social preview metadata', () => {
   }
 });
 
-test('daily road-sign challenge renders five real, localized questions', () => {
-  const page = readPage('ifashanyigisho.html');
-  const uploads = fs.readdirSync(path.join(publicDir, 'assets', 'uploads'));
-  assert.match(page, /id="daily-road-sign-challenge"/);
-  assert.match(page, /Ikibazo cy’Umunsi ku Byapa/);
-  assert.match(page, /id="dailyChallengeImage"[^>]+alt=/);
-  assert.match(page, /id="dailyChallengeAnswers"[^>]+role="group"/);
-  assert.match(page, /id="dailyChallengeFeedback"[^>]+aria-live="polite"/);
-  assert.match(page, /id="dailyChallengeScore"/);
-  assert.match(page, /id="dailyChallengeShare"[^>]*>.*Sangiza abandi/s);
-  const assets = [...page.matchAll(/asset: '([^']+)'/g)].map((match) => match[1]);
-  assert.equal(assets.length, 8);
-  assert.ok(assets.every((asset) => uploads.includes(asset)), 'challenge assets exist in public uploads');
-  assert.match(page, /dailyChallengeSet\(date\)/);
-  assert.match(page, /dailyChallengeHash\(value\)/);
-  assert.match(page, /slice\(0, 5\)/);
-  assert.match(page, /Amanota yawe: ' \+ score \+ '\/5'/);
-  assert.match(page, /navigator\.share\(\{ title: 'Ikibazo cy’Umunsi ku Byapa \| IKIZAME'/);
-  assert.match(page, /navigator\.clipboard\.writeText\(text \+ ' ' \+ url\)/);
-  assert.doesNotMatch(page.slice(page.indexOf('const DAILY_SIGN_QUESTIONS'), page.indexOf('function dailyChallengeDate')), /fetch\(|XMLHttpRequest|name="(?:name|phone|email|national_id)"/i);
-});
-
-test('daily road-sign challenge is responsive and reduced-motion friendly', () => {
+test('daily road-sign challenge is removed and paid exam CTA remains', () => {
   const page = readPage('ifashanyigisho.html');
   const css = fs.readFileSync(path.join(publicDir, 'assets', 'css', 'ifashanyigisho-theme.css'), 'utf8');
-  assert.match(css, /\.daily-challenge-card\s*\{[^}]*grid-template-columns/);
-  assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.daily-challenge-card\s*\{[^}]*grid-template-columns:\s*1fr/);
-  assert.match(css, /@media \(max-width: 360px\)[\s\S]*\.daily-challenge-image\s*\{[^}]*height:\s*120px/);
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(page, /overflow-x:\s*hidden/);
+  assert.doesNotMatch(page, /Ikibazo cy’Umunsi ku Byapa|daily-road-sign-challenge|dailyChallenge|DAILY_SIGN/);
+  assert.doesNotMatch(css, /daily-sign-challenge|daily-challenge/);
+  assert.match(page, /<h2 id="paidExamCtaTitle">Witeguye kugerageza ibyo wize\?<\/h2>/);
+  assert.match(page, /href="\/exam"[^>]*>Tangira Ikizamini/);
+  assert.match(page, /href="\/ibiciro"[^>]*>Reba Ibiciro<\/a>/);
+});
+
+test('road-sign learning content remains preserved', () => {
+  const page = readPage('ifashanyigisho.html');
+  assert.match(page, /id="road-signs"/);
+  assert.match(page, /IBYAPA BIBURIRA/);
+  assert.match(page, /IBYAPA BITEGEKA/);
+  assert.match(page, /IBYAPA BY’UBURENGANZIRA CYANGWA GUTAMBUKA MBERE/);
+  assert.match(page, /IBYAPA BIBUZA/);
+  assert.match(page, /IBYAPA NDANGA CYANGWA BIYOBORA/);
+  assert.match(page, /id="roadSignShare"/);
+  assert.match(page, /\/assets\/uploads\/12\.jpg/);
 });
 
 test('public initial states are neutral and accessible', () => {

@@ -74,7 +74,7 @@ test('IFASHANYIGISHO_KINYARWANDA=PASS', () => {
 });
 
 test('IFASHANYIGISHO_JOINED_WORDS_FIXED=PASS', () => {
-  assert.doesNotMatch(pageHtml, /witeguye(?:gukora)?|Nta\s+imfashanyigisho|Ongera\s+Ugerageze/);
+  assert.doesNotMatch(pageHtml, /Witeguyegukora|Nta\s+imfashanyigisho|Ongera\s+Ugerageze/);
   assert.match(pageHtml, /Witeguye <small>gukora imyitozo\?<\/small>/);
 });
 

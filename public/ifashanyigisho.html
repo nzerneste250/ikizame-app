@@ -766,30 +766,15 @@
         <p class="road-sign-cta-copy">Nyuma yo gusoma, gerageza ibibazo bijyanye n’ibyapa kugira ngo urebe ibyo umaze kumenya.</p>
     </section>
 
-    <section class="daily-sign-challenge" id="daily-road-sign-challenge" aria-labelledby="dailyChallengeTitle">
-        <div class="daily-challenge-heading">
-            <div>
-                <p class="daily-challenge-eyebrow">IKIZAME · BURI MUNSI</p>
-                <h2 id="dailyChallengeTitle">Ikibazo cy’Umunsi ku Byapa</h2>
-                <p>Subiza ibibazo bitanu bigufi ku byapa byo ku muhanda. Ikibazo cy’umunsi gihinduka buri tariki.</p>
-            </div>
-            <span class="daily-challenge-date" id="dailyChallengeDate" aria-label="Itariki y’ikibazo cy’umunsi"></span>
+    <section class="paid-exam-cta" aria-labelledby="paidExamCtaTitle">
+        <div>
+            <p class="paid-exam-cta-eyebrow">IKIZAME ? IKIZAMINI CYUZUYE</p>
+            <h2 id="paidExamCtaTitle">Witeguye kugerageza ibyo wize?</h2>
+            <p>Korera ikizamini cyuzuye cya IKIZAME urebe uko witeguye ku mategeko y’umuhanda n’ibyapa.</p>
         </div>
-        <div class="daily-challenge-progress" id="dailyChallengeProgress" role="status" aria-live="polite">Ikibazo 1 kuri 5</div>
-        <div class="daily-challenge-card" id="dailyChallengeCard">
-            <img id="dailyChallengeImage" class="daily-challenge-image" src="/assets/uploads/12.jpg" alt="Icyapa cyo ku muhanda" width="180" height="180">
-            <div class="daily-challenge-question-wrap">
-                <h3 id="dailyChallengeQuestion">Turimo gutegura ikibazo...</h3>
-                <div class="daily-challenge-answers" id="dailyChallengeAnswers" role="group" aria-label="Ibisubizo by’ikibazo"></div>
-                <p class="daily-challenge-feedback" id="dailyChallengeFeedback" role="status" aria-live="polite" aria-atomic="true"></p>
-                <button type="button" class="daily-challenge-next" id="dailyChallengeNext" hidden>Ikibazo gikurikira <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
-            </div>
-        </div>
-        <div class="daily-challenge-result" id="dailyChallengeResult" hidden role="status" aria-live="polite" aria-atomic="true">
-            <h3 id="dailyChallengeScore">Amanota yawe: 0/5</h3>
-            <p id="dailyChallengeMessage"></p>
-            <button type="button" class="daily-challenge-share" id="dailyChallengeShare"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Sangiza abandi</button>
-            <p class="daily-challenge-share-status" id="dailyChallengeShareStatus"></p>
+        <div class="paid-exam-cta-actions">
+            <a class="paid-exam-cta-primary" href="/exam">Tangira Ikizamini <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            <a class="paid-exam-cta-secondary" href="/ibiciro">Reba Ibiciro</a>
         </div>
     </section>
 
@@ -861,145 +846,6 @@
 <script>
 var allDocs = [];
 var currentFilter = 'all';
-
-(function() {
-    const DAILY_SIGN_QUESTIONS = [
-        { asset: '12.jpg', alt: 'Icyapa kiburira umuhanda umanuka cyane', question: 'Iki cyapa gisobanura iki?', options: ['Umuhanda umanuka cyane', 'Parikingi', 'Gukatira ibumoso bitegetswe', 'Icyerekezo kimwe'], correct: 0, explanation: 'Iki cyapa kiburira ko imbere hari umuhanda umanuka cyane.' },
-        { asset: 'SA_road_sign_-_Road_narrows_on_the_right.svg.png', alt: 'Icyapa kiburira ko umuhanda ugabanuka iburyo', question: 'Iki cyapa kiburira umuyobozi iki?', options: ['Umuhanda ugabanuka iburyo', 'Umuhanda ufite uburenganzira bwo gutambuka mbere', 'Gukikira bitegetswe', 'Ahantu imodoka ziparika'], correct: 0, explanation: 'Iki cyapa kigaragaza ko umuhanda ugenda ugabanuka mu bugari iburyo.' },
-        { asset: '11.jpg', alt: 'Icyapa cyo gutanga inzira', question: 'Iki cyapa gisaba umuyobozi gukora iki?', options: ['Gutanga inzira', 'Kongera umuvuduko', 'Guhagarara igihe kirekire', 'Gukomeza mu cyerekezo kimwe'], correct: 0, explanation: 'Iki cyapa gisaba umuyobozi gutanga inzira ku bandi bakoresha umuhanda.' },
-        { asset: 'road-sign-of-50-speed-limit-on-white-background-free-vector.jpg', alt: 'Icyapa cy’umuvuduko ntarengwa wa kilometero 50 ku isaha', question: 'Umuvuduko ntarengwa werekanwa n’iki cyapa ni uwuhe?', options: ['Km 30/h', 'Km 50/h', 'Km 70/h', 'Km 90/h'], correct: 1, explanation: 'Iki cyapa kigaragaza umuvuduko ntarengwa wa kilometero 50 ku isaha.' },
-        { asset: 'Mauritius_Road_Signs_-_Mandatory_Sign_-_Left_turn_only.svg.png', alt: 'Icyapa gitegeka gukatira ibumoso', question: 'Iki cyapa gitegeka umuyobozi gukora iki?', options: ['Gukatira iburyo', 'Gukatira ibumoso', 'Gukomeza inyuma', 'Guhagarara'], correct: 1, explanation: 'Iki cyapa gitegeka gukatira ibumoso.' },
-        { asset: 'priority-road.png', alt: 'Icyapa cy’umuhanda ufite uburenganzira bwo gutambuka mbere', question: 'Iki cyapa kigaragaza iki?', options: ['Umuhanda ufite uburenganzira bwo gutambuka mbere', 'Iherezo rya parikingi', 'Umuhanda ugabanuka', 'Ahantu hari akaga'], correct: 0, explanation: 'Iki cyapa kigaragaza umuhanda ufite uburenganzira bwo gutambuka mbere.' },
-        { asset: '7.png', alt: 'Icyapa cy’inzira idakomeza', question: 'Iki cyapa gisobanura iki?', options: ['Inzira idakomeza', 'Gukikira bitegetswe', 'Umuvuduko ntarengwa', 'Gutanga inzira'], correct: 0, explanation: 'Iki cyapa kigaragaza ko inzira idakomeza.' },
-        { asset: 'guidance-parking.png', alt: 'Icyapa cy’ahaparikwa imodoka', question: 'Iki cyapa kiyobora abagenzi he?', options: ['Aho imodoka ziparika', 'Ku muhanda umanuka', 'Aho gukatira ibumoso', 'Ku nzira ifunze'], correct: 0, explanation: 'Iki cyapa kiranga ahantu imodoka zemerewe guhagarara.' }
-    ];
-
-    function dailyChallengeDate() {
-        const now = new Date();
-        return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-    }
-
-    function dailyChallengeHash(value) {
-        let hash = 2166136261;
-        for (let i = 0; i < value.length; i++) hash = Math.imul(hash ^ value.charCodeAt(i), 16777619);
-        return hash >>> 0;
-    }
-
-    function dailyChallengeSet(date) {
-        const list = DAILY_SIGN_QUESTIONS.slice();
-        let seed = dailyChallengeHash(date);
-        for (let i = list.length - 1; i > 0; i--) {
-            seed = (Math.imul(seed ^ (seed >>> 16), 2246822519) + 3266489917) >>> 0;
-            const j = seed % (i + 1);
-            [list[i], list[j]] = [list[j], list[i]];
-        }
-        return list.slice(0, 5);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const date = dailyChallengeDate();
-        const questions = dailyChallengeSet(date);
-        const dateEl = document.getElementById('dailyChallengeDate');
-        const progressEl = document.getElementById('dailyChallengeProgress');
-        const card = document.getElementById('dailyChallengeCard');
-        const image = document.getElementById('dailyChallengeImage');
-        const questionEl = document.getElementById('dailyChallengeQuestion');
-        const answersEl = document.getElementById('dailyChallengeAnswers');
-        const feedbackEl = document.getElementById('dailyChallengeFeedback');
-        const nextButton = document.getElementById('dailyChallengeNext');
-        const resultEl = document.getElementById('dailyChallengeResult');
-        const scoreEl = document.getElementById('dailyChallengeScore');
-        const messageEl = document.getElementById('dailyChallengeMessage');
-        const shareButton = document.getElementById('dailyChallengeShare');
-        const shareStatus = document.getElementById('dailyChallengeShareStatus');
-        if (!dateEl || !card || !questions.length) return;
-
-        let current = 0;
-        let score = 0;
-        dateEl.textContent = date;
-
-        function renderQuestion() {
-            const item = questions[current];
-            progressEl.textContent = 'Ikibazo ' + (current + 1) + ' kuri 5';
-            image.src = '/assets/uploads/' + item.asset;
-            image.alt = item.alt;
-            questionEl.textContent = item.question;
-            feedbackEl.textContent = '';
-            feedbackEl.className = 'daily-challenge-feedback';
-            nextButton.hidden = true;
-            answersEl.innerHTML = '';
-            item.options.forEach(function(option, index) {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'daily-challenge-answer';
-                button.textContent = String.fromCharCode(65 + index) + '. ' + option;
-                button.addEventListener('click', function() {
-                    if (answersEl.dataset.answered === 'true') return;
-                    answersEl.dataset.answered = 'true';
-                    answersEl.querySelectorAll('button').forEach(function(answerButton) { answerButton.disabled = true; });
-                    if (index === item.correct) {
-                        score++;
-                        button.classList.add('is-correct');
-                        feedbackEl.textContent = 'Ni byo! ' + item.explanation;
-                        feedbackEl.classList.add('is-correct');
-                    } else {
-                        button.classList.add('is-incorrect');
-                        answersEl.children[item.correct].classList.add('is-correct');
-                        feedbackEl.textContent = 'Si byo. ' + item.explanation;
-                        feedbackEl.classList.add('is-incorrect');
-                    }
-                    nextButton.hidden = false;
-                    nextButton.focus();
-                });
-                answersEl.appendChild(button);
-            });
-        }
-
-        nextButton.addEventListener('click', function() {
-            current++;
-            if (current < questions.length) {
-                answersEl.dataset.answered = 'false';
-                renderQuestion();
-                questionEl.focus();
-            } else {
-                card.hidden = true;
-                progressEl.textContent = 'Ikibazo cy’umunsi cyarangiye';
-                scoreEl.textContent = 'Amanota yawe: ' + score + '/5';
-                messageEl.textContent = score >= 4 ? 'Ni byiza! Komeza witoze.' : 'Komeza witoze, uzagenda urushaho kumenya ibyapa.';
-                resultEl.hidden = false;
-                shareButton.focus();
-            }
-        });
-
-        function challengeShareUrl() {
-            const url = new URL(window.location.pathname, window.location.origin);
-            ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_content', 'utm_term'].forEach(function(key) {
-                const value = new URLSearchParams(window.location.search).get(key);
-                if (value) url.searchParams.set(key, value);
-            });
-            url.hash = 'daily-road-sign-challenge';
-            return url.href;
-        }
-
-        shareButton.addEventListener('click', function() {
-            const url = challengeShareUrl();
-            const text = 'Nabonye ' + score + '/5 mu Kizamini cy’Umunsi cy’Ibyapa kuri IKIZAME.';
-            if (navigator.share) {
-                navigator.share({ title: 'Ikibazo cy’Umunsi ku Byapa | IKIZAME', text: text, url: url }).catch(function(error) {
-                    if (error.name !== 'AbortError') shareStatus.textContent = 'Ntibyakunze gusangiza. Ongera ugerageze.';
-                });
-                return;
-            }
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text + ' ' + url).then(function() { shareStatus.textContent = 'Ihuza ryakoporowe.'; });
-            } else {
-                shareStatus.textContent = url;
-            }
-        });
-
-        renderQuestion();
-    });
-})();
 
 function slugifyText(value) {
     return String(value || '').toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').replace(/\s+/g, ' ').trim();
