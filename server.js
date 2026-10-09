@@ -635,7 +635,7 @@ app.post('/api/owner-otp/send', (req, res) => {
                     console.error('OTP email failed:', mailErr.message);
                     return res.status(500).json({ ok: false, error: 'Failed to send OTP.' });
                 }
-                console.log(`✅ Owner bypass OTP sent to ${toEmail}`);
+                console.log('✅ Owner bypass OTP sent successfully');
                 res.json({ ok: true });
             });
         }

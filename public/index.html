@@ -2193,7 +2193,7 @@
             <i class="fa-solid fa-shield-halved" style="color:#fff;font-size:1.2rem;"></i>
         </div>
         <h3>Emeza Ubunyangamugayo</h3>
-        <p>OTP yoherejwe kuri <strong>dotadostationarystore@gmail.com</strong>.<br>Injiza kode y'imibare 6 kugira ngo utangire ikizamini.</p>
+        <p>Kode yo kwemeza yoherejwe.<br>Injiza kode y'imibare 6 kugira ngo utangire ikizamini.</p>
         <div class="otp-input-wrap">
             <input type="text" id="ownerOtpInput" maxlength="6" placeholder="000000" inputmode="numeric" autocomplete="one-time-code">
         </div>
@@ -2564,11 +2564,8 @@
                                 if (d.ok) {
                                     window._ownerPhone = fullFormattedPhone;
                                     window._ownerName = name;
-                                    window._ownerOtpTargetEmail = match.otp_email || match.email || '';
                                     document.getElementById('ownerOtpOverlay').classList.add('open');
-                                    const msg = document.querySelector('#ownerOtpOverlay strong');
                                     const note = document.getElementById('ownerOtpHint');
-                                    if (msg) msg.textContent = window._ownerOtpTargetEmail || 'your configured email';
                                     if (note) note.textContent = '';
                                     document.getElementById('ownerOtpInput').value = '';
                                     setTimeout(() => document.getElementById('ownerOtpInput').focus(), 200);

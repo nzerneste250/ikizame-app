@@ -366,7 +366,7 @@ module.exports = (db, loginLimiter) => {
     });
 
     router.get('/settings/exam-access/public', (req, res) => {
-        db.query('SELECT id, phone_number, email, otp_email FROM exam_access_contacts WHERE is_active = 1 ORDER BY id DESC', (err, rows) => {
+        db.query('SELECT id, phone_number FROM exam_access_contacts WHERE is_active = 1 ORDER BY id DESC', (err, rows) => {
             if (err) return res.status(500).json({ ok: false, error: err.message });
             res.json({ ok: true, items: rows || [] });
         });

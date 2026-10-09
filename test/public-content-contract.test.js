@@ -79,8 +79,8 @@ test('public initial states are neutral and accessible', () => {
   const studyGuide = readPage('ifashanyigisho.html');
   const schoolAuth = readPage('school-auth.html');
 
-  assert.match(scores, /id="statTotal">—<\/div>/);
-  assert.match(scores, /id="statAvg">—\/20<\/div>/);
+  assert.match(scores, /id="statTotal">Nta manota<\/div>/);
+  assert.match(scores, /id="statAvg">Nta manota<\/div>/);
   assert.match(studyGuide, /id="summaryRulesCount"[^>]*role="status"[^>]*aria-live="polite"/);
   assert.match(studyGuide, /id="summarySignsCount"[^>]*role="status"[^>]*aria-live="polite"/);
   assert.doesNotMatch(studyGuide, /Gerageza imyitozo y’ibyapa/);

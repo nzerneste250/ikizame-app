@@ -98,8 +98,8 @@ test('STUDY_PLAN_GENERATION_UNCHANGED=PASS', () => {
 });
 
 test('RESOURCE_COUNT_NO_FALSE_STATIC_ZERO=PASS', () => {
-  assert.match(pageHtml, /id="summaryRulesCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*>Birimo kubarwa\.\.\.<\/span>/);
-  assert.match(pageHtml, /id="summarySignsCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*>Birimo kubarwa\.\.\.<\/span>/);
+  assert.match(pageHtml, /id="summaryRulesCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*>Birimo kubarwa\.\.\.<\/span><small hidden>ibyiciro<\/small>/);
+  assert.match(pageHtml, /id="summarySignsCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*>Birimo kubarwa\.\.\.<\/span><small hidden>ibyiciro<\/small>/);
   assert.match(pageHtml, /rulesCount\.textContent = 'Ntibishoboye kuboneka ubu'/);
   assert.match(pageHtml, /signsCount\.textContent = 'Ntibishoboye kuboneka ubu'/);
   assert.match(pageHtml, /summaryRulesCount \+ small/);
