@@ -2,11 +2,18 @@ function normalizePaypackReferenceSearch(value) {
     return String(value ?? '')
         .trim()
         .replace(/^ref\s*:\s*/i, '')
+        .replace(/…/g, '...')
         .trim();
 }
 
 function getPaypackReference(row) {
-    return String(row?.ref ?? row?.reference ?? '').trim();
+    return String(
+        row?.ref
+        ?? row?.reference
+        ?? row?.rwandapay_tx_id
+        ?? row?.reference_id
+        ?? ''
+    ).trim();
 }
 
 function matchesPaypackReference(row, rawSearch) {
@@ -16,14 +23,14 @@ function matchesPaypackReference(row, rawSearch) {
 
     const referenceLower = reference.toLowerCase();
     const searchLower = search.toLowerCase();
-    if (referenceLower === searchLower) return true;
-
     if (searchLower.includes('...')) {
-        const [prefix, suffix] = searchLower.split('...');
+        const parts = searchLower.split('...');
+        if (parts.length !== 2) return false;
+        const [prefix, suffix] = parts;
         return Boolean(prefix && suffix) && referenceLower.startsWith(prefix) && referenceLower.endsWith(suffix);
     }
 
-    return referenceLower.includes(searchLower);
+    return referenceLower === searchLower || referenceLower.includes(searchLower);
 }
 
 function filterPaypackTransactionsByReference(rows, rawSearch) {

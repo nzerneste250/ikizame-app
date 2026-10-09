@@ -267,12 +267,13 @@
             <div class="payments-toolbar">
                 <div class="search-bar-wrap">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="phoneSearch" placeholder="Search by phone number..." oninput="filterByPhone(this.value)">
-                    <button type="button" class="search-clear" aria-label="Clear phone search" title="Clear search" onclick="clearPaymentSearch()"><i class="fa-solid fa-xmark"></i></button>
+                    <label class="sr-only" for="phoneSearch">Search by reference only</label>
+                    <input type="search" id="phoneSearch" autocomplete="off" placeholder="Search by Ref only, e.g. d5ea25da...7c58c" aria-label="Search by reference only" oninput="filterByPhone(this.value)" onkeydown="if(event.key === 'Enter') filterByPhone(this.value)">
+                    <button type="button" class="search-clear" aria-label="Clear reference search" title="Clear search" onclick="clearPaymentSearch()"><i class="fa-solid fa-xmark"></i></button>
                     <span class="search-count" id="searchCount"></span>
                 </div>
                 <div class="search-summary" id="searchSummary" aria-live="polite">
-                    <span class="search-summary-title">Contact totals</span>
+                    <span class="search-summary-title">Reference totals</span>
                     <span class="search-summary-item">
                         <span class="search-summary-value" id="searchPurchasedExams">0</span>
                         <span class="search-summary-label">purchased exams</span>
@@ -387,19 +388,29 @@
 <script>
     let paymentTransactions = [];
     let onlyRemainingExams = false;
+    const escAttr = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const normalizeReferenceSearch = value => String(value ?? '').trim().replace(/^ref\s*:\s*/i, '').replace(/…/g, '...').trim();
+    const getTransactionReference = tx => String(tx?.rwandapay_tx_id ?? tx?.reference_id ?? '').trim();
+    function matchesReference(tx, value) {
+        const query = normalizeReferenceSearch(value).toLowerCase();
+        const reference = getTransactionReference(tx).toLowerCase();
+        if (!query || !reference) return false;
+        if (query.includes('...')) {
+            const parts = query.split('...');
+            return parts.length === 2 && Boolean(parts[0] && parts[1]) && reference.startsWith(parts[0]) && reference.endsWith(parts[1]);
+        }
+        return reference === query || reference.includes(query);
+    }
 
     function updateSearchSummary(term) {
         const summary = document.getElementById('searchSummary');
-        const normalizedTerm = term.replace(/\D/g, '');
+        const normalizedTerm = normalizeReferenceSearch(term);
         if (!normalizedTerm) {
             summary.style.display = 'none';
             return;
         }
 
-        const matchingTransactions = paymentTransactions.filter(tx => {
-            const phone = (tx.phone_number || '').replace(/\D/g, '');
-            return phone.includes(normalizedTerm);
-        });
+        const matchingTransactions = paymentTransactions.filter(tx => matchesReference(tx, normalizedTerm));
         const successfulTransactions = matchingTransactions.filter(tx => String(tx.status || '').toUpperCase() === 'SUCCESS');
         const purchasedExams = successfulTransactions.reduce((total, tx) => total + (Number(tx.total_exams) || 0), 0);
         const totalPaid = successfulTransactions.reduce((total, tx) => total + (Number(tx.amount) || 0), 0);
@@ -420,14 +431,14 @@
         filterByPhone(document.getElementById('phoneSearch').value);
     }
     function filterByPhone(q) {
-        const term = q.trim();
-        const rows = document.querySelectorAll('#transactionsTableBody tr[data-phone]');
+        const term = normalizeReferenceSearch(q);
+        const rows = document.querySelectorAll('#transactionsTableBody tr[data-reference]');
         let visible = 0;
         rows.forEach(row => {
-            const phoneMatch = !term || row.dataset.phone.includes(term);
+            const referenceMatch = !term || matchesReference({ rwandapay_tx_id: row.dataset.reference }, term);
             const dateMatch = !activeDateFilter || row.dataset.date === activeDateFilter;
             const remainingMatch = !onlyRemainingExams || Number(row.dataset.remaining) > 0;
-            const show = phoneMatch && dateMatch && remainingMatch;
+            const show = referenceMatch && dateMatch && remainingMatch;
             row.style.display = show ? '' : 'none';
             if (show) visible++;
         });
@@ -435,8 +446,8 @@
         if (emptyState) {
             emptyState.hidden = visible > 0 || rows.length === 0;
             emptyState.textContent = onlyRemainingExams
-                ? 'No payments with remaining exams match the current search or date filter.'
-                : 'No payments match the current search or date filter.';
+                ? 'No payments with remaining exams match the current reference or date filter.'
+                : 'No payments match the current reference or date filter.';
         }
         const countEl = document.getElementById('searchCount');
         countEl.textContent = term ? `${visible} result${visible !== 1 ? 's' : ''}` : '';
@@ -600,7 +611,7 @@
             const rowClass = isNeg ? 'negative-warn-row' : '';
             const price = tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '-';
             const remainingClass = rem > 0 ? 'has-remaining' : 'no-remaining';
-            return `<tr class="${rowClass}" data-phone="${tx.phone_number || ''}" data-date="${(tx.created_at||'').slice(0,10)}" data-remaining="${Number.isFinite(rem) ? rem : 0}">
+            return `<tr class="${rowClass}" data-reference="${escAttr(realRef)}" data-date="${(tx.created_at||'').slice(0,10)}" data-remaining="${Number.isFinite(rem) ? rem : 0}">
                 <td class="payment-index" data-label="#">#${i + 1}</td>
                 <td class="payment-customer" data-label="Customer">
                     <span class="customer-primary"><span class="customer-phone">${tx.phone_number || '---'}</span>${network}</span>

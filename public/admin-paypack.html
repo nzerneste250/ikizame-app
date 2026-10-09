@@ -31,6 +31,8 @@
         .topbar { min-height:74px; background:#fff; border-bottom:1px solid var(--border); padding:16px 32px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
         .topbar h1 { margin:0; font-size:22px; }
         .topbar p { margin:4px 0 0; color:var(--muted); font-size:13px; }
+        .live-status { display:inline-flex; align-items:center; gap:6px; color:#15803d; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+        .live-status::before { content:''; width:7px; height:7px; border-radius:50%; background:#22c55e; }
         .content { padding:28px 32px; display:flex; flex-direction:column; gap:22px; overflow:auto; }
         .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
         .summary-card { background:#fff; border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow:0 8px 22px rgba(15,23,42,.05); }
@@ -41,8 +43,8 @@
         .net i { background:#e0f2fe; color:#0369a1; }
         .summary-card strong { display:block; font-size:1.45rem; line-height:1.2; }
         .summary-card span { display:block; margin-top:5px; color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
-        .contact-search { background:#fff; border:1px solid var(--border); border-radius:14px; padding:16px 20px; box-shadow:0 8px 22px rgba(15,23,42,.04); }
-        .contact-search-row { display:flex; align-items:center; gap:10px; }
+        .contact-search { background:#fff; border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:0 8px 22px rgba(15,23,42,.04); }
+        .contact-search-row { display:flex; align-items:center; gap:12px; }
         .contact-search-input { flex:1; min-width:200px; border:1px solid var(--border); border-radius:9px; padding:11px 13px 11px 38px; font:inherit; font-size:13px; color:var(--text); }
         .contact-search-input:focus { outline:none; border-color:#0b698b; box-shadow:0 0 0 3px rgba(11,105,139,.12); }
         .contact-search-field { position:relative; flex:1; }
@@ -67,8 +69,12 @@
         .amount-out { color:#b91c1c; font-weight:800; }
         .empty, .error { padding:34px 20px; text-align:center; color:var(--muted); }
         .error { color:#b91c1c; }
+        .copy-ref { border:0; background:#eff6ff; color:#0369a1; border-radius:6px; padding:4px 7px; cursor:pointer; margin-left:6px; }
+        .reference-cell { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; }
+        .status.pending { background:#fef3c7; color:#92400e; }
+        .status.failed { background:#fee2e2; color:#991b1b; }
         @media (max-width:900px) { .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .content { padding:22px 20px; } }
-        @media (max-width:560px) { .topbar { align-items:flex-start; padding:14px; } .topbar h1 { font-size:19px; } .topbar p { line-height:1.4; } .topbar .btn-outline { width:100%; justify-content:center; } .content { padding:16px 12px 24px; } .summary-grid { grid-template-columns:1fr; gap:12px; } .summary-card { padding:16px; } .panel-head { align-items:flex-start; flex-direction:column; } }
+        @media (max-width:560px) { .topbar { align-items:flex-start; padding:14px; } .topbar h1 { font-size:19px; } .topbar p { line-height:1.4; } .topbar .btn-outline { width:100%; justify-content:center; } .content { padding:16px 12px 24px; } .summary-grid { grid-template-columns:1fr; gap:12px; } .summary-card { padding:16px; } .panel-head { align-items:flex-start; flex-direction:column; } .contact-search-row { align-items:stretch; flex-direction:column; } .contact-search-input { width:100%; } }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
     <link rel="stylesheet" href="/assets/css/admin-mobile-cards.css?v=20261004">
@@ -93,7 +99,7 @@
         <div class="sidebar-footer"><div class="admin-avatar">A</div><div class="admin-meta"><div class="admin-role">Administrator</div></div><div class="session-pill">Live</div></div>
     </aside>
     <main class="workspace">
-        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><div><h1>PayPack Ledger</h1><p>Live money-in, money-out, fees, and net balance from PayPack.</p></div></header>
+        <header class="topbar"><button class="mobile-nav-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle navigation"><i class="fa-solid fa-bars"></i></button><div><h1>PayPack Ledger</h1><p>Live PayPack transactions, fees and settlement balance.</p></div><span id="liveStatus" class="live-status" hidden>Live</span></header>
         <section class="content">
             <div class="contact-search">
                 <div class="contact-search-row">
@@ -112,7 +118,7 @@
                 <div class="summary-card fees"><i class="fa-solid fa-receipt"></i><strong id="totalFees">RWF 0</strong><span>Total fees</span></div>
                 <div class="summary-card net"><i class="fa-solid fa-wallet"></i><strong id="netBalance">RWF 0</strong><span>Net balance</span></div>
             </div>
-            <div class="panel"><div class="panel-head"><div><h2>PayPack transactions</h2><p id="transactionMeta">Loading live transactions...</p></div><button class="btn-outline" type="button" onclick="loadLedger()"><i class="fa-solid fa-rotate"></i> Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Amount</th><th>Fee</th><th>Status</th><th>Phone</th><th>Date</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="7" class="empty">Loading PayPack data...</td></tr></tbody></table></div></div>
+            <div class="panel"><div class="panel-head"><div><h2>PayPack transactions</h2><p id="transactionMeta">Loading transactions...</p></div><button class="btn-outline" type="button" onclick="loadLedger()"><i class="fa-solid fa-rotate"></i> Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Amount</th><th>Fee</th><th>Status</th><th>Phone</th><th>Date</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="7" class="empty">Loading transactions...</td></tr></tbody></table></div></div>
         </section>
     </main>
 </div>
@@ -121,27 +127,24 @@
 const money = value => 'RWF ' + Number(value || 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
 const esc = value => String(value ?? '—').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 let ledgerRows = [];
-function isSuccessfulPayment(row) {
-    const status = String(row.status || '').toUpperCase();
-    return (status === 'SUCCESS' || status === 'SUCCESSFUL' || status === 'COMPLETED') && String(row.kind || '').toUpperCase() === 'CASHIN';
-}
-function normalizeReference(value) { return String(value ?? '').trim().replace(/^ref\s*:\s*/i, '').trim(); }
+let ledgerState = 'loading';
+function normalizeReference(value) { return String(value ?? '').trim().replace(/^ref\s*:\s*/i, '').replace(/…/g, '...').trim(); }
 function referenceValue(row) { return String(row?.ref ?? row?.reference ?? '').trim(); }
 function matchesReference(row, value) {
     const term = normalizeReference(value).toLowerCase();
     const reference = referenceValue(row).toLowerCase();
     if (!term || !reference) return false;
-    if (reference === term) return true;
     if (term.includes('...')) {
-        const [prefix, suffix] = term.split('...');
-        return Boolean(prefix && suffix) && reference.startsWith(prefix) && reference.endsWith(suffix);
+        const parts = term.split('...');
+        return parts.length === 2 && Boolean(parts[0] && parts[1]) && reference.startsWith(parts[0]) && reference.endsWith(parts[1]);
     }
-    return reference.includes(term);
+    return reference === term || reference.includes(term);
 }
 function searchReference(value) {
     const term = normalizeReference(value);
     const result = document.getElementById('contactSearchResult');
     const count = document.getElementById('contactSearchCount');
+    if (ledgerState !== 'ready') return;
     if (!term) {
         result.className = 'contact-search-result';
         result.textContent = '';
@@ -150,24 +153,36 @@ function searchReference(value) {
         return;
     }
     const matches = ledgerRows.filter(row => matchesReference(row, term));
-    const payments = matches.filter(isSuccessfulPayment);
-    const totalPaid = payments.reduce((total, row) => total + (Number(row.amount) || 0), 0);
-    count.textContent = `${matches.length} match${matches.length === 1 ? '' : 'es'}`;
-    if (payments.length) {
+    count.textContent = `${matches.length} transaction${matches.length === 1 ? '' : 's'} found`;
+    if (matches.length) {
         result.className = 'contact-search-result show found';
-        result.innerHTML = `<strong>Payment done</strong> ${payments.length} successful payment${payments.length === 1 ? '' : 's'} · Total paid: ${money(totalPaid)}`;
+        result.innerHTML = `<strong>${matches.length} transaction${matches.length === 1 ? '' : 's'} found</strong>`;
     } else {
         result.className = 'contact-search-result show not-found';
-        result.innerHTML = '<strong>No transaction found</strong> No transaction found for this reference.';
+        result.innerHTML = '<strong>No transaction found</strong> Try a full or partial PayPack reference.';
     }
     renderLedgerRows(matches);
 }
 function renderLedgerRows(rows) {
     const body = document.getElementById('ledgerBody');
-    if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="empty">No matching PayPack transactions found.</td></tr>'; return; }
-    body.innerHTML = rows.map(row => { const kind = String(row.kind || 'OTHER').toUpperCase(); const amount = Number(row.amount) || 0; return `<tr><td>${esc(row.ref || row.reference || '—')}</td><td>${esc(kind)}</td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td><span class="status ${String(row.status || '').toLowerCase() === 'successful' ? 'success' : 'other'}">${esc(row.status || '—')}</span></td><td>${esc(row.number || row.phone || '—')}</td><td>${esc(row.created_at || row.createdAt || '—')}</td></tr>`; }).join('');
+    if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="empty" aria-hidden="true"></td></tr>'; return; }
+    body.innerHTML = rows.map(row => {
+        const kind = String(row.kind || 'OTHER').toUpperCase();
+        const amount = Number(row.amount) || 0;
+        const reference = referenceValue(row);
+        const status = String(row.status || '').trim();
+        const statusLabel = status || 'Unknown';
+        const statusClass = status.toLowerCase() === 'successful' || status.toLowerCase() === 'success' || status.toLowerCase() === 'completed' ? 'success' : status.toLowerCase() === 'pending' ? 'pending' : status.toLowerCase() === 'failed' ? 'failed' : 'other';
+        const copy = reference ? `<button class="copy-ref" type="button" title="Copy reference" aria-label="Copy reference" onclick="copyReference('${esc(reference)}')"><i class="fa-regular fa-copy"></i></button>` : '';
+        return `<tr><td class="reference-cell" title="${esc(reference)}">${esc(reference || 'Not provided')}${copy}</td><td><span class="status other">${esc(kind)}</span></td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td><span class="status ${statusClass}">${esc(statusLabel)}</span></td><td>${esc(row.number || row.phone || 'Not provided')}</td><td>${esc(row.created_at || row.createdAt || 'Not provided')}</td></tr>`;
+    }).join('');
 }
+function copyReference(value) { if (navigator.clipboard) navigator.clipboard.writeText(value); }
 function loadLedger() {
+    ledgerState = 'loading';
+    document.getElementById('liveStatus').hidden = true;
+    document.getElementById('transactionMeta').textContent = 'Loading transactions...';
+    document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="7" class="empty">Loading transactions...</td></tr>';
     fetch('/api/admin/paypack-transactions?offset=0&limit=1000').then(response => response.json()).then(data => {
         if (data.error) throw new Error(data.error);
         const rows = Array.isArray(data.transactions) ? data.transactions : [];
@@ -177,14 +192,14 @@ function loadLedger() {
         document.getElementById('totalWithdrawn').textContent = money(withdrawn);
         document.getElementById('totalFees').textContent = money(fees);
         document.getElementById('netBalance').textContent = money(paid - withdrawn - fees);
-        document.getElementById('transactionMeta').textContent = `${rows.length} transaction(s) loaded from PayPack`;
-        const body = document.getElementById('ledgerBody');
-        if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="empty">No PayPack transactions found.</td></tr>'; return; }
         ledgerRows = rows;
+        ledgerState = 'ready';
+        document.getElementById('liveStatus').hidden = false;
+        document.getElementById('transactionMeta').textContent = `${rows.length} transaction${rows.length === 1 ? '' : 's'} loaded from PayPack`;
         renderLedgerRows(rows);
         const search = document.getElementById('contactSearch');
         if (search.value) searchReference(search.value);
-    }).catch(error => { document.getElementById('transactionMeta').textContent = 'PayPack data unavailable'; document.getElementById('ledgerBody').innerHTML = `<tr><td colspan="7" class="error">${esc(error.message || 'Unable to load PayPack data.')}</td></tr>`; });
+    }).catch(error => { ledgerState = 'error'; document.getElementById('transactionMeta').textContent = 'Unable to load PayPack transactions.'; document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="7" class="error">Unable to load PayPack transactions. Try again.</td></tr>'; });
 }
 loadLedger();
 </script>
