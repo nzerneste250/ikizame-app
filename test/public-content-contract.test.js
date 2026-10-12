@@ -99,10 +99,51 @@ test('public loading states stay neutral and clear safely', () => {
   assert.match(home, /statsContainer\) statsContainer\.hidden = !cards\.some/);
   assert.doesNotMatch(home, /Birimo kubarwa\.\.\./);
 
-  assert.doesNotMatch(resources, /Birimo kubarwa\.\.\.<\/span><small[^>]*>ibyiciro/);
-  assert.match(resources, /rulesCount\.setAttribute\('aria-busy', 'false'\)/);
-  assert.match(resources, /signsCount\.setAttribute\('aria-busy', 'false'\)/);
+  for (const id of ['summaryRulesCount', 'summarySignsCount']) {
+    assert.match(resources, new RegExp(`id="${id}"[^>]*aria-busy="true"><\\/span>`));
+    assert.doesNotMatch(resources, new RegExp(`id="${id}"[^>]*><\\/span><small[^>]*>ibyiciro`));
+  }
+  assert.match(resources, /setResourceCountState\(rulesCount, 'Ntibishoboye kuboneka ubu'\)/);
+  assert.match(resources, /setResourceCountState\(signsCount, 'Ntibishoboye kuboneka ubu'\)/);
   assert.match(resources, /Ntibishoboye kuboneka ubu/);
+});
+
+test('raw public HTML keeps loading units out until numeric success', () => {
+  const home = readPage('index.html');
+  const resources = readPage('ifashanyigisho.html');
+
+  assert.doesNotMatch(resources, /Birimo kubarwa/);
+  assert.doesNotMatch(resources, /<small[^>]*>ibyiciro<\/small>/);
+  assert.match(resources, /setResourceCountValue\(rulesCount, rulesTotal\)/);
+  assert.match(resources, /unit\.textContent = 'ibyiciro'/);
+  assert.match(resources, /Number\.isInteger\(value\)/);
+  assert.doesNotMatch(home, /Biratangira\.\.\./);
+  assert.doesNotMatch(home, /Birimo kubarwa\.\.\./);
+});
+
+test('RESOURCE_INITIAL_HTML_NO_LOADING_TEXT=PASS', () => {
+  const resources = readPage('ifashanyigisho.html');
+  assert.doesNotMatch(resources, /Birimo kubarwa/);
+});
+
+test('RESOURCE_INITIAL_HTML_NO_JOINED_UNIT=PASS', () => {
+  const resources = readPage('ifashanyigisho.html');
+  assert.doesNotMatch(resources, /Birimo kubarwa[^<]*<\/span>\s*<small[^>]*>ibyiciro/);
+  assert.doesNotMatch(resources, /<small[^>]*>ibyiciro<\/small>/);
+});
+
+test('RESOURCE_UNIT_ONLY_AFTER_NUMERIC_SUCCESS=PASS', () => {
+  const resources = readPage('ifashanyigisho.html');
+  assert.match(resources, /!Number\.isInteger\(value\) \|\| value < 0/);
+  assert.match(resources, /unit\.textContent = 'ibyiciro'/);
+});
+
+test('HOME_INITIAL_HTML_NO_BIRATANGIRA=PASS', () => {
+  assert.doesNotMatch(readPage('index.html'), /Biratangira\.\.\./);
+});
+
+test('HOME_INITIAL_HTML_NO_RAW_STAT_LOADING=PASS', () => {
+  assert.doesNotMatch(readPage('index.html'), /Birimo kubarwa\.\.\./);
 });
 
 test('public conversion and payment flows remain unchanged', () => {

@@ -57,9 +57,10 @@ test('AMANOTA_NO_FAKE_RESULT_VALUES=PASS', () => {
 
 test('RESOURCE_COUNT_LOADING_CLEAN=PASS', () => {
   const page = read('public/ifashanyigisho.html');
-  assert.match(page, /id="summaryRulesCount"[^>]*aria-busy="true"><\/span><small hidden>ibyiciro<\/small>/);
-  assert.match(page, /id="summarySignsCount"[^>]*aria-busy="true"><\/span><small hidden>ibyiciro<\/small>/);
-  assert.match(page, /querySelector\('#summaryRulesCount \+ small'\)\.hidden = false/);
+  assert.match(page, /id="summaryRulesCount"[^>]*aria-busy="true"><\/span>/);
+  assert.match(page, /id="summarySignsCount"[^>]*aria-busy="true"><\/span>/);
+  assert.doesNotMatch(page, /<small[^>]*>ibyiciro<\/small>/);
+  assert.match(page, /unit\.textContent = 'ibyiciro'/);
   assert.doesNotMatch(page, /Birimo kubarwa\.\.\.<\/span><small[^>]*>ibyiciro/);
 });
 

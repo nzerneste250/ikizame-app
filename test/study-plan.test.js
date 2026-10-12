@@ -98,12 +98,12 @@ test('STUDY_PLAN_GENERATION_UNCHANGED=PASS', () => {
 });
 
 test('RESOURCE_COUNT_NO_FALSE_STATIC_ZERO=PASS', () => {
-  assert.match(pageHtml, /id="summaryRulesCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-busy="true"><\/span><small hidden>ibyiciro<\/small>/);
-  assert.match(pageHtml, /id="summarySignsCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-busy="true"><\/span><small hidden>ibyiciro<\/small>/);
-  assert.match(pageHtml, /rulesCount\.textContent = 'Ntibishoboye kuboneka ubu'/);
-  assert.match(pageHtml, /signsCount\.textContent = 'Ntibishoboye kuboneka ubu'/);
-  assert.match(pageHtml, /summaryRulesCount \+ small/);
-  assert.doesNotMatch(pageHtml, /Birimo kubarwa\.\.\.<\/span><small[^>]*>ibyiciro/);
+  assert.match(pageHtml, /id="summaryRulesCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-busy="true"><\/span>/);
+  assert.match(pageHtml, /id="summarySignsCount"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-busy="true"><\/span>/);
+  assert.match(pageHtml, /setResourceCountState\(rulesCount, 'Ntibishoboye kuboneka ubu'\)/);
+  assert.match(pageHtml, /setResourceCountState\(signsCount, 'Ntibishoboye kuboneka ubu'\)/);
+  assert.match(pageHtml, /setResourceCountValue\(rulesCount, rulesTotal\)/);
+  assert.doesNotMatch(pageHtml, /<small[^>]*>ibyiciro<\/small>/);
 });
 
 test('ROAD_SIGN_SEMANTIC_CONTENT=PASS', () => {

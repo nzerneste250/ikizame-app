@@ -571,11 +571,11 @@
     <div class="summary-strip">
         <div class="summary-stat">
             <span class="label">Amategeko y’umuhanda</span>
-            <span id="summaryRulesCount" role="status" aria-live="polite" aria-atomic="true" aria-busy="true"></span><small hidden>ibyiciro</small>
+            <span id="summaryRulesCount" role="status" aria-live="polite" aria-atomic="true" aria-busy="true"></span>
         </div>
         <div class="summary-stat">
             <span class="label">Ibimenyetso byo mu muhanda</span>
-            <span id="summarySignsCount" role="status" aria-live="polite" aria-atomic="true" aria-busy="true"></span><small hidden>ibyiciro</small>
+            <span id="summarySignsCount" role="status" aria-live="polite" aria-atomic="true" aria-busy="true"></span>
         </div>
         <div class="summary-stat">
             <span class="label">Iby’ingenzi byo kwiga</span>
@@ -898,8 +898,8 @@ function loadDocs() {
             var rulesCount = document.getElementById('summaryRulesCount');
             var signsCount = document.getElementById('summarySignsCount');
             if (!docs || docs.length === 0) {
-                if (rulesCount) { rulesCount.textContent = 'Nta makuru ahari ubu'; rulesCount.setAttribute('aria-busy', 'false'); }
-                if (signsCount) { signsCount.textContent = 'Nta makuru ahari ubu'; signsCount.setAttribute('aria-busy', 'false'); }
+                setResourceCountState(rulesCount, 'Nta makuru ahari ubu');
+                setResourceCountState(signsCount, 'Nta makuru ahari ubu');
                 grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta mfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwa kuri uru rupapuro vuba. Ongera uze nyuma.</p></div>';
                 badge.textContent = 'Nta zihari ubu';
                 return;
@@ -914,11 +914,32 @@ function loadDocs() {
             var badge = document.getElementById('docCountBadge');
             var rulesCount = document.getElementById('summaryRulesCount');
             var signsCount = document.getElementById('summarySignsCount');
-            if (rulesCount) { rulesCount.textContent = 'Ntibishoboye kuboneka ubu'; rulesCount.setAttribute('aria-busy', 'false'); }
-            if (signsCount) { signsCount.textContent = 'Ntibishoboye kuboneka ubu'; signsCount.setAttribute('aria-busy', 'false'); }
+            setResourceCountState(rulesCount, 'Ntibishoboye kuboneka ubu');
+            setResourceCountState(signsCount, 'Ntibishoboye kuboneka ubu');
             grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habaye ikibazo</h3><p>Gushaka imfashanyigisho ntibyashobotse. Ongera ugerageze.</p><button type="button" onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera ugerageze</button></div>';
             badge.textContent = 'Habaye ikibazo';
         });
+}
+
+function setResourceCountState(element, value) {
+    if (!element) return;
+    var unit = element.nextElementSibling;
+    if (unit && unit.matches('small[data-resource-count-unit]')) unit.remove();
+    element.textContent = value;
+    element.setAttribute('aria-busy', 'false');
+}
+
+function setResourceCountValue(element, value) {
+    if (!element || !Number.isInteger(value) || value < 0) return;
+    var unit = element.nextElementSibling;
+    if (!unit || !unit.matches('small[data-resource-count-unit]')) {
+        unit = document.createElement('small');
+        unit.dataset.resourceCountUnit = 'true';
+        element.insertAdjacentElement('afterend', unit);
+    }
+    element.textContent = String(value);
+    unit.textContent = 'ibyiciro';
+    element.setAttribute('aria-busy', 'false');
 }
 
 function renderDocs() {
@@ -941,12 +962,8 @@ function renderDocs() {
     var signsTotal = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-signs'; }).length;
     var rulesCount = document.getElementById('summaryRulesCount');
     var signsCount = document.getElementById('summarySignsCount');
-    rulesCount.textContent = rulesTotal;
-    signsCount.textContent = signsTotal;
-    rulesCount.setAttribute('aria-busy', 'false');
-    signsCount.setAttribute('aria-busy', 'false');
-    document.querySelector('#summaryRulesCount + small').hidden = false;
-    document.querySelector('#summarySignsCount + small').hidden = false;
+    setResourceCountValue(rulesCount, rulesTotal);
+    setResourceCountValue(signsCount, signsTotal);
     grid.innerHTML = filtered.length
         ? filtered.map(function(doc) { return buildCard(doc, allDocs.indexOf(doc)); }).join('')
         : '<div class="no-results"><i class="fa-solid fa-magnifying-glass"></i><p>Nta nyandiko zihuye n’icyo washakishije muri iki cyiciro.</p></div>';
