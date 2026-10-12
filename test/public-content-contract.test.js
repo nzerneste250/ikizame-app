@@ -131,6 +131,37 @@ test('public loading states stay neutral and clear safely', () => {
   assert.match(resources, /Ntibishoboye kuboneka ubu/);
 });
 
+test('exam flow pages share the polished responsive design system without changing behavior', () => {
+  const pages = ['exam.html', 'exam-score.html', 'exam-result.html'].map(readPage);
+  const [exam, score, result] = pages;
+  for (const page of pages) {
+    assert.match(page, /#0F2747/i, 'shared navy palette');
+    assert.match(page, /#1E6BFF/i, 'shared blue palette');
+    assert.match(page, /#F5F8FC/i, 'shared soft background');
+    assert.match(page, /border-radius:\s*(?:22px|20px)/i, 'rounded card system');
+    assert.match(page, /:focus-visible/, 'visible keyboard focus');
+    assert.match(page, /prefers-reduced-motion/, 'reduced-motion support');
+    assert.doesNotMatch(page, /maximum-scale\s*=|user-scalable\s*=/i, 'mobile zoom remains available');
+  }
+  assert.match(exam, /\.prog-dot\.answered/);
+  assert.match(exam, /\.prog-dot\.current:not\(\.answered\)/);
+  assert.match(exam, /object-fit:\s*contain/);
+  assert.match(exam, /grid-template-columns:\s*1fr/);
+  assert.match(exam, /id="examCountdown"/);
+  assert.match(exam, /id="prevBtn"/);
+  assert.match(exam, /id="nextBtn"/);
+  assert.match(score, /id="scoreFill"/);
+  assert.match(score, /id="verdictText"/);
+  assert.match(score, /window\.location\.href='\/exam-result'/);
+  assert.match(result, /id="scoreValue"/);
+  assert.match(result, /id="statCorrect"/);
+  assert.match(result, /id="statWrong"/);
+  assert.match(result, /id="statSkip"/);
+  assert.match(result, /class="options-list\$\{isImgOpts \? ' img-grid' : ''\}"/);
+  assert.match(result, /object-fit:\s*contain/);
+  assert.match(result, /id="backToTopBtn"/);
+});
+
 test('raw public HTML keeps loading units out until numeric success', () => {
   const home = readPage('index.html');
   const resources = readPage('ifashanyigisho.html');
