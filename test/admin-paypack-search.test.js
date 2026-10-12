@@ -131,21 +131,52 @@ test('PAYPACK_STATUS_LOOKUP_NO_MUTATION=PASS', () => {
   assert.doesNotMatch(adminRoutes, /INSERT INTO payment_transactions.*paypack-transaction-status/);
 });
 
-test('PAYPACK_STATUS_NO_BULK_LOOKUPS=PASS', () => {
+test('PAYPACK_STATUS_EXACT_SEARCH_PRIORITY=PASS', () => {
   assert.match(page, /matches\.length === 1/);
   assert.match(page, /checkTransactionStatus\(referenceValue\(matches\[0\]\)/);
-  assert.doesNotMatch(page, /rows\.forEach\(.*checkTransactionStatus/s);
+  assert.match(page, /statusQueue\.unshift/);
 });
 
-test('PAYPACK_STATUS_BOUNDED_SCHEDULER=PASS', () => {
+test('PAYPACK_FULL_LEDGER_AUTO_STATUS=PASS', () => {
   assert.match(page, /STATUS_REFRESH_INTERVAL_MS = 60000/);
   assert.match(page, /STATUS_MAX_CONCURRENT = 3/);
-  assert.match(page, /STATUS_INITIAL_VISIBLE_LIMIT = 8/);
+  assert.match(page, /STATUS_BATCH_SIZE = 6/);
+  assert.match(page, /STATUS_BATCH_DELAY_MS = 1500/);
   assert.match(page, /STATUS_BACKOFF_MS = \[60000, 120000, 300000\]/);
-  assert.match(page, /slice\(0, STATUS_INITIAL_VISIBLE_LIMIT\)/);
-  assert.match(page, /statusInFlight < STATUS_MAX_CONCURRENT/);
+  assert.match(page, /ledgerRows\.filter\(row => eligibleStatus\(row\)\)/);
+  assert.match(page, /statusInFlight >= STATUS_MAX_CONCURRENT/);
+  assert.match(page, /setTimeout\(\(\) => \{ statusBatchTimer = null; pumpStatusQueue\(\); \}, STATUS_BATCH_DELAY_MS\)/);
   assert.match(page, /document\.hidden/);
-  assert.match(page, /startStatusPolling\(\)/);
+  assert.match(page, /startStatusQueue\(\)/);
+});
+
+test('PAYPACK_STATUS_PROGRESS_AND_CHECK_ALL=PASS', () => {
+  assert.match(page, /id="statusProgress"/);
+  assert.match(page, /Statuses checked:/);
+  assert.match(page, /Checking transaction statuses:/);
+  assert.match(page, /id="checkAllStatusesBtn"/);
+  assert.match(page, /startStatusQueue\(true\)/);
+});
+
+test('PAYPACK_STATUS_MAP_SURVIVES_FILTERING_AND_REFRESH=PASS', () => {
+  assert.match(page, /statusByRef = new Map/);
+  assert.match(page, /statusByRef\.set\(reference/);
+  assert.match(page, /restoreKnownStatuses\(rows\)/);
+});
+
+test('PAYPACK_STATUS_TERMINAL_PENDING_BACKOFF=PASS', () => {
+  assert.match(page, /isTerminalStatus\(row\.status\)/);
+  assert.match(page, /\['pending', 'status unavailable'\]\.includes/);
+  assert.match(page, /STATUS_BACKOFF_MS\[retry\]/);
+  assert.match(page, /statusRateLimitedUntil/);
+  assert.match(page, /statusCode === 429/);
+});
+
+test('PAYPACK_STATUS_LOGOUT_AND_UNAUTHORIZED_STOP=PASS', () => {
+  assert.match(page, /statusControllers\.forEach\(controller => controller\.abort\(\)\)/);
+  assert.match(page, /statusCode === 401 \|\| statusCode === 403/);
+  assert.match(page, /adminPaypackSessionExpired/);
+  assert.match(page, /stopStatusPolling\(\); window\.location\.replace\(LOGIN_URL\)/);
 });
 
 test('ADMIN_LOGIN_INACTIVE_NOTICE_ALLOWLISTED_AND_IN_CARD=PASS', () => {

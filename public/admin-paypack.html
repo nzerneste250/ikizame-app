@@ -69,7 +69,7 @@
         .amount-out { color:#b91c1c; font-weight:800; }
         .empty, .error { padding:34px 20px; text-align:center; color:var(--muted); }
         .error { color:#b91c1c; }
-        .copy-ref { display:inline-flex; align-items:center; gap:5px; border:0; background:#eff6ff; color:#0369a1; border-radius:6px; padding:4px 7px; cursor:pointer; margin-left:6px; font:inherit; font-size:11px; font-weight:700; }
+        .copy-ref { display:inline-flex; align-items:center; gap:5px; border:0; background:#eff6ff; color:#0369a1; border-radius:6px; padding:4px 7px; cursor:pointer; margin-left:8px; font:inherit; font-size:11px; font-weight:700; }
         .copy-ref.copied { background:#dcfce7; color:#166534; }
         .copy-ref.failed { background:#fee2e2; color:#991b1b; }
         .reference-cell { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; }
@@ -77,10 +77,14 @@
         .status.failed { background:#fee2e2; color:#991b1b; }
         .status.checking { background:#e0f2fe; color:#075985; }
         .status.unavailable { background:#f1f5f9; color:#475569; }
-        .status-action { margin-left:7px; border:1px solid #cbd5e1; background:#fff; color:#334155; border-radius:6px; padding:4px 7px; cursor:pointer; font:inherit; font-size:10px; font-weight:700; }
+        .status-cell { display:flex; align-items:center; flex-wrap:wrap; gap:7px; }
+        .status-action { margin-left:0; border:1px solid #cbd5e1; background:#fff; color:#334155; border-radius:6px; padding:4px 7px; cursor:pointer; font:inherit; font-size:10px; font-weight:700; }
         .status-action:disabled { opacity:.65; cursor:wait; }
         @media (max-width:900px) { .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .content { padding:22px 20px; } }
-        @media (max-width:560px) { .topbar { align-items:flex-start; padding:14px; } .topbar h1 { font-size:19px; } .topbar p { line-height:1.4; } .topbar .btn-outline { width:100%; justify-content:center; } .content { padding:16px 12px 24px; } .summary-grid { grid-template-columns:1fr; gap:12px; } .summary-card { padding:16px; } .panel-head { align-items:flex-start; flex-direction:column; } .contact-search-row { align-items:stretch; flex-direction:column; } .contact-search-input { width:100%; } }
+        .status-progress { margin-top:7px; color:var(--muted); font-size:11px; line-height:1.4; }
+        .status-summary { margin-top:4px; color:var(--muted); font-size:10px; }
+        .status-controls { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+        @media (max-width:560px) { .topbar { align-items:flex-start; padding:14px; } .topbar h1 { font-size:19px; } .topbar p { line-height:1.4; } .topbar .btn-outline { width:100%; justify-content:center; } .content { padding:16px 12px 24px; } .summary-grid { grid-template-columns:1fr; gap:12px; } .summary-card { padding:16px; } .panel-head { align-items:flex-start; flex-direction:column; } .contact-search-row { align-items:stretch; flex-direction:column; } .contact-search-input { width:100%; } .status-controls { width:100%; } .status-controls button { flex:1; } }
     </style>
     <link rel="stylesheet" href="/assets/css/admin-theme.css?v=20261001">
     <link rel="stylesheet" href="/assets/css/admin-mobile-cards.css?v=20261004">
@@ -124,7 +128,7 @@
                 <div class="summary-card fees"><i class="fa-solid fa-receipt"></i><strong id="totalFees">RWF 0</strong><span>Total fees</span></div>
                 <div class="summary-card net"><i class="fa-solid fa-wallet"></i><strong id="netBalance">RWF 0</strong><span>Net balance</span></div>
             </div>
-            <div class="panel"><div class="panel-head"><div><h2>PayPack transactions</h2><p id="transactionMeta">Loading transactions...</p></div><button class="btn-outline" type="button" onclick="loadLedger()"><i class="fa-solid fa-rotate"></i> Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Amount</th><th>Fee</th><th>Status</th><th>Phone</th><th>Date</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="7" class="empty">Loading transactions...</td></tr></tbody></table></div></div>
+            <div class="panel"><div class="panel-head"><div><h2>PayPack transactions</h2><p id="transactionMeta">Loading transactions...</p><div class="status-progress" id="statusProgress" aria-live="polite"></div><div class="status-summary" id="statusSummary"></div></div><div class="status-controls"><button class="btn-outline" id="checkAllStatusesBtn" type="button" onclick="startStatusQueue(true)"><i class="fa-solid fa-arrows-rotate"></i> <span>Check all statuses</span></button><button class="btn-outline" type="button" onclick="loadLedger()"><i class="fa-solid fa-rotate"></i> Refresh</button></div></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Amount</th><th>Fee</th><th>Status</th><th>Phone</th><th>Date</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="7" class="empty">Loading transactions...</td></tr></tbody></table></div></div>
         </section>
     </main>
 </div>
@@ -136,11 +140,16 @@ let ledgerRows = [];
 let ledgerState = 'loading';
 const STATUS_REFRESH_INTERVAL_MS = 60000;
 const STATUS_MAX_CONCURRENT = 3;
-const STATUS_INITIAL_VISIBLE_LIMIT = 8;
+const STATUS_BATCH_SIZE = 6;
+const STATUS_BATCH_DELAY_MS = 1500;
 const STATUS_BACKOFF_MS = [60000, 120000, 300000];
 let statusQueue = [];
 let statusInFlight = 0;
 let statusRefreshTimer = null;
+let statusBatchTimer = null;
+let statusByRef = new Map();
+let statusControllers = new Set();
+let statusRateLimitedUntil = 0;
 let statusStopped = false;
 function normalizeReference(value) { return String(value ?? '').trim().replace(/^ref\s*:\s*/i, '').replace(/…/g, '...').trim(); }
 function referenceValue(row) { return String(row?.ref ?? row?.reference ?? '').trim(); }
@@ -201,45 +210,91 @@ function eligibleStatus(row, now = Date.now()) {
     if (isTerminalStatus(status) || status === 'checking') return false;
     return !row._statusNextAt || row._statusNextAt <= now;
 }
+function updateStatusProgress() {
+    const total = ledgerRows.length;
+    const checked = ledgerRows.filter(row => String(row.status || '').trim() && String(row.status).toLowerCase() !== 'not checked' && String(row.status).toLowerCase() !== 'checking').length;
+    const unavailable = ledgerRows.filter(row => String(row.status || '').toLowerCase() === 'status unavailable').length;
+    const checking = ledgerRows.filter(row => String(row.status || '').toLowerCase() === 'checking').length;
+    const progress = document.getElementById('statusProgress');
+    const summary = document.getElementById('statusSummary');
+    if (progress) progress.textContent = total ? (checked === total ? `Statuses checked: ${checked} / ${total}${unavailable ? ` · ${unavailable} unavailable` : ''}` : `Checking transaction statuses: ${checked} / ${total}`) : '';
+    if (summary) {
+        const counts = {};
+        ledgerRows.forEach(row => { const status = String(row.status || '').trim().toLowerCase(); if (status && status !== 'not checked') counts[status] = (counts[status] || 0) + 1; });
+        summary.textContent = `Successful: ${counts.successful || counts.success || 0} · Pending: ${counts.pending || 0} · Failed: ${counts.failed || counts.failure || 0} · Unavailable: ${unavailable} · Checking: ${checking}`;
+    }
+    const button = document.getElementById('checkAllStatusesBtn');
+    if (button) {
+        const label = button.querySelector('span');
+        const running = statusInFlight > 0 || statusQueue.length > 0;
+        if (label) label.textContent = running ? 'Checking statuses...' : (checked === total && total ? 'Statuses checked' : 'Check all statuses');
+    }
+}
+function restoreKnownStatuses(rows) {
+    rows.forEach(row => {
+        const ref = referenceValue(row);
+        const known = statusByRef.get(ref);
+        if (known) Object.assign(row, known);
+    });
+}
 function queueStatusCheck(reference, immediate = false) {
     if (statusStopped || document.hidden) return;
     const row = ledgerRows.find(item => referenceValue(item) === reference);
-    if (!row || isTerminalStatus(row.status) || row.status === 'checking' || (!immediate && !eligibleStatus(row))) return;
+    if (!row || row.status === 'checking' || (!immediate && (isTerminalStatus(row.status) || !eligibleStatus(row)))) return;
     if (statusQueue.some(item => item.row === row) || row.status === 'checking') return;
-    if (!immediate && statusQueue.length >= STATUS_INITIAL_VISIBLE_LIMIT) return;
     if (immediate) statusQueue.unshift({ row, immediate });
     else statusQueue.push({ row, immediate });
-    pumpStatusQueue();
+    if (immediate) pumpStatusQueue();
 }
 function pumpStatusQueue() {
-    if (statusStopped || document.hidden) return;
-    while (statusInFlight < STATUS_MAX_CONCURRENT && statusQueue.length) {
-        const item = statusQueue.shift();
+    if (statusStopped || document.hidden || statusBatchTimer || !statusQueue.length || Date.now() < statusRateLimitedUntil) return;
+    const batch = statusQueue.splice(0, STATUS_BATCH_SIZE);
+    batch.forEach(item => {
+        if (statusInFlight >= STATUS_MAX_CONCURRENT) { statusQueue.unshift(item); return; }
         const row = item.row;
         const reference = referenceValue(row);
         statusInFlight += 1;
         row.status = 'checking';
         renderLedgerRows(visibleLedgerRows());
-        fetch(`/api/admin/paypack-transaction-status?ref=${encodeURIComponent(reference)}`)
-        .then(response => response.json().then(data => ({ ok: response.ok, data })))
-        .then(({ ok, data }) => {
-            if (ok && data.status) { row.status = data.status; row._statusRetries = 0; row._statusNextAt = 0; }
-            else { row.status = 'Status unavailable'; const retry = row._statusRetries || 0; row._statusNextAt = Date.now() + STATUS_BACKOFF_MS[retry]; row._statusRetries = Math.min(retry + 1, STATUS_BACKOFF_MS.length - 1); }
+        updateStatusProgress();
+        const controller = new AbortController();
+        statusControllers.add(controller);
+        fetch(`/api/admin/paypack-transaction-status?ref=${encodeURIComponent(reference)}`, { credentials: 'same-origin', signal: controller.signal })
+        .then(response => response.json().then(data => ({ ok: response.ok, statusCode: response.status, data })))
+        .then(({ ok, statusCode, data }) => {
+            if (statusCode === 401 || statusCode === 403) throw Object.assign(new Error('Session expired'), { unauthorized: true });
+            if (statusCode === 429) { statusRateLimitedUntil = Date.now() + STATUS_BATCH_DELAY_MS * 4; setTimeout(pumpStatusQueue, STATUS_BATCH_DELAY_MS * 4); throw Object.assign(new Error('Rate limited'), { rateLimited: true }); }
+            if (ok && data.status) {
+                row.status = data.status;
+                if (['pending', 'status unavailable'].includes(String(data.status).trim().toLowerCase())) scheduleRetry(row);
+                else { row._statusRetries = 0; row._statusNextAt = 0; }
+            }
+            else { row.status = 'Status unavailable'; scheduleRetry(row); }
         })
-        .catch(() => { row.status = 'Status unavailable'; const retry = row._statusRetries || 0; row._statusNextAt = Date.now() + STATUS_BACKOFF_MS[retry]; row._statusRetries = Math.min(retry + 1, STATUS_BACKOFF_MS.length - 1); })
-        .finally(() => { statusInFlight -= 1; renderLedgerRows(visibleLedgerRows()); pumpStatusQueue(); });
-    }
+        .catch(error => { if (error.unauthorized && window.adminPaypackSessionExpired) window.adminPaypackSessionExpired(); else if (error.rateLimited) { row.status = ''; statusQueue.unshift({ row, immediate: false }); } else if (error.name !== 'AbortError') { row.status = 'Status unavailable'; scheduleRetry(row); } })
+        .finally(() => { statusControllers.delete(controller); statusInFlight -= 1; statusByRef.set(reference, { status: row.status, _statusRetries: row._statusRetries, _statusNextAt: row._statusNextAt }); renderLedgerRows(visibleLedgerRows()); updateStatusProgress(); if (!statusQueue.length) updateStatusProgress(); });
+    });
+    if (statusQueue.length) statusBatchTimer = setTimeout(() => { statusBatchTimer = null; pumpStatusQueue(); }, STATUS_BATCH_DELAY_MS);
 }
-function scheduleVisibleStatusChecks() {
+function scheduleRetry(row) {
+    const retry = row._statusRetries || 0;
+    row._statusNextAt = Date.now() + STATUS_BACKOFF_MS[retry];
+    row._statusRetries = Math.min(retry + 1, STATUS_BACKOFF_MS.length - 1);
+    if (!statusRefreshTimer) statusRefreshTimer = setTimeout(() => { statusRefreshTimer = null; startStatusQueue(); }, STATUS_BACKOFF_MS[retry]);
+}
+function scheduleStatusChecks() {
     if (statusStopped || document.hidden || ledgerState !== 'ready') return;
-    visibleLedgerRows().filter(row => eligibleStatus(row)).slice(0, STATUS_INITIAL_VISIBLE_LIMIT).forEach(row => queueStatusCheck(referenceValue(row)));
+    ledgerRows.filter(row => eligibleStatus(row)).forEach(row => queueStatusCheck(referenceValue(row)));
 }
-function startStatusPolling() {
+function startStatusQueue(manual = false) {
+    if (statusStopped || document.hidden || ledgerState !== 'ready') return;
+    if (manual) ledgerRows.forEach(row => { if (!isTerminalStatus(row.status)) row._statusNextAt = 0; });
+    scheduleStatusChecks();
     clearInterval(statusRefreshTimer);
-    statusRefreshTimer = setInterval(scheduleVisibleStatusChecks, STATUS_REFRESH_INTERVAL_MS);
-    scheduleVisibleStatusChecks();
+    statusRefreshTimer = setInterval(scheduleStatusChecks, STATUS_REFRESH_INTERVAL_MS);
+    pumpStatusQueue();
 }
-function checkTransactionStatus(reference) { queueStatusCheck(reference, true); }
+function checkTransactionStatus(reference) { queueStatusCheck(reference, true); pumpStatusQueue(); }
 function renderLedgerRows(rows) {
     const body = document.getElementById('ledgerBody');
     if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="empty" aria-hidden="true"></td></tr>'; return; }
@@ -250,11 +305,11 @@ function renderLedgerRows(rows) {
         const status = String(row.status || '').trim();
         const [statusLabel, statusClass] = statusPresentation(status);
         const copy = reference ? `<button class="copy-ref" type="button" title="Copy reference" aria-label="Copy reference" aria-live="polite" onclick="copyReference(this, '${esc(reference)}')"><i class="fa-regular fa-copy" aria-hidden="true"></i><span class="copy-label">Copy reference</span></button>` : '';
-        const statusAction = reference && !status ? `<button class="status-action" type="button" onclick="checkTransactionStatus('${esc(reference)}', this)">Check status</button>` : '';
+        const statusAction = reference && !isTerminalStatus(status) ? `<button class="status-action" type="button" onclick="checkTransactionStatus('${esc(reference)}', this)">${status ? 'Refresh status' : 'Check status'}</button>` : '';
         const phone = String(row.client || '').trim() || 'Not provided';
         const timestamp = String(row.timestamp || '').trim();
         const date = timestamp ? formatPaypackTimestamp(timestamp) : 'Not provided';
-        return `<tr><td class="reference-cell" title="${esc(reference)}">${esc(reference || 'Not provided')}${copy}</td><td><span class="status other">${esc(kind)}</span></td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td title="${status ? '' : 'Status was not included in the PayPack list response'}"><span class="status ${statusClass}">${esc(statusLabel)}</span>${statusAction}</td><td title="${phone === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(phone)}</td><td title="${date === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(date)}</td></tr>`;
+        return `<tr><td class="reference-cell" title="${esc(reference)}">${esc(reference || 'Not provided')}${copy}</td><td><span class="status other">${esc(kind)}</span></td><td class="${kind === 'CASHOUT' ? 'amount-out' : 'amount-in'}">${kind === 'CASHOUT' ? '-' : '+'}${money(amount)}</td><td>${money(row.fee)}</td><td title="${status ? '' : 'Status was not included in the PayPack list response'}"><span class="status-cell"><span class="status ${statusClass}">${esc(statusLabel)}</span>${statusAction}</span></td><td title="${phone === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(phone)}</td><td title="${date === 'Not provided' ? 'Not supplied by PayPack' : ''}">${esc(date)}</td></tr>`;
     }).join('');
 }
 function formatPaypackTimestamp(value) {
@@ -303,6 +358,12 @@ async function copyReference(button, value) {
     }, 1800);
 }
 function loadLedger() {
+    statusStopped = false;
+    statusQueue = [];
+    clearTimeout(statusBatchTimer);
+    statusBatchTimer = null;
+    statusControllers.forEach(controller => controller.abort());
+    statusControllers.clear();
     ledgerState = 'loading';
     document.getElementById('liveStatus').hidden = true;
     document.getElementById('transactionMeta').textContent = 'Loading transactions...';
@@ -316,14 +377,16 @@ function loadLedger() {
         document.getElementById('totalWithdrawn').textContent = money(withdrawn);
         document.getElementById('totalFees').textContent = money(fees);
         document.getElementById('netBalance').textContent = money(paid - withdrawn - fees);
+        restoreKnownStatuses(rows);
         ledgerRows = rows;
         ledgerState = 'ready';
         document.getElementById('liveStatus').hidden = false;
         document.getElementById('transactionMeta').textContent = `${rows.length} transaction${rows.length === 1 ? '' : 's'} loaded from PayPack`;
         renderLedgerRows(rows);
+        updateStatusProgress();
         const search = document.getElementById('contactSearch');
         if (search.value) searchReference(search.value);
-        startStatusPolling();
+        startStatusQueue();
     }).catch(error => { ledgerState = 'error'; document.getElementById('transactionMeta').textContent = 'Unable to load PayPack transactions.'; document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="7" class="error">Unable to load PayPack transactions. Try again.</td></tr>'; });
 }
 loadLedger();
@@ -335,7 +398,8 @@ loadLedger();
     let lastActivity = Date.now();
     let timer = null;
     let logoutStarted = false;
-    function stopStatusPolling() { statusStopped = true; clearInterval(statusRefreshTimer); statusQueue = []; }
+    function stopStatusPolling() { statusStopped = true; clearInterval(statusRefreshTimer); clearTimeout(statusBatchTimer); statusQueue = []; statusControllers.forEach(controller => controller.abort()); statusControllers.clear(); }
+    window.adminPaypackSessionExpired = function () { stopStatusPolling(); window.location.replace('/admin-login?reason=inactive'); };
     function broadcastLogout() { try { localStorage.setItem('ikizame-admin-paypack-logout', String(Date.now())); } catch (_) {} }
     function logout() {
         if (logoutStarted) return;
@@ -351,8 +415,8 @@ loadLedger();
     function throttledActivity() { const now = Date.now(); if (now - lastEventActivity < 1000) return; lastEventActivity = now; activity(); }
     document.addEventListener('mousemove', throttledActivity, { passive: true });
     document.addEventListener('scroll', throttledActivity, { passive: true });
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { checkIdle(); scheduleVisibleStatusChecks(); } });
-    window.addEventListener('storage', event => { if (event.key === 'ikizame-admin-paypack-logout') window.location.replace(LOGIN_URL); });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { checkIdle(); startStatusQueue(); } });
+    window.addEventListener('storage', event => { if (event.key === 'ikizame-admin-paypack-logout') { stopStatusPolling(); window.location.replace(LOGIN_URL); } });
     activity();
 })();
 </script>
