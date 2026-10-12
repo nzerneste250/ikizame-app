@@ -698,7 +698,6 @@
                 }
 
                 try {
-                    console.log(`[Review Router] Initializing attempt verification payload for ID: ${attemptId}`);
                     const response = await fetch(`/api/amanota/review/${attemptId}`);
                     if (!response.ok) { throw new Error('Failed to retrieve attempt token snapshot'); }
 
@@ -711,7 +710,6 @@
                     sessionStorage.setItem('shuffledQuestionsReview', JSON.stringify(res.questions));
                     sessionStorage.setItem('studentName', res.studentName);
                     sessionStorage.setItem('phoneNumber', res.phoneNumber);
-                  console.log("[Review Router] State tokens successfully hydrated. Navigating straight to review template...");
                     window.location.href = '/exam-result';
 
                 } catch (err) {

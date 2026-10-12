@@ -571,11 +571,11 @@
     <div class="summary-strip">
         <div class="summary-stat">
             <span class="label">Amategeko y’umuhanda</span>
-            <span id="summaryRulesCount" role="status" aria-live="polite" aria-atomic="true">Birimo kubarwa...</span><small hidden>ibyiciro</small>
+            <span id="summaryRulesCount" role="status" aria-live="polite" aria-atomic="true" aria-busy="true"></span><small hidden>ibyiciro</small>
         </div>
         <div class="summary-stat">
             <span class="label">Ibimenyetso byo mu muhanda</span>
-            <span id="summarySignsCount" role="status" aria-live="polite" aria-atomic="true">Birimo kubarwa...</span><small hidden>ibyiciro</small>
+            <span id="summarySignsCount" role="status" aria-live="polite" aria-atomic="true" aria-busy="true"></span><small hidden>ibyiciro</small>
         </div>
         <div class="summary-stat">
             <span class="label">Iby’ingenzi byo kwiga</span>
@@ -898,8 +898,8 @@ function loadDocs() {
             var rulesCount = document.getElementById('summaryRulesCount');
             var signsCount = document.getElementById('summarySignsCount');
             if (!docs || docs.length === 0) {
-                if (rulesCount) rulesCount.textContent = 'Nta makuru ahari ubu';
-                if (signsCount) signsCount.textContent = 'Nta makuru ahari ubu';
+                if (rulesCount) { rulesCount.textContent = 'Nta makuru ahari ubu'; rulesCount.setAttribute('aria-busy', 'false'); }
+                if (signsCount) { signsCount.textContent = 'Nta makuru ahari ubu'; signsCount.setAttribute('aria-busy', 'false'); }
                 grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-folder-open"></i><h3>Nta mfashanyigisho zihari ubu</h3><p>Imfashanyigisho zizashyirwa kuri uru rupapuro vuba. Ongera uze nyuma.</p></div>';
                 badge.textContent = 'Nta zihari ubu';
                 return;
@@ -914,8 +914,8 @@ function loadDocs() {
             var badge = document.getElementById('docCountBadge');
             var rulesCount = document.getElementById('summaryRulesCount');
             var signsCount = document.getElementById('summarySignsCount');
-            if (rulesCount) rulesCount.textContent = 'Ntibishoboye kuboneka ubu';
-            if (signsCount) signsCount.textContent = 'Ntibishoboye kuboneka ubu';
+            if (rulesCount) { rulesCount.textContent = 'Ntibishoboye kuboneka ubu'; rulesCount.setAttribute('aria-busy', 'false'); }
+            if (signsCount) { signsCount.textContent = 'Ntibishoboye kuboneka ubu'; signsCount.setAttribute('aria-busy', 'false'); }
             grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i><h3>Habaye ikibazo</h3><p>Gushaka imfashanyigisho ntibyashobotse. Ongera ugerageze.</p><button type="button" onclick="loadDocs()" style="margin-top:14px;background:#0b698b;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Ongera ugerageze</button></div>';
             badge.textContent = 'Habaye ikibazo';
         });
@@ -939,8 +939,12 @@ function renderDocs() {
     badge.textContent = filtered.length ? filtered.length + (term ? ' ibisubizo' : ' inyandiko') : 'Nta bisubizo';
     var rulesTotal = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-rules'; }).length;
     var signsTotal = allDocs.filter(function(doc) { return getDocCategory(doc) === 'road-signs'; }).length;
-    document.getElementById('summaryRulesCount').textContent = rulesTotal;
-    document.getElementById('summarySignsCount').textContent = signsTotal;
+    var rulesCount = document.getElementById('summaryRulesCount');
+    var signsCount = document.getElementById('summarySignsCount');
+    rulesCount.textContent = rulesTotal;
+    signsCount.textContent = signsTotal;
+    rulesCount.setAttribute('aria-busy', 'false');
+    signsCount.setAttribute('aria-busy', 'false');
     document.querySelector('#summaryRulesCount + small').hidden = false;
     document.querySelector('#summarySignsCount + small').hidden = false;
     grid.innerHTML = filtered.length

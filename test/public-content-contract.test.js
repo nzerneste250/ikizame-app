@@ -87,6 +87,34 @@ test('public initial states are neutral and accessible', () => {
   assert.doesNotMatch(schoolAuth, /<button[^>]*class="pw-eye"(?![^>]*aria-label=)/);
 });
 
+test('public loading states stay neutral and clear safely', () => {
+  const home = readPage('index.html');
+  const resources = readPage('ifashanyigisho.html');
+
+  assert.doesNotMatch(home, /id="ikizameLoaderStatus"|Biratangira\.\.\./);
+  assert.match(home, /data-stat="totalUsers"[^>]*aria-busy="true"><\/span>/);
+  assert.match(home, /data-stat="passRate"[^>]*aria-busy="true"><\/span>/);
+  assert.match(home, /data-stat="completedExams"[^>]*aria-busy="true"><\/span>/);
+  assert.match(home, /element\.setAttribute\('aria-busy', 'false'\)/);
+  assert.match(home, /statsContainer\) statsContainer\.hidden = !cards\.some/);
+  assert.doesNotMatch(home, /Birimo kubarwa\.\.\./);
+
+  assert.doesNotMatch(resources, /Birimo kubarwa\.\.\.<\/span><small[^>]*>ibyiciro/);
+  assert.match(resources, /rulesCount\.setAttribute\('aria-busy', 'false'\)/);
+  assert.match(resources, /signsCount\.setAttribute\('aria-busy', 'false'\)/);
+  assert.match(resources, /Ntibishoboye kuboneka ubu/);
+});
+
+test('public conversion and payment flows remain unchanged', () => {
+  const home = readPage('index.html');
+  const pricing = readPage('ibiciro.html');
+  const exam = readPage('exam.html');
+  assert.match(home, /id="candidateRegistrationInteractiveForm"/);
+  assert.match(pricing, /checkoutIntentType: 'PERSONAL'/);
+  assert.match(pricing, /fetch\('\/api\/payments\/momo-push'/);
+  assert.match(exam, /\/api\/exams/);
+});
+
 test('renderer-injected footer links use Kinyarwanda labels', () => {
   const result = injectFooterLinks('<html><body><footer></footer></body></html>', 'index.html');
   assert.match(result, />Ibyerekeye IKIZAME<\/a>/);

@@ -1918,7 +1918,6 @@
                 <img src="assets/uploads/logo.png" alt="IKIZAME logo">
                 <h2 class="ikizame-loader__wordmark">IKIZAME</h2>
             </div>
-            <div class="ikizame-loader__status" id="ikizameLoaderStatus">Biratangira...</div>
             <div class="ikizame-loader__progress" aria-hidden="true">
                 <span class="ikizame-loader__progress-fill" id="ikizameLoaderProgressFill"></span>
             </div>
@@ -2066,22 +2065,22 @@
                     <span class="hero-live-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
                     <span>Abakoresha</span>
                 </div>
-                        <span class="hero-live-value" data-stat="totalUsers">Birimo kubarwa...</span>
+                        <span class="hero-live-value" data-stat="totalUsers" aria-busy="true"></span>
             </div>
             <div class="hero-live-stat">
                 <div class="hero-live-heading">
                     <span class="hero-live-icon"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i></span>
                     <span>Abatsinze ≥12/20</span>
                 </div>
-                        <span class="hero-live-value" data-stat="passRate">Birimo kubarwa...</span>
-                        <span class="hero-live-detail">Impuzandengo: <span data-stat="averageScore">Birimo kubarwa...</span><span data-stat-scale hidden>/20</span></span>
+                        <span class="hero-live-value" data-stat="passRate" aria-busy="true"></span>
+                        <span class="hero-live-detail" hidden>Impuzandengo: <span data-stat="averageScore" aria-busy="true"></span><span data-stat-scale hidden>/20</span></span>
             </div>
             <div class="hero-live-stat">
                 <div class="hero-live-heading">
                     <span class="hero-live-icon"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i></span>
                     <span>Ibizamini</span>
                 </div>
-                        <span class="hero-live-value" data-stat="completedExams">Birimo kubarwa...</span>
+                        <span class="hero-live-value" data-stat="completedExams" aria-busy="true"></span>
             </div>
         </div>
 
@@ -2374,9 +2373,8 @@
             // 🎯 SPLASH SCREEN — premium startup overlay with a very short, readiness-based exit.
             (() => {
                 const splashCurtain = document.getElementById('fullScreenAppLauncherSplashCurtain');
-                const statusEl = document.getElementById('ikizameLoaderStatus');
                 const progressFill = document.getElementById('ikizameLoaderProgressFill');
-                if (!splashCurtain || !statusEl || !progressFill) return;
+                if (!splashCurtain || !progressFill) return;
 
                 const alreadySeen = sessionStorage.getItem('ikizame_splash_shown');
                 if (alreadySeen) {
@@ -2409,21 +2407,10 @@
                     return 1;
                 };
 
-                const updateStatus = (elapsed) => {
-                    if (elapsed < 700) {
-                        statusEl.textContent = 'Biratangira...';
-                    } else if (elapsed < 1400) {
-                        statusEl.textContent = 'Birategurwa...';
-                    } else {
-                        statusEl.textContent = 'Byiteguye';
-                    }
-                };
-
                 const updateProgress = (elapsed) => {
                     const ratio = getProgressRatio(elapsed);
                     const width = (Math.min(1, Math.max(0, ratio)) * 100).toFixed(2);
                     progressFill.style.width = `${width}%`;
-                    updateStatus(elapsed);
                 };
 
                 const finishSplash = () => {
@@ -2432,7 +2419,6 @@
                     if (hideTimer) clearTimeout(hideTimer);
                     if (safetyTimer) clearTimeout(safetyTimer);
                     progressFill.style.width = '100%';
-                    statusEl.textContent = 'Byiteguye';
                     splashCurtain.classList.add('is-hiding');
                     window.setTimeout(() => splashCurtain.remove(), 320);
                 };
@@ -2781,8 +2767,9 @@
                         }
                         const value = Number(rawValue);
                         if (Number.isFinite(value)) {
-                            if (element.dataset.stat !== 'averageScore' && card) card.hidden = value <= 0;
-                            if (element.dataset.stat === 'averageScore') element.closest('.hero-live-detail').hidden = value <= 0;
+                            element.setAttribute('aria-busy', 'false');
+                            if (element.dataset.stat !== 'averageScore' && card) card.hidden = false;
+                            if (element.dataset.stat === 'averageScore') element.closest('.hero-live-detail').hidden = false;
                             const suffix = element.dataset.stat === 'passRate' ? '%' : '';
                             element.textContent = `${numberFormat.format(value)}${suffix}`;
                             if (element.dataset.stat === 'averageScore') {
