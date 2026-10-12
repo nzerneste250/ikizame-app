@@ -1,11 +1,34 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const http = require('node:http');
 const path = require('node:path');
-const { injectFooterLinks } = require('../helpers/publicPageRenderer');
+const { injectFooterLinks, renderPublicPage } = require('../helpers/publicPageRenderer');
 
 const publicDir = path.join(__dirname, '..', 'public');
 const readPage = (name) => fs.readFileSync(path.join(publicDir, name), 'utf8');
+
+function getRenderedPage(pathname) {
+  return new Promise((resolve, reject) => {
+    const server = http.createServer((req, res) => {
+      const fileName = req.url === '/' ? 'index.html' : 'ifashanyigisho.html';
+      res.send = (body) => res.end(body);
+      res.set = (name, value) => res.setHeader(name, value);
+      res.setHeader = res.setHeader.bind(res);
+      res.req = req;
+      renderPublicPage(fileName, res);
+    });
+    server.listen(0, '127.0.0.1', () => {
+      const port = server.address().port;
+      http.get({ hostname: '127.0.0.1', port, path: pathname, headers: { 'Cache-Control': 'no-cache' } }, (response) => {
+        let body = '';
+        response.setEncoding('utf8');
+        response.on('data', (chunk) => body += chunk);
+        response.on('end', () => server.close(() => resolve({ body, headers: response.headers, statusCode: response.statusCode })));
+      }).on('error', (error) => server.close(() => reject(error)));
+    });
+  });
+}
 
 test('public content remains localized and avoids legacy English terms labels', () => {
   const terms = readPage('terms.html');
@@ -144,6 +167,28 @@ test('HOME_INITIAL_HTML_NO_BIRATANGIRA=PASS', () => {
 
 test('HOME_INITIAL_HTML_NO_RAW_STAT_LOADING=PASS', () => {
   assert.doesNotMatch(readPage('index.html'), /Birimo kubarwa\.\.\./);
+});
+
+test('rendered HTTP responses contain no public loading placeholders', async () => {
+  const home = await getRenderedPage('/');
+  const resources = await getRenderedPage('/ifashanyigisho');
+
+  assert.equal(home.statusCode, 200);
+  assert.equal(resources.statusCode, 200);
+  assert.doesNotMatch(home.body, /Biratangira\.\.\./);
+  assert.doesNotMatch(home.body, /Birimo kubarwa\.\.\./);
+  assert.doesNotMatch(resources.body, /Birimo kubarwa/);
+  assert.doesNotMatch(resources.body, /Birimo kubarwa[^<]*<\/span>\s*<small[^>]*>ibyiciro/);
+  assert.equal(home.headers['cache-control'], 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  assert.equal(resources.headers['cache-control'], 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+});
+
+test('RENDERER_OUTPUT_MATCHES_CURRENT_STATIC_SOURCE=PASS', async () => {
+  const resources = await getRenderedPage('/ifashanyigisho');
+  const source = readPage('ifashanyigisho.html');
+  assert.equal(resources.body.includes('Birimo kubarwa'), source.includes('Birimo kubarwa'));
+  assert.equal(resources.body.includes('<small hidden>ibyiciro</small>'), source.includes('<small hidden>ibyiciro</small>'));
+  assert.match(resources.body, /id="summaryRulesCount"[^>]*aria-busy="true"><\/span>/);
 });
 
 test('public conversion and payment flows remain unchanged', () => {

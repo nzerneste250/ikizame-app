@@ -32,6 +32,11 @@ function renderPublicPage(fileName, res) {
     return res.status(404).send('Not found');
   }
 
+  // Public HTML is rendered from disk on every request; never let an upstream
+  // proxy retain an obsolete page shell after a source update.
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+
   let html = fs.readFileSync(publicPath, 'utf8');
   const page = PUBLIC_PAGES[fileName];
   const isPrivate = !page || page.private;
