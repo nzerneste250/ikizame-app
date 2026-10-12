@@ -61,7 +61,7 @@
     </style>
     <link rel="stylesheet" href="assets/css/public-navigation.css">
 </head>
-<body>
+<body class="school-performance-page">
 <header class="navbar">
     <a href="/school-dashboard" class="navbar-brand-wrap">
         <img src="assets/uploads/logo.png" alt="IKIZAME Logo">
@@ -87,6 +87,7 @@
         <p class="muted" style="margin-bottom:16px;">Kureba amanota y'abanyeshuri, ibyakozwe, n'ibizamini byabo mu buryo bworoshye.</p>
         <div class="search-row">
             <input id="performanceSearch" class="search-input" type="search" placeholder="Search by student name or phone" oninput="filterPerformance()">
+            <select id="performanceResultFilter" class="search-input" style="max-width:180px;" onchange="filterPerformance()" aria-label="Filter result"><option value="ALL">All results</option><option value="PASSED">Passed</option><option value="FAILED">Failed</option></select>
         </div>
         <div class="stats" id="statsGrid"></div>
         <div class="table-wrap">
@@ -97,6 +98,7 @@
                 <tbody id="performanceBody"></tbody>
             </table>
         </div>
+        <div id="performanceMobileList" class="performance-mobile-list" aria-live="polite"></div>
     </section>
 </div>
 <script>
@@ -116,26 +118,28 @@ async function loadPerformance(){
 }
 function renderPerformanceRows(rows) {
   const tbody=document.getElementById('performanceBody');
+  const mobile=document.getElementById('performanceMobileList');
   if (!rows.length) {
     tbody.innerHTML = '<tr><td colspan="8" class="muted">No students found matching your search.</td></tr>';
+    mobile.innerHTML = '<div class="empty-state">No exam attempts match your filters.</div>';
     return;
   }
-  tbody.innerHTML = rows.map(a => `<tr><td>${a.student_name||'—'}</td><td>${a.phone_number||'—'}</td><td>${a.score||0}</td><td>${a.total_questions||0}</td><td>${a.correct_count||0}</td><td>${a.wrong_count||0}</td><td>${a.skipped_count||0}</td><td>${new Date(a.created_at).toLocaleString('fr-FR')}</td></tr>`).join('');
+  tbody.innerHTML = rows.map(a => { const total=a.total_questions||20; const passed=(a.score||0)>=Math.ceil(total*.6); return `<tr><td>${a.student_name||'—'}</td><td>${a.phone_number||'—'}</td><td><span class="badge ${passed?'pass':'fail'}">${a.score||0}/${total}</span></td><td>${total}</td><td>${a.correct_count||0}</td><td>${a.wrong_count||0}</td><td>${a.skipped_count||0}</td><td>${new Date(a.created_at).toLocaleString('fr-FR')}</td></tr>`; }).join('');
+  mobile.innerHTML = rows.map(a => { const total=a.total_questions||20; const passed=(a.score||0)>=Math.ceil(total*.6); return `<article class="performance-card"><strong>${a.student_name||'—'}</strong><div class="muted">${a.phone_number||'—'}</div><div class="mobile-facts"><span>Score <b class="score">${a.score||0} / ${total}</b></span><span>Correct <b>${a.correct_count||0}</b></span><span>Wrong <b>${a.wrong_count||0}</b></span><span>Skipped <b>${a.skipped_count||0}</b></span><span>Result <b class="badge ${passed?'pass':'fail'}">${passed?'Passed':'Failed'}</b></span><span>Date <b>${new Date(a.created_at).toLocaleDateString('fr-FR')}</b></span></div></article>`; }).join('');
 }
 function filterPerformance() {
   const query = document.getElementById('performanceSearch').value.trim().toLowerCase();
+  const resultFilter = document.getElementById('performanceResultFilter').value;
   if (!window.performanceData || !window.performanceData.length) {
     renderPerformanceRows([]);
     return;
   }
-  if (!query) {
-    renderPerformanceRows(window.performanceData);
-    return;
-  }
+  if (!query && resultFilter === 'ALL') { renderPerformanceRows(window.performanceData); return; }
   const filtered = window.performanceData.filter(item => {
     const name = (item.student_name || '').toLowerCase();
     const phone = (item.phone_number || '').toLowerCase();
-    return name.includes(query) || phone.includes(query);
+    const passed = (item.score || 0) >= Math.ceil((item.total_questions || 20) * .6);
+    return (name.includes(query) || phone.includes(query)) && (resultFilter === 'ALL' || (resultFilter === 'PASSED' ? passed : !passed));
   });
   renderPerformanceRows(filtered);
 }

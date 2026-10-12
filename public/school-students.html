@@ -81,6 +81,28 @@
         .pill.blocked { background:rgba(239,68,68,0.15); color:#b91c1c; }
         .edit-panel { margin-top:18px; padding:16px; border:1px solid rgba(11,105,139,0.12); border-radius:14px; background:#f8fafc; display:none; }
         .edit-panel.active { display:block; }
+        /* School portal polish and robust action controls */
+        .page { max-width: 1320px; }
+        .table-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:260px; }
+        .table-actions button { display:inline-flex!important; align-items:center; justify-content:center; gap:7px; min-height:44px; min-width:78px; padding:10px 13px!important; white-space:nowrap; font-weight:700; line-height:1.1; }
+        .table-actions button:first-child { background:#EFF6FF!important; color:#1D4ED8!important; border-color:#BFDBFE!important; }
+        .table-actions .add-exams-button { background:#2563EB!important; color:#fff!important; border-color:#2563EB!important; }
+        .table-actions button:last-child { background:#FEF2F2!important; color:#DC2626!important; border-color:#FECACA!important; }
+        .table-actions button:hover { transform:translateY(-1px); }
+        .edit-panel { position:fixed; inset:0; z-index:7000; margin:0; padding:24px; background:rgba(15,23,42,.58); border:0; border-radius:0; align-items:center; justify-content:center; overflow:auto; }
+        .edit-panel.active { display:flex; }
+        .edit-panel > div { max-width:620px; width:100%; background:#fff; border:1px solid #E2E8F0; border-radius:22px; padding:24px; box-shadow:0 24px 70px rgba(15,39,71,.24); }
+        .edit-panel > div:first-child { display:block; }
+        .readonly-value { min-height:46px; display:flex; align-items:center; padding:12px 14px; border:1px solid #CBD5E1; border-radius:12px; background:#F8FAFC; color:#475569; font-weight:800; }
+        .student-mobile-card { display:none; }
+        .student-toolbar { display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:18px 0 12px; }
+        .student-toolbar input,.student-toolbar select { min-height:46px; border:1px solid #CBD5E1; border-radius:12px; padding:0 13px; background:#fff; font:inherit; }
+        .student-toolbar input { flex:1; min-width:220px; }
+        .modal-summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+        .modal-summary-grid div { padding:12px; border:1px solid #E2E8F0; border-radius:14px; background:#F8FAFC; }
+        .modal-summary-grid span { display:block; color:#64748B; font-size:.75rem; }
+        .modal-summary-grid strong { display:block; color:#0F2747; font-size:1.2rem; margin-top:4px; }
+        @media (max-width:700px) { .table-wrap { display:none; } .student-mobile-card { display:block; background:#fff; border:1px solid #E2E8F0; border-radius:18px; padding:16px; margin-top:12px; box-shadow:0 8px 24px rgba(15,39,71,.06); } .student-mobile-card .table-actions { margin-top:14px; } .edit-panel { padding:14px; } .modal-summary-grid { grid-template-columns:repeat(2,1fr); } }
         .muted { color:var(--muted); }
         @media (max-width:760px){ .form-grid{grid-template-columns:1fr;} .navbar{flex-direction:column !important; height:auto !important; padding:10px 4% 8px !important; gap:6px !important;} .navbar-links{gap:12px 16px !important; width:100% !important; justify-content:center !important; flex-wrap:wrap !important;} .navbar-links a{font-size:0.78rem !important; padding:6px 0 !important;} .table-head{flex-direction:column; align-items:flex-start;} }
     </style>
@@ -147,13 +169,14 @@
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;"><button class="btn btn-primary" type="button" onclick="previewBulkStudents()">Preview</button><button class="btn" type="button" onclick="registerBulkStudents()" id="bulkRegisterButton" disabled>Register students</button></div>
             <div id="bulkPreview" class="form-message muted" aria-live="polite"></div>
         </details>
-        <div id="editStudentPanel" class="edit-panel">
+        <div id="editStudentPanel" class="edit-panel" role="dialog" aria-modal="true" aria-labelledby="editStudentTitle" onclick="if(event.target===this) cancelStudentEdit()">
+            <div>
             <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
                 <div>
-                    <h3 style="margin:0 0 8px; font-size:1rem;">Edit Student Details</h3>
+                    <h3 id="editStudentTitle" style="margin:0 0 8px; font-size:1.25rem;">Edit student</h3>
                 <p style="margin:0; color:#64748b; font-size:0.9rem;">Update the student name or phone. Assigned exams can only be increased with Add exams.</p>
                 </div>
-                <button type="button" class="btn" style="background:transparent; color:#0b698b; border:1px solid rgba(11,105,139,0.16);" onclick="cancelStudentEdit()">Cancel</button>
+                <button type="button" class="btn" aria-label="Close edit student dialog" style="background:transparent; color:#0b698b; border:1px solid rgba(11,105,139,0.16);" onclick="cancelStudentEdit()"><i class="fa-solid fa-xmark"></i> Close</button>
             </div>
             <div class="form-grid" style="margin-top:16px;">
                 <div class="field"><label>Amazina y’umunyeshuri</label><input id="editStudentName" placeholder="e.g. Aline Uwase"></div>
@@ -162,10 +185,29 @@
                 <div class="field" style="align-self:end;"><button id="studentEditSubmit" class="btn btn-primary" onclick="submitStudentEdit(event)"><i class="fa-solid fa-pen-to-square"></i> Save changes</button></div>
             </div>
             <div id="editFormMessage" class="form-message muted"></div>
+            </div>
+        </div>
+        <div id="addExamsPanel" class="edit-panel" role="dialog" aria-modal="true" aria-labelledby="addExamsTitle" onclick="if(event.target===this) closeAddExams()">
+            <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                    <div><h3 id="addExamsTitle" style="margin:0 0 6px;font-size:1.25rem;">Add exams</h3><p id="addExamsStudent" class="muted" style="margin:0;"></p></div>
+                    <button type="button" class="btn" aria-label="Close add exams dialog" onclick="closeAddExams()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-summary-grid" style="margin-top:18px;"><div><span>Current assigned</span><strong id="addExamsCurrent">0</strong></div><div><span>School available</span><strong id="addExamsAvailable">0</strong></div><div><span>New total</span><strong id="addExamsTotal">0</strong></div><div><span>Credits after</span><strong id="addExamsAfter">0</strong></div></div>
+                <div class="field" style="margin-top:18px;"><label for="additionalExamCount">Additional exams</label><input id="additionalExamCount" type="number" min="1" step="1" value="1" oninput="updateAddExamsPreview()"></div>
+                <div id="addExamsMessage" class="form-message muted" aria-live="polite"></div>
+                <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:16px;"><button type="button" class="btn" onclick="closeAddExams()">Cancel</button><button id="confirmAddExamsButton" type="button" class="btn btn-primary" onclick="submitAddExams()">Add exams</button></div>
+            </div>
         </div>
         <div class="table-head">
             <h2>Registered students</h2>
             <p id="registeredSummary">No students registered yet.</p>
+        </div>
+        <div class="student-toolbar" aria-label="Student list filters">
+            <input id="studentSearch" type="search" placeholder="Search by name or phone" oninput="renderStudentRows()">
+            <select id="studentStatusFilter" onchange="renderStudentRows()" aria-label="Filter students by status">
+                <option value="ALL">All students</option><option value="ACTIVE">Active</option><option value="BLOCKED">Blocked</option>
+            </select>
         </div>
         <div class="table-wrap">
             <table>
@@ -175,12 +217,14 @@
                 <tbody id="studentsTableBody"></tbody>
             </table>
         </div>
+        <div id="studentsMobileList" aria-live="polite"></div>
     </section>
 </div>
 <script src="assets/js/ikizame-ui.js"></script>
 <script>
 let walletState = { remainingExams: 0, canRegister: false, licenseExpired: false };
 let editStudentId = null;
+let schoolStudents = [];
 
 async function handleSchoolLogout(event){ event.preventDefault(); try{ const res=await fetch('/api/school/logout',{method:'POST',headers:{'Content-Type':'application/json'}}); if(res.ok){ window.location.replace('/school-auth'); return; } }catch(err){} window.location.replace('/school-auth'); }
 
@@ -221,40 +265,36 @@ async function loadStudents(){
   const res=await fetch('/api/school/students');
   if(res.status===401){ window.location.replace('/school-auth'); return; }
   const data=await res.json();
+  schoolStudents = data.students || [];
+  renderStudentRows();
+}
+
+function renderStudentRows(){
   const tbody=document.getElementById('studentsTableBody');
-  const countBadge=document.getElementById('registeredCount');
-  const summary=document.getElementById('registeredSummary');
-  if(!data.success || !data.students.length){
-    tbody.innerHTML='<tr><td colspan="6" class="muted">Nta banyeshuri banditswe.</td></tr>';
-    countBadge.textContent='0';
-    summary.textContent='No students registered yet.';
+  const mobile=document.getElementById('studentsMobileList');
+  document.getElementById('registeredCount').textContent = schoolStudents.length;
+  document.getElementById('registeredSummary').textContent = `${schoolStudents.length} registered student${schoolStudents.length === 1 ? '' : 's'} shown below.`;
+  const query=(document.getElementById('studentSearch')?.value || '').trim().toLowerCase();
+  const filter=document.getElementById('studentStatusFilter')?.value || 'ALL';
+  const students=schoolStudents.filter(s => (!query || `${s.student_name} ${s.phone_number}`.toLowerCase().includes(query)) && (filter === 'ALL' || (s.status || 'ACTIVE') === filter));
+  if(!students.length){
+    const empty='<div class="empty-state">No students match your search. Register a student to get started.</div>';
+    tbody.innerHTML=`<tr><td colspan="6" class="muted">${schoolStudents.length ? 'No students match your search.' : 'Nta banyeshuri banditswe.'}</td></tr>`;
+    mobile.innerHTML=empty;
     return;
   }
-  countBadge.textContent=data.students.length;
-  summary.textContent=`${data.students.length} registered student${data.students.length === 1 ? '' : 's'} shown below.`;
-  tbody.innerHTML=data.students.map(s=>{
-    const statusClass = s.status === 'BLOCKED' ? 'pill blocked' : 'pill';
-    const actionLabel = s.status === 'BLOCKED' ? 'Unblock' : 'Block';
+  const renderActions = (s) => {
     const expired = walletState.licenseExpired;
-    const editDisabled = expired ? 'disabled title="License yarangiye. Vugurura mbere yo guhindura."' : '';
-    const blockDisabled = expired ? 'disabled title="License yarangiye. Vugurura mbere yo guhagarika."' : '';
-    const editStyle = expired ? 'opacity:0.45;cursor:not-allowed;' : '';
-    const blockStyle = expired ? 'opacity:0.45;cursor:not-allowed;' : '';
-    return `<tr>
-      <td>${s.student_name}</td>
-      <td>${s.phone_number}</td>
-      <td>${s.assigned_exams}</td>
-      <td><span class="${statusClass}">${s.status || 'ACTIVE'}</span></td>
-      <td>${new Date(s.created_at).toLocaleDateString('fr-FR')}</td>
-      <td>
-        <div class="table-actions">
-          <button type="button" ${editDisabled} style="${editStyle}" onclick='${expired ? '' : `startEditStudent(${JSON.stringify(s)})`}'>
-          <button type="button" class="add-exams-button" onclick="openAddExams(${s.id}, '${String(s.student_name).replace(/'/g, "\\'")}', ${Number(s.assigned_exams)})"><i class="fa-solid fa-plus"></i> Add exams</button>
-          <button type="button" ${blockDisabled} style="${blockStyle}" onclick="${expired ? '' : `toggleStudentStatus(${s.id}, '${s.status || 'ACTIVE'}')`}"><i class="fa-solid fa-ban"></i> ${actionLabel}</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
+    const disabled = expired ? 'disabled title="License yarangiye."' : '';
+    const actionLabel = s.status === 'BLOCKED' ? 'Unblock' : 'Block';
+    return `<div class="table-actions">
+      <button type="button" class="edit-student-button" ${disabled} onclick='${expired ? '' : `startEditStudent(${JSON.stringify(s)})`}'><i class="fa-solid fa-pen-to-square"></i><span>Edit</span></button>
+      <button type="button" class="add-exams-button" ${disabled} onclick="openAddExams(${s.id}, '${String(s.student_name).replace(/'/g, "\\'")}', ${Number(s.assigned_exams)})"><i class="fa-solid fa-plus"></i><span>Add exams</span></button>
+      <button type="button" class="status-action-button" ${disabled} onclick="${expired ? '' : `toggleStudentStatus(${s.id}, '${s.status || 'ACTIVE'}')`}"><i class="fa-solid fa-ban"></i><span>${actionLabel}</span></button>
+    </div>`;
+  };
+  tbody.innerHTML=students.map(s=>`<tr><td>${s.student_name}</td><td>${s.phone_number}</td><td>${s.assigned_exams}</td><td><span class="${s.status === 'BLOCKED' ? 'pill blocked' : 'pill'}">${s.status || 'ACTIVE'}</span></td><td>${new Date(s.created_at).toLocaleDateString('fr-FR')}</td><td>${renderActions(s)}</td></tr>`).join('');
+  mobile.innerHTML=students.map(s=>`<article class="student-mobile-card"><strong>${s.student_name}</strong><div class="muted">${s.phone_number}</div><div class="mobile-facts"><span>Assigned exams <b>${s.assigned_exams}</b></span><span>Status <b>${s.status || 'ACTIVE'}</b></span><span>Registered <b>${new Date(s.created_at).toLocaleDateString('fr-FR')}</b></span></div>${renderActions(s)}</article>`).join('');
 }
 
 function startEditStudent(student){
@@ -270,13 +310,17 @@ function startEditStudent(student){
   document.getElementById('editFormMessage').textContent = '';
   document.getElementById('studentEditSubmit').disabled = false;
   document.getElementById('editStudentPanel').classList.add('active');
-  window.scrollTo({ top: document.getElementById('editStudentPanel').offsetTop - 80, behavior: 'smooth' });
+  document.body.classList.add('modal-open');
+  document.getElementById('editStudentName').focus();
 }
 
 function cancelStudentEdit(){
   editStudentId = null;
   document.getElementById('editStudentPanel').classList.remove('active');
+  document.body.classList.remove('modal-open');
 }
+
+document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && editStudentId) cancelStudentEdit(); });
 
 async function submitStudentEdit(event){
   event.preventDefault();
@@ -334,19 +378,31 @@ async function toggleStudentStatus(studentId, currentStatus){
   await loadStudents();
 }
 
-async function openAddExams(studentId, studentName, currentAssigned){
-  const raw = window.prompt(`Student: ${studentName}\nCurrent assigned exams: ${currentAssigned}\n\nAdditional exams (positive whole number):`, '1');
-  if (raw === null) return;
-  if (!/^\d+$/.test(raw) || Number(raw) <= 0) { ikToast('Enter a positive whole number.', 'error'); return; }
-  const additional = Number(raw);
-  const confirmed = await ikConfirm(`Current: ${currentAssigned}\nAdding: ${additional}\nNew total: ${currentAssigned + additional}\n\nConfirm adding these exams?`, 'warning', 'Add exams', 'Confirm', 'Cancel');
-  if (!confirmed) return;
-  const response = await fetch(`/api/school/students/${studentId}/add-exams`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ additionalExams: additional }) });
-  const data = await response.json();
-  if (!data.success) return ikToast(data.error || 'Could not add exams.', 'error');
-  ikToast(data.message || 'Exams added.', 'success');
-  await loadWalletMetrics();
-  await loadStudents();
+let addExamsState = { id:null, current:0 };
+function openAddExams(studentId, studentName, currentAssigned){
+  addExamsState = { id: studentId, current: Number(currentAssigned) || 0 };
+  document.getElementById('addExamsStudent').textContent = `Student: ${studentName}`;
+  document.getElementById('addExamsAvailable').textContent = walletState.remainingExams;
+  document.getElementById('additionalExamCount').value = '1';
+  document.getElementById('addExamsMessage').textContent = '';
+  updateAddExamsPreview();
+  document.getElementById('addExamsPanel').classList.add('active');
+  document.body.classList.add('modal-open');
+  document.getElementById('additionalExamCount').focus();
+}
+function updateAddExamsPreview(){
+  const additional = Number(document.getElementById('additionalExamCount')?.value || 0);
+  document.getElementById('addExamsCurrent').textContent = addExamsState.current;
+  document.getElementById('addExamsTotal').textContent = addExamsState.current + (Number.isSafeInteger(additional) ? additional : 0);
+  document.getElementById('addExamsAfter').textContent = walletState.remainingExams - (Number.isSafeInteger(additional) ? additional : 0);
+  document.getElementById('confirmAddExamsButton').disabled = !Number.isSafeInteger(additional) || additional <= 0 || additional > walletState.remainingExams;
+}
+function closeAddExams(){ document.getElementById('addExamsPanel').classList.remove('active'); if(!editStudentId) document.body.classList.remove('modal-open'); }
+async function submitAddExams(){
+  const additional = Number(document.getElementById('additionalExamCount').value);
+  if (!Number.isSafeInteger(additional) || additional <= 0 || additional > walletState.remainingExams) return;
+  const button=document.getElementById('confirmAddExamsButton'); button.disabled=true; button.textContent='Adding...';
+  try { const response=await fetch(`/api/school/students/${addExamsState.id}/add-exams`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ additionalExams: additional }) }); const data=await response.json(); if(!data.success) { ikToast(data.error || 'Could not add exams.', 'error'); return; } closeAddExams(); ikToast(data.message || 'Exams added successfully.', 'success'); await loadWalletMetrics(); await loadStudents(); } catch(error) { ikToast('Network error. Please try again.', 'error'); } finally { button.disabled=false; button.textContent='Add exams'; }
 }
 
 async function submitStudent(event){ event.preventDefault(); const name=document.getElementById('studentName').value.trim(); const phone=document.getElementById('studentPhone').value.trim(); const examCount=document.getElementById('examCount').value; const message=document.getElementById('formMessage');
