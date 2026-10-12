@@ -137,6 +137,25 @@ test('PAYPACK_STATUS_NO_BULK_LOOKUPS=PASS', () => {
   assert.doesNotMatch(page, /rows\.forEach\(.*checkTransactionStatus/s);
 });
 
+test('PAYPACK_STATUS_BOUNDED_SCHEDULER=PASS', () => {
+  assert.match(page, /STATUS_REFRESH_INTERVAL_MS = 60000/);
+  assert.match(page, /STATUS_MAX_CONCURRENT = 3/);
+  assert.match(page, /STATUS_INITIAL_VISIBLE_LIMIT = 8/);
+  assert.match(page, /STATUS_BACKOFF_MS = \[60000, 120000, 300000\]/);
+  assert.match(page, /slice\(0, STATUS_INITIAL_VISIBLE_LIMIT\)/);
+  assert.match(page, /statusInFlight < STATUS_MAX_CONCURRENT/);
+  assert.match(page, /document\.hidden/);
+  assert.match(page, /startStatusPolling\(\)/);
+});
+
+test('ADMIN_LOGIN_INACTIVE_NOTICE_ALLOWLISTED_AND_IN_CARD=PASS', () => {
+  const login = fs.readFileSync(path.join(__dirname, '..', 'public', 'admin-login.html'), 'utf8');
+  assert.match(login, /id="inactiveNotice"[\s\S]*Session expired[\s\S]*Your admin session ended after 2 minutes of inactivity\. Please sign in again\./);
+  assert.match(login, /login-card-header[\s\S]*inactiveNotice[\s\S]*emailInput/);
+  assert.match(login, /params\.get\('reason'\) === 'inactive'/);
+  assert.doesNotMatch(login, /showAlert\([^)]*params\.get/);
+});
+
 test('PAYPACK_STATUS_LOOKUP_FAILURE_SAFE=PASS', () => {
   assert.match(adminRoutes, /status: 'Status unavailable'/);
   assert.match(page, /row\.status = 'Status unavailable'/);

@@ -134,6 +134,14 @@ const money = value => 'RWF ' + Number(value || 0).toLocaleString('en-US', { max
 const esc = value => String(value ?? '—').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 let ledgerRows = [];
 let ledgerState = 'loading';
+const STATUS_REFRESH_INTERVAL_MS = 60000;
+const STATUS_MAX_CONCURRENT = 3;
+const STATUS_INITIAL_VISIBLE_LIMIT = 8;
+const STATUS_BACKOFF_MS = [60000, 120000, 300000];
+let statusQueue = [];
+let statusInFlight = 0;
+let statusRefreshTimer = null;
+let statusStopped = false;
 function normalizeReference(value) { return String(value ?? '').trim().replace(/^ref\s*:\s*/i, '').replace(/…/g, '...').trim(); }
 function referenceValue(row) { return String(row?.ref ?? row?.reference ?? '').trim(); }
 function matchesReference(row, value) {
@@ -181,16 +189,57 @@ function statusPresentation(status) {
     if (normalized === 'status unavailable') return ['Status unavailable', 'unavailable'];
     return [status ? String(status).trim() : 'Not checked', status ? 'other' : 'unavailable'];
 }
-function checkTransactionStatus(reference, button) {
-    const row = ledgerRows.find(item => referenceValue(item) === reference);
-    if (!row) return Promise.resolve();
-    row.status = 'checking';
-    renderLedgerRows(document.getElementById('contactSearch').value ? ledgerRows.filter(item => matchesReference(item, document.getElementById('contactSearch').value)) : ledgerRows);
-    return fetch(`/api/admin/paypack-transaction-status?ref=${encodeURIComponent(reference)}`)
-        .then(response => response.json().then(data => ({ ok: response.ok, data })))
-        .then(({ ok, data }) => { row.status = ok && data.status ? data.status : 'Status unavailable'; renderLedgerRows(document.getElementById('contactSearch').value ? ledgerRows.filter(item => matchesReference(item, document.getElementById('contactSearch').value)) : ledgerRows); })
-        .catch(() => { row.status = 'Status unavailable'; renderLedgerRows(document.getElementById('contactSearch').value ? ledgerRows.filter(item => matchesReference(item, document.getElementById('contactSearch').value)) : ledgerRows); });
+function visibleLedgerRows() {
+    const search = document.getElementById('contactSearch').value;
+    return search ? ledgerRows.filter(item => matchesReference(item, search)) : ledgerRows;
 }
+function isTerminalStatus(status) {
+    return ['successful', 'success', 'completed', 'failed', 'failure'].includes(String(status || '').trim().toLowerCase());
+}
+function eligibleStatus(row, now = Date.now()) {
+    const status = String(row.status || '').trim().toLowerCase();
+    if (isTerminalStatus(status) || status === 'checking') return false;
+    return !row._statusNextAt || row._statusNextAt <= now;
+}
+function queueStatusCheck(reference, immediate = false) {
+    if (statusStopped || document.hidden) return;
+    const row = ledgerRows.find(item => referenceValue(item) === reference);
+    if (!row || isTerminalStatus(row.status) || row.status === 'checking' || (!immediate && !eligibleStatus(row))) return;
+    if (statusQueue.some(item => item.row === row) || row.status === 'checking') return;
+    if (!immediate && statusQueue.length >= STATUS_INITIAL_VISIBLE_LIMIT) return;
+    if (immediate) statusQueue.unshift({ row, immediate });
+    else statusQueue.push({ row, immediate });
+    pumpStatusQueue();
+}
+function pumpStatusQueue() {
+    if (statusStopped || document.hidden) return;
+    while (statusInFlight < STATUS_MAX_CONCURRENT && statusQueue.length) {
+        const item = statusQueue.shift();
+        const row = item.row;
+        const reference = referenceValue(row);
+        statusInFlight += 1;
+        row.status = 'checking';
+        renderLedgerRows(visibleLedgerRows());
+        fetch(`/api/admin/paypack-transaction-status?ref=${encodeURIComponent(reference)}`)
+        .then(response => response.json().then(data => ({ ok: response.ok, data })))
+        .then(({ ok, data }) => {
+            if (ok && data.status) { row.status = data.status; row._statusRetries = 0; row._statusNextAt = 0; }
+            else { row.status = 'Status unavailable'; const retry = row._statusRetries || 0; row._statusNextAt = Date.now() + STATUS_BACKOFF_MS[retry]; row._statusRetries = Math.min(retry + 1, STATUS_BACKOFF_MS.length - 1); }
+        })
+        .catch(() => { row.status = 'Status unavailable'; const retry = row._statusRetries || 0; row._statusNextAt = Date.now() + STATUS_BACKOFF_MS[retry]; row._statusRetries = Math.min(retry + 1, STATUS_BACKOFF_MS.length - 1); })
+        .finally(() => { statusInFlight -= 1; renderLedgerRows(visibleLedgerRows()); pumpStatusQueue(); });
+    }
+}
+function scheduleVisibleStatusChecks() {
+    if (statusStopped || document.hidden || ledgerState !== 'ready') return;
+    visibleLedgerRows().filter(row => eligibleStatus(row)).slice(0, STATUS_INITIAL_VISIBLE_LIMIT).forEach(row => queueStatusCheck(referenceValue(row)));
+}
+function startStatusPolling() {
+    clearInterval(statusRefreshTimer);
+    statusRefreshTimer = setInterval(scheduleVisibleStatusChecks, STATUS_REFRESH_INTERVAL_MS);
+    scheduleVisibleStatusChecks();
+}
+function checkTransactionStatus(reference) { queueStatusCheck(reference, true); }
 function renderLedgerRows(rows) {
     const body = document.getElementById('ledgerBody');
     if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="empty" aria-hidden="true"></td></tr>'; return; }
@@ -274,6 +323,7 @@ function loadLedger() {
         renderLedgerRows(rows);
         const search = document.getElementById('contactSearch');
         if (search.value) searchReference(search.value);
+        startStatusPolling();
     }).catch(error => { ledgerState = 'error'; document.getElementById('transactionMeta').textContent = 'Unable to load PayPack transactions.'; document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="7" class="error">Unable to load PayPack transactions. Try again.</td></tr>'; });
 }
 loadLedger();
@@ -285,10 +335,12 @@ loadLedger();
     let lastActivity = Date.now();
     let timer = null;
     let logoutStarted = false;
+    function stopStatusPolling() { statusStopped = true; clearInterval(statusRefreshTimer); statusQueue = []; }
     function broadcastLogout() { try { localStorage.setItem('ikizame-admin-paypack-logout', String(Date.now())); } catch (_) {} }
     function logout() {
         if (logoutStarted) return;
         logoutStarted = true;
+        stopStatusPolling();
         broadcastLogout();
         fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' }).finally(() => window.location.replace(LOGIN_URL));
     }
@@ -299,7 +351,7 @@ loadLedger();
     function throttledActivity() { const now = Date.now(); if (now - lastEventActivity < 1000) return; lastEventActivity = now; activity(); }
     document.addEventListener('mousemove', throttledActivity, { passive: true });
     document.addEventListener('scroll', throttledActivity, { passive: true });
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkIdle(); });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { checkIdle(); scheduleVisibleStatusChecks(); } });
     window.addEventListener('storage', event => { if (event.key === 'ikizame-admin-paypack-logout') window.location.replace(LOGIN_URL); });
     activity();
 })();
