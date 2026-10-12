@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/school-portal.css">
     <style>
         :root { --brand:#0b698b; --brand-dark:#08536e; --bg:linear-gradient(135deg,#f5fbff 0%,#edf6ff 100%); --panel:rgba(255,255,255,0.95); --border:rgba(11,105,139,0.14); --text:#0f172a; --muted:#475569; }
         * { box-sizing:border-box; margin:0; padding:0; }
@@ -139,18 +140,25 @@
             </div>
         </form>
         <div id="formMessage" class="form-message muted"></div>
+        <details class="bulk-card" style="margin-top:18px;">
+            <summary style="cursor:pointer;font-weight:800;color:#0F2747;min-height:44px;display:flex;align-items:center;">Register multiple students</summary>
+            <p style="color:#6B7A90;margin:10px 0;font-size:.9rem;">One student per line: <code>Name,Phone,Exams</code>. Preview and validate before registering.</p>
+            <textarea id="bulkStudentsInput" rows="5" placeholder="Aline Uwase,0788000001,10&#10;Patrick Niyonzima,0788000002,10" style="width:100%;padding:12px;border:1px solid #D9E3F0;border-radius:14px;font:inherit;"></textarea>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;"><button class="btn btn-primary" type="button" onclick="previewBulkStudents()">Preview</button><button class="btn" type="button" onclick="registerBulkStudents()" id="bulkRegisterButton" disabled>Register students</button></div>
+            <div id="bulkPreview" class="form-message muted" aria-live="polite"></div>
+        </details>
         <div id="editStudentPanel" class="edit-panel">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
                 <div>
                     <h3 style="margin:0 0 8px; font-size:1rem;">Edit Student Details</h3>
-                    <p style="margin:0; color:#64748b; font-size:0.9rem;">Update the student record or assigned exams.</p>
+                <p style="margin:0; color:#64748b; font-size:0.9rem;">Update the student name or phone. Assigned exams can only be increased with Add exams.</p>
                 </div>
                 <button type="button" class="btn" style="background:transparent; color:#0b698b; border:1px solid rgba(11,105,139,0.16);" onclick="cancelStudentEdit()">Cancel</button>
             </div>
             <div class="form-grid" style="margin-top:16px;">
                 <div class="field"><label>Amazina y’umunyeshuri</label><input id="editStudentName" placeholder="e.g. Aline Uwase"></div>
                 <div class="field"><label>Telephone</label><input id="editStudentPhone" type="tel" inputmode="numeric" maxlength="10" pattern="07[8923][0-9]{7}" title="Use 078, 079, 072, or 073 followed by seven digits." placeholder="0788000000"></div>
-                <div class="field"><label>Ibizamini byahawe</label><input id="editStudentExamCount" type="number" min="1"></div>
+                <div class="field"><label>Assigned exams</label><div id="editStudentExamCount" class="readonly-value" aria-live="polite">—</div></div>
                 <div class="field" style="align-self:end;"><button id="studentEditSubmit" class="btn btn-primary" onclick="submitStudentEdit(event)"><i class="fa-solid fa-pen-to-square"></i> Save changes</button></div>
             </div>
             <div id="editFormMessage" class="form-message muted"></div>
@@ -240,7 +248,8 @@ async function loadStudents(){
       <td>${new Date(s.created_at).toLocaleDateString('fr-FR')}</td>
       <td>
         <div class="table-actions">
-          <button type="button" ${editDisabled} style="${editStyle}" onclick='${expired ? '' : `startEditStudent(${JSON.stringify(s)})`}'><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+          <button type="button" ${editDisabled} style="${editStyle}" onclick='${expired ? '' : `startEditStudent(${JSON.stringify(s)})`}'>
+          <button type="button" class="add-exams-button" onclick="openAddExams(${s.id}, '${String(s.student_name).replace(/'/g, "\\'")}', ${Number(s.assigned_exams)})"><i class="fa-solid fa-plus"></i> Add exams</button>
           <button type="button" ${blockDisabled} style="${blockStyle}" onclick="${expired ? '' : `toggleStudentStatus(${s.id}, '${s.status || 'ACTIVE'}')`}"><i class="fa-solid fa-ban"></i> ${actionLabel}</button>
         </div>
       </td>
@@ -256,7 +265,7 @@ function startEditStudent(student){
   editStudentId = student.id;
   document.getElementById('editStudentName').value = student.student_name || '';
   document.getElementById('editStudentPhone').value = student.phone_number || '';
-  document.getElementById('editStudentExamCount').value = student.assigned_exams || 1;
+  document.getElementById('editStudentExamCount').textContent = String(student.assigned_exams || 0);
   document.getElementById('editFormMessage').className = 'form-message muted';
   document.getElementById('editFormMessage').textContent = '';
   document.getElementById('studentEditSubmit').disabled = false;
@@ -275,10 +284,9 @@ async function submitStudentEdit(event){
   if (!editStudentId) return;
   const name=document.getElementById('editStudentName').value.trim();
   const phone=document.getElementById('editStudentPhone').value.trim();
-  const examCount=parseInt(document.getElementById('editStudentExamCount').value, 10) || 0;
-  if (!name || !phone || examCount < 1) {
+  if (!name || !phone) {
     message.className='form-message error';
-    message.textContent='Andika amazina, telefone, kandi uhitamo nibura 1 exam.';
+    message.textContent='Andika amazina na telefone byemewe.';
     return;
   }
   if (!/^07[8923]\d{7}$/.test(phone)) {
@@ -291,7 +299,7 @@ async function submitStudentEdit(event){
   const res = await fetch(`/api/school/students/${editStudentId}`, {
     method:'PATCH',
     headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ studentName:name, phoneNumber:phone, examCount })
+    body: JSON.stringify({ studentName:name, phoneNumber:phone })
   });
   const data = await res.json();
   if (!data.success) {
@@ -326,6 +334,21 @@ async function toggleStudentStatus(studentId, currentStatus){
   await loadStudents();
 }
 
+async function openAddExams(studentId, studentName, currentAssigned){
+  const raw = window.prompt(`Student: ${studentName}\nCurrent assigned exams: ${currentAssigned}\n\nAdditional exams (positive whole number):`, '1');
+  if (raw === null) return;
+  if (!/^\d+$/.test(raw) || Number(raw) <= 0) { ikToast('Enter a positive whole number.', 'error'); return; }
+  const additional = Number(raw);
+  const confirmed = await ikConfirm(`Current: ${currentAssigned}\nAdding: ${additional}\nNew total: ${currentAssigned + additional}\n\nConfirm adding these exams?`, 'warning', 'Add exams', 'Confirm', 'Cancel');
+  if (!confirmed) return;
+  const response = await fetch(`/api/school/students/${studentId}/add-exams`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ additionalExams: additional }) });
+  const data = await response.json();
+  if (!data.success) return ikToast(data.error || 'Could not add exams.', 'error');
+  ikToast(data.message || 'Exams added.', 'success');
+  await loadWalletMetrics();
+  await loadStudents();
+}
+
 async function submitStudent(event){ event.preventDefault(); const name=document.getElementById('studentName').value.trim(); const phone=document.getElementById('studentPhone').value.trim(); const examCount=document.getElementById('examCount').value; const message=document.getElementById('formMessage');
   if (!/^07[8923]\d{7}$/.test(phone)) {
     message.className='form-message error';
@@ -350,6 +373,17 @@ async function submitStudent(event){ event.preventDefault(); const name=document
   message.className = data.success ? 'form-message success' : 'form-message error';
   message.textContent=data.message || data.error || 'Byakunze.';
   if(data.success){ document.getElementById('studentForm').reset(); document.getElementById('examCount').value='1'; await loadWalletMetrics(); await loadStudents(); }
+}
+let bulkRows = [];
+function previewBulkStudents(){
+  const preview=document.getElementById('bulkPreview'); const lines=document.getElementById('bulkStudentsInput').value.split(/\r?\n/).map(line=>line.trim()).filter(Boolean); bulkRows=[]; const invalid=[];
+  lines.forEach((line,index)=>{ const parts=line.split(',').map(part=>part.trim()); const exams=Number(parts[2]); if(parts.length!==3 || !parts[0] || !/^07[8923]\d{7}$/.test(parts[1]) || !Number.isSafeInteger(exams) || exams<=0){ invalid.push(index+1); } else { bulkRows.push({studentName:parts[0],phoneNumber:parts[1],examCount:exams}); } });
+  const total=bulkRows.reduce((sum,row)=>sum+row.examCount,0); const ok=lines.length>0 && invalid.length===0 && new Set(bulkRows.map(row=>row.phoneNumber)).size===bulkRows.length;
+  preview.className='form-message '+(ok?'success':'error'); preview.textContent=lines.length+' rows · '+bulkRows.length+' valid · '+total+' exams required'+(invalid.length?' · Invalid rows: '+invalid.join(', '):''); document.getElementById('bulkRegisterButton').disabled=!ok;
+}
+async function registerBulkStudents(){
+  if(!bulkRows.length) return; const button=document.getElementById('bulkRegisterButton'); button.disabled=true; button.textContent='Registering...';
+  try { const response=await fetch('/api/school/register-students-bulk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({students:bulkRows})}); const data=await response.json(); if(!data.success){ ikToast(data.error||'Bulk registration failed.','error'); return; } ikToast(data.message||'Students registered.','success'); document.getElementById('bulkStudentsInput').value=''; document.getElementById('bulkPreview').textContent=''; await loadWalletMetrics(); await loadStudents(); } catch(error){ ikToast('Network error. Please try again.','error'); } finally { button.disabled=false; button.textContent='Register students'; previewBulkStudents(); }
 }
 document.addEventListener('DOMContentLoaded', async () => { await loadWalletMetrics(); await loadStudents(); });
 </script>

@@ -401,101 +401,100 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
 
     router.patch('/students/:id', (req, res) => {
         if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });
-
-        const studentId = parseInt(req.params.id, 10);
-        const { studentName, phoneNumber, examCount } = req.body;
-        const trimmedName = (studentName || '').trim();
+        const studentId = Number(req.params.id);
+        const { studentName, phoneNumber } = req.body;
+        const trimmedName = String(studentName || '').trim();
         let cleanedPhone;
-        try {
-            cleanedPhone = normalizeRwandaPhone(phoneNumber);
-        } catch (error) {
-            return res.status(400).json({ success: false, error: error.message });
-        }
-        const assignedExams = parseInt(examCount || '0', 10);
-        if (!studentId || !trimmedName || !cleanedPhone || assignedExams <= 0) {
-            return res.status(400).json({ success: false, error: 'Andika amazina, telefone, kandi ubaze exams 1+.' });
-        }
-
+        try { cleanedPhone = normalizeRwandaPhone(phoneNumber); } catch (error) { return res.status(400).json({ success: false, error: error.message }); }
+        if (!Number.isSafeInteger(studentId) || !trimmedName || trimmedName.length > 150) return res.status(400).json({ success: false, error: 'Andika amazina na telefone byemewe.' });
+        if (Object.prototype.hasOwnProperty.call(req.body, 'examCount') || Object.prototype.hasOwnProperty.call(req.body, 'assignedExams')) return res.status(400).json({ success: false, error: 'Assigned exams cannot be changed here. Use Add exams.' });
         ensureSchoolStudentsTable((tableErr) => {
-            if (tableErr) return res.status(500).json({ success: false, error: tableErr.message });
-            // Fetch current assigned_exams for this student to compute delta
-            db.query('SELECT assigned_exams FROM school_students WHERE id = ? AND school_id = ?', [studentId, req.session.schoolAccountId], (fErr, fRows) => {
-                if (fErr) return res.status(500).json({ success: false, error: fErr.message });
-                if (!fRows || fRows.length === 0) return res.status(404).json({ success: false, error: 'Student not found.' });
+            if (tableErr) return res.status(500).json({ success: false, error: 'Student service unavailable.' });
+            db.query('SELECT id FROM school_students WHERE school_id = ? AND phone_number = ? AND id != ? LIMIT 1', [req.session.schoolAccountId, cleanedPhone, studentId], (duplicateErr, duplicates) => {
+                if (duplicateErr) return res.status(500).json({ success: false, error: 'Gushaka umunyeshuri byanze.' });
+                if (duplicates.length) return res.status(409).json({ success: false, error: 'Iyi telephone isanzwe iri ku wundi munyeshuri.' });
+                db.query('UPDATE school_students SET student_name = ?, phone_number = ? WHERE id = ? AND school_id = ?', [trimmedName, cleanedPhone, studentId, req.session.schoolAccountId], (err, result) => {
+                    if (err) return res.status(500).json({ success: false, error: 'Student update failed.' });
+                    if (!result.affectedRows) return res.status(404).json({ success: false, error: 'Student not found.' });
+                    res.json({ success: true, message: 'Student record updated.' });
+                });
+            });
+        });
+    });
 
-                const currentAssigned = parseInt(fRows[0].assigned_exams || 0, 10);
-                const delta = assignedExams - currentAssigned;
-
-                const finalizeUpdate = () => {
-                    db.query('UPDATE school_students SET student_name = ?, phone_number = ?, assigned_exams = ? WHERE id = ? AND school_id = ?', [trimmedName, cleanedPhone, assignedExams, studentId, req.session.schoolAccountId], (err, result) => {
-                        if (err) return res.status(500).json({ success: false, error: err.message });
-                        if (!result || result.affectedRows === 0) return res.status(404).json({ success: false, error: 'Student not found.' });
-                        res.json({ success: true, message: 'Student record updated.' });
-                    });
-                };
-
-                if (delta === 0) return finalizeUpdate();
-
-                // If exams increased, allocate from school's payment_transactions
-                if (delta > 0) {
-                    const schoolId = req.session.schoolAccountId;
-                    db.query('SELECT id, remaining_exams FROM payment_transactions WHERE school_id = ? AND status = ? AND remaining_exams > 0 ORDER BY id ASC', [schoolId, 'SUCCESS'], (payErr, paymentRows) => {
-                        if (payErr) return res.status(500).json({ success: false, error: payErr.message });
-
-                        let remainingNeeded = delta;
-                        const updates = [];
-                        let canAllocate = true;
-
-                        paymentRows.forEach((row) => {
-                            if (!canAllocate) return;
-                            if (remainingNeeded <= 0) return;
-                            if (row.remaining_exams >= remainingNeeded) {
-                                updates.push({ id: row.id, remaining: row.remaining_exams - remainingNeeded });
-                                remainingNeeded = 0;
-                            } else {
-                                updates.push({ id: row.id, remaining: 0 });
-                                remainingNeeded -= row.remaining_exams;
-                            }
-                        });
-
-                        if (remainingNeeded > 0) return res.status(400).json({ success: false, error: 'Ishuri rifite ibizamini bike cyane. Ntabwo bivuye ku isoko.' });
-
-                        let pending = updates.length;
-                        if (pending === 0) return finalizeUpdate();
-
-                        updates.forEach((entry) => {
-                            db.query('UPDATE payment_transactions SET remaining_exams = ? WHERE id = ?', [entry.remaining, entry.id], (uErr) => {
-                                if (uErr) canAllocate = false;
-                                pending -= 1;
-                                if (pending === 0) {
-                                    if (!canAllocate) return res.status(500).json({ success: false, error: 'Guhindura ibizamini byanze.' });
-                                    return finalizeUpdate();
-                                }
-                            });
+    router.post('/students/:id/add-exams', (req, res) => {
+        if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });
+        const studentId = Number(req.params.id);
+        const additionalExams = Number(req.body.additionalExams);
+        if (!Number.isSafeInteger(studentId) || !Number.isSafeInteger(additionalExams) || additionalExams <= 0) return res.status(400).json({ success: false, error: 'Additional exams must be a positive whole number.' });
+        ensureSchoolStudentsTable((tableErr) => {
+            if (tableErr) return res.status(500).json({ success: false, error: 'Student service unavailable.' });
+            db.getConnection((connectionErr, connection) => {
+                if (connectionErr) return res.status(500).json({ success: false, error: 'Database unavailable.' });
+                const done = (status, body) => connection.release(() => res.status(status).json(body));
+                connection.beginTransaction((beginErr) => {
+                    if (beginErr) return done(500, { success: false, error: 'Transaction failed.' });
+                    connection.query('SELECT assigned_exams FROM school_students WHERE id = ? AND school_id = ? FOR UPDATE', [studentId, req.session.schoolAccountId], (studentErr, students) => {
+                        if (studentErr || !students.length) return connection.rollback(() => done(studentErr ? 500 : 404, { success: false, error: studentErr ? 'Student lookup failed.' : 'Student not found.' }));
+                        connection.query('SELECT id, remaining_exams FROM payment_transactions WHERE school_id = ? AND status = ? AND remaining_exams > 0 ORDER BY id ASC FOR UPDATE', [req.session.schoolAccountId, 'SUCCESS'], (payErr, payments) => {
+                            if (payErr) return connection.rollback(() => done(500, { success: false, error: 'Credit lookup failed.' }));
+                            let needed = additionalExams; const updates = [];
+                            for (const row of payments) { if (!needed) break; const take = Math.min(needed, Number(row.remaining_exams)); updates.push([Number(row.remaining_exams) - take, row.id]); needed -= take; }
+                            if (needed) return connection.rollback(() => done(400, { success: false, error: 'Not enough exam credits.' }));
+                            const apply = (index) => {
+                                if (index < updates.length) return connection.query('UPDATE payment_transactions SET remaining_exams = ? WHERE id = ?', updates[index], (err) => err ? connection.rollback(() => done(500, { success: false, error: 'Credit update failed.' })) : apply(index + 1));
+                                connection.query('UPDATE school_students SET assigned_exams = assigned_exams + ? WHERE id = ? AND school_id = ?', [additionalExams, studentId, req.session.schoolAccountId], (err) => {
+                                    if (err) return connection.rollback(() => done(500, { success: false, error: 'Student update failed.' }));
+                                    connection.commit((commitErr) => commitErr ? connection.rollback(() => done(500, { success: false, error: 'Transaction failed.' })) : done(200, { success: true, message: 'Exams added successfully.' }));
+                                });
+                            };
+                            apply(0);
                         });
                     });
-                    return;
-                }
+                });
+            });
+        });
+    });
 
-                // If exams decreased, return credits back to school's pool (add to most recent payment)
-                if (delta < 0) {
-                    const returnCount = Math.abs(delta);
-                    const schoolId = req.session.schoolAccountId;
-                    db.query('SELECT id, remaining_exams FROM payment_transactions WHERE school_id = ? AND status = ? ORDER BY id DESC LIMIT 1', [schoolId, 'SUCCESS'], (pErr, pRows) => {
-                        if (pErr) return res.status(500).json({ success: false, error: pErr.message });
-                        if (!pRows || pRows.length === 0) {
-                            // No payment row to credit, just finalize update
-                            return finalizeUpdate();
-                        }
-                        const target = pRows[0];
-                        const newRemaining = (parseInt(target.remaining_exams || 0, 10) + returnCount);
-                        db.query('UPDATE payment_transactions SET remaining_exams = ? WHERE id = ?', [newRemaining, target.id], (updErr) => {
-                            if (updErr) return res.status(500).json({ success: false, error: updErr.message });
-                            return finalizeUpdate();
+    router.post('/register-students-bulk', (req, res) => {
+        if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session expired.' });
+        const rows = Array.isArray(req.body.students) ? req.body.students : [];
+        if (!rows.length || rows.length > 50) return res.status(400).json({ success: false, error: 'Batch must contain between 1 and 50 students.' });
+        const seen = new Set(); const students = [];
+        for (let index = 0; index < rows.length; index += 1) {
+            const row = rows[index] || {}; const name = String(row.studentName || '').trim(); let phone;
+            try { phone = normalizeRwandaPhone(row.phoneNumber); } catch (error) { return res.status(400).json({ success: false, error: 'Row ' + (index + 1) + ': ' + error.message }); }
+            const exams = Number(row.examCount);
+            if (!name || name.length > 150 || !Number.isSafeInteger(exams) || exams <= 0) return res.status(400).json({ success: false, error: 'Row ' + (index + 1) + ': invalid name or exam count.' });
+            if (seen.has(phone)) return res.status(409).json({ success: false, error: 'Duplicate phone in batch: ' + phone });
+            seen.add(phone); students.push({ name, phone, exams });
+        }
+        ensureSchoolStudentsTable((tableErr) => {
+            if (tableErr) return res.status(500).json({ success: false, error: 'Student service unavailable.' });
+            db.getConnection((connectionErr, connection) => {
+                if (connectionErr) return res.status(500).json({ success: false, error: 'Database unavailable.' });
+                const fail = (status, message) => connection.rollback(() => connection.release(() => res.status(status).json({ success: false, error: message })));
+                connection.beginTransaction((beginErr) => {
+                    if (beginErr) return fail(500, 'Transaction failed.');
+                    const marks = students.map(() => '?').join(',');
+                    connection.query('SELECT phone_number FROM school_students WHERE school_id = ? AND phone_number IN (' + marks + ')', [req.session.schoolAccountId, ...students.map((student) => student.phone)], (existingErr, existing) => {
+                        if (existingErr) return fail(500, 'Duplicate check failed.');
+                        if (existing.length) return fail(409, 'Phone already registered: ' + existing[0].phone_number);
+                        connection.query('SELECT id, remaining_exams FROM payment_transactions WHERE school_id = ? AND status = ? AND remaining_exams > 0 ORDER BY id ASC FOR UPDATE', [req.session.schoolAccountId, 'SUCCESS'], (payErr, payments) => {
+                            if (payErr) return fail(500, 'Credit lookup failed.');
+                            const total = students.reduce((sum, student) => sum + student.exams, 0); const available = payments.reduce((sum, row) => sum + Number(row.remaining_exams), 0);
+                            if (total > available) return fail(400, 'Not enough exam credits. Required: ' + total + '; available: ' + available + '.');
+                            let needed = total; const updates = []; for (const payment of payments) { if (!needed) break; const take = Math.min(needed, Number(payment.remaining_exams)); updates.push([Number(payment.remaining_exams) - take, payment.id]); needed -= take; }
+                            const updateCredits = (index) => {
+                                if (index < updates.length) return connection.query('UPDATE payment_transactions SET remaining_exams = ? WHERE id = ?', updates[index], (error) => error ? fail(500, 'Credit update failed.') : updateCredits(index + 1));
+                                const insertStudents = (index) => {
+                                    if (index >= students.length) return connection.commit((error) => error ? fail(500, 'Transaction failed.') : connection.release(() => res.json({ success: true, totalExams: total, message: students.length + ' students registered successfully.' })));
+                                    const student = students[index]; connection.query('INSERT INTO school_students (school_id, student_name, phone_number, assigned_exams) VALUES (?, ?, ?, ?)', [req.session.schoolAccountId, student.name, student.phone, student.exams], (error) => error ? fail(500, 'Student registration failed.') : insertStudents(index + 1));
+                                }; insertStudents(0);
+                            }; updateCredits(0);
                         });
                     });
-                    return;
-                }
+                });
             });
         });
     });
