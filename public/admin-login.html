@@ -271,12 +271,16 @@
         .card .sub { font-size: 0.9rem; color: var(--text-muted); text-align: left; line-height: 1.6; margin-bottom: 24px; max-width: 460px; }
 
         .alert {
-            border-radius: 14px; padding: 12px 16px; font-size: 13px; font-weight: 700;
-            margin-bottom: 12px; display: none; align-items: center; gap: 10px;
+            border-radius: 12px; padding: 12px 14px; font-size: 13px; font-weight: 600;
+            margin: 16px 0 18px; display: none; align-items: flex-start; gap: 10px;
+            line-height: 1.45;
         }
         .alert.show { display: flex; }
-        .alert.error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
-        .alert.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .alert > i { flex: 0 0 auto; margin-top: 2px; }
+        .alert.error { background: #FEF2F2; border: 1px solid #FECACA; color: #B91C1C; }
+        .alert.error > i { color: #DC2626; }
+        .alert.success { background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; }
+        .alert.success > i { color: #16A34A; }
 
         .form { display: flex; flex-direction: column; gap: 14px; }
         .field { display: flex; flex-direction: column; gap: 6px; }
@@ -881,7 +885,7 @@
         .card { --card-pad-x: clamp(24px, 3vw, 34px); --card-pad-y: clamp(22px, 2.6vw, 30px); width: 100%; max-width: 460px; padding: var(--card-pad-y) var(--card-pad-x); border: 1px solid #D7E1EA; border-radius: 14px; background: #F8FAFC; box-shadow: 0 12px 32px rgba(31,60,90,.1); backdrop-filter: none; -webkit-backdrop-filter: none; }
         .login-card-header { display: flex; align-items: center; gap: 11px; min-height: 62px; margin: calc(-1 * var(--card-pad-y)) calc(-1 * var(--card-pad-x)) 20px; padding: 16px 22px; border-radius: 13px 13px 0 0; background: #0D47A1; color: #FFFFFF; font-size: 1.18rem; font-weight: 800; line-height: 1.25; letter-spacing: .045em; text-transform: uppercase; }
         .login-card-header i { color: #90CAF9; font-size: 1rem; }
-        .inactive-notice { margin: 0 0 18px; padding: 12px 14px; border: 1px solid #F5B7B7; border-radius: 9px; background: #FDECEC; color: #B91C1C; }
+        .inactive-notice { margin: 16px 0 18px; padding: 12px 14px; border: 1px solid #FCD34D; border-radius: 12px; background: #FFFBEB; color: #92400E; line-height: 1.45; }
         .inactive-notice strong, .inactive-notice span { display: block; }
         .inactive-notice strong { margin-bottom: 4px; }
         .inactive-notice[hidden] { display: none; }
@@ -1120,19 +1124,18 @@
         <main class="login-panel">
             <div class="card">
 
-        <div class="alert error" id="alertBox">
-            <i class="fa-solid fa-circle-xmark"></i>
-            <span id="alertMsg">Please verify your login details.</span>
-        </div>
-        <div class="alert success" id="successBox">
-            <i class="fa-solid fa-circle-check"></i>
-            <span id="successMsg">Success!</span>
-        </div>
-
         <!-- ── PANEL 1: Login ── -->
         <div class="panel active" id="panelLogin">
             <h2 class="login-card-header"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Admin Login</h2>
-            <div class="inactive-notice" id="inactiveNotice" role="alert" hidden>
+            <div class="alert error" id="alertBox" role="alert" aria-live="assertive">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                <span id="alertMsg">Please verify your login details.</span>
+            </div>
+            <div class="alert success" id="successBox" role="status" aria-live="polite">
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                <span id="successMsg">Success!</span>
+            </div>
+            <div class="inactive-notice" id="inactiveNotice" role="status" aria-live="polite" hidden>
                 <strong>Session expired</strong>
                 <span>Your admin session ended after 2 minutes of inactivity. Please sign in again.</span>
             </div>
@@ -1320,7 +1323,14 @@
         function showPanel(id) {
             hideAlerts();
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            const panel = document.getElementById(id);
+            panel.classList.add('active');
+            if (id === 'panelLogin') {
+                const header = panel.querySelector('.login-card-header');
+                header.after(alertBox, successBox);
+            } else {
+                panel.prepend(alertBox, successBox);
+            }
         }
 
         // Password toggle — login
