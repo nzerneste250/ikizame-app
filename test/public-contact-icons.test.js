@@ -25,9 +25,13 @@ test('PUBLIC_CONTACT_ICONS_AND_LINKS=PASS', () => {
 
 test('PUBLIC_CONTACT_ICONS_SHARED_RESPONSIVE_STYLE=PASS', () => {
   const css = fs.readFileSync(path.join(publicDir, 'assets', 'css', 'public-site.css'), 'utf8');
-  assert.match(css, /\.site-footer \.contact-details i[\s\S]*flex: 0 0 17px/);
-  assert.match(css, /\.site-footer \.contact-details \.fa-whatsapp\s*\{\s*color:\s*#25d366/);
-  assert.match(css, /\.site-footer \.contact-details a:hover\s*\{[\s\S]*transform:\s*translateX\(2px\)/);
+  assert.ok(css.includes('flex: 0 0 20px'));
+  assert.ok(css.includes('min-width: 20px'));
+  assert.ok(css.includes('gap: 10px'));
+  assert.ok(css.includes('.site-footer .contact-details .fa-whatsapp { color: #25d366; }'));
+  assert.ok(css.includes('overflow-wrap: anywhere'));
+  assert.ok(css.includes('transition: color .16s ease;'));
+  assert.ok(css.includes('.site-footer .contact-details a:hover { color: #86efac; }'));
   assert.match(css, /\.site-footer :where\(a, strong\)\s*\{\s*overflow-wrap:\s*anywhere/);
   assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.site-footer \{\s*grid-template-columns: 1fr 1fr/);
 });
