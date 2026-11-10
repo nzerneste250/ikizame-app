@@ -217,7 +217,7 @@ module.exports = (db) => {
         } else if (checkoutIntentType === 'PERSONAL' || checkoutIntentType === 'EXAMS') {
             const qty = examQuantityVolume;
             const pricing = getIndividualExamPricing(qty);
-            if (!pricing) return res.status(400).json({ success: false, error: 'Exam quantity must be between 1 and 50.' });
+            if (!pricing) return res.status(400).json({ success: false, error: 'Exam quantity must be a positive whole number and the total must not exceed 99,999,999 RWF.' });
             examCount = qty;
             amount    = pricing.amount;
             planLabel = `Personal Tiered Pass (${qty} Exams Package)`;

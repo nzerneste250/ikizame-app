@@ -82,7 +82,7 @@ The JSON parser stores `req.rawBody`, which is required for PayPack webhook sign
 - `examImagePath.js`: normalizes/resolves exam image paths.
 - `otp.js`: in-memory OTP issuance limits, cooldowns, expiration, invalid-attempt locks, and one-time verification.
 - `paymentPhone.js`, `rwandaPhone.js`: Rwanda phone normalization/validation. Reuse these instead of implementing ad-hoc phone parsing.
-- `pricing.js`: authoritative individual exam pricing (1–15: 100 RWF each; 16–25: 80 RWF each; 26–50: 70 RWF each) and school packages (Basic: 10,000 RWF/100 credits; Standard: 20,000 RWF/300 credits; Premium: 30,000 RWF/600 credits). Do not duplicate pricing rules or invent a price for quantities above 50.
+- `pricing.js`: authoritative individual exam pricing (1–15: 100 RWF each; 16–25: 80 RWF each; 26 and above: 70 RWF each) and school packages (Basic: 10,000 RWF/100 credits; Standard: 20,000 RWF/300 credits; Premium: 30,000 RWF/600 credits). Individual payment totals must fit the payment amount column.
 - `paymentTransactions.js`: the shared successful-payment entitlement insert and duplicate-payment detection.
 - `paymentReconciliationExecution.js`, `paypackReconciliation.js`: narrowly scoped PayPack recovery/reconciliation checks.
 - `publicPageRenderer.js`: canonical tags, noindex behavior, analytics injection, and selected footer-link injection.
@@ -132,7 +132,7 @@ Node built-in tests covering authentication, authorization, payments, PayPack we
 ### Payment flow
 
 1. The browser submits a plan/phone/service request to the payments API.
-2. The server validates the phone and derives pricing/entitlement values server-side using `helpers/pricing.js`; never trust client-provided exam counts, prices, or credits. Individual purchases are priced for quantities 1–50; reject unsupported quantities rather than inventing a rate.
+2. The server validates the phone and derives pricing/entitlement values server-side using `helpers/pricing.js`; never trust client-provided exam counts, prices, or credits. Individual purchases are priced at 100 RWF each for 1–15 exams, 80 RWF each for 16–25, and 70 RWF each from 26 onward, subject to safe integer and persisted payment amount limits.
 3. PayPack cash-in is initiated using a cached access token. The documented cash-in request accepts `amount` and `number`; PayPack generates the transaction reference.
 4. After PayPack returns a reference, it is written to `pending_payment_requests` before initiation is reported as successful to the browser. This does not make the order durable while the provider request is in flight.
 5. PayPack sends a signed `transaction:processed` webhook.
@@ -155,7 +155,7 @@ Important payment invariants:
 
 Pricing rules are defined centrally in `helpers/pricing.js` and must not be duplicated as independent server-side pricing logic:
 
-- Individual exams: 1–15 at 100 RWF each, 16–25 at 80 RWF each, and 26–50 at 70 RWF each. Reject non-whole, out-of-range, or greater-than-50 quantities; do not invent another tier.
+- Individual exams: 1–15 at 100 RWF each, 16–25 at 80 RWF each, and 26 or more at 70 RWF each. Reject non-positive/non-whole quantities and totals exceeding the supported payment amount; do not impose a business quantity cap.
 - School packages: Basic is 10,000 RWF for 100 credits; Standard is 20,000 RWF for 300 credits; Premium is 30,000 RWF for 600 credits.
 
 ### School portal
@@ -299,3 +299,11 @@ After editing:
 - Regression tests cover both the polling-timeout and polling-network-error paths, including disabled controls and the warning/reference.
 - Verification: focused `test/pricing.test.js` passed **6/6**; full `npm test` passed **195/195**; `git diff --check` passed.
 - Files changed for this correction: `public/school-dashboard.html` and `test/pricing.test.js`. No migration, commit, push, or deployment was performed.
+
+### Individual exam pricing quantity expansion report (2026-11-10)
+
+- Individual purchases now use 100 RWF per exam for quantities 1–15, 80 RWF for 16–25, and 70 RWF for 26 exams and above. Pricing remains server-derived; client-submitted prices do not affect payment amounts.
+- Removed the 50-exam input restriction and updated the active pricing page and individual-price descriptions in the public terms pages. School package pricing and school payment behavior were not changed.
+- The database payment amount column is `DECIMAL(10,2)`, so integer RWF amounts are limited to 99,999,999. At 70 RWF per exam, the largest supported quantity is 1,428,571; larger totals are rejected before PayPack initiation. PayPack’s documented cash-in API provides no numeric amount maximum.
+- Tests cover 51, 100, and 200 exams and the storage limit, including backend amount calculation and frontend price display. Focused pricing/UX tests passed **14/14**; full `npm test` passed **195/195**; `git diff --check` passed.
+- Files changed for this correction: `helpers/pricing.js`, `routes/payments.js`, `public/ibiciro.html`, `public/terms.html`, `public/terms-school.html`, `test/pricing.test.js`, and `test/payment-ux.test.js`. No deployment, commit, or push was performed.

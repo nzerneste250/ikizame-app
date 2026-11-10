@@ -141,11 +141,11 @@ test('pending checkout reopens without creating a second payment and restarts po
 });
 
 test('the three current exam price ranges remain visible without legacy tiers', () => {
-  for (const tier of ['Ibizamini 1&#8211;15', 'Ibizamini 16&#8211;25', 'Ibizamini 26&#8211;50']) {
+  for (const tier of ['Ibizamini 1&#8211;15', 'Ibizamini 16&#8211;25', 'Ibizamini 26 kuzamura']) {
     assert.match(pricingPage, new RegExp(tier.replace(/[+]/g, '\\+')));
   }
   assert.doesNotMatch(pricingPage, /Ibizamini 1&#8211;9|Ibizamini 10&#8211;14|Ibizamini 15&#8211;20|Ibizamini 21\+|50 RWF/);
-  assert.match(pricingPage, /max="50"/);
+  assert.doesNotMatch(pricingPage, /max="50"|kugeza ku bizamini 50/);
 });
 
 test('the public FAQ states the correct 1–15 individual pricing range', () => {
@@ -155,7 +155,7 @@ test('the public FAQ states the correct 1–15 individual pricing range', () => 
   assert.match(pricingPage, /examQuantityVolume: Number\(qtyInput\.value\)/);
 });
 
-test('individual checkout totals use the new flat per-exam prices and reject quantities above 50', () => {
+test('individual checkout totals apply 70 RWF to every quantity above 25 within the payment amount limit', () => {
   const elements = new Map();
   const makeElement = (id, value = '') => ({ id, value, textContent: '', style: {}, disabled: false });
   for (const [id, value] of [
@@ -172,14 +172,18 @@ test('individual checkout totals use the new flat per-exam prices and reject qua
   const end = pricingPage.indexOf('        function restoreAdaptivePayButtonLabel()', start);
   vm.runInNewContext(`let activeReferenceId = null;\n${pricingPage.slice(start, end)}`, context);
 
-  for (const [quantity, unitPrice, total] of [[15, 100, 1500], [16, 80, 1280], [25, 80, 2000], [26, 70, 1820], [50, 70, 3500]]) {
+  for (const [quantity, unitPrice, total] of [
+    [15, 100, 1500], [16, 80, 1280], [25, 80, 2000],
+    [26, 70, 1820], [50, 70, 3500], [51, 70, 3570],
+    [100, 70, 7000], [200, 70, 14000], [1428571, 70, 99999970]
+  ]) {
     elements.get('examQuantityVolumeSelector').value = String(quantity);
     context.window.recalculateLiveDynamicBillingAmount();
     assert.equal(elements.get('pricePerExamLabel').textContent, `${unitPrice} RWF`);
     assert.equal(elements.get('liveAmountBreakdownDisplayStrip').textContent, `${total.toLocaleString()} RWF`);
     assert.equal(elements.get('momoSubmitPaymentBtn').disabled, false);
   }
-  elements.get('examQuantityVolumeSelector').value = '51';
+  elements.get('examQuantityVolumeSelector').value = '1428572';
   context.window.recalculateLiveDynamicBillingAmount();
   assert.equal(elements.get('pricePerExamLabel').textContent, '—');
   assert.equal(elements.get('liveAmountBreakdownDisplayStrip').textContent, '—');

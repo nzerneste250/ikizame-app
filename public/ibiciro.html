@@ -940,7 +940,7 @@
                 <div class="pricing-hero-copy">
                     <div class="pricing-eyebrow"><i class="fa-solid fa-shield-heart"></i> Ibiciro by&#8217;ibizamini</div>
                     <h1 id="pricingTitle">Hitamo ibizamini byawe, <span>utangire kwitoza.</span></h1>
-                    <p>Hitamo umubare w’ibizamini ukwiriye, wishyure ukoresheje MTN MoMo cyangwa Airtel Money, maze utangire kwitoza. Ibiciro birahari kugeza ku bizamini 50.</p>
+                    <p>Hitamo umubare w’ibizamini ukwiriye, wishyure ukoresheje MTN MoMo cyangwa Airtel Money, maze utangire kwitoza. Guhera ku bizamini 26, wishyura 70 RWF kuri buri kizamini.</p>
                     <div class="pricing-trust-row" aria-label="Ibyiza byo kugura ibizamini">
                         <span><i class="fa-solid fa-circle-check"></i> Kwishyura byoroshye</span>
                         <span class="trust-provider">
@@ -979,10 +979,10 @@
                     </article>
                     <article class="price-card is-best">
                         <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></div>
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 26&#8211;50</h3><span class="pricing-card-badge">Ihitamo rikunzwe</span></div>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 26 kuzamura</h3><span class="pricing-card-badge">Ihitamo rikunzwe</span></div>
                         <div class="pricing-card-price"><strong>70</strong><span>RWF</span></div>
                         <p class="pricing-card-unit">kuri buri kizamini</p>
-                        <p class="pricing-card-description">70 RWF kuri buri kizamini muri uru rwego.</p>
+                        <p class="pricing-card-description">70 RWF kuri buri kizamini guhera ku bizamini 26.</p>
                         <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(26)">Hitamo</button>
                     </article>
                 </div>
@@ -1095,7 +1095,7 @@
                     <div class="checkout-top-left pay-modal-fields">
                         <div class="pay-field pay-quantity-field">
                             <label class="pay-field-label" for="examQuantityVolumeSelector">Umubare w&#8217;ibizamini</label>
-                            <input type="number" id="examQuantityVolumeSelector" min="1" max="50" value="1" oninput="recalculateLiveDynamicBillingAmount()">
+                            <input type="number" id="examQuantityVolumeSelector" min="1" step="1" value="1" oninput="recalculateLiveDynamicBillingAmount()">
                             <div class="pay-tier-hint" id="dynamicPricingHelperLabel"></div>
                         </div>
                         <span id="momoCarrierChip" style="display:none;"></span>
@@ -1377,18 +1377,18 @@
 
         function pricePerExamForPurchaseQuantity(qty) {
             const count = Number(qty) || 0;
-            if (!Number.isInteger(count) || count < 1 || count > 50) return null;
+            if (!Number.isSafeInteger(count) || count < 1) return null;
             if (count <= 15) return 100;
             if (count <= 25) return 80;
-            return 70;
+            return count * 70 <= 99_999_999 ? 70 : null;
         }
 
         function tierLabelForPurchaseQuantity(qty) {
             const count = Number(qty) || 0;
-            if (!Number.isInteger(count) || count < 1 || count > 50) return 'Hitamo umubare wuzuye uri hagati ya 1 na 50.';
+            if (pricePerExamForPurchaseQuantity(count) === null) return 'Shyiramo umubare wuzuye urenze 0; igiciro ntigishobora kurenga 99,999,999 RWF kuri buri kwishyura.';
             if (count <= 15) return 'Igiciro: 100 RWF kuri buri kizamini';
             if (count <= 25) return 'Igiciro: 80 RWF kuri buri kizamini';
-            return 'Igiciro: 70 RWF kuri buri kizamini';
+            return 'Igiciro: 70 RWF kuri buri kizamini guhera ku bizamini 26';
         }
 
         window.recalculateLiveDynamicBillingAmount = function() {
@@ -1438,7 +1438,7 @@
             const unitPrice = pricePerExamForPurchaseQuantity(qty);
 
             if (unitPrice === null) {
-                showPaymentStatus('Igiciro ntikiboneka ku bizamini birenga 50. Hitamo umubare uri hagati ya 1 na 50.', 'error', true);
+                showPaymentStatus('Shyiramo umubare wuzuye urenze 0; igiciro ntigishobora kurenga 99,999,999 RWF kuri buri kwishyura.', 'error', true);
                 qtyInput.focus();
                 return;
             }

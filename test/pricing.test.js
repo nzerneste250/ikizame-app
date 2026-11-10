@@ -15,12 +15,15 @@ test('individual exam pricing covers the three published ranges and rejects inva
   for (const [quantity, unitPrice, amount] of [
     [1, 100, 100], [15, 100, 1500],
     [16, 80, 1280], [25, 80, 2000],
-    [26, 70, 1820], [50, 70, 3500]
+    [26, 70, 1820], [50, 70, 3500],
+    [51, 70, 3570], [100, 70, 7000], [200, 70, 14000],
+    [1428571, 70, 99999970]
   ]) {
     assert.deepEqual(getIndividualExamPricing(quantity), { quantity, pricePerExam: unitPrice, amount });
   }
   for (const quantity of [
-    undefined, '1', '', true, false, [], [1], {}, null, 1.5, 0, -1, 51
+    undefined, '1', '', true, false, [], [1], {}, null, 1.5, 0, -1,
+    1428572, Number.MAX_SAFE_INTEGER + 1
   ]) {
     assert.equal(getIndividualExamPricing(quantity), null, `expected ${JSON.stringify(quantity)} to be rejected`);
   }
@@ -95,7 +98,9 @@ test('personal payment initiation derives the tier amount and stored unit price 
   for (const [quantity, amount, unitPrice] of [
     [1, 100, 100], [15, 1500, 100],
     [16, 1280, 80], [25, 2000, 80],
-    [26, 1820, 70], [50, 3500, 70]
+    [26, 1820, 70], [50, 3500, 70],
+    [51, 3570, 70], [100, 7000, 70], [200, 14000, 70],
+    [1428571, 99999970, 70]
   ]) {
     const response = await fetch(`http://127.0.0.1:${server.address().port}/api/payments/momo-push`, {
       method: 'POST',
@@ -115,7 +120,8 @@ test('personal payment initiation derives the tier amount and stored unit price 
     assert.deepEqual(providerCalls.at(-1), { amount, number: '0781234567' });
   }
   for (const examQuantityVolume of [
-    undefined, '1', '', true, false, [], [1], {}, null, 1.5, 0, -1, 51
+    undefined, '1', '', true, false, [], [1], {}, null, 1.5, 0, -1,
+    1428572, Number.MAX_SAFE_INTEGER + 1
   ]) {
     const unsupported = await fetch(`http://127.0.0.1:${server.address().port}/api/payments/momo-push`, {
       method: 'POST',
@@ -124,7 +130,7 @@ test('personal payment initiation derives the tier amount and stored unit price 
     });
     assert.equal(unsupported.status, 400, `expected ${JSON.stringify(examQuantityVolume)} to be rejected`);
   }
-  assert.equal(providerCalls.length, 6);
+  assert.equal(providerCalls.length, 10);
 });
 
 test('authenticated school package purchase sends only server-derived package price and credit data to PayPack', async t => {
