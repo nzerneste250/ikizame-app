@@ -363,7 +363,7 @@
             </div>
             <div>
                 <label>Total Exams Purchased</label>
-                <input type="number" id="editPaymentTotalExams" min="0">
+                <input type="number" id="editPaymentTotalExams" readonly>
             </div>
             <div>
                 <label>Remaining Exams</label>
@@ -380,7 +380,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn-text-action close-btn" onclick="closeEditPaymentModal()">Cancel</button>
-            <button class="btn-primary" onclick="savePaymentTransactionEdit()">Save Changes</button>
+            <button class="btn-primary" id="savePaymentEditButton" onclick="savePaymentTransactionEdit()">Save Changes</button>
         </div>
     </div>
 </div>
@@ -611,6 +611,9 @@
             const rowClass = isNeg ? 'negative-warn-row' : '';
             const price = tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : tx.total_exams ? formatExamPrice((tx.amount || 0) / tx.total_exams) : '-';
             const remainingClass = rem > 0 ? 'has-remaining' : 'no-remaining';
+            const editAction = tx.school_id != null
+                ? '<button class="btn-text-action btn-edit payment-edit-action" disabled title="School package transactions cannot be edited here"><i class="fa-solid fa-lock"></i><span>School package</span></button>'
+                : `<button class="btn-text-action btn-edit payment-edit-action" onclick="openEditPaymentModal(${tx.id})"><i class="fa-solid fa-pen"></i><span>Edit</span></button>`;
             return `<tr class="${rowClass}" data-reference="${escAttr(realRef)}" data-date="${(tx.created_at||'').slice(0,10)}" data-remaining="${Number.isFinite(rem) ? rem : 0}">
                 <td class="payment-index" data-label="#">#${i + 1}</td>
                 <td class="payment-customer" data-label="Customer">
@@ -628,7 +631,7 @@
                     <span class="credit-remaining ${remainingClass}">${rem} remaining ${remCell}</span>
                 </td>
                 <td class="payment-date-cell" data-label="Date"><span>${createdDate}</span><span class="payment-secondary">${createdTime}</span></td>
-                <td class="payment-actions" data-label="Actions"><button class="btn-text-action btn-edit payment-edit-action" onclick="openEditPaymentModal(${tx.id})"><i class="fa-solid fa-pen"></i><span>Edit</span></button></td>
+                <td class="payment-actions" data-label="Actions">${editAction}</td>
             </tr>`;
         }).join('');
     }
@@ -672,31 +675,13 @@ function applyDateFilter(dateStr) {
         return num.toFixed(2) + ' RWF';
     }
 
-    function calculateTieredExamAmount(qty) {
-        const count = Number(qty) || 0;
-        if (count <= 0) return 0;
-        if (count <= 9) return count * 100;
-        if (count <= 14) return 900 + (count - 9) * 80;
-        if (count <= 20) return 1300 + (count - 14) * 70;
-        return 1720 + (count - 20) * 50;
-    }
-
-    function updateEditCalculationFields() {
-        const totalExams = Number(document.getElementById('editPaymentTotalExams').value);
-        if (isNaN(totalExams) || totalExams <= 0) {
-            document.getElementById('editPaymentAmount').value = 0;
-            document.getElementById('editPaymentPricePerExam').value = '—';
-            return;
-        }
-        const amount = calculateTieredExamAmount(totalExams);
-        document.getElementById('editPaymentAmount').value = amount;
-        document.getElementById('editPaymentPricePerExam').value = formatExamPrice(amount / totalExams);
-        document.getElementById('editPaymentPlan').value = `Personal Tiered Pass (${totalExams} Exams Package)`;
-    }
-
     function openEditPaymentModal(transactionId) {
         const tx = paymentTransactions.find(item => item.id === transactionId);
         if (!tx) return;
+        if (tx.school_id != null) {
+            ikToast('School package transactions cannot be edited here.', 'warning');
+            return;
+        }
         document.getElementById('editPaymentId').value = tx.id;
         document.getElementById('editPaymentPhone').value = tx.phone_number || '';
         document.getElementById('editPaymentRef').value = tx.reference_id || tx.referenceId || '';
@@ -705,7 +690,6 @@ function applyDateFilter(dateStr) {
         document.getElementById('editPaymentRemainingExams').value = tx.remaining_exams || 0;
         document.getElementById('editPaymentAmount').value = tx.amount || 0;
         document.getElementById('editPaymentPricePerExam').value = tx.price_per_exam ? formatExamPrice(tx.price_per_exam) : formatExamPrice((tx.amount || 0) / (tx.total_exams || tx.remaining_exams || 1));
-        updateEditCalculationFields();
         document.getElementById('editPaymentModal').style.display = 'flex';
     }
 
@@ -715,16 +699,12 @@ function applyDateFilter(dateStr) {
 
     function savePaymentTransactionEdit() {
         const id = Number(document.getElementById('editPaymentId').value);
-        const total_exams = Number(document.getElementById('editPaymentTotalExams').value);
         const remaining_exams = Number(document.getElementById('editPaymentRemainingExams').value);
-        if (isNaN(id) || isNaN(total_exams) || isNaN(remaining_exams) || total_exams < 0) {
-            ikToast('Enter whole numbers for total and remaining exams.', 'warning');
+        if (!Number.isInteger(id) || id < 1 || !Number.isInteger(remaining_exams) || remaining_exams < 0) {
+            ikToast('Enter a non-negative whole number of remaining exams.', 'warning');
             return;
         }
-        if (remaining_exams < 0) {
-            ikAlert('Remaining exams cannot be below zero. This student has used all assigned exams; create a new payment if more are needed.', 'warning', 'No Exams Remaining');
-            return;
-        }
+        const total_exams = Number(document.getElementById('editPaymentTotalExams').value);
         if (remaining_exams > total_exams) {
             ikToast('Remaining exams cannot exceed the total exams purchased.', 'warning');
             return;
@@ -732,7 +712,7 @@ function applyDateFilter(dateStr) {
         fetch(`/api/admin/payment-transaction/${id}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ total_exams, remaining_exams })
+            body: JSON.stringify({ remaining_exams })
         })
         .then(res => res.json())
         .then(result => {
@@ -748,7 +728,6 @@ function applyDateFilter(dateStr) {
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('editPaymentTotalExams').addEventListener('input', updateEditCalculationFields);
         loadPaymentDashboard();
     });
 

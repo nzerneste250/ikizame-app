@@ -5,6 +5,7 @@ const axios  = require('axios');
 const { normalizeAndValidatePaymentPhone } = require('../helpers/paymentPhone');
 const { normalizeRwandaPhone } = require('../helpers/rwandaPhone');
 const { createOtpState, canIssueOtp, registerOtpCode, verifyOtpCode } = require('../helpers/otp');
+const { getSchoolPackage } = require('../helpers/pricing');
 const BCRYPT_ROUNDS = 10;
 
 const PAYPACK_BASE   = 'https://payments.paypack.rw/api';
@@ -184,9 +185,11 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
     // POST renew license — real Paypack USSD push, no DB insert until webhook confirms
     router.post('/renew-license', async (req, res) => {
         if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false, error: 'Session timeout.' });
-        const { phoneNumber } = req.body;
+        const { phoneNumber, packageId } = req.body;
         const schoolId   = req.session.schoolAccountId;
         const schoolName = req.session.schoolAccountName;
+        const selectedPackage = getSchoolPackage(packageId);
+        if (!selectedPackage) return res.status(400).json({ success: false, error: 'Hitamo package yemewe mbere yo kwishyura.' });
 
         if (!phoneNumber || phoneNumber.trim().length < 10) return res.status(400).json({ success: false, error: 'Injiza nomero ya telephone yuzuye.' });
 
@@ -197,26 +200,62 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
             return res.status(400).json({ success: false, error: validationErr.message });
         }
 
+        let paypackRef;
         try {
             const token = await getToken();
             const { data } = await axios.post(
                 `${PAYPACK_BASE}/transactions/cashin`,
-                { amount: 10000, number: phone },
+                { amount: selectedPackage.price, number: phone },
                 { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Webhook-Mode': 'production' }, timeout: 20000 }
             );
-            const paypackRef = data?.ref;
+            paypackRef = data?.ref;
             if (!paypackRef) throw new Error('No ref returned from Paypack');
 
-            // Store in memory — DB insert happens only on successful webhook
-            schoolPendingMap.set(paypackRef, {
+            const pendingOrder = {
                 phone, schoolId, schoolName,
+                packageId: selectedPackage.id,
+                amount: selectedPackage.price,
+                examCount: selectedPackage.examCredits,
+                priceToStore: selectedPackage.price / selectedPackage.examCredits,
+                planLabel: `${selectedPackage.name} School Package (${selectedPackage.examCredits} Exams)`,
                 expires: Date.now() + 5 * 60 * 1000
+            };
+            // Keep a short-lived fallback for a callback racing the durable write.
+            schoolPendingMap.set(paypackRef, pendingOrder);
+            pendingOrder.persistPromise = new Promise((resolve, reject) => {
+                db.query(
+                    `INSERT INTO pending_payment_requests
+                        (payment_reference, phone_number, amount, plan_name, exam_count, price_per_exam,
+                         school_id, service_type, expires_at, package_id, provider, status)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, 'SCHOOL', ?, ?, 'PAYPACK', 'PENDING')`,
+                    [
+                        paypackRef, phone, selectedPackage.price, pendingOrder.planLabel,
+                        selectedPackage.examCredits, pendingOrder.priceToStore, schoolId,
+                        new Date(pendingOrder.expires), selectedPackage.id
+                    ],
+                    (dbErr) => dbErr ? reject(dbErr) : resolve()
+                );
             });
+            try {
+                await pendingOrder.persistPromise;
+            } catch (persistenceErr) {
+                console.error(
+                    `School pending payment persistence failed: school=${schoolId}, reference=${paypackRef}, package=${selectedPackage.id}, amount=${selectedPackage.price}, error=${persistenceErr.message}`
+                );
+                return res.status(202).json({
+                    success: false,
+                    paymentInitiated: true,
+                    reconciliationRequired: true,
+                    referenceId: paypackRef,
+                    error: `PayPack ishobora kuba yatangiye ubwishyu bwa ${selectedPackage.price.toLocaleString()} RWF. Ntukongere kohereza ubwishyu. Bika iyi nimero (${paypackRef}) maze uvugane n'ubufasha kugira ngo bagenzure ubwishyu.`
+                });
+            }
 
             console.log(`✅ School cashin initiated: ${paypackRef}`);
             res.json({ success: true, referenceId: paypackRef });
         } catch (apiErr) {
             const msg = apiErr.response?.data?.message || apiErr.message || 'Paypack API error';
+            console.error('School PayPack initiation failed:', msg);
             try { require('../server').sendErrorAlert('School Cashin Failed', `School: ${schoolName}\nPhone: ${phone}\nError: ${msg}`); } catch(e) {}
             res.status(502).json({ success: false, error: 'Kwishyura byanze: ' + msg });
         }
@@ -226,10 +265,25 @@ module.exports = (db, emailTransport, loginLimiter, otpLimiter) => {
     router.get('/renew-status/:refId', (req, res) => {
         if (!req.session || !req.session.isSchoolAuthenticated) return res.status(401).json({ success: false });
         const ref = req.params.refId;
-        db.query(`SELECT status FROM payment_transactions WHERE reference_id = ? OR rwandapay_tx_id = ?`, [ref, ref], (err, rows) => {
-            if (err || !rows.length) return res.json({ status: schoolPendingMap.has(ref) ? 'PENDING' : 'PENDING' });
-            res.json({ status: rows[0].status });
-        });
+        db.query(
+            `SELECT status FROM payment_transactions
+             WHERE (reference_id = ? OR rwandapay_tx_id = ?) AND school_id = ? LIMIT 1`,
+            [ref, ref, req.session.schoolAccountId],
+            (err, rows) => {
+                if (err) return res.status(500).json({ success: false, error: 'Could not check payment status.' });
+                if (rows && rows.length) return res.json({ status: rows[0].status });
+                db.query(
+                    `SELECT status FROM pending_payment_requests
+                     WHERE payment_reference = ? AND school_id = ? AND service_type = 'SCHOOL'
+                       AND provider = 'PAYPACK' LIMIT 1`,
+                    [ref, req.session.schoolAccountId],
+                    (pendingErr, pendingRows) => {
+                        if (pendingErr) return res.status(500).json({ success: false, error: 'Could not check pending payment status.' });
+                        res.json({ status: pendingRows?.[0]?.status || 'PENDING' });
+                    }
+                );
+            }
+        );
     });
 
     // POST forgot password — rate limited

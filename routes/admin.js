@@ -478,7 +478,7 @@ module.exports = (db, loginLimiter) => {
     // GET all payment transactions
     router.get('/payment-transactions', requireAdminLogin, (req, res) => {
         db.query(
-            `SELECT id, phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, created_at FROM payment_transactions ORDER BY id DESC LIMIT 500`,
+            `SELECT id, phone_number, amount, plan_name, reference_id, rwandapay_tx_id, status, total_exams, remaining_exams, price_per_exam, school_id, created_at FROM payment_transactions ORDER BY id DESC LIMIT 500`,
             (err, rows) => {
                 if (err) return res.status(500).json({ error: err.message });
                 res.json(rows);
@@ -520,30 +520,59 @@ module.exports = (db, loginLimiter) => {
 
     // POST update a payment transaction
     router.post('/payment-transaction/:id', requireSuperAdmin, (req, res) => {
-        const transactionId   = Number(req.params.id);
-        const total_exams     = Number(req.body.total_exams     || 0);
-        const remaining_exams = Number(req.body.remaining_exams || 0);
+        const transactionIdValue = req.params.id;
+        if (typeof transactionIdValue !== 'string' || !/^\d+$/.test(transactionIdValue)) {
+            return res.status(400).json({ success: false, error: 'Transaction ID must be a positive whole number.' });
+        }
+        const transactionId = Number(transactionIdValue);
+        if (!Number.isSafeInteger(transactionId) || transactionId < 1) {
+            return res.status(400).json({ success: false, error: 'Transaction ID must be a positive whole number.' });
+        }
 
-        if (!transactionId || isNaN(total_exams) || isNaN(remaining_exams) || total_exams < 0 || remaining_exams < 0)
-            return res.status(400).json({ success: false, error: 'Invalid numeric values.' });
-        if (remaining_exams > total_exams)
-            return res.status(400).json({ success: false, error: 'Remaining cannot exceed total.' });
-        if (remaining_exams < 0)
-            return res.status(400).json({ success: false, error: 'Remaining exams cannot be negative. Create a new payment instead.' });
+        const remainingValue  = req.body?.remaining_exams;
+        let remaining_exams = NaN;
 
-        const amount        = calcTieredAmount(total_exams);
-        const plan_name     = planName(total_exams);
-        const price_per_exam = pricePerExam(total_exams);
+        if (typeof remainingValue === 'number' && Number.isSafeInteger(remainingValue) && remainingValue >= 0) {
+            remaining_exams = remainingValue;
+        } else if (typeof remainingValue === 'string' && /^\d+$/.test(remainingValue)) {
+            const parsedValue = Number(remainingValue);
+            if (Number.isSafeInteger(parsedValue)) remaining_exams = parsedValue;
+        }
 
-        db.query(
-            `UPDATE payment_transactions SET amount=?, total_exams=?, remaining_exams=?, plan_name=?, price_per_exam=? WHERE id=?`,
-            [amount, total_exams, remaining_exams, plan_name, price_per_exam, transactionId],
-            (err, result) => {
-                if (err) return res.status(500).json({ success: false, error: err.message });
-                if (result.affectedRows === 0) return res.status(404).json({ success: false, error: 'Transaction not found.' });
-                res.json({ success: true });
+        if (!Number.isSafeInteger(remaining_exams)) {
+            return res.status(400).json({ success: false, error: 'Remaining exams must be a non-negative whole number.' });
+        }
+
+        const immutableFields = ['total_exams', 'amount', 'price_per_exam', 'plan_name', 'status'];
+        if (immutableFields.some(field => Object.prototype.hasOwnProperty.call(req.body, field))) {
+            return res.status(400).json({
+                success: false,
+                error: 'Transaction quantity, amount, unit price, plan, and status cannot be changed here.'
+            });
+        }
+
+        db.query('SELECT school_id, total_exams, remaining_exams FROM payment_transactions WHERE id = ? LIMIT 1', [transactionId], (lookupErr, rows) => {
+            if (lookupErr) return res.status(500).json({ success: false, error: lookupErr.message });
+            if (!rows || rows.length === 0) return res.status(404).json({ success: false, error: 'Transaction not found.' });
+            if (rows[0].school_id != null) {
+                return res.status(400).json({ success: false, error: 'School package transactions cannot be edited here.' });
             }
-        );
+            const purchasedExams = Number(rows[0].total_exams) || Number(rows[0].remaining_exams) || 0;
+            if (remaining_exams > purchasedExams) {
+                return res.status(400).json({ success: false, error: 'Remaining exams cannot exceed the purchased quantity.' });
+            }
+            if (remaining_exams === Number(rows[0].remaining_exams)) return res.json({ success: true });
+
+            db.query(
+                `UPDATE payment_transactions SET remaining_exams=? WHERE id=? AND school_id IS NULL`,
+                [remaining_exams, transactionId],
+                (err, result) => {
+                    if (err) return res.status(500).json({ success: false, error: err.message });
+                    if (result.affectedRows === 0) return res.status(404).json({ success: false, error: 'Transaction not found.' });
+                    res.json({ success: true });
+                }
+            );
+        });
     });
 
     // GET grouped students list
@@ -948,25 +977,3 @@ module.exports = (db, loginLimiter) => {
 
     return router;
 };
-
-// ── Pricing helpers (used by payment-transaction update) ──────────────────
-function calcTieredAmount(qty) {
-    qty = Number(qty) || 0;
-    if (qty <= 0)  return 0;
-    if (qty <= 9)  return qty * 100;
-    if (qty <= 14) return 900  + (qty - 9)  * 80;
-    if (qty <= 20) return 1300 + (qty - 14) * 70;
-    return 1720 + (qty - 20) * 50;
-}
-function pricePerExam(qty) {
-    qty = Number(qty) || 0;
-    if (qty <= 0)  return 0;
-    if (qty <= 9)  return 100;
-    if (qty <= 14) return 80;
-    if (qty <= 20) return 70;
-    return 50;
-}
-function planName(qty) {
-    qty = Number(qty) || 0;
-    return qty > 0 ? `Personal Tiered Pass (${qty} Exams Package)` : 'Custom Payment';
-}

@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const express = require('express');
 const axios = require('axios');
+const { SCHOOL_PACKAGES } = require('../helpers/pricing');
 
 test('PayPack webhook requires raw-body signatures and grants each confirmed order once', async t => {
   const previousSecret = process.env.PAYPACK_WEBHOOK_SECRET;
@@ -39,13 +40,111 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
     ['lookup-success-ref', { ref: 'lookup-success-ref', kind: 'CASHIN', status: 'success', amount: 100, client: '0781234567', merchant: 'test-merchant' }],
     ['lookup-failed-ref', { ref: 'lookup-failed-ref', kind: 'CASHIN', status: 'failed', amount: 100, client: '0781234567', merchant: 'test-merchant' }],
     ['currency-ref', { ref: 'currency-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'test-merchant', currency: 'USD' }],
-    ['merchant-ref', { ref: 'merchant-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'another-merchant' }],
-    ['school-ref', { ref: 'school-ref', kind: 'CASHIN', status: 'successful', amount: 10000, client: '0781234567', merchant: 'test-merchant' }]
+    ['merchant-ref', { ref: 'merchant-ref', kind: 'CASHIN', status: 'successful', amount: 100, client: '0781234567', merchant: 'another-merchant' }]
   ]);
+  const schoolPackages = SCHOOL_PACKAGES.map(pkg => ({
+    id: pkg.id,
+    reference: `school-${pkg.id}-ref`,
+    name: pkg.name,
+    amount: pkg.price,
+    credits: pkg.examCredits
+  }));
+  for (const pkg of schoolPackages) {
+    confirmed.set(pkg.reference, {
+      ref: pkg.reference, kind: 'CASHIN', status: 'successful',
+      amount: pkg.amount, client: '0781234567', merchant: 'test-merchant'
+    });
+  }
+  confirmed.set('school-standard-wrong-amount-ref', {
+    ref: 'school-standard-wrong-amount-ref', kind: 'CASHIN', status: 'successful',
+    amount: 19999, client: '0781234567', merchant: 'test-merchant'
+  });
+  confirmed.set('school-pending-ref', {
+    ref: 'school-pending-ref', kind: 'CASHIN', status: 'pending',
+    amount: 10000, client: '0781234567', merchant: 'test-merchant'
+  });
+  confirmed.set('school-provider-failed-ref', {
+    ref: 'school-provider-failed-ref', kind: 'CASHIN', status: 'failed',
+    amount: 10000, client: '0781234567', merchant: 'test-merchant'
+  });
+  confirmed.set('school-concurrent-ref', {
+    ref: 'school-concurrent-ref', kind: 'CASHIN', status: 'successful',
+    amount: 10000, client: '0781234567', merchant: 'test-merchant'
+  });
+  confirmed.set('school-durable-only-ref', {
+    ref: 'school-durable-only-ref', kind: 'CASHIN', status: 'successful',
+    amount: 30000, client: '0781234567', merchant: 'test-merchant'
+  });
+  orders.set('school-durable-only-ref', {
+    phone: '0781234567',
+    amount: 30000,
+    planLabel: 'Premium School Package (600 Exams)',
+    examCount: 600,
+    priceToStore: 50,
+    schoolId: 42,
+    serviceType: 'SCHOOL',
+    packageId: 'premium',
+    provider: 'PAYPACK',
+    status: 'PENDING'
+  });
   const { schoolPendingMap } = require('../routes/school');
-  schoolPendingMap.set('school-ref', { phone: '0781234567', schoolId: 7, schoolName: 'Test School' });
+  for (const pkg of schoolPackages) {
+    const pending = {
+      phone: '0781234567',
+      schoolId: 7,
+      schoolName: 'Test School',
+      packageId: pkg.id,
+      amount: pkg.amount,
+      examCount: pkg.credits,
+      priceToStore: pkg.amount / pkg.credits,
+      planLabel: `${pkg.name} School Package (${pkg.credits} Exams)`
+    };
+    schoolPendingMap.set(pkg.reference, pending);
+    orders.set(pkg.reference, {
+      phone: pending.phone,
+      amount: pending.amount,
+      planLabel: pending.planLabel,
+      examCount: pending.examCount,
+      priceToStore: pending.priceToStore,
+      schoolId: pending.schoolId,
+      serviceType: 'SCHOOL',
+      packageId: pending.packageId,
+      provider: 'PAYPACK',
+      status: 'PENDING'
+    });
+  }
+  const addDurableSchoolOrder = (reference, pkg) => {
+    const pending = {
+      phone: '0781234567',
+      schoolId: 7,
+      packageId: pkg.id,
+      amount: pkg.price,
+      examCount: pkg.examCredits,
+      priceToStore: pkg.price / pkg.examCredits,
+      planLabel: `${pkg.name} School Package (${pkg.examCredits} Exams)`
+    };
+    schoolPendingMap.set(reference, pending);
+    orders.set(reference, {
+      phone: pending.phone,
+      amount: pending.amount,
+      planLabel: pending.planLabel,
+      examCount: pending.examCount,
+      priceToStore: pending.priceToStore,
+      schoolId: pending.schoolId,
+      serviceType: 'SCHOOL',
+      packageId: pending.packageId,
+      provider: 'PAYPACK',
+      status: 'PENDING'
+    });
+  };
+  addDurableSchoolOrder('school-failed-ref', SCHOOL_PACKAGES[2]);
+  addDurableSchoolOrder('school-pending-ref', SCHOOL_PACKAGES[0]);
+  addDurableSchoolOrder('school-standard-wrong-amount-ref', SCHOOL_PACKAGES[1]);
+  addDurableSchoolOrder('school-provider-failed-ref', SCHOOL_PACKAGES[0]);
+  addDurableSchoolOrder('school-concurrent-ref', SCHOOL_PACKAGES[0]);
   const rows = new Map();
   const insertAttempts = new Map();
+  const insertedValues = new Map();
   const raceSelectCallbacks = [];
   let providerLookups = 0;
   const db = {
@@ -54,7 +153,7 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
       if (sql.trimStart().startsWith('ALTER TABLE') || sql.trimStart().startsWith('CREATE TABLE')) return callback?.(null, {});
       if (sql.includes('information_schema.columns')) return callback(null, [{ count: 1 }]);
       if (sql.startsWith('SELECT id FROM payment_transactions')) {
-        if (values[0] === 'race-ref') {
+        if (values[0] === 'race-ref' || values[0] === 'school-concurrent-ref') {
           raceSelectCallbacks.push(() => callback(null, rows.has(values[0]) ? [{ id: 1 }] : []));
           if (raceSelectCallbacks.length === 2) raceSelectCallbacks.splice(0).forEach(release => release());
           return;
@@ -62,8 +161,17 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
         return callback(null, rows.has(values[0]) ? [{ id: 1 }] : []);
       }
       if (sql.includes('FROM pending_payment_requests')) {
+        assert.match(sql, /service_type AS serviceType/);
         const pending = orders.get(values[0]);
         return callback(null, pending ? [pending] : []);
+      }
+      if (sql.startsWith('UPDATE pending_payment_requests')) {
+        const order = orders.get(values[1]);
+        if (order && order.serviceType === 'SCHOOL' && order.provider === 'PAYPACK' && ['PENDING', 'PROCESSING'].includes(order.status)) {
+          order.status = values[0];
+          return callback(null, { affectedRows: 1 });
+        }
+        return callback(null, { affectedRows: 0 });
       }
       if (sql.startsWith('INSERT INTO payment_transactions')) {
         const reference = values[3];
@@ -73,6 +181,7 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
           duplicate.code = 'ER_DUP_ENTRY';
           return callback(duplicate);
         }
+        insertedValues.set(reference, values);
         rows.set(reference, { id: rows.size + 1 });
         return callback(null, { insertId: rows.size });
       }
@@ -143,6 +252,22 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
   const failedEvent = await send('unknown-failed-ref', { status: 'failed' });
   assert.equal(failedEvent.status, 200);
   assert.equal(providerLookups, lookupsBeforeFailedEvent);
+  const failedSchoolPayment = await send('school-failed-ref', { status: 'failed' });
+  assert.equal(failedSchoolPayment.status, 200);
+  assert.equal(rows.has('school-failed-ref'), false);
+  const lookupsBeforePendingSchool = providerLookups;
+  const pendingSchoolPayment = await send('school-pending-ref', { status: 'pending' });
+  assert.equal(pendingSchoolPayment.status, 200);
+  assert.equal(providerLookups, lookupsBeforePendingSchool);
+  assert.equal(rows.has('school-pending-ref'), false);
+  assert.equal(orders.get('school-pending-ref').status, 'PENDING');
+  const wrongSchoolAmount = await send('school-standard-wrong-amount-ref');
+  assert.equal(wrongSchoolAmount.status, 409);
+  assert.equal(rows.has('school-standard-wrong-amount-ref'), false);
+  const providerFailedSchoolPayment = await send('school-provider-failed-ref');
+  assert.equal(providerFailedSchoolPayment.status, 200);
+  assert.equal(rows.has('school-provider-failed-ref'), false);
+  assert.equal(orders.get('school-provider-failed-ref').status, 'FAILED');
 
   const successful = await send('payment-ref', { pretty: true });
   assert.equal(successful.status, 200);
@@ -156,9 +281,52 @@ test('PayPack webhook requires raw-body signatures and grants each confirmed ord
   const raced = await Promise.all([send('race-ref'), send('race-ref')]);
   assert.deepEqual(raced.map(response => response.status), [200, 200]);
   assert.equal(insertAttempts.get('race-ref'), 2);
-  const schoolPayment = await send('school-ref');
-  assert.equal(schoolPayment.status, 200);
-  assert.equal(rows.has('school-ref'), true);
-  assert.equal(schoolPendingMap.has('school-ref'), false);
-  assert.equal(rows.size, 5);
+
+  schoolPendingMap.delete('school-basic-ref');
+  const recoveredSchoolPayment = await send('school-basic-ref');
+  assert.equal(recoveredSchoolPayment.status, 200);
+  assert.equal(rows.has('school-basic-ref'), true);
+  assert.equal(insertedValues.get('school-basic-ref')[1], SCHOOL_PACKAGES[0].price);
+  assert.equal(insertedValues.get('school-basic-ref')[5], SCHOOL_PACKAGES[0].examCredits);
+  assert.equal(orders.get('school-basic-ref').status, 'SUCCESS');
+
+  assert.equal(schoolPendingMap.has('school-durable-only-ref'), false);
+  const durableOnlySchoolPayment = await send('school-durable-only-ref');
+  assert.equal(durableOnlySchoolPayment.status, 200);
+  assert.equal(rows.has('school-durable-only-ref'), true);
+  assert.equal(insertedValues.get('school-durable-only-ref')[1], SCHOOL_PACKAGES[2].price);
+  assert.equal(insertedValues.get('school-durable-only-ref')[5], SCHOOL_PACKAGES[2].examCredits);
+  assert.equal(insertedValues.get('school-durable-only-ref')[6], SCHOOL_PACKAGES[2].examCredits);
+  assert.equal(insertedValues.get('school-durable-only-ref')[7], SCHOOL_PACKAGES[2].price / SCHOOL_PACKAGES[2].examCredits);
+  assert.equal(insertedValues.get('school-durable-only-ref')[8], 42);
+  assert.equal(insertedValues.get('school-durable-only-ref')[9], 'SCHOOL');
+  assert.equal(orders.get('school-durable-only-ref').status, 'SUCCESS');
+  assert.equal(schoolPendingMap.has('school-durable-only-ref'), false);
+
+  const concurrentSchoolCallbacks = await Promise.all([
+    send('school-concurrent-ref'),
+    send('school-concurrent-ref')
+  ]);
+  assert.deepEqual(concurrentSchoolCallbacks.map(response => response.status), [200, 200]);
+  assert.equal(insertAttempts.get('school-concurrent-ref'), 2);
+  assert.equal(rows.has('school-concurrent-ref'), true);
+  assert.equal(orders.get('school-concurrent-ref').status, 'SUCCESS');
+
+  for (const pkg of schoolPackages) {
+    if (pkg.name === 'Basic') continue;
+    const schoolPayment = await send(pkg.reference);
+    assert.equal(schoolPayment.status, 200);
+    assert.equal(rows.has(pkg.reference), true);
+    assert.equal(insertedValues.get(pkg.reference)[1], pkg.amount);
+    assert.equal(insertedValues.get(pkg.reference)[5], pkg.credits);
+    assert.equal(insertedValues.get(pkg.reference)[6], pkg.credits);
+    assert.equal(insertedValues.get(pkg.reference)[7], pkg.amount / pkg.credits);
+    assert.equal(insertedValues.get(pkg.reference)[8], 7);
+    assert.equal(insertedValues.get(pkg.reference)[9], 'SCHOOL');
+    assert.equal(schoolPendingMap.has(pkg.reference), false);
+  }
+  const duplicateSchoolPayment = await send('school-basic-ref');
+  assert.equal(duplicateSchoolPayment.status, 200);
+  assert.equal(insertAttempts.get('school-basic-ref'), 1);
+  assert.equal(rows.size, 9);
 });

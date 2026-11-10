@@ -545,7 +545,8 @@
         .pricing-section-eyebrow { display: inline-block; margin-bottom: 7px; color: #15803d; font-size: .73rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
         .pricing-section-heading h2 { color: #0f172a; font-size: clamp(1.25rem, 2vw, 1.55rem); font-weight: 800; letter-spacing: -.025em; }
         .pricing-section-heading p { margin-top: 5px; color: #64748b; font-size: .9rem; line-height: 1.6; }
-        .pricing-card-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+        .pricing-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+        .school-package-pricing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
         .pricing-page .price-card {
             min-width: 0; min-height: 276px; padding: 24px; gap: 13px;
             border: 1px solid #e2e8f0; border-radius: 20px; background: #fff;
@@ -620,6 +621,7 @@
             .pricing-hero { min-height: 0; }
             .pricing-hero h1 { font-size: clamp(1.65rem, 3.5vw, 2.1rem); }
             .pricing-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .school-package-pricing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .balance-card { grid-template-columns: minmax(0, 1fr) minmax(300px, .95fr); gap: 20px; }
         }
         @media (min-width: 701px) and (max-width: 900px) {
@@ -634,6 +636,7 @@
             .pricing-hero-copy > p { font-size: .92rem; }
             .pricing-trust-row { display: flex; gap: 9px 14px; font-size: .76rem; }
             .pricing-card-grid { grid-template-columns: 1fr; gap: 12px; }
+            .school-package-pricing-grid { grid-template-columns: 1fr; gap: 12px; }
             .pricing-page .price-card { min-height: 0; padding: 22px; }
             .pricing-page .price-card.is-best { padding: 32px 21px 21px; }
             .provider-grid { gap: 9px; }
@@ -937,7 +940,7 @@
                 <div class="pricing-hero-copy">
                     <div class="pricing-eyebrow"><i class="fa-solid fa-shield-heart"></i> Ibiciro by&#8217;ibizamini</div>
                     <h1 id="pricingTitle">Hitamo ibizamini byawe, <span>utangire kwitoza.</span></h1>
-                    <p>Igiciro kuri buri kizamini kigabanuka uko ugura byinshi. Hitamo umubare ukwiriye, wishyure ukoresheje MTN MoMo cyangwa Airtel Money, maze utangire kwitoza.</p>
+                    <p>Hitamo umubare w’ibizamini ukwiriye, wishyure ukoresheje MTN MoMo cyangwa Airtel Money, maze utangire kwitoza. Ibiciro birahari kugeza ku bizamini 50.</p>
                     <div class="pricing-trust-row" aria-label="Ibyiza byo kugura ibizamini">
                         <span><i class="fa-solid fa-circle-check"></i> Kwishyura byoroshye</span>
                         <span class="trust-provider">
@@ -955,40 +958,60 @@
                 <div class="pricing-section-heading">
                     <span class="pricing-section-eyebrow">Ibiciro</span>
                     <h2 id="pricingOptionsTitle">Hitamo ibijyanye n&#8217;uko ushaka kwitoza</h2>
-                    <p>Uko ugura ibizamini byinshi, ni ko igiciro kuri buri kizamini kigabanuka.</p>
+                    <p>Igiciro kuri buri kizamini giterwa n’umubare ugura.</p>
                 </div>
                 <div class="pricing-card-grid">
                     <article class="price-card">
                         <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></div>
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 1&#8211;9</h3></div>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 1&#8211;15</h3></div>
                         <div class="pricing-card-price"><strong>100</strong><span>RWF</span></div>
                         <p class="pricing-card-unit">kuri buri kizamini</p>
-                        <p class="pricing-card-description">Byiza niba ushaka gutangira ukoresheje ibizamini bike.</p>
+                        <p class="pricing-card-description">100 RWF kuri buri kizamini muri uru rwego.</p>
                         <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(1)">Hitamo</button>
                     </article>
                     <article class="price-card">
                         <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-bolt"></i></div>
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 10&#8211;14</h3><span class="pricing-card-badge">Gabanyirizwa 20%</span></div>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 16&#8211;25</h3><span class="pricing-card-badge">Igiciro cyiza</span></div>
                         <div class="pricing-card-price"><strong>80</strong><span>RWF</span></div>
                         <p class="pricing-card-unit">kuri buri kizamini</p>
-                        <p class="pricing-card-description">Igiciro cyiza kurushaho ukoze ibizamini byinshi.</p>
-                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(10)">Hitamo</button>
+                        <p class="pricing-card-description">80 RWF kuri buri kizamini muri uru rwego.</p>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(16)">Hitamo</button>
                     </article>
                     <article class="price-card is-best">
                         <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></div>
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 15&#8211;20</h3><span class="pricing-card-badge">Ihitamo rikunzwe</span></div>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 26&#8211;50</h3><span class="pricing-card-badge">Ihitamo rikunzwe</span></div>
                         <div class="pricing-card-price"><strong>70</strong><span>RWF</span></div>
                         <p class="pricing-card-unit">kuri buri kizamini</p>
-                        <p class="pricing-card-description">Hitamo iyi niba ushaka kwitoza kenshi.</p>
-                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(15)">Hitamo</button>
+                        <p class="pricing-card-description">70 RWF kuri buri kizamini muri uru rwego.</p>
+                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(26)">Hitamo</button>
+                    </article>
+                </div>
+            </section>
+
+            <section id="schoolPricingOptions" aria-labelledby="schoolPricingOptionsTitle">
+                <div class="pricing-section-heading">
+                    <span class="pricing-section-eyebrow">Amashuri yigisha gutwara</span>
+                    <h2 id="schoolPricingOptionsTitle">Packages z’ibizamini by’amashuri</h2>
+                    <p>Hitamo umubare wa credits ukwiriye ishuri ryanyu. Gura package ukoresheje konti y’ishuri.</p>
+                </div>
+                <div class="school-package-pricing-grid">
+                    <article class="price-card">
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Basic</h3></div>
+                        <div class="pricing-card-price"><strong>10,000</strong><span>RWF</span></div>
+                        <p class="pricing-card-unit">100 exam credits</p>
+                        <a class="pricing-jump-button" href="/school-auth">Jya ku rubuga rw’ishuri</a>
                     </article>
                     <article class="price-card">
-                        <div class="pricing-card-icon" aria-hidden="true"><i class="fa-solid fa-award"></i></div>
-                        <div class="pricing-card-top"><h3 class="pricing-card-range">Ibizamini 21+</h3><span class="pricing-card-badge">Igiciro cyiza</span></div>
-                        <div class="pricing-card-price"><strong>50</strong><span>RWF</span></div>
-                        <p class="pricing-card-unit">kuri buri kizamini</p>
-                        <p class="pricing-card-description">Igiciro gito kuri buri kizamini.</p>
-                        <button class="btn-pay-trigger" onclick="launchAdaptiveCheckoutModal(21)">Hitamo</button>
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Standard</h3></div>
+                        <div class="pricing-card-price"><strong>20,000</strong><span>RWF</span></div>
+                        <p class="pricing-card-unit">300 exam credits</p>
+                        <a class="pricing-jump-button" href="/school-auth">Jya ku rubuga rw’ishuri</a>
+                    </article>
+                    <article class="price-card">
+                        <div class="pricing-card-top"><h3 class="pricing-card-range">Premium</h3></div>
+                        <div class="pricing-card-price"><strong>30,000</strong><span>RWF</span></div>
+                        <p class="pricing-card-unit">600 exam credits</p>
+                        <a class="pricing-jump-button" href="/school-auth">Jya ku rubuga rw’ishuri</a>
                     </article>
                 </div>
             </section>
@@ -1072,7 +1095,7 @@
                     <div class="checkout-top-left pay-modal-fields">
                         <div class="pay-field pay-quantity-field">
                             <label class="pay-field-label" for="examQuantityVolumeSelector">Umubare w&#8217;ibizamini</label>
-                            <input type="number" id="examQuantityVolumeSelector" min="1" max="100" value="1" oninput="recalculateLiveDynamicBillingAmount()">
+                            <input type="number" id="examQuantityVolumeSelector" min="1" max="50" value="1" oninput="recalculateLiveDynamicBillingAmount()">
                             <div class="pay-tier-hint" id="dynamicPricingHelperLabel"></div>
                         </div>
                         <span id="momoCarrierChip" style="display:none;"></span>
@@ -1354,20 +1377,18 @@
 
         function pricePerExamForPurchaseQuantity(qty) {
             const count = Number(qty) || 0;
-            if (count <= 0) return 100;
-            if (count <= 9) return 100;
-            if (count <= 14) return 80;
-            if (count <= 20) return 70;
-            return 50;
+            if (!Number.isInteger(count) || count < 1 || count > 50) return null;
+            if (count <= 15) return 100;
+            if (count <= 25) return 80;
+            return 70;
         }
 
         function tierLabelForPurchaseQuantity(qty) {
             const count = Number(qty) || 0;
-            if (count <= 0) return 'ℹ Igiciro: 100 RWF / imwe';
-            if (count <= 9) return 'ℹ Igiciro: 100 RWF / imwe';
-            if (count <= 14) return '✓ Ugabanyirijwe: 80 RWF / imwe';
-            if (count <= 20) return '✓ Discount Yiza: 70 RWF / imwe';
-            return '✓ Wholesale Tier: 50 RWF / imwe';
+            if (!Number.isInteger(count) || count < 1 || count > 50) return 'Hitamo umubare wuzuye uri hagati ya 1 na 50.';
+            if (count <= 15) return 'Igiciro: 100 RWF kuri buri kizamini';
+            if (count <= 25) return 'Igiciro: 80 RWF kuri buri kizamini';
+            return 'Igiciro: 70 RWF kuri buri kizamini';
         }
 
         window.recalculateLiveDynamicBillingAmount = function() {
@@ -1376,18 +1397,28 @@
             const perExamLabel = document.getElementById('pricePerExamLabel');
             const quantitySummary = document.getElementById('paySummaryQuantity');
             const payButtonLabel = document.getElementById('momoBtnTextLabel');
-            let qty = parseInt(document.getElementById('examQuantityVolumeSelector').value, 10);
-            if (isNaN(qty) || qty < 1) qty = 1;
-            let totalCost = qty <= 9 ? qty * 100 : qty <= 14 ? 900 + (qty - 9) * 80 : qty <= 20 ? 1300 + (qty - 14) * 70 : 1720 + (qty - 20) * 50;
+            const payBtn = document.getElementById('momoSubmitPaymentBtn');
+            const qty = Number(document.getElementById('examQuantityVolumeSelector').value);
             const unitPrice = pricePerExamForPurchaseQuantity(qty);
-            
+            const validQuantity = unitPrice !== null;
+
             helperLabel.textContent = tierLabelForPurchaseQuantity(qty);
-            helperLabel.style.color = unitPrice === 100 ? '#64748b' : unitPrice === 80 ? '#0284c7' : unitPrice === 70 ? '#8b5cf6' : '#10b981';
-            perExamLabel.textContent = `${unitPrice} RWF`;
+            helperLabel.style.color = !validQuantity ? '#dc2626' : unitPrice === 100 ? '#64748b' : unitPrice === 80 ? '#0284c7' : '#8b5cf6';
+            perExamLabel.textContent = validQuantity ? `${unitPrice} RWF` : '—';
             
-            displayStrip.textContent = `${totalCost.toLocaleString()} RWF`;
-            if (quantitySummary) quantitySummary.textContent = qty.toLocaleString();
-            if (payButtonLabel) payButtonLabel.textContent = `Ishyura ${totalCost.toLocaleString()} RWF`;
+            if (validQuantity) {
+                const totalCost = qty * unitPrice;
+                displayStrip.textContent = `${totalCost.toLocaleString()} RWF`;
+                if (quantitySummary) quantitySummary.textContent = qty.toLocaleString();
+                if (payButtonLabel) payButtonLabel.textContent = `Ishyura ${totalCost.toLocaleString()} RWF`;
+            } else {
+                displayStrip.textContent = '—';
+                if (quantitySummary) quantitySummary.textContent = '—';
+                if (payButtonLabel) payButtonLabel.textContent = 'Hitamo umubare wemewe';
+            }
+            const phone = document.getElementById('momoPhoneNumberInput').value;
+            const validPhone = /^07[8923]\d{7}$/.test(phone);
+            if (payBtn) payBtn.disabled = !validQuantity || !validPhone || Boolean(activeReferenceId);
         };
 
         function restoreAdaptivePayButtonLabel() {
@@ -1403,9 +1434,14 @@
             const payBtn = document.getElementById('momoSubmitPaymentBtn');
             const qtyInput = document.getElementById('examQuantityVolumeSelector');
             const phoneVal = phoneField.value.trim();
-            const qty = Number(qtyInput.value) || 1;
+            const qty = Number(qtyInput.value);
             const unitPrice = pricePerExamForPurchaseQuantity(qty);
 
+            if (unitPrice === null) {
+                showPaymentStatus('Igiciro ntikiboneka ku bizamini birenga 50. Hitamo umubare uri hagati ya 1 na 50.', 'error', true);
+                qtyInput.focus();
+                return;
+            }
             if (!phoneVal || phoneVal.length < 10) {
                 showPaymentStatus('Andika nimero ya telefone yuzuye ya MTN cyangwa Airtel mbere yo gukomeza.', 'error', true);
                 phoneField.focus();
@@ -1440,7 +1476,7 @@
                 body: JSON.stringify({
                     phoneNumber: phoneVal,
                     checkoutIntentType: 'PERSONAL',
-                    examQuantityVolume: qtyInput.value,
+                    examQuantityVolume: Number(qtyInput.value),
                     pricePerExam: unitPrice
                 })
             })

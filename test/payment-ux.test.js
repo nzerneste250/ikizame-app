@@ -140,8 +140,48 @@ test('pending checkout reopens without creating a second payment and restarts po
   assert.equal(elements.get('momoSubmitPaymentBtn').disabled, true);
 });
 
-test('the four established exam price tiers remain visible', () => {
-  for (const tier of ['Ibizamini 1&#8211;9', 'Ibizamini 10&#8211;14', 'Ibizamini 15&#8211;20', 'Ibizamini 21+']) {
+test('the three current exam price ranges remain visible without legacy tiers', () => {
+  for (const tier of ['Ibizamini 1&#8211;15', 'Ibizamini 16&#8211;25', 'Ibizamini 26&#8211;50']) {
     assert.match(pricingPage, new RegExp(tier.replace(/[+]/g, '\\+')));
   }
+  assert.doesNotMatch(pricingPage, /Ibizamini 1&#8211;9|Ibizamini 10&#8211;14|Ibizamini 15&#8211;20|Ibizamini 21\+|50 RWF/);
+  assert.match(pricingPage, /max="50"/);
+});
+
+test('the public FAQ states the correct 1–15 individual pricing range', () => {
+  const helpPage = fs.readFileSync(path.join(__dirname, '..', 'public', 'ubufasha.html'), 'utf8');
+  assert.match(helpPage, /ibizamini 1–15/);
+  assert.doesNotMatch(helpPage, /ibizamini 1–9/);
+  assert.match(pricingPage, /examQuantityVolume: Number\(qtyInput\.value\)/);
+});
+
+test('individual checkout totals use the new flat per-exam prices and reject quantities above 50', () => {
+  const elements = new Map();
+  const makeElement = (id, value = '') => ({ id, value, textContent: '', style: {}, disabled: false });
+  for (const [id, value] of [
+    ['liveAmountBreakdownDisplayStrip'], ['dynamicPricingHelperLabel'], ['pricePerExamLabel'],
+    ['paySummaryQuantity'], ['momoBtnTextLabel'], ['momoSubmitPaymentBtn'],
+    ['examQuantityVolumeSelector', '1'], ['momoPhoneNumberInput', '0781234567']
+  ]) elements.set(id, makeElement(id, value));
+  const context = {
+    window: {},
+    document: { getElementById: id => elements.get(id) },
+    activeReferenceId: null
+  };
+  const start = pricingPage.indexOf('        function pricePerExamForPurchaseQuantity(qty)');
+  const end = pricingPage.indexOf('        function restoreAdaptivePayButtonLabel()', start);
+  vm.runInNewContext(`let activeReferenceId = null;\n${pricingPage.slice(start, end)}`, context);
+
+  for (const [quantity, unitPrice, total] of [[15, 100, 1500], [16, 80, 1280], [25, 80, 2000], [26, 70, 1820], [50, 70, 3500]]) {
+    elements.get('examQuantityVolumeSelector').value = String(quantity);
+    context.window.recalculateLiveDynamicBillingAmount();
+    assert.equal(elements.get('pricePerExamLabel').textContent, `${unitPrice} RWF`);
+    assert.equal(elements.get('liveAmountBreakdownDisplayStrip').textContent, `${total.toLocaleString()} RWF`);
+    assert.equal(elements.get('momoSubmitPaymentBtn').disabled, false);
+  }
+  elements.get('examQuantityVolumeSelector').value = '51';
+  context.window.recalculateLiveDynamicBillingAmount();
+  assert.equal(elements.get('pricePerExamLabel').textContent, '—');
+  assert.equal(elements.get('liveAmountBreakdownDisplayStrip').textContent, '—');
+  assert.equal(elements.get('momoSubmitPaymentBtn').disabled, true);
 });

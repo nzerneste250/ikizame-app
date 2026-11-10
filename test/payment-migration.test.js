@@ -15,3 +15,14 @@ test('payment migration is idempotent without unsupported MySQL ADD COLUMN IF NO
   assert.match(sql, /PREPARE payment_service_type_stmt/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS pending_payment_requests/);
 });
+
+test('school payment migration adds durable package, provider, and status columns without replacing rows', () => {
+  const sql = fs.readFileSync('Database/2026-11-school-payment-orders.sql', 'utf8');
+  const executableSql = sql.replace(/^--.*$/gm, '');
+  assert.doesNotMatch(executableSql, /\bDROP\s+TABLE\b|\bTRUNCATE\b|\bDELETE\s+FROM\b/i);
+  assert.doesNotMatch(executableSql, /ADD\s+COLUMN\s+IF\s+NOT\s+EXISTS/i);
+  for (const column of ['package_id', 'provider', 'status']) {
+    assert.match(sql, new RegExp(`column_name = '${column}'`));
+  }
+  assert.match(sql, /DEFAULT ''PENDING''/);
+});

@@ -165,12 +165,21 @@
             border: 1px solid var(--border-color);
             border-radius: 18px;
             padding: 24px;
-            max-width: 500px;
+            max-width: 860px;
             width: 100%;
             box-shadow: 0 16px 34px rgba(2,8,23,0.08);
         }
         .action-form-panel h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; color: #0f172a; }
         .action-form-panel p { font-size: 0.85rem; color: #475569; margin-bottom: 18px; }
+        .school-package-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+        .school-package-option { display: flex; align-items: flex-start; gap: 10px; padding: 16px; border: 1.5px solid var(--border-color); border-radius: 14px; cursor: pointer; background: #fff; transition: border-color .2s, box-shadow .2s; }
+        .school-package-option:has(input:checked) { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(11,105,139,.1); background: #f0f9ff; }
+        .school-package-option input { margin-top: 4px; accent-color: var(--brand); }
+        .school-package-card { display: flex; flex-direction: column; gap: 5px; color: #475569; font-size: .82rem; }
+        .school-package-card strong:first-child { color: #0f172a; font-size: 1rem; }
+        .school-package-card .school-package-price { color: var(--brand); font-size: 1.1rem; font-weight: 800; margin-top: 5px; }
+        .school-package-summary { padding: 12px 14px; border-radius: 10px; background: #f1f5f9; color: #334155; font-size: .88rem; font-weight: 700; margin-bottom: 16px; }
+        @media(max-width: 700px) { .school-package-grid { grid-template-columns: 1fr; } }
 
         .input-form-field { display: flex; flex-direction: column; text-align: left; gap: 6px; margin-bottom: 16px; }
         .input-form-field label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
@@ -281,9 +290,9 @@
                 <h1 id="displaySchoolNameTitle">Muraho neza!</h1>
                 <p>IKIZAME iragufasha kuyobora ibizamini by'ishuri ryawe mu buryo bworoshye, bwihuse, kandi kumenya uko abanyeshuri bakora Ikizamini. Wabasha gushyiraho abanyeshuri, kubaha ibizamini, no gukurikirana amanota yabo byoroshye.</p>
                 <div class="hero-highlights">
-                    <span class="hero-chip"><i class="fa-solid fa-coins"></i> <strong>10,000 Frw</strong> kuri package</span>
-                    <span class="hero-chip"><i class="fa-solid fa-file-circle-check"></i> <strong>50 Frw</strong> kuri exam</span>
-                    <span class="hero-chip"><i class="fa-solid fa-layer-group"></i> <strong>200 exams / 10,000 Frw</strong></span>
+                    <span class="hero-chip"><i class="fa-solid fa-coins"></i> <strong>Packages 3</strong> zo guhitamo</span>
+                    <span class="hero-chip"><i class="fa-solid fa-file-circle-check"></i> <strong>100 kugeza 600</strong> exams</span>
+                    <span class="hero-chip"><i class="fa-solid fa-layer-group"></i> Credits zihabwa ishuri</span>
                 </div>
             </section>
 
@@ -304,22 +313,44 @@
                 </div>
             </section>
 
-            <!-- Inside-Page Renewal Form Panel Component -->
+            <!-- School exam-credit package purchase -->
             <section class="action-form-panel">
-                <h3>Vugurura Uruhushya rw'ukwezi</h3>
-                <p>Iyo wishyuye 10,000 Frw, uba ufite package y'ibizamini 200. ikizamini kimw ni 50 Frw, kandi ibizamini birashobora gukoresha mu ishuri ryanyu byose.</p>
+                <h3>Hitamo package y'ibizamini</h3>
+                <p>Hitamo package imwe. Igiciro n'umubare wa credits byayo bigaragara hano kandi bizemezwa mbere yo kwishyura.</p>
+                <div class="school-package-grid" role="radiogroup" aria-labelledby="schoolPackageLabel">
+                    <span id="schoolPackageLabel" class="sr-only">Hitamo package</span>
+                    <label class="school-package-option">
+                        <input type="radio" name="schoolPackage" value="basic" data-package-name="Basic" data-price="10000" data-exam-credits="100" onchange="selectSchoolPackage(this)">
+                        <span class="school-package-card"><strong>Basic</strong><span>100 exam credits</span><strong class="school-package-price">10,000 RWF</strong></span>
+                    </label>
+                    <label class="school-package-option">
+                        <input type="radio"
+                               name="schoolPackage"
+                               value="standard"
+                               data-package-name="Standard"
+                               data-price="20000"
+                               data-exam-credits="300"
+                               onchange="selectSchoolPackage(this)">
+                        <span class="school-package-card"><strong>Standard</strong><span>300 exam credits</span><strong class="school-package-price">20,000 RWF</strong></span>
+                    </label>
+                    <label class="school-package-option">
+                        <input type="radio" name="schoolPackage" value="premium" data-package-name="Premium" data-price="30000" data-exam-credits="600" onchange="selectSchoolPackage(this)">
+                        <span class="school-package-card"><strong>Premium</strong><span>600 exam credits</span><strong class="school-package-price">30,000 RWF</strong></span>
+                    </label>
+                </div>
+                <div class="school-package-summary" id="selectedSchoolPackageSummary" role="status" aria-live="polite">Hitamo package kugira ngo urebe umubare wa credits n'amafaranga mbere yo gukomeza.</div>
                 <div class="input-form-field">
                     <label>Nomero ya Telephone (MTN / Airtel)</label>
                     <input type="tel" id="renewMomoPhoneInput" placeholder="e.g., 0788000000" maxlength="10" pattern="07[8923][0-9]{7}" inputmode="numeric" oninput="validateRenewPhone(this)">
                     <span id="renewPhoneHint" style="font-size:11px; color:#94a3b8; margin-top:4px;">Tangira na 078, 079, 072, cyangwa 073.</span>
                 </div>
-                <button class="btn-renew-submit" id="renewSubmitBtn" onclick="triggerSchoolLicenseRenewalRequest()">
-                    <span>Ishyura 10,000 Frw</span> <i class="fa-solid fa-credit-card"></i>
+                <button class="btn-renew-submit" id="renewSubmitBtn" onclick="triggerSchoolLicenseRenewalRequest()" disabled>
+                    <span>Hitamo package</span> <i class="fa-solid fa-credit-card"></i>
                 </button>
                 <div id="ussdSchoolHint" style="display:none; margin-top:12px; background:rgba(11,105,139,0.08); border:1px dashed rgba(56,189,248,0.3); border-radius:10px; padding:12px 14px;">
                     <div style="font-size:11px; font-weight:800; color:#38bdf8; margin-bottom:8px;"><i class="fa-solid fa-mobile-screen-button"></i> PIN Push itaje? Koresha USSD:</div>
                     <div id="ussdSchoolCode" style="font-size:1.3rem; font-weight:800; color:#fff; font-family:monospace; letter-spacing:1px;"></div>
-                    <div style="font-size:10px; color:#94a3b8; margin-top:4px;">Kanda iyo code kuri telephone yawe hanyuma emeza kwishyura 10,000 Frw.</div>
+                    <div id="selectedSchoolPaymentHint" style="font-size:10px; color:#94a3b8; margin-top:4px;">Hitamo package mbere yo kwemeza ubwishyu.</div>
                 </div>
             </section>
 
@@ -336,7 +367,7 @@
                         <div class="step-card">
                             <div class="step-number">2</div>
                             <h4>Shyiraho ibizamini</h4>
-                            <p>Nyuma yo guhabwa package ya 200 exams,Shyiramo Umubare w'ibizamini umunyeshuri yemerewe gukora.</p>
+                            <p>Nyuma yo kwishyura package, koresha credits z'ishuri mu guha abanyeshuri ibizamini bemerewe gukora.</p>
                         </div>
                         <div class="step-card">
                             <div class="step-number">3</div>
@@ -353,8 +384,9 @@
                 <div class="info-card">
                     <h3>By'ingenzi</h3>
                     <ul class="feature-list">
-                        <li><i class="fa-solid fa-circle-check"></i> Package ya 200 exams igura 10,000 Frw.</li>
-                        <li><i class="fa-solid fa-circle-check"></i> Igiciro ku exam ni 50 Frw.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Basic: 100 exams kuri 10,000 RWF.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Standard: 300 exams kuri 20,000 RWF.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Premium: 600 exams kuri 30,000 RWF.</li>
                         <li><i class="fa-solid fa-circle-check"></i> Ishuri rishobora gutegeka no gukurikirana ibizamini by'abanyeshuri.</li>
                         <li><i class="fa-solid fa-circle-check"></i> Amanota agaragara muri dashboard kugira ngo agenzurwe byoroshye.</li>
                     </ul>
@@ -456,9 +488,35 @@
             }
         };
 
+        let selectedSchoolPackage = null;
+        window.selectSchoolPackage = function(input) {
+            selectedSchoolPackage = {
+                id: input.value,
+                name: input.dataset.packageName,
+                price: Number(input.dataset.price),
+                examCredits: Number(input.dataset.examCredits)
+            };
+            const summary = document.getElementById('selectedSchoolPackageSummary');
+            const button = document.getElementById('renewSubmitBtn');
+            summary.textContent = `${selectedSchoolPackage.name}: ${selectedSchoolPackage.examCredits} exam credits — ${selectedSchoolPackage.price.toLocaleString()} RWF. Reba neza mbere yo kwishyura.`;
+            button.disabled = false;
+            button.innerHTML = `<span>Emeza kandi wishyure ${selectedSchoolPackage.price.toLocaleString()} RWF</span> <i class="fa-solid fa-credit-card"></i>`;
+            document.getElementById('selectedSchoolPaymentHint').textContent =
+                `Kanda code kuri telefone yawe hanyuma wemeze ${selectedSchoolPackage.price.toLocaleString()} RWF kuri package ya ${selectedSchoolPackage.name}.`;
+        };
+
+        function setSchoolPackageSelectionDisabled(disabled) {
+            document.querySelectorAll('input[name="schoolPackage"]').forEach(input => { input.disabled = disabled; });
+        }
+
         window.triggerSchoolLicenseRenewalRequest = function() {
             const phoneField = document.getElementById('renewMomoPhoneInput');
             const btn = document.getElementById('renewSubmitBtn');
+            if (!selectedSchoolPackage) {
+                ikAlert('Banza uhitemo package y\'ibizamini.', 'warning', 'Hitamo Package');
+                return;
+            }
+            const packageChoice = { ...selectedSchoolPackage };
             let phone = phoneField.value.replace(/\D/g, '');
 
             // Normalize
@@ -472,19 +530,28 @@
             }
 
             btn.disabled = true;
+            setSchoolPackageSelectionDisabled(true);
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Ohereza PIN Push...`;
 
             fetch('/api/school/renew-license', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phoneNumber: phone })
+                body: JSON.stringify({ phoneNumber: phone, packageId: packageChoice.id })
             })
             .then(r => r.json())
             .then(data => {
+                if (data.paymentInitiated && data.reconciliationRequired) {
+                    btn.disabled = true;
+                    setSchoolPackageSelectionDisabled(true);
+                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Ubwishyu burimo kugenzurwa`;
+                    ikAlert(data.error || `Ubwishyu bushobora kuba bwatangiye. Ntukongere kugerageza. Reference: ${data.referenceId}`, 'warning', 'Ubwishyu Burimo Kugenzurwa');
+                    return;
+                }
                 if (!data.success) {
                     ikAlert(data.error || 'Kwishyura byanze. Ongera ugerageze.', 'error', 'Kwishyura Byanze');
+                    setSchoolPackageSelectionDisabled(false);
                     btn.disabled = false;
-                    btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
+                    btn.innerHTML = `<span>Emeza kandi wishyure ${packageChoice.price.toLocaleString()} RWF</span> <i class="fa-solid fa-credit-card"></i>`;
                     return;
                 }
                 // Real payment initiated — poll for confirmation
@@ -507,6 +574,15 @@
 
                 let attempts = 0;
                 const maxAttempts = 24;
+                const keepPaymentPendingForSupport = () => {
+                    clearInterval(poll);
+                    clearTimeout(ussdTimer);
+                    ussdHint.style.display = 'none';
+                    btn.disabled = true;
+                    setSchoolPackageSelectionDisabled(true);
+                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Ubwishyu burimo kugenzurwa`;
+                    ikAlert(`Ubwishyu ntibwemejwe. Ntukongere gutangiza ubwishyu; hamagara ubufasha uhereye kuri reference: ${refId}.`, 'warning', 'Ubwishyu Burimo Kugenzurwa');
+                };
                 const poll = setInterval(() => {
                     attempts++;
                     fetch(`/api/school/renew-status/${refId}`)
@@ -516,37 +592,31 @@
                                 clearInterval(poll); clearTimeout(ussdTimer);
                                 ussdHint.style.display = 'none';
                                 phoneField.value = '';
+                                setSchoolPackageSelectionDisabled(false);
                                 btn.disabled = false;
-                                btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
-                                ikAlert('Lisansi yaguzwe neza! Ibizamini 200 byongewe kuri konti yanyu. Murakoze!', 'success', 'Kwishyura Byakunze! ✓');
+                                btn.innerHTML = `<span>Emeza kandi wishyure ${packageChoice.price.toLocaleString()} RWF</span> <i class="fa-solid fa-credit-card"></i>`;
+                                ikAlert(`Kwishyura byakunze! ${packageChoice.examCredits} exam credits za package ya ${packageChoice.name} zongerewe kuri konti yanyu.`, 'success', 'Kwishyura Byakunze! ✓');
                                 loadSchoolWalletMetricsData();
                             } else if (s.status === 'FAILED' || s.status === 'CANCELLED') {
                                 clearInterval(poll); clearTimeout(ussdTimer);
                                 ussdHint.style.display = 'none';
+                                setSchoolPackageSelectionDisabled(false);
                                 btn.disabled = false;
-                                btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
+                                btn.innerHTML = `<span>Emeza kandi wishyure ${packageChoice.price.toLocaleString()} RWF</span> <i class="fa-solid fa-credit-card"></i>`;
                                 ikAlert('Kwishyura byanze cyangwa byahagaritswe. Gerageza nanone.', 'error', 'Kwishyura Byanze');
                             } else if (attempts >= maxAttempts) {
-                                clearInterval(poll); clearTimeout(ussdTimer);
-                                ussdHint.style.display = 'none';
-                                btn.disabled = false;
-                                btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
-                                ikAlert('Igihe cyarenze (iminuta 2). Reba niba amafaranga yakuwe, gerageza nanone niba bitabaye.', 'warning', 'Igihe Cyarenze');
+                                keepPaymentPendingForSupport();
                             }
                         })
                         .catch(() => {
-                            if (attempts >= maxAttempts) {
-                                clearInterval(poll); clearTimeout(ussdTimer);
-                                ussdHint.style.display = 'none';
-                                btn.disabled = false;
-                                btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
-                            }
+                            keepPaymentPendingForSupport();
                         });
                 }, 5000);
             })
             .catch(() => {
+                setSchoolPackageSelectionDisabled(false);
                 btn.disabled = false;
-                btn.innerHTML = `<span>Ishyura 10,000 RWF</span> <i class="fa-solid fa-credit-card"></i>`;
+                btn.innerHTML = `<span>Emeza kandi wishyure ${packageChoice.price.toLocaleString()} RWF</span> <i class="fa-solid fa-credit-card"></i>`;
                 ikAlert('Ikosa rya network. Reba internet yawe hanyuma ugerageze nanone.', 'error', 'Ikibazo cya Network');
             });
         };

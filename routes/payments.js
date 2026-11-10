@@ -6,6 +6,7 @@ const { PROTECTED_REPORT_EMAIL } = require('../helpers/adminSettings');
 const { analyticsConfig, excludeAdmin } = require('../helpers/siteAnalytics');
 const { createPurchaseVerifier } = require('../helpers/verifiedAnalyticsPurchase');
 const { insertPaymentTransaction, isDuplicatePaymentError } = require('../helpers/paymentTransactions');
+const { getIndividualExamPricing, getSchoolPackage } = require('../helpers/pricing');
 
 const PAYPACK_BASE     = 'https://payments.paypack.rw/api';
 const PAYPACK_CLIENT   = process.env.PAYPACK_CLIENT_ID;
@@ -59,6 +60,9 @@ function ensurePaymentColumns(db) {
             service_type VARCHAR(50) NOT NULL DEFAULT 'EXAMS',
             resource_id INT NULL,
             resource_title VARCHAR(255) NULL,
+            package_id VARCHAR(32) NULL,
+            provider VARCHAR(32) NULL,
+            status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
             expires_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             INDEX idx_ref (payment_reference)
@@ -89,20 +93,6 @@ async function getAccessToken() {
 setTimeout(() => getAccessToken().catch(() => {}), 2000);
 // Refresh token every 50 minutes to keep it warm
 setInterval(() => getAccessToken().catch(() => {}), 50 * 60 * 1000);
-
-function calcTieredAmount(qty) {
-    if (qty <= 9)  return qty * 100;
-    if (qty <= 14) return 900 + (qty - 9) * 80;
-    if (qty <= 20) return 1300 + (qty - 14) * 70;
-    return 1720 + (qty - 20) * 50;
-}
-
-function getPricePerExam(qty) {
-    if (qty <= 9)  return 100;
-    if (qty <= 14) return 80;
-    if (qty <= 20) return 70;
-    return 50;
-}
 
 function verifyPaypackSignature(rawBody, signature, secret) {
     if (!Buffer.isBuffer(rawBody) || !secret || typeof signature !== 'string') return false;
@@ -135,6 +125,37 @@ function confirmsExpectedPayer(transaction, pending) {
     }
 }
 
+function markSchoolOrderStatus(db, reference, status, callback) {
+    const eligibleStatuses = status === 'SUCCESS'
+        ? `status IN ('PENDING', 'PROCESSING', 'FAILED')`
+        : `status IN ('PENDING', 'PROCESSING')`;
+    db.query(
+        `UPDATE pending_payment_requests
+         SET status = ?
+         WHERE payment_reference = ? AND service_type = 'SCHOOL' AND provider = 'PAYPACK'
+           AND ${eligibleStatuses}`,
+        [status, reference],
+        callback
+    );
+}
+
+function schoolPendingFromRow(row) {
+    if (row.serviceType !== 'SCHOOL' || row.provider !== 'PAYPACK' ||
+        !['PENDING', 'FAILED'].includes(row.status)) return null;
+    const pkg = getSchoolPackage(row.packageId);
+    if (!pkg || Number(row.amount) !== pkg.price || Number(row.examCount) !== pkg.examCredits ||
+        !Number.isInteger(Number(row.schoolId)) || Number(row.schoolId) < 1 || !row.phone) return null;
+    return {
+        phone: row.phone,
+        amount: pkg.price,
+        planLabel: `${pkg.name} School Package (${pkg.examCredits} Exams)`,
+        examCount: pkg.examCredits,
+        priceToStore: pkg.price / pkg.examCredits,
+        school_id: Number(row.schoolId),
+        serviceType: 'SCHOOL'
+    };
+}
+
 // In-memory map: paypackRef -> pending tx data (cleared on webhook)
 const pendingMap = new Map();
 
@@ -165,9 +186,9 @@ module.exports = (db) => {
             return res.status(400).json({ success: false, error: validationErr.message });
         }
 
-        let amount = 0, planLabel = '', examCount = 0, serviceType = 'EXAMS', resourceIdValue = null, resourceTitleValue = null;
+        let amount = 0, planLabel = '', examCount = 0, serviceType = 'EXAMS', resourceIdValue = null, resourceTitleValue = null, priceToStoreForExams = null;
         if (checkoutIntentType === 'SCHOOL') {
-            amount = 10000; planLabel = 'School Driving Program (200 Exams Package)'; examCount = 200; serviceType = 'SCHOOL';
+            return res.status(400).json({ success: false, error: 'Choose a school package through the school portal.' });
         } else if (checkoutIntentType === 'RESOURCE') {
             if (!resourceId) {
                 return res.status(400).json({ success: false, error: 'Resource payment details are incomplete.' });
@@ -194,20 +215,20 @@ module.exports = (db) => {
             resourceIdValue = resource.id;
             resourceTitleValue = resource.title;
         } else if (checkoutIntentType === 'PERSONAL' || checkoutIntentType === 'EXAMS') {
-            const qty = parseInt(examQuantityVolume, 10) || 1;
-            if (qty < 1 || qty > 200) {
-                return res.status(400).json({ success: false, error: 'Exam quantity must be between 1 and 200.' });
-            }
+            const qty = examQuantityVolume;
+            const pricing = getIndividualExamPricing(qty);
+            if (!pricing) return res.status(400).json({ success: false, error: 'Exam quantity must be between 1 and 50.' });
             examCount = qty;
-            amount    = calcTieredAmount(qty);
+            amount    = pricing.amount;
             planLabel = `Personal Tiered Pass (${qty} Exams Package)`;
+            priceToStoreForExams = pricing.pricePerExam;
         } else {
             return res.status(400).json({ success: false, error: 'Unknown checkout type.' });
         }
 
         // Amount and unit price are server-derived. Client-provided pricing is
         // display data only and must never influence a stored order.
-        const priceToStore = serviceType === 'EXAMS' ? getPricePerExam(examCount) : null;
+        const priceToStore = serviceType === 'EXAMS' ? priceToStoreForExams : null;
 
         try {
             const token = await getAccessToken();
@@ -282,13 +303,27 @@ module.exports = (db) => {
         const txData = body.data;
         const paypackRef = txData.ref;
         if (!isSuccessfulPaypackStatus(txData.status)) {
+            if (String(txData.status || '').toLowerCase() !== 'failed') return res.json({ ok: true });
             pendingMap.delete(paypackRef);
-            return res.json({ ok: true });
+            const { schoolPendingMap } = require('./school');
+            schoolPendingMap.delete(paypackRef);
+            return markSchoolOrderStatus(db, paypackRef, 'FAILED', (statusErr) => {
+                if (statusErr) return res.status(500).json({ ok: false });
+                return res.json({ ok: true });
+            });
         }
 
         db.query(`SELECT id FROM payment_transactions WHERE reference_id = ? LIMIT 1`, [paypackRef], async (checkErr, checkRows) => {
             if (checkErr) return res.status(500).json({ ok: false });
-            if (checkRows && checkRows.length > 0) return res.json({ ok: true });
+            if (checkRows && checkRows.length > 0) {
+                pendingMap.delete(paypackRef);
+                const { schoolPendingMap } = require('./school');
+                schoolPendingMap.delete(paypackRef);
+                return markSchoolOrderStatus(db, paypackRef, 'SUCCESS', (statusErr) => {
+                    if (statusErr) return res.status(500).json({ ok: false });
+                    return res.json({ ok: true });
+                });
+            }
 
             const confirmAndInsert = async (pending, schoolPending = null) => {
                 if (!pending || !Number.isFinite(Number(pending.amount)) || Number(pending.amount) <= 0) {
@@ -301,6 +336,20 @@ module.exports = (db) => {
                         `${PAYPACK_BASE}/transactions/find/${encodeURIComponent(paypackRef)}`,
                         { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }, timeout: 8000, maxRedirects: 0 }
                     );
+                    if (pending.serviceType === 'SCHOOL' &&
+                        String(confirmedTransaction?.status || '').toLowerCase() === 'failed' &&
+                        confirmedTransaction.ref === paypackRef &&
+                        confirmedTransaction.kind === 'CASHIN' &&
+                        String(confirmedTransaction.merchant || '') === PAYPACK_MERCHANT &&
+                        Number(confirmedTransaction.amount) === Number(pending.amount) &&
+                        confirmsExpectedPayer(confirmedTransaction, pending)) {
+                        return markSchoolOrderStatus(db, paypackRef, 'FAILED', (statusErr) => {
+                            if (statusErr) return res.status(500).json({ ok: false });
+                            if (schoolPending?.map) schoolPending.map.delete(paypackRef);
+                            return res.json({ ok: true });
+                        });
+                    }
+
                     if (!confirmsExpectedPayment(confirmedTransaction, paypackRef, pending.amount, PAYPACK_MERCHANT, txData.status) ||
                         !confirmsExpectedPayer(confirmedTransaction, pending)) {
                         console.warn(`Paypack webhook confirmation mismatch for ${paypackRef}`);
@@ -308,34 +357,42 @@ module.exports = (db) => {
                     }
 
                     const complete = (err) => {
-                        if (isDuplicatePaymentError(err)) {
-                            pendingMap.delete(paypackRef);
-                            if (schoolPending) schoolPending.map.delete(paypackRef);
-                            return res.json({ ok: true });
-                        }
-                        if (err) {
+                        const duplicate = isDuplicatePaymentError(err);
+                        if (err && !duplicate) {
                             console.error('Webhook DB insert error:', err.message);
                             return res.status(500).json({ ok: false });
                         }
                         pendingMap.delete(paypackRef);
-                        if (schoolPending) schoolPending.map.delete(paypackRef);
-                        sendPaymentNotification(req.app.get('emailTransport'), {
-                            phone: pending.phone, amount: pending.amount,
-                            planLabel: pending.planLabel, examCount: pending.examCount,
-                            paypackRef,
-                            type: pending.serviceType === 'SCHOOL' ? 'School Payment' : pending.serviceType === 'RESOURCES' ? 'Resource Payment' : 'Self Payment'
-                        });
-                        return res.json({ ok: true });
+                        if (schoolPending?.map) schoolPending.map.delete(paypackRef);
+                        const finish = (statusErr) => {
+                            if (statusErr) {
+                                console.error('Webhook pending-order status update failed:', statusErr.message);
+                                return res.status(500).json({ ok: false });
+                            }
+                            if (!duplicate) {
+                                sendPaymentNotification(req.app.get('emailTransport'), {
+                                    phone: pending.phone, amount: pending.amount,
+                                    planLabel: pending.planLabel, examCount: pending.examCount,
+                                    paypackRef,
+                                    type: pending.serviceType === 'SCHOOL' ? 'School Payment' : pending.serviceType === 'RESOURCES' ? 'Resource Payment' : 'Self Payment'
+                                });
+                            }
+                            return res.json({ ok: true });
+                        };
+                        if (pending.serviceType === 'SCHOOL') {
+                            return markSchoolOrderStatus(db, paypackRef, 'SUCCESS', finish);
+                        }
+                        return finish(null);
                     };
 
-                    if (schoolPending) {
+                    if (pending.serviceType === 'SCHOOL') {
                         return insertPaymentTransaction(db, {
                             phone: pending.phone,
                             amount: Number(pending.amount),
                             planLabel: pending.planLabel,
                             examCount: pending.examCount,
                             priceToStore: pending.priceToStore,
-                            school_id: pending.schoolId,
+                            school_id: pending.school_id,
                             serviceType: 'SCHOOL'
                         }, paypackRef, complete);
                     }
@@ -346,31 +403,55 @@ module.exports = (db) => {
                 }
             };
 
-            const memoryPending = pendingMap.get(paypackRef);
-            if (memoryPending) return confirmAndInsert(memoryPending);
-
             db.query(
                 `SELECT phone_number AS phone, amount, plan_name AS planLabel, exam_count AS examCount,
-                        price_per_exam AS priceToStore, school_id, service_type AS serviceType,
-                        resource_id AS resourceId, resource_title AS resourceTitle
+                        price_per_exam AS priceToStore, school_id AS schoolId, service_type AS serviceType,
+                        resource_id AS resourceId, resource_title AS resourceTitle,
+                        package_id AS packageId, provider, status
                  FROM pending_payment_requests WHERE payment_reference = ? LIMIT 1`,
                 [paypackRef],
                 (pendingErr, pendingRows) => {
                     if (pendingErr) return res.status(500).json({ ok: false });
-                    if (pendingRows && pendingRows.length > 0) return confirmAndInsert(pendingRows[0]);
+                    if (pendingRows && pendingRows.length > 0) {
+                        const stored = pendingRows[0];
+                        if (stored.serviceType === 'SCHOOL') {
+                            if (!['PENDING', 'FAILED'].includes(stored.status)) return res.json({ ok: true });
+                            const schoolOrder = schoolPendingFromRow(stored);
+                            if (!schoolOrder) {
+                                console.error(`Invalid durable school payment order for ${paypackRef}`);
+                                return res.status(409).json({ ok: false });
+                            }
+                            const { schoolPendingMap } = require('./school');
+                            return confirmAndInsert(schoolOrder, { map: schoolPendingMap, durable: true });
+                        }
+                        return confirmAndInsert(stored);
+                    }
 
                     const { schoolPendingMap } = require('./school');
                     const schoolOrder = schoolPendingMap.get(paypackRef);
                     if (!schoolOrder) return res.json({ ok: true });
-                    return confirmAndInsert({
-                        phone: schoolOrder.phone,
-                        amount: 10000,
-                        planLabel: `School Driving Pass (${schoolOrder.schoolName})`,
-                        examCount: 200,
-                        priceToStore: 50,
-                        serviceType: 'SCHOOL',
-                        schoolId: schoolOrder.schoolId
-                    }, { map: schoolPendingMap });
+                    const confirmMemoryOrder = () => {
+                        const pkg = getSchoolPackage(schoolOrder.packageId);
+                        if (!pkg || Number(schoolOrder.amount) !== pkg.price || Number(schoolOrder.examCount) !== pkg.examCredits) {
+                            return res.status(409).json({ ok: false });
+                        }
+                        return confirmAndInsert({
+                            phone: schoolOrder.phone,
+                            amount: pkg.price,
+                            planLabel: `${pkg.name} School Package (${pkg.examCredits} Exams)`,
+                            examCount: pkg.examCredits,
+                            priceToStore: pkg.price / pkg.examCredits,
+                            school_id: Number(schoolOrder.schoolId),
+                            serviceType: 'SCHOOL'
+                        }, { map: schoolPendingMap, durable: false });
+                    };
+                    if (schoolOrder.persistPromise) {
+                        return schoolOrder.persistPromise.then(confirmMemoryOrder).catch((persistErr) => {
+                            console.error('School pending-order persistence failed before callback:', persistErr.message);
+                            return confirmMemoryOrder();
+                        });
+                    }
+                    return confirmMemoryOrder();
                 }
             );
         });
@@ -415,21 +496,21 @@ function handleSchoolWebhook(db, paypackRef, txData, res) {
         return res.json({ ok: true });
     }
     schoolPendingMap.delete(paypackRef);
-    const planLabel = `School Driving Pass (${pending.schoolName})`;
+    const planLabel = pending.planLabel;
     insertPaymentTransaction(db, {
         phone: pending.phone,
-        amount: 10000,
+        amount: pending.amount,
         planLabel,
-        examCount: 200,
-        priceToStore: Number((10000/200).toFixed(2)),
+        examCount: pending.examCount,
+        priceToStore: pending.priceToStore,
         school_id: pending.schoolId,
         serviceType: 'SCHOOL'
     }, paypackRef, (err) => {
         if (err) { console.error('❌ School webhook DB insert error:', err.message); return res.status(500).json({ ok: false }); }
         console.log(`✅ School webhook: ${paypackRef} → SUCCESS (inserted)`);
         sendPaymentNotification(res.req.app.get('emailTransport'), {
-            phone: pending.phone, amount: 10000,
-            planLabel, examCount: 200,
+            phone: pending.phone, amount: pending.amount,
+            planLabel, examCount: pending.examCount,
             paypackRef, type: 'School Payment'
         });
         res.json({ ok: true });
